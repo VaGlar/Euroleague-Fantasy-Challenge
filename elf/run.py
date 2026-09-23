@@ -306,6 +306,26 @@ def _pair_trades(tr: dict) -> list[dict]:
              "price_out": o["price"], "price_in": i["price"]} for o, i in zip(outs, ins)]
 
 
+def actual_lineup(raw: dict) -> list[dict]:
+    """The lineup as set in the game: court_position orders the squad
+    (starters first, then sixth man, then bench; the app keeps them sorted by it)."""
+    rows = []
+    for p in (raw or {}).get("players", []) if isinstance(raw, dict) else []:
+        pos = (p.get("position") or {}).get("name")
+        rows.append({"fantasy_id": p.get("id"), "court_position": p.get("court_position"),
+                     "captain": bool(p.get("is_captain")), "pts": p.get("pts"),
+                     "played": bool(p.get("match_played")), "position": pos,
+                     "turn": (p.get("round") or {}).get("number"),
+                     "name": f"{p.get('last_name', '')}".strip()})
+    court = sorted([r for r in rows if r["position"] != "Head Coach"
+                    and r["court_position"] is not None], key=lambda r: r["court_position"])
+    for i, r in enumerate(court):
+        r["role"] = "5άδα" if i < 5 else "6ος" if i == 5 else "πάγκος"
+    for r in rows:
+        r.setdefault("role", "coach" if r["position"] == "Head Coach" else None)
+    return rows
+
+
 def suggest_transfers(team: pd.DataFrame, pool: pd.DataFrame, bank: float, max_trades: int = 4,
                       min_gain: float = 3.0) -> list[dict]:
     """Greedy same-position swaps maximising xPIR over the horizon within budget."""
@@ -505,7 +525,11 @@ def build(offline: bool = False) -> dict:
             bank = meta.get("bank", max(0.0, BUDGET - mine["price"].sum()))
             my = {"name": t["name"], "players": mine.sort_values("x_now", ascending=False)
                   .to_dict("records"), "bank": bank, "captain_id": meta.get("captain"),
-                  "parsed_players": len(ids), "max_trades": max_trades}
+                  "parsed_players": len(ids), "max_trades": max_trades,
+                  "actual_lineup": actual_lineup(t["raw"])}
+            five = [r for r in my["actual_lineup"] if r["role"] == "5άδα"]
+            if five and not {"Guard", "Forward", "Center"} <= {r["position"] for r in five}:
+                health.append("ομάδα: η πεντάδα που διάβασα δεν έχει G/F/C — έλεγχος court_position")
             try:
                 sq = _opt_rows(mine)
                 lu = optimize.lineup(sq) if len(sq) == 11 else None
@@ -571,8 +595,20 @@ def turn_check(tu: dict, table: pd.DataFrame, my: dict | None) -> list[str]:
         return lines + [f"• {_fmt(r)}" for r in today.head(3).to_dict("records")]
     squad = table[table["fantasy_id"].isin([p["fantasy_id"] for p in my["players"]])
                   & (table["position"] != "Head Coach")]
-    role = {p["id"]: p["role"] for p in (my.get("lineup") or [])}
+    real = {r["fantasy_id"]: r for r in (my.get("actual_lineup") or []) if r.get("role")}
+    if real:  # the lineup you actually set in the game
+        role = {i: r["role"] for i, r in real.items()}
+        pts = {i: r["pts"] for i, r in real.items() if r["played"] and r["pts"] is not None}
+        cap_real = next((i for i, r in real.items() if r["captain"]), None)
+        if cap_real is not None:
+            my = {**my, "captain_id": cap_real}
+    else:     # fall back to the lineup we suggested
+        role = {p["id"]: p["role"] for p in (my.get("lineup") or [])}
+        pts = {}
     squad = squad.assign(role=squad["fantasy_id"].map(lambda i: role.get(int(i)) if i == i else None))
+    if pts:
+        squad = squad.assign(actual=squad["fantasy_id"].map(
+            lambda i: pts.get(int(i)) if i == i and int(i) in pts else None).fillna(squad["actual"]))
     done = squad[squad["actual"].notna()].sort_values("actual")
     today = squad[squad["team"].isin(tu["teams"])].sort_values("x_now", ascending=False)
     if done.empty:
@@ -605,13 +641,23 @@ def turn_check(tu: dict, table: pd.DataFrame, my: dict | None) -> list[str]:
              and (d["role"] == "6ος" or t["position"] == d["position"]
                   or (starters_done["position"] == d["position"]).sum() > 1)]
     if swaps:
-        lines.append("🔄 <b>Αλλαγή βασικού ↔ πάγκου</b> (βάσει της πεντάδας που σου πρότεινα):")
+        src = "της πεντάδας σου στο παιχνίδι" if real else "της πεντάδας που σου πρότεινα"
+        lines.append(f"🔄 <b>Αλλαγή βασικού ↔ πάγκου</b> (βάσει {src}):")
         seen = set()
         for d, t in swaps:
             if d["fantasy_id"] in seen or t["fantasy_id"] in seen:
                 continue
             seen |= {d["fantasy_id"], t["fantasy_id"]}
             lines.append(f"• {_short(d)} ({d['actual']:.0f}) ➜ {_short(t)} (xPTS {t['x_now']:.1f})")
+        # the incoming player can also take the armband if the captain flopped
+        if len(cap) and cap.iloc[0]["actual"] == cap.iloc[0]["actual"]:
+            c = cap.iloc[0]
+            best_in = max((t for d, t in swaps if d["role"] == "5άδα"), key=lambda t: t["x_now"],
+                          default=None)
+            if best_in is not None and best_in["x_now"] > c["actual"] \
+                    and not (len(today_court) and today_court.iloc[0]["x_now"] >= best_in["x_now"]):
+                lines.append(f"👉 Μετά την αλλαγή, δώσε το x2 στον {_short(best_in)}: ο αρχηγός "
+                             f"{_short(c)} έφερε {c['actual']:.0f}.")
     elif len(bench_today):
         lines.append("🔄 Καμία αλλαγή πάγκου δεν αξίζει: οι βασικοί σου έφεραν περισσότερα "
                      "από όσα αναμένονται από τον πάγκο σήμερα.")
@@ -660,6 +706,24 @@ def messages(rnd, trn, table, my, dig, health) -> list[dict]:
                 lines.append(", ".join(nm_(p) for p in role("5άδα")))
                 lines.append("6ος: " + ", ".join(nm_(p) for p in role("6ος")))
                 lines.append("Πάγκος: " + ", ".join(nm_(p) for p in role("πάγκος")))
+                real = {r["fantasy_id"]: r for r in (my.get("actual_lineup") or [])}
+                if real:
+                    diff = []
+                    for p in lu:
+                        r = real.get(p["id"])
+                        if not r or r["role"] == p["role"] or p["role"] == "coach":
+                            continue
+                        if p["role"] in ("5άδα", "6ος") and r["role"] == "πάγκος":
+                            diff.append(f"βάλε τον {p['name'].split(',')[0].title()} {p['role']}")
+                        elif p["role"] == "5άδα" and r["role"] == "6ος":
+                            diff.append(f"ο {p['name'].split(',')[0].title()} στην πεντάδα")
+                    cap_s = next((p for p in lu if p["captain"]), None)
+                    cap_r = next((r for r in real.values() if r["captain"]), None)
+                    if cap_s and cap_r and cap_s["id"] != cap_r["fantasy_id"]:
+                        diff.append(f"αρχηγός ο {cap_s['name'].split(',')[0].title()} "
+                                    f"(τώρα: {cap_r['name'].title()})")
+                    lines.append("✅ Η ομάδα σου στο παιχνίδι είναι ήδη έτσι." if not diff else
+                                 "✏️ <b>Στο παιχνίδι</b>: " + "; ".join(diff) + ".")
                 lines.append("")
             lines.append("⭐ <b>Αρχηγός</b>" + (" (από την πεντάδα σου)" if lu else ""))
             if len(cand_now):
