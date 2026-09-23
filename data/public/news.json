@@ -1,11 +1,75 @@
 {
  "articles": [
   {
+   "title": "Ατζέντης Γουόκαπ: «Αυτά έγιναν μεταξύ του Τόμας και του Ολυμπιακού»",
+   "url": "https://www.gazzetta.gr/basketball/euroleague/2571564/atzentis-goyokap-ayta-eginan-metaxy-toy-tomas-kai-toy-olympiakoy",
+   "date": "2026-09-23T18:19:51+02:00",
+   "text": "Ο ατζέντης του Τόμας Γουόκαπ παραχώρησε συνέντευξη στην ισπανική «As» και αναφέρθηκε στα όσα συνέβησαν το καλοκαίρι με την υπόθεση του Τόμας Γουόκαπ.",
+   "source": "Gazzetta",
+   "weight": 1
+  },
+  {
+   "title": "Παναθηναϊκός: Οι πιο απειλητικοί παίκτες του «τριφυλλιού» στο ξεκίνημα της σεζόν",
+   "url": "https://www.gazzetta.gr/football/superleague/2571485/panathinaikos-oi-pio-apeilitikoi-paiktes-toy-trifyllioy-sto-xekinima",
+   "date": "2026-09-23T17:30:00+02:00",
+   "text": "Το Gazzetta σας παρουσιάζει τους παίκτες που ξεχώρισαν στο κομμάτι της απειλής για τον Παναθηναϊκό στα πρώτα 13 ματς της σεζόν με τη βοήθεια του Wyscout.",
+   "source": "Gazzetta",
+   "weight": 1
+  },
+  {
+   "title": "Ο super οδηγός του Gazzetta για την Euroleague 2026-27... στο πιάτο σας!",
+   "url": "https://www.gazzetta.gr/basketball/euroleague/2571552/o-super-odigos-toy-gazzetta-gia-tin-euroleague-2026-27-sto-piato-sas",
+   "date": "2026-09-23T17:27:27+02:00",
+   "text": "Η μεγάλη στιγμή έφτασε! Η Euroleague που όλοι περιμένουμε αρχίζει και το Gazzetta προσφέρει στους αναγνώστες του τον πληρέστερο οδηγό για να είστε διαβασμένοι σε... κάθε τζάμπολ!",
+   "source": "Gazzetta",
+   "weight": 1
+  },
+  {
+   "title": "ΑΕΚ: Η κατάσταση των τραυματιών ενόψει Super Cup",
+   "url": "https://www.gazzetta.gr/basketball/basket-league/2571551/aek-i-katastasi-ton-traymation-enopsei-super-cup",
+   "date": "2026-09-23T17:23:16+02:00",
+   "text": "Η ΑΕΚ μετράει αντίστροφα για τον ημιτελικό του Super Cup κόντρα στον Ολυμπιακό (26/9) και συνεχίζει να υπάρχει θέμα με τις απουσίες στη frontline.",
+   "source": "Gazzetta",
+   "weight": 1
+  },
+  {
+   "title": "Μπαρτζώκας: «Να αξιοποιήσουμε το ταλέντο που έχουμε με νίκες»",
+   "url": "https://www.gazzetta.gr/basketball/euroleague/2571547/mpartzokas-na-axiopoiisoyme-talento-poy-ehoyme-me-nikes",
+   "date": "2026-09-23T17:04:51+02:00",
+   "text": "Διαβάστε τα όσα είπε ο Γιώργος Μπαρτζώκας λίγο πριν από την αναχώρηση της αποστολής του Ολυμπιακού για την Βιτόρια (24/09, 21:30) ενόψει της πρεμιέρας στην Euroleague.",
+   "source": "Gazzetta",
+   "weight": 1
+  },
+  {
+   "title": "ΜακΙντάιρ: «Δεν έχει σημασία πώς ξεκινάς τη σεζόν αλλά πώς την τελειώνεις»",
+   "url": "https://www.gazzetta.gr/basketball/euroleague/2571545/makintair-den-ehei-simasia-pos-xekinas-ti-sezon-alla-pos-tin",
+   "date": "2026-09-23T16:49:43+02:00",
+   "text": "Διαβάστε τα όσα ανέφερε ο Κόντι Μίλερ-ΜακΙντάιρ λίγο πριν από την αναχώρηση της αποστολής του Ολυμπιακού για τη Βιτόρια ενόψει του αγώνα μετ ην Μπασκόνια (24/09, 21:30).",
+   "source": "Gazzetta",
+   "weight": 1
+  },
+  {
+   "title": "Θα τα «φάει» όλα στις εγγυήσεις: Κέρδισε 143 εκατ. ευρώ στο Powerball αλλά συνελήφθη για 5η φορά μέσα σε 17 μήνες",
+   "url": "https://www.gazzetta.gr/plus/2571527/tha-ta-faei-ola-stis-eggyiseis-kerdise-143-ekat-dolaria-sto-powerball-alla-synelifthi",
+   "date": "2026-09-23T16:36:00+02:00",
+   "text": "Ο James Farthing κέρδισε 167,3 εκατ. δολάρια στο Powerball του Κεντάκι το 2025, όμως έκτοτε έχει συλληφθεί πέντε φορές.",
+   "source": "Gazzetta",
+   "weight": 1
+  },
+  {
    "title": "Όμπραντοβιτς: Η διαβολική σύμπτωση με το πρώτο κοουτσάρισμα του Παναθηναϊκού στην Euroleague!",
    "url": "https://www.gazzetta.gr/basketball/euroleague/2571530/omprantobits-i-diaboliki-symptosi-me-proto-kooytsarisma-toy",
    "date": "2026-09-23T16:22:02+02:00",
    "text": "Ο Ζέλικο Ομπράντοβιτς ετοιμάζεται για την επίσημη επιστροφή του στον πάγκο του Παναθηναϊκού κόντρα στην Παρί, ένα ματς το οποίο συνδέεται με μια... διαβολική σύμπτωση με το μακρινό παρελθόν.",
    "source": "Gazzetta",
+   "weight": 1
+  },
+  {
+   "title": "Τρινκιέρι για Μυστακίδη: “Με ρώτησε ποιο είναι το καλύτερο τριάρι, του είπα ο Οσμάν και έκανε τα υπόλοιπα”",
+   "url": "https://www.eurohoops.net/el/eurocup-el/2011387/trinkieri-gia-mistakidi-me-rotise-pio-ine-to-kalitero-triari-tou-ipa-o-osman-ke-ekane-ta-ipolipa/",
+   "date": "2026-09-23T15:12:37+00:00",
+   "text": "Του Μιχάλη Γκιουλένογλου/ info@eurohoops.net Ο Αντρέα Τρινκιέρι παραχώρησε συνέντευξη στο σέρβικο Μέσο Meridian Sport και μίλησε για το νέο ΠΑΟΚ , αλλά και πως ο “Δικέφαλος του Βορρά” απέκτησε τον Τσέντι Οσμάν . “ Yπάρχουν πολλές ομοιότητες με την Παρτιζάν. Ο ΠΑΟΚ έχει οπαδούς, ιστορία, τίτλους, αλλά μιλάμε για μια άλλη εποχή που είναι αρκετά μακρινή. Μου αρέσουν προκλήσεις σαν κι αυτή. Μερικές φορές, όταν δεν έχεις σχεδόν τίποτα, είναι πιο εύκολο, γιατί το αποδέχεσαι και δουλεύεις κάθε μέρα και αρχίζεις να το συναρμολογείς κομμάτι-κομμάτι. Αυτή είναι η δουλειά μου. Η πίεση δεν αποτελεί ποτέ π",
+   "source": "Eurohoops (GR)",
    "weight": 1
   },
   {
@@ -25,6 +89,46 @@
    "weight": 1
   },
   {
+   "title": "Ολυμπιακός: “Φτερά” κάνουν τα εισιτήρια για το Super Cup πόλο γυναικών",
+   "url": "https://www.novasports.gr/polo/olympiakos-polo-gynaikon/article/15129709/olympiakos-ftera-kanoun-ta-eisitiria-gia-to-super-cup-polo-gynaikon/",
+   "date": "2026-09-23T14:53:05+00:00",
+   "text": "Στην κυκλοφορία τέθηκαν τα εισιτήρια για τον μεγάλο τελικό του Super Cup πόλο γυναικών, στον οποίο οι πρωταθλήτριες Ευρώπης του Ολυμπιακού θα αντιμετωπίσουν την ισπανική Καταλούνια. Η αναμέτρηση έχει προγραμματιστεί για το Σάββατο 3 Οκτωβρίου (17:30) στο Εθνικό Κολυμβητήριο Πειραιά «Π. Καπαγέρωφ» (Παπαστράτειο), με τις «ερυθρόλευκες» να διεκδικούν ακόμη έναν ευρωπαϊκό τίτλο μπροστά στο κοινό τους. Σύμφωνα με την επίσημη ενημέρωση του ΟΛΥΜΠΙΑΚΟΥ Σ.Φ.Π., οι τιμές των εισιτηρίων διαμορφώνονται στα 10€, 15€ και 25€. Για τον συγκεκριμένο αγώνα ισχύουν κανονικά τα εισιτήρια διαρκείας του τμήματος πό",
+   "source": "Novasports",
+   "weight": 1
+  },
+  {
+   "title": "Injury report, Round 1: Milutinov available; quartet missing for Panathinaikos; two out for Barça",
+   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/injury-report-round-1-el2627/",
+   "date": "2026-09-23T14:45:33.917000+00:00",
+   "text": "Stay up to date with the latest injury information provided by the EuroLeague clubs",
+   "source": "EuroLeague (official)",
+   "weight": 1
+  },
+  {
+   "title": "Τρινκιέρι: «Ο Καλάθης στόχος μας από την πρώτη μέρα – Ο Μυστακίδης έκανε τα πάντα για τον Όσμαν»",
+   "url": "https://www.novasports.gr/sport/mpasket/event/diethneis-eurocup-mpasket/article/15129712/trinkieri-o-kalathis-stoxos-mas-apo-tin-proti-mera-o-mystakidis-ekane-ta-panta-gia-ton-osman/",
+   "date": "2026-09-23T14:43:00+00:00",
+   "text": "Ο Ιταλός τεχνικός αποκάλυψε πώς ο διοικητικός ηγέτης των «ασπρόμαυρων» πήρε πάνω του την υπόθεση της απόκτησης του Τούρκου φόργουορντ, ενώ υπογράμμισε την ανάγκη για υπομονή και συνολική αναβάθμιση του οργανισμού του ΠΑΟΚ. Αναλυτικά όσα δήλωσε ο Αντρέα Τρινκιέρι: «Υπάρχουν πολλές ομοιότητες με την Παρτιζάν. Ο ΠΑΟΚ έχει οπαδούς, ιστορία, τίτλους, αλλά μιλάμε για μια άλλη εποχή που είναι αρκετά μακρινή. Μου αρέσουν προκλήσεις σαν κι αυτή. Μερικές φορές, όταν δεν έχεις σχεδόν τίποτα, είναι πιο εύκολο, γιατί το αποδέχεσαι και δουλεύεις κάθε μέρα και αρχίζεις να το συναρμολογείς κομμάτι-κομμάτι. Αυ",
+   "source": "Novasports",
+   "weight": 1
+  },
+  {
+   "title": "Euroleague 2026-27 is here: enjoy the preview of the season",
+   "url": "https://www.eurohoops.net/en/euroleague/2011374/euroleague-2026-27-is-here-enjoy-the-preview-of-the-season/",
+   "date": "2026-09-23T14:26:30+00:00",
+   "text": "By Alex Molina / info@eurohoops.net The wait is almost over. The 2026-27 EuroLeague season tips off next Thursday with 20 teams beginning a new race for European basketball’s biggest prize. One of the biggest stories will take place in Athens, where Željko Obradović returns to Panathinaikos. The Serbian coach, who led the club between 1999 and 2012, returns more than a decade after leaving, having previously guided the Greens to five EuroLeague titles. In Lithuania, Jonas Valančiūnas represents one of the most notable arrivals of the summer. After 14 seasons in the NBA, the Lithuanian center r",
+   "source": "Eurohoops",
+   "weight": 1
+  },
+  {
+   "title": "Ολυμπιακός: Τι δουλεύει ο Αλγκουαθίλ στη διακοπή με 15 διεθνείς εκτός Ρέντη",
+   "url": "https://www.novasports.gr/sport/podosfairo/event/super-league-1/article/15129689/olympiakos-ti-douleyei-o-algkouathil-sti-diakopi-me-15-diethneis-ektos-renti/",
+   "date": "2026-09-23T14:25:00+00:00",
+   "text": "Η διακοπή του πρωταθλήματος δίνει στον Ιμανόλ Αλγκουαθίλ τον πρώτο ουσιαστικό χρόνο για προπονήσεις μετά την ανάληψη της τεχνικής ηγεσίας του Ολυμπιακού . Δεν του προσφέρει, όμως, τις ιδανικές συνθήκες, καθώς από τον Ρέντη απουσιάζουν 12 διεθνείς της πρώτης ομάδας, με τον αριθμό να φτάνει τους 15 μαζί με όσους έχουν υποχρεώσεις με τις μικρές εθνικές. Ο Βάσκος γνώριζε αυτή τη δυσκολία και είχε αναφερθεί στις πολλές απουσίες που θα υπήρχαν στη διακοπή. Από την άλλη, μετά από ένα διάστημα στο οποίο τα παιχνίδια διαδέχονταν το ένα το άλλο και ο χρόνος για κανονική δουλειά ήταν περιορισμένος, έχει ",
+   "source": "Novasports",
+   "weight": 1
+  },
+  {
    "title": "Ο προπονητής της Μπασκόνια πήρε θέση για τον Λεν: «Δεν θα παίξει κόντρα στον Ολυμπιακό...»",
    "url": "https://www.gazzetta.gr/basketball/euroleague/2571502/o-proponitis-tis-mpaskonia-pire-thesi-gia-ton-len-den-tha-paixei",
    "date": "2026-09-23T14:21:02+02:00",
@@ -33,50 +137,74 @@
    "weight": 1
   },
   {
-   "title": "Μπόνγκα: «Θετικό το γεγονός ότι θα έχουμε τα πρώτα παιχνίδια στην έδρα μας»",
-   "url": "https://www.gazzetta.gr/basketball/euroleague/2571498/mpongka-thetiko-gegonos-oti-tha-ehoyme-ta-prota-paihnidia-stin-edra",
-   "date": "2026-09-23T13:59:52+02:00",
-   "text": "Διαβάστε όλα όσα είπε στις δηλώσεις του ο Ίζακ Μπόνγκα, ενόψει της αναμέτρησης του Παναθηναϊκού κόντρα στην Παρί, για την πρεμιέρα της EuroLeague.",
-   "source": "Gazzetta",
+   "title": "ΑΕΚ: Πονοκέφαλος Σάκοτα με τρεις απουσίες ενόψει Ολυμπιακού!",
+   "url": "https://www.novasports.gr/sport/mpasket/event/basket-league/article/15129681/aek-ponokefalos-sakota-me-treis-apousies-enopsei-olympiakou/",
+   "date": "2026-09-23T14:06:30+00:00",
+   "text": "Στο προσκήνιο βρίσκεται το θέμα των τραυματισμών στην ΑΕΚ, λίγες ημέρες πριν από την έναρξη του Super Cup που θα διεξαχθεί στο Περιστέρι. Η κιτρινόμαυρη ΚΑΕ ξεκαθάρισε το τοπίο αναφορικά με το απουσιολόγιο της ομάδας, ενόψει του μεγάλου ημιτελικού απέναντι στον Ολυμπιακό (26/09, 16:45). Τα ευχάριστα νέα αφορούν τον Δημήτρη Φλιώνη, ο οποίος είναι ο μοναδικός που βρίσκεται σε τροχιά επιστροφής. Ο Έλληνας γκαρντ συμμετέχει κανονικά στο πρόγραμμα των προπονήσεων και υπολογίζεται για την αναμέτρηση του Σαββάτου. Στον αντίποδα, τα νέα δεν είναι ενθαρρυντικά για τους Ντέρικ Γουίλιαμς, Γκρεγκ Μπράουν ",
+   "source": "Novasports",
    "weight": 1
   },
   {
-   "title": "Παναθηναϊκός: Τα ιδιαίτερα του Μπατίστ στον Μήτογλου",
-   "url": "https://www.gazzetta.gr/basketball/euroleague/2571497/panathinaikos-ta-idiaitera-toy-mpatist-ston-mitogloy",
-   "date": "2026-09-23T13:50:49+02:00",
-   "text": "Ο Μάικ Μπατίστ έκανε ιδιαίτερα στον Ντίνο Μήτογλου στην προπόνηση του Παναθηναϊκού, ενόψει της αναμέτρησης κόντρα στην Παρί.",
-   "source": "Gazzetta",
+   "title": "Μπουσκέτς: Νέος ρόλος στη Μπαρτσελόνα Β!",
+   "url": "https://www.novasports.gr/sport/podosfairo/event/laliga-division/article/15129676/mpouskets-neos-rolos-sti-mpartselona-v/",
+   "date": "2026-09-23T14:03:17+00:00",
+   "text": "Μια νέα σελίδα στην επαγγελματική του πορεία ανοίγει ο Σέρχιο Μπουσκέτς, ο οποίος μετά την απόσυρσή του από την ενεργό δράση αποφάσισε να ακολουθήσει το μονοπάτι της προπονητικής. Ο 37χρονος παλαίμαχος μέσος εντάχθηκε τις τελευταίες εβδομάδες στο τεχνικό επιτελείο της Μπαρτσελόνα Β, συνεργαζόμενος με τον προπονητή της ομάδας, Ζουλιάνο Μπελέτι, προκειμένου να αποκτήσει τις πρώτες του παραστάσεις από το νέο του πόστο. Στην παρούσα φάση, ο Μπουσκέτς διατηρεί κυρίως παρατηρητικό ρόλο, παρακολουθώντας τις προπονήσεις αλλά και τις αγωνιστικές υποχρεώσεις της δεύτερης ομάδας των Καταλανών από την εξέ",
+   "source": "Novasports",
    "weight": 1
   },
   {
-   "title": "Ομπράντοβιτς: «Το πρώτο παιχνίδι της EuroLeague σε κάθε σεζόν είναι ξεχωριστό, κανείς δεν είναι 100%»",
-   "url": "https://www.gazzetta.gr/basketball/euroleague/2571494/omprantobits-proto-paihnidi-tis-euroleague-se-kathe-sezon-einai",
-   "date": "2026-09-23T13:44:22+02:00",
-   "text": "Ο Ζέλικο Ομπράντοβιτς στις δηλώσεις του στη Media Day του Παναθηναϊκού, αναφέρθηκε στην αναμέτρηση κόντρα στην Παρί, για την πρεμιέρα της EuroLeague.",
-   "source": "Gazzetta",
+   "title": "Mozzart Sport: Αποθέωση για την Εθνική Ελλάδας και τον Ιβάν Γιοβάνοβιτς!",
+   "url": "https://www.novasports.gr/sport/podosfairo/event/nations-league/article/15129664/mozzart-sport-apotheosi-gia-tin-ethniki-elladas-kai-ton-ivan-giovanovits/",
+   "date": "2026-09-23T13:58:45+00:00",
+   "text": "Με άκρως κολακευτικά σχόλια αναφέρεται η σερβική ιστοσελίδα Mozzart Sport στην Εθνική Ελλάδας, ενόψει της αναμέτρησης με τη Σερβία στο Βελιγράδι για το Nations League (24/09, 21:45, ALPHA). Στο εκτενές αφιέρωμά τους, οι Σέρβοι κάνουν λόγο για ένα νέο κύμα στο ελληνικό ποδόσφαιρο, χαρακτηρίζοντας τη σημερινή γενιά ως την πιο ταλαντούχα στην ιστορία της χώρας. Όπως σημειώνεται, η εξέλιξη αυτή δεν είναι τυχαία αλλά αποτέλεσμα συστηματικής επένδυσης στις ακαδημίες των Ολυμπιακού, ΠΑΟΚ και Παναθηναϊκού, με σημείο καμπής την κατάκτηση του Youth League από τον Ολυμπιακό το 2024. Ιδιαίτερη μνεία γίνετ",
+   "source": "Novasports",
    "weight": 1
   },
   {
-   "title": "Με τον Ολυμπιακό στην Ισπανία: Διαγωνισμός* για δωρεάν ταξίδι!",
-   "url": "https://www.gazzetta.gr/basketball/2571492/me-ton-olympiako-stin-ispania-diagonismos-gia-dorean-taxidi",
-   "date": "2026-09-23T13:38:22+02:00",
-   "text": "Δύο πόλεις. Δύο μεγάλες αναμετρήσεις. Ένα μοναδικό EuroLeague ταξίδι στην Ισπανία!",
-   "source": "Gazzetta",
+   "title": "Γκαλμπιάτι για Ολυμπιακό: “Απίθανη ομάδα, καλύτερα τώρα αντίπαλοι παρά μετά που θα είναι σε φουλ φόρμα”",
+   "url": "https://www.eurohoops.net/el/euroleague-el-2/2011328/gkalmpiati-gia-olimpiako-apithani-omada-kalitera-tora-antipali-para-meta-pou-tha-ine-se-foul-forma/",
+   "date": "2026-09-23T13:55:55+00:00",
+   "text": "Του Γιάννη Ράμμα/ irammas@eurohoops.net Ο 42χρονος Ιταλός προπονητής συμφώνησε με τη δήλωση του παίκτη του Ρόντιονς Κούρουκς πως είναι προτιμότερο για την ομάδα του να αντιμετωπίσει τώρα αντιπάλους αυτού του επιπέδου παρά μετά που θα είναι σε φουλ φόρμα. “Έχουν απίθανη ομάδα. Δεν έχουν τον Ουόκαπ που ήταν πολύ σημαντικός, αλλά υπέγραψαν τους Μίλερ-ΜακΙντάιρ & Μοντέρο, ενώ αντικατέστησαν τον σουτέρ Πίτερς με έναν απίθανο αθλητή, τον Εντζάι. Δεν ξέρω αν θα παίξει ο Μιλουτίνοφ . Συμφωνώ με τον Ροντ πως είναι καλύτερα τώρα παρά μετά” , απάντησε χαρακτηριστικά σε σχετική ερώτηση. Κάπως έτσι δεν ανη",
+   "source": "Eurohoops (GR)",
    "weight": 1
   },
   {
-   "title": "Παναθηναϊκός: Επιστρέφει ο Ρογκαβόπουλος, κόντρα στην Παρί",
-   "url": "https://www.gazzetta.gr/basketball/euroleague/2571491/panathinaikos-epistrefei-o-rogkabopoylos-kontra-stin-pari",
-   "date": "2026-09-23T13:28:38+02:00",
-   "text": "Ο Νίκος Ρογκαβόπουλος αναμένεται να είναι στη διάθεση του Ζέλικο Ομπράντοβιτς για την αναμέτρηση του Παναθηναϊκού κόντρα στην Παρί.",
-   "source": "Gazzetta",
+   "title": "Μπαρτζώκας: “Να αξιοποιήσουμε το ταλέντο μας με νίκες, αυτό μετράει στην αρχή της σεζόν”",
+   "url": "https://www.eurohoops.net/el/euroleague-el-2/2011352/bartzokas-na-axiopiisoume-to-talento-mas-me-nikes-afto-metrai-stin-archi-tis-sezon/",
+   "date": "2026-09-23T13:50:46+00:00",
+   "text": "Του Παναγιώτη Βλάχου / info@eurohoops.net Ο Ολυμπιακός αντιμετωπίζει το βράδυ της Πέμπτης (24/9, 21:30/Novasports Prime) την Μπασκόνια στην πρεμιέρα της σεζόν 2026-27 της Ευρωλίγκας, στην οποία μπαίνει ως πρωταθλητής Ευρώπης. Ο Γιώργος Μπαρτζώκας κατά την αναχώρησή των «ερυθρόλευκων» για την Ισπανία μίλησε για τις ιδιαιτερότητες που έχεις η ομάδα του Πάολο Γκαλμπιάτι, αλλά και το τι έφταιξε, έτσι ώστε ο Ολυμπιακός να ηττηθεί από τη Ρεάλ Μαδρίτης στον τελικό του Super Cup ( 92-85 ). Αναλυτικά είπε: “Έχουμε μια εικόνα για την Μπασκονια, που έχει βέβαια ελάχιστα επίσημα παιχνίδια. Θα περιμένουμε ",
+   "source": "Eurohoops (GR)",
    "weight": 1
   },
   {
-   "title": "Μίλερ-ΜακΙντάιρ για πρεμιέρα Ευρωλίγκας: “Σημασία έχει πώς τελειώνεις τη χρονιά, όχι πώς την αρχίζεις”",
+   "title": "Μπαρτζώκας: «Πιο έτοιμοι για την πρεμιέρα – Κλειδί η αμυντική μας σκληράδα»",
+   "url": "https://www.novasports.gr/sport/mpasket/event/euroleague/article/15129653/mpartzokas-pio-etoimoi-gia-tin-premiera-kleidi-i-amyntiki-mas-sklirada/",
+   "date": "2026-09-23T13:46:59+00:00",
+   "text": "Κατά την αναχώρηση της αποστολής του Ολυμπιακού για την Ισπανία ενόψει της εκτός έδρας αναμέτρησης με την Μπασκόνια (23/09, 21:30, Novasports Prime), ο Γιώργος Μπαρτζώκας τοποθετήθηκε για τα στοιχεία που θα κρίνουν το αποτέλεσμα της πρεμιέρας στη Euroleague. Ο Έλληνας τεχνικός στάθηκε στην ιδιαίτερη τακτική προσέγγιση των Βάσκων, σημειώνοντας πως πρόκειται για ένα σύνολο που αγωνίζεται σε υψηλό ρυθμό, με γρήγορη εκτέλεση στο τρανζίσιον και παίκτες που επιτίθενται κατά βάση με πρόσωπο στο καλάθι. Παράλληλα, ο προπονητής των «ερυθρολεύκων» εξέφρασε την πεποίθησή του πως η ομάδα παρουσιάζεται πιο",
+   "source": "Novasports",
+   "weight": 1
+  },
+  {
+   "title": "Galbiati confirms Alex Len will not play in the EuroLeague opener: “You need to talk with the club”",
+   "url": "https://www.eurohoops.net/en/euroleague/2011338/galbiati-confirms-alex-len-will-not-play-in-euroleague-opener-you-need-to-talk-with-the-club/",
+   "date": "2026-09-23T13:35:52+00:00",
+   "text": "By Javier Molero / jmolero@eurohoops.net Baskonia head coach Paolo Galbiati spoke to journalists ahead of the team’s first EuroLeague game, which Baskonia will play against Olympiacos in Vitoria on Thursday at 20:30 CEST. The main topic was Alex Len, who joined the team from Real Madrid this summer and is still waiting to make his Baskonia debut. He also missed the Spanish Super Cup game, in which Baskonia lost to Joventut 96–84. When asked whether Len would be available against Olympiacos, Galbiati gave a clear answer. “The same 12 players.” Journalists asked him about Len and he said: “The s",
+   "source": "Eurohoops",
+   "weight": 1
+  },
+  {
+   "title": "Ολυμπιακός: Τα 4 γκολ σε πέντε αγωνιστικές και το πρωτάθλημα όταν ξεκίνησε χειρότερα! (video)",
+   "url": "https://www.novasports.gr/sport/podosfairo/event/super-league-1/article/15129600/olympiakos-ta-4-gkol-se-pente-agonistikes-kai-to-protathlima-otan-ksekinise-xeirotera-video/",
+   "date": "2026-09-23T13:35:16+00:00",
+   "text": "Ο Ολυμπιακός έχει βρει μόλις τέσσερις φορές δίχτυα στις πρώτες πέντε αγωνιστικές της Stoiximan Super League, επίδοση που αποτυπώνει το επιθετικό πρόβλημα στο ξεκίνημα της σεζόν. Οι “ερυθρόλευκοι” μετρούν τρεις νίκες, μία ισοπαλία και μία ήττα με τέρματα 4 υπέρ και 2 κατά. Για να βρούμε προηγούμενο ξεκίνημα του Ολυμπιακού με λιγότερα από τέσσερα γκολ στις πρώτες πέντε αγωνιστικές , πρέπει να γυρίσουμε 45 χρόνια πίσω, στη σεζόν 1981/82 . Τότε οι Πειραιώτες είχαν πετύχει μόλις τρία γκολ στο αντίστοιχο διάστημα. Εκείνο το ξεκίνημα ήταν πραγματικά δύσκολο. Ο Ολυμπιακός άρχισε με 1-1 απέναντι στον Π",
+   "source": "Novasports",
+   "weight": 1
+  },
+  {
+   "title": "Μίλερ-ΜακΙντάιρ για πρεμιέρα: “Σημασία έχει πώς τελειώνεις τη χρονιά, όχι πώς την αρχίζεις”",
    "url": "https://www.eurohoops.net/el/euroleague-el-2/2011339/miler-makintair-gia-premiera-evroligkas-simasia-echi-pos-telionis-ti-chronia-ochi-pos-tin-archizis/",
    "date": "2026-09-23T13:27:14+00:00",
-   "text": "Του Γιάννη Ράμμα/ irammas@eurohoops.net Ο 32χρονος Αμερικανός -κάτοχος και βουλγαρικού διαβατηρίου και διεθνής με το αντιπροσωπευτικό συγκρότημα της χώρας- πόιντ γκαρντ θα τεθεί αντιμέτωπος της πρώτης του ομάδας στην Ευρωλίγκα, Μπασκόνια. “Είμαι ενθουσιασμένος που επιστρέφω στη Βιτόρια. Είναι μία απίθανη πόλη με απίθανη βάση φιλάθλων κι απίθανη κουλτούρα. Ανυπομονώ να συναντήσω γνώριμα πρόσωπα” , σχολίασε κατά την αναχώρηση της 13μελούς αποστολής από το αεροδρόμιο “Ελευθέριος Βενιζέλος”. “Η Μπασκόνια μου έδωσε την ευκαιρία να κάνω επίδειξη του ταλέντου μου στο υψηλότερο επίπεδο στην Ευρώπη. Θα",
+   "text": "Του Γιάννη Ράμμα/ irammas@eurohoops.net Ο 32χρονος Αμερικανός -κάτοχος και βουλγαρικού διαβατηρίου και διεθνής με το αντιπροσωπευτικό συγκρότημα της χώρας- πόιντ γκαρντ θα τεθεί αντιμέτωπος της πρώτης του ομάδας στην Ευρωλίγκα , γεγονός που του προκαλεί επιπρόσθετη χαρά για την έναρξη της κανονικής περιόδου. “Είμαι ενθουσιασμένος που επιστρέφω στη Βιτόρια. Είναι μία απίθανη πόλη με απίθανη βάση φιλάθλων κι απίθανη κουλτούρα. Ανυπομονώ να συναντήσω γνώριμα πρόσωπα” , σχολίασε κατά την αναχώρηση της 13μελούς αποστολής από το αεροδρόμιο “Ελευθέριος Βενιζέλος”. “Η Μπασκόνια μου έδωσε την ευκαιρία ",
    "source": "Eurohoops (GR)",
    "weight": 1
   },
@@ -105,14 +233,6 @@
    "weight": 1
   },
   {
-   "title": "Βαλένθια: Ανακοίνωσε και επίσημα τον Αγκίρε",
-   "url": "https://www.gazzetta.gr/football/la-liga/2571483/balenthia-anakoinose-kai-episima-ton-agkire",
-   "date": "2026-09-23T13:09:14+02:00",
-   "text": "Ο Χαβιέ Αγκίρε παρουσιάστηκε και επίσημα από τη Βαλένθια ως ο νέος προπονητής του συλλόγου, αντικαθιστώντας τον πρώην τεχνικό του Ολυμπιακού, Κάρλος Κορμπεράν.",
-   "source": "Gazzetta",
-   "weight": 1
-  },
-  {
    "title": "Barkas Breakdown: 10 things to watch this EuroLeague season",
    "url": "https://www.eurohoops.net/en/voices/2011258/barkas-breakdown-10-things-to-watch-this-euroleague-season/",
    "date": "2026-09-23T13:00:16+00:00",
@@ -126,14 +246,6 @@
    "date": "2026-09-23T13:00:00+00:00",
    "text": "The 2026-27 EuroLeague season is about to start, and when all is said and done, it will be the end of an era",
    "source": "EuroLeague (official)",
-   "weight": 1
-  },
-  {
-   "title": "ΚΑΕ Παναθηναϊκός: Το κάλεσμα στους οπαδούς ενόψει της πρεμιέρας στη EuroLeague και το βίντεο του Φρανσίσκο",
-   "url": "https://www.gazzetta.gr/basketball/euroleague/2571481/kae-panathinaikos-kalesma-stoys-opadoys-enopsei-tis-premieras-sti",
-   "date": "2026-09-23T12:58:06+02:00",
-   "text": "Η ΚΑΕ Παναθηναϊκός μέσω ανάρτησης έκανε κάλεσμα στους οπαδούς των «πρασίνων» ενόψει της πρεμιέρας της EuroLeague κόντρα στην Παρί.",
-   "source": "Gazzetta",
    "weight": 1
   },
   {
@@ -265,14 +377,6 @@
    "weight": 1
   },
   {
-   "title": "Χαποέλ Ιερουσαλήμ: Κοντά σε συμφωνία με τον Μπράουν",
-   "url": "https://www.novasports.gr/sport/mpasket/event/diethneis-eurocup-mpasket/article/15129237/xapoel-ierousalim-konta-se-symfonia-me-ton-mpraoun/",
-   "date": "2026-09-23T08:31:00+00:00",
-   "text": "Σύμφωνα με δημοσιεύματα, ο 36χρονος παίκτης είναι κοντά σε συμφωνία με τη διοίκηση της ισραηλινής ομάδας και δεν αποκλείεται να τελειώσει η συγκεκριμένη μεταγραφή, μέσα στις επόμενες ημέρες. Ο πρώην παίκτης του Παναθηναϊκού αναμένεται να αποτελέσει τον αντικαταστάτη του Τζάρεντ Χάρπερ , ο οποίος τραυματίστηκε. Πέρυσι, ο Μπράουν είχε αγωνιστεί στην Αρμάνι Μιλάνο , με την οποία είχε 5,8 πόντους και 2,7 ασίστ σε 14,4 λεπτά συμμετοχής σε δώδεκα ματς της Euroleague .",
-   "source": "Novasports",
-   "weight": 1
-  },
-  {
    "title": "Top 50 EuroLeague players for the 2026–27 season (1-20)",
    "url": "https://www.eurohoops.net/en/trademarks/2010488/top-50-euroleague-players-for-the-2026-27-season-1-20/",
    "date": "2026-09-23T08:27:26+00:00",
@@ -294,30 +398,6 @@
    "date": "2026-09-23T08:18:50+00:00",
    "text": "Του Γιάννη Ράμμα/ irammas@eurohoops.net Πρόκειται για την έβδομη φορά που οι δύο ομάδες τεθούν αντιμέτωπες σε πρεμιέρα της Ευρωλίγκας . Ο Ολυμπιακός μετρά μόνο νίκες . Ο Κόμπι Σίμονς δήλωσε αισιόδοξος για την πρώτη της Μπασκόνια. “Νομίζω πως είμαστε έτοιμοι. Έχουμε κάνει καλές προπονήσεις τον τελευταίο καιρό. Έχουμε παίκτες που είναι πρωτάρηδες στην Ευρωλίγκα και προσπαθούν να προσαρμοστούν, αλλά είχαμε πολύ δυνατές προπονήσεις στην προσπάθεια να ενταχθούν το συντομότερο δυνατό” . “Θα είναι μεγάλο τεστ για εμάς να παίξουμε με τους Πρωταθλητές στην πρεμιέρα” . “Θα είναι δύσκολο παιχνίδι, αλλά θ",
    "source": "Eurohoops (GR)",
-   "weight": 1
-  },
-  {
-   "title": "Euroleague: Σίγουρα στο Final 4 οι «αιώνιοι»",
-   "url": "https://www.novasports.gr/sport/mpasket/event/euroleague/article/15129257/euroleague-sigoura-sto-final-4-oi-aionioi/",
-   "date": "2026-09-23T08:12:00+00:00",
-   "text": "Σύμφωνα με το « BasketNews », οι προβλέψεις τους θέλουν φαβορί για τον τίτλο τον Παναθηναϊκό , ενώ θεωρούν πως ο Ολυμπιακός θα είναι σίγουρα μια από τις τέσσερις ομάδες, η οποία θα βρεθεί στο Άμπου Ντάμπι . Επίσης, οι άλλες δυο ομάδες είναι οι Φενέρμπαχτσε και Ρεάλ Μαδρίτης . Σύμφωνα με τις προβλέψεις τους, ο Ολυμπιακός συγκεντρώνει το 100% σχετικά με την παρουσία του στο Final 4 , ο Παναθηναϊκός συγκεντρώνει 86,7%, η Ρεάλ Μαδρίτης 73,3% και η Φενέρμπαχτσε 66,7%. Στην πέμπτη θέση βρίσκεται η Ντουμπάι με 46,7%. Όσον αφορά, στο ποια ομάδα θα κατακτήσει τον τίτλο, ο Παναθηναϊκός συγκεντρώνει το 4",
-   "source": "Novasports",
-   "weight": 1
-  },
-  {
-   "title": "Παναθηναϊκός: Περιμένει επιστροφές ο Νίστρουπ",
-   "url": "https://www.novasports.gr/sport/podosfairo/event/super-league-1/article/15129192/panathinaikos-perimenei-epistrofes-o-nistroup/",
-   "date": "2026-09-23T07:23:00+00:00",
-   "text": "Ο Δανός τεχνικός περιμένει πως μέσα στις επόμενες ημέρες και πριν το τέλος της διακοπής των αγωνιστικών υποχρεώσεων για τις εθνικές ομάδες, θα έχουν τεθεί στη διάθεσή του οι Βιθέντε Ταμπόρδα και Βίκτορ Κρίστιανσεν . Ο Νίστρουπ θέλει διαθέσιμους τους δυο παίκτες, εν όψει της συνέχειας σε Ελλάδα και Ευρώπη . Ο Αργεντινός μεσοεπιθετικός ήταν ο πιο φορμαρισμένος παίκτης του «τριφυλλιού» μέχρι τον τραυματισμό του, ενώ ο Δανός μπακ θα δώσει λύσεις στο αριστερό άκρο της άμυνας, προσφέροντας ανάσες στον Γιώργο Κυριακόπουλο . Βέβαια, στη συγκεκριμένη θέση έχει αποκτηθεί και ο Ανάς Σαλάχ-Εντίν , κάτι πο",
-   "source": "Novasports",
-   "weight": 1
-  },
-  {
-   "title": "Ολυμπιακός: Σκέψεις για φιλικό και μεταγραφή",
-   "url": "https://www.novasports.gr/sport/podosfairo/event/super-league-1/article/15129182/olympiakos-skepseis-gia-filiko-kai-metagrafi/",
-   "date": "2026-09-23T07:02:00+00:00",
-   "text": "Ο Βάσκος τεχνικός μπορεί να έχει στη διάθεσή του 15 ποδοσφαιριστές, όμως θέλει να δουλέψει μαζί τους, πάνω στα στοιχεία που θέλει να έχει η ομάδα του στο παιχνίδι της από εδώ και στο εξής. Ο έμπειρος προπονητής έχει στρέψει την προσοχή του και στους παίκτες, οι οποίοι θα πρέπει να καλύψουν το χαμένο έδαφος της προετοιμασίας μέσα στις επόμενες εβδομάδες, προκειμένου να φτάσουν στο ίδιο επίπεδο με την υπόλοιπη ομάδα. Οι Μπέιλι και Μουαντιλμαντζί θα προσπαθήσουν να είναι πανέτοιμοι στην επανέναρξη των αγωνιστικών υποχρεώσεων του Ολυμπιακού , την ίδια στιγμή που ο Γκουστάβο Σα θα προσπαθήσει να ξε",
-   "source": "Novasports",
    "weight": 1
   },
   {
@@ -366,14 +446,6 @@
    "date": "2026-09-22T16:36:18+00:00",
    "text": "By Stefan Acevski/ info@eurohoops.net Lorenzo Brown is close to signing with Hapoel Jerusalem, reports Israeli outlet Sport 5 . The current player of Olimpia Milano recently posted an enigmatic message on X , likely referring to his time in northern Italy, and it seems Brown could be leaving the EuroLeague team. Hapoel Jerusalem is interested in his services, especially after the injury to starting point guard Jared Harper. Due to this, the team led by Sasa Obradovic is turning to the market, and Brown could be the solution. Sport 5 reports that Lorenzo could sign a one-year contract, but with",
    "source": "Eurohoops",
-   "weight": 1
-  },
-  {
-   "title": "Μπαρτζώκας: “Έπρεπε να κάνουμε ένα μικρό rebuild, να ανανεώσουμε το κίνητρο”",
-   "url": "https://www.eurohoops.net/el/euroleague-el-2/2011037/bartzokas-eprepe-na-na-kanoume-ena-mikro-rebuild-na-ananeosoume-to-kinitro/",
-   "date": "2026-09-22T16:06:14+00:00",
-   "text": "Του Παναγιώτη Βλάχου / info@eurohoops.net Ο Γιώργος Μπαρτζώκας, όπως κι άλλοι προπονητές και παίκτες της Ευρωλίγκας, ήταν μέρος του video – προαναγγελία της σεζόν 2026/27 που δημοσίευσε η διοργάνωση στο youtube. Φυσικά δεν θα μπορούσε να μην μιλήσει για τον μεγάλο στόχο που επετεύχθη, δηλαδή την κατάκτηση του τροπαίου, ενώ έδωσε και την οπτική του προπονητή, έπειτα από μία πορεία ετών με τους ίδιους παίκτες και μία μεγάλη επιτυχία. Ο Ολυμπιακός μέσα στο καλοκαίρι αποχαιρέτησε αρκετούς παίκτες από τον κορμό της ομάδας, με τον Γιαννούλη Λαρεντζάκη να πηγαίνει στην ΑΕΚ και τρεις από τους μακροβιό",
-   "source": "Eurohoops (GR)",
    "weight": 1
   },
   {
@@ -430,22 +502,6 @@
    "date": "2026-09-22T10:00:08.058000+00:00",
    "text": "The German forward reunites with Coach Obradovic in Athens",
    "source": "EuroLeague (official)",
-   "weight": 1
-  },
-  {
-   "title": "NextGen EuroLeague enters new era with more qualifying tournaments",
-   "url": "https://www.eurohoops.net/en/euroleague/2010907/adidas-nextgen-euroleague-enters-new-era-for-2026-27-season/",
-   "date": "2026-09-22T08:18:21+00:00",
-   "text": "By Johnny Askounis/ info@eurohoops.net Euroleague Basketball officially revealed an updated adidas NextGen EuroLeague format on Tuesday. The competition, showcasing promising European prospects, expands to pre-qualifying stages in Rijeka and Vienna, among six global tournament stops for the 2026–27 season. Per the press release: “The adidas NextGen EuroLeague returns for the 2026-27 season with six tournament stops across Europe, up from four last year. The competition continues to showcase Europe’s top U18 talent, several of whom have gone on to become key players in the senior game. New this",
-   "source": "Eurohoops",
-   "weight": 1
-  },
-  {
-   "title": "Top 50 EuroLeague players for the 2026–27 season (21-50)",
-   "url": "https://www.eurohoops.net/en/trademarks/2010472/top-50-euroleague-players-part-1/",
-   "date": "2026-09-22T08:02:17+00:00",
-   "text": "By the Eurohoops team/ info@eurohoops.net Welcome to the Top 50 EuroLeague Players, presented by Eurohoops. This is our countdown of the absolute best talent ahead of the 2026–27 season. After plenty of debate, we evaluated the continent’s stars based on their raw skill, how they elevate their teams, and their projected success for the coming year. It wasn’t easy, and the process was more than inclusive. Each Eurohoops edition presented its own Top50; we merged those lists, and after some fine-tuning by our senior editors-in-chief, we arrived at this final ranking. The challenge was obvious; n",
-   "source": "Eurohoops",
    "weight": 1
   },
   {
@@ -553,7 +609,43 @@
    "weight": 1
   }
  ],
- "digest": null,
- "digest_at": null,
+ "digest": {
+  "availability": [
+   {
+    "player": "MILUTINOV, NIKOLA",
+    "status": "available",
+    "note": "Συμπεριλήφθηκε στην αποστολή για την Ισπανία και είναι διαθέσιμος.",
+    "source": "EuroLeague (official)"
+   },
+   {
+    "player": "LEN, ALEX",
+    "status": "out",
+    "note": "Δεν θα αγωνιστεί στην πρεμιέρα κόντρα στον Ολυμπιακό.",
+    "source": "Eurohoops"
+   },
+   {
+    "player": "NUNN, KENDRICK",
+    "status": "available",
+    "note": "Επιστρέφει στην Αθήνα και ενσωματώνεται στις προπονήσεις.",
+    "source": "Novasports"
+   },
+   {
+    "player": "ROGKAVOPOULOS, NIKOLAOS",
+    "status": "available",
+    "note": "Ξεπέρασε τον τραυματισμό του και είναι διαθέσιμος.",
+    "source": "Eurohoops (GR)"
+   },
+   {
+    "player": "MORAITIS, DIMITRIS",
+    "status": "available",
+    "note": "Προπονείται κανονικά και είναι στη διάθεση της ομάδας.",
+    "source": "Novasports"
+   }
+  ],
+  "expert": [],
+  "summary_el": "• Αρχίζει η Euroleague της σεζόν 2026-27 με μεγάλες προσδοκίες και αναμετρήσεις στην πρεμιέρα.\n• Ο Ολυμπιακός ταξιδεύει στη Βιτόρια για να αντιμετωπίσει την Μπασκόνια, έχοντας στη σύνθεσή του τον Νίκολα Μιλουτίνοφ.\n• Χωρίς τον Άλεξ Λεν θα παραταχθεί η Μπασκόνια στην αναμέτρηση κόντρα στους «ερυθρόλευκους».\n• Ο Παναθηναϊκός υποδέχεται την Παρί στο ΟΑΚΑ, μετρώντας σημαντικές επιστροφές όπως αυτές των Ρογκαβόπουλο και Μωραΐτη.\n• Σε κλίμα αισιοδοξίας και υψηλών στόχων κινούνται οι «πράσινοι» ενόψει της έναρξης της διοργάνωσης.",
+  "_model": "gemini-3.5-flash-lite"
+ },
+ "digest_at": "2026-09-23T15:22:44.878786+00:00",
  "failed": []
 }
