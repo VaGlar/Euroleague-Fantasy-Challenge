@@ -514,7 +514,8 @@ def messages(rnd, trn, table, my, dig, health) -> list[dict]:
             lines += ["", "⚠️ " + " | ".join(health[:4])]
         if dash:
             lines += ["", f'🔗 <a href="{dash}">Dashboard</a>']
-        msgs.append({"date": tu["date"], "turn": tu["turn"], "text": "\n".join(lines)})
+        msgs.append({"date": tu["date"], "turn": tu["turn"],
+                     "text": "\n".join(str(x) for x in lines)})
     return msgs
 
 

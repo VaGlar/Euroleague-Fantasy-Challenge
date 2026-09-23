@@ -171,7 +171,7 @@ def digest(articles: list[dict], roster: list[str]) -> dict | None:
                 break
         if r.status_code == 200:
             text = r.json()["candidates"][0]["content"]["parts"][0]["text"]
-            out = json.loads(text)
+            out = _normalize(json.loads(text))
             out["_model"] = model_name
             return out
         try:
@@ -184,6 +184,21 @@ def digest(articles: list[dict], roster: list[str]) -> dict | None:
     if errors and all(e.startswith(("503", "500")) for e in errors):
         raise RuntimeError(f"Gemini υπερφορτωμένο ({', '.join(tried)}) — δοκίμασε /update αργότερα")
     raise RuntimeError("Gemini " + (" | ".join(errors[-2:]) or "δεν βρέθηκε διαθέσιμο μοντέλο"))
+
+
+def _normalize(d) -> dict:
+    """LLM output is loosely typed: coerce to the schema the report expects."""
+    if not isinstance(d, dict):
+        d = {}
+    summ = d.get("summary_el", "")
+    if isinstance(summ, list):
+        summ = "\n".join(f"• {str(x).lstrip('•-* ').strip()}" for x in summ if str(x).strip())
+    d["summary_el"] = str(summ or "")
+    for key in ("availability", "expert"):
+        items = d.get(key) if isinstance(d.get(key), list) else []
+        d[key] = [{k: str(v) for k, v in it.items() if v is not None}
+                  for it in items if isinstance(it, dict) and it.get("player")]
+    return d
 
 
 _UNSTABLE = ("preview", "exp", "omni", "live", "audio", "image", "tts", "thinking", "embedding")
