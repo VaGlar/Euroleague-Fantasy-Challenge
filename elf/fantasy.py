@@ -81,8 +81,9 @@ def players(players_list_id: int, matchday_id: int) -> list[dict]:
         page += 1
 
 
-def my_teams() -> list[dict]:
-    data = get("/user/fantasy-teams")
+def my_teams(game_mode: int = 1) -> list[dict]:
+    """The user's teams in this league; game_mode 1 = Classic."""
+    data = get("/user/fantasy-teams", {"league": FANTASY_LEAGUE_ID, "game_mode": game_mode})
     return data if isinstance(data, list) else data.get("fantasy_teams", [])
 
 

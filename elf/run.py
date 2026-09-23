@@ -76,6 +76,43 @@ def predictions(season: int):
 
 # --------------------------------------------------------------- fantasy
 
+SUFFIXES = ("jr", "sr", "ii", "iii", "iv")
+
+
+def _surname(s: str) -> str:
+    k = _key(s)
+    for suf in SUFFIXES:
+        if k.endswith(suf) and len(k) > len(suf) + 2:
+            k = k[: -len(suf)]
+    return k
+
+
+def match_people(fp: pd.DataFrame, roster: pd.DataFrame) -> pd.Series:
+    """Fantasy player -> EuroLeague person_id: exact surname+team, then fuzzy within team."""
+    import difflib
+
+    r = roster.assign(sur=roster["name"].str.split(",").str[0].map(_surname),
+                      first=roster["name"].str.split(",").str[1].fillna("").map(_key))
+    by_team = {t: g for t, g in r.groupby("team")}
+    ids = []
+    for p in fp.itertuples():
+        g = by_team.get(p.team)
+        pid = None
+        if g is not None:
+            sur = _surname(p.last_name)
+            hit = g[g["sur"] == sur]
+            if hit.empty:
+                close = difflib.get_close_matches(sur, g["sur"].tolist(), n=1, cutoff=0.8)
+                hit = g[g["sur"] == close[0]] if close else hit
+            if len(hit) > 1:  # same surname in a team: disambiguate by first name
+                narrowed = hit[hit["first"].str.startswith(_key(p.first_name)[:3])]
+                hit = narrowed if len(narrowed) else hit
+            if len(hit):
+                pid = hit["person_id"].iloc[0]
+        ids.append(pid)
+    return pd.Series(ids, index=fp.index)
+
+
 def fantasy_state(clubs: pd.DataFrame, roster: pd.DataFrame) -> dict:
     """Prices + my team. Never raises: returns {'error': ...} instead."""
     out = {"ok": False}
@@ -88,12 +125,9 @@ def fantasy_state(clubs: pd.DataFrame, roster: pd.DataFrame) -> dict:
         fp = pd.DataFrame([fantasy.normalize_player(x) for x in raw])
         tv2code = dict(zip(clubs["tv"], clubs["code"]))
         fp["team"] = fp["team"].map(lambda t: tv2code.get(t, t))
-        # match to EuroLeague person ids by surname + team
-        r = roster.assign(k=roster["name"].str.split(",").str[0].map(_key) + roster["team"])
-        fp["k"] = fp["last_name"].map(_key) + fp["team"].fillna("")
-        fp = fp.merge(r[["k", "person_id"]].drop_duplicates("k"), on="k", how="left")
-        out["players"] = fp.drop(columns="k")
-        out["unmatched"] = int(fp["person_id"].isna().sum())
+        fp["person_id"] = match_people(fp, roster)
+        out["players"] = fp
+        out["unmatched"] = int(fp.loc[fp["position"] != "Head Coach", "person_id"].isna().sum())
 
         # price history (append one snapshot per matchday)
         hist_path = PUBLIC / "prices.csv"
@@ -105,17 +139,37 @@ def fantasy_state(clubs: pd.DataFrame, roster: pd.DataFrame) -> dict:
             snap = pd.concat([old, snap], ignore_index=True)
         snap.to_csv(hist_path, index=False)
 
-        teams = fantasy.my_teams()
-        out["my_teams"] = []
-        for t in teams:
-            ros = fantasy.roster(t["id"], md["id"])
-            out["my_teams"].append({"id": t["id"], "name": t.get("name"), "raw": ros})
         out["ok"] = True
     except fantasy.TokenError as e:
         out["error"] = f"token: {e}"
+        return out
     except Exception as e:  # noqa: BLE001 - report, never crash the pipeline
-        out["error"] = f"{type(e).__name__}: {e}"
+        out["error"] = f"τιμές: {type(e).__name__}: {e}"
+        return out
+
+    # my team is a separate step: prices stay usable even if this fails
+    out["my_teams"] = []
+    try:
+        for t in fantasy.my_teams():
+            ros = fantasy.roster(t["id"], md["id"])
+            out["my_teams"].append({"id": t["id"], "name": t.get("name"), "raw": ros})
+            _write("roster_shape.json", _shape(ros))  # structure only, for debugging
+    except fantasy.TokenError as e:
+        out["error"] = f"token: {e}"
+    except Exception as e:  # noqa: BLE001
+        out["team_error"] = f"ομάδα: {type(e).__name__}: {e}"
     return out
+
+
+def _shape(o, depth: int = 0):
+    """Keys and types of a JSON payload without its values (safe to publish)."""
+    if depth > 5:
+        return "…"
+    if isinstance(o, dict):
+        return {k: _shape(v, depth + 1) for k, v in o.items()}
+    if isinstance(o, list):
+        return [_shape(o[0], depth + 1), f"×{len(o)}"] if o else []
+    return type(o).__name__
 
 
 def parse_my_roster(raw: dict) -> tuple[list[int], dict]:
@@ -124,10 +178,18 @@ def parse_my_roster(raw: dict) -> tuple[list[int], dict]:
 
     def walk(o):
         if isinstance(o, dict):
-            if "quotation" in o and "id" in o:
+            # a roster slot: {"id", "court_position", "is_captain", ...} or {"player": {...}}
+            if isinstance(o.get("player"), dict) and "id" in o["player"]:
+                pid = o["player"]["id"]
+                ids.append(pid)
+                if o.get("is_captain") or o["player"].get("is_captain"):
+                    meta["captain"] = pid
+                return
+            if "id" in o and ("court_position" in o or "quotation" in o or "is_captain" in o):
                 ids.append(o["id"])
-            if o.get("is_captain") or o.get("captain") is True:
-                meta["captain"] = o.get("id")
+                if o.get("is_captain"):
+                    meta["captain"] = o["id"]
+                return
             for k in ("credits", "remaining_credits", "bank", "budget_left"):
                 if isinstance(o.get(k), (int, float)) and "bank" not in meta:
                     meta["bank"] = float(o[k])
@@ -273,6 +335,12 @@ def build(offline: bool = False) -> dict:
                 health.append(f"ομάδα: βρέθηκαν {len(ids)}/10 παίκτες — έλεγχος parser")
     elif fs.get("error"):
         health.append(f"fantasy: {fs['error']}")
+    if fs.get("team_error"):
+        health.append(f"fantasy {fs['team_error']}")
+    elif fs.get("ok") and not fs.get("my_teams"):
+        health.append("fantasy: δεν βρέθηκε ομάδα Classic στον λογαριασμό")
+    if os.environ.get("CI") and not os.environ.get("GEMINI_API_KEY"):
+        health.append("GEMINI_API_KEY κενό — χωρίς σύνοψη νέων")
     tok = fantasy.token_expiry()
     if tok["days_left"] is not None and tok["days_left"] < 3:
         health.insert(0, "🔑 Το FANTASY_TOKEN λήγει σε "

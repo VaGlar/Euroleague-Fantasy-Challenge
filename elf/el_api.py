@@ -28,10 +28,22 @@ def _get(url: str, params: dict | None = None, retries: int = 4):
     return None
 
 
+def _paged(url: str, limit: int = 500) -> list[dict]:
+    """v2 list endpoints cap each response (500) and report `total`: walk offsets."""
+    out, offset = [], 0
+    while True:
+        body = _get(url, {"offset": offset, "limit": limit})
+        rows = body.get("data", [])
+        out += rows
+        offset += len(rows)
+        if not rows or offset >= body.get("total", 0):
+            return out
+
+
 def games(season: int) -> list[dict]:
     """All games of a season (played and scheduled), flattened."""
     out = []
-    for g in _get(f"{V2.format(season=season)}/games")["data"]:
+    for g in _paged(f"{V2.format(season=season)}/games"):
         out.append({
             "season": season,
             "gamecode": g["gameCode"],
@@ -58,7 +70,7 @@ def clubs(season: int) -> list[dict]:
 def people(season: int) -> list[dict]:
     """Players and head coaches registered in a season, with position."""
     out = []
-    for p in _get(f"{V2.format(season=season)}/people")["data"]:
+    for p in _paged(f"{V2.format(season=season)}/people"):
         if p["type"] not in ("J", "E"):  # J = player, E = head coach
             continue
         out.append({
