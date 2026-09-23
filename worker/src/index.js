@@ -60,6 +60,38 @@ async function gameDayMessage(env, date) {
   return msg.text + stale;
 }
 
+async function dispatch(env, workflow, inputs) {
+  return fetch(`https://api.github.com/repos/${env.GH_REPO}/actions/workflows/${workflow}/dispatches`, {
+    method: "POST",
+    headers: {
+      authorization: `Bearer ${env.GH_DISPATCH_TOKEN}`,
+      accept: "application/vnd.github+json",
+      "user-agent": "elf-bot",
+      "x-github-api-version": "2022-11-28",
+    },
+    body: JSON.stringify({ ref: env.GH_REF, inputs }),
+  });
+}
+
+async function onCallback(env, cq) {
+  const chat = String(cq.message?.chat?.id);
+  await tg(env, "answerCallbackQuery", { callback_query_id: cq.id });
+  if (chat !== String(env.TELEGRAM_CHAT_ID)) return;
+  const [ns, action, nonce] = String(cq.data || "").split(":");
+  if (ns !== "lu") return;
+  // remove the buttons so a proposal can only be confirmed once
+  await tg(env, "editMessageReplyMarkup", {
+    chat_id: chat, message_id: cq.message.message_id, reply_markup: { inline_keyboard: [] },
+  });
+  if (action === "cancel") {
+    await send(env, chat, "❌ Ακυρώθηκε — τίποτα δεν άλλαξε.");
+  } else if (action === "apply" && /^[a-f0-9]{12}$/.test(nonce || "")) {
+    const r = await dispatch(env, "lineup.yml", { mode: "apply", nonce });
+    await send(env, chat, r.status === 204 ? "⏳ Εφαρμογή στο παιχνίδι… (~1 λεπτό)"
+      : `⚠️ GitHub ${r.status}: ${(await r.text()).slice(0, 200)}`);
+  }
+}
+
 export default {
   async scheduled(event, env, ctx) {
     const now = athensNow();
@@ -81,6 +113,10 @@ export default {
       return new Response("forbidden", { status: 403 });
     }
     const upd = await request.json();
+    if (upd.callback_query) {
+      await onCallback(env, upd.callback_query);
+      return new Response("ok");
+    }
     const m = upd.message;
     if (!m || !m.text) return new Response("ok");
     const chat = String(m.chat.id);
@@ -107,6 +143,14 @@ export default {
           .map((x, i) => `${i + 1}. ${x.name} (${x.team}) ${x.position || ""} — <b>${x.x_now.toFixed(1)}</b>`
             + (x.price ? ` · ${x.price}cr` : ""));
         await send(env, chat, `📈 <b>Top xPTS — Αγωνιστική ${p.round}</b>\n` + rows.join("\n"));
+      } else if (cmd === "/lineup") {
+        if (!env.GH_DISPATCH_TOKEN) {
+          await send(env, chat, "Λείπει το GH_DISPATCH_TOKEN — δες README.");
+        } else {
+          const r = await dispatch(env, "lineup.yml", { mode: "preview", nonce: "" });
+          await send(env, chat, r.status === 204 ? "⏳ Διαβάζω την ομάδα σου και υπολογίζω… (~1 λεπτό)"
+            : `⚠️ GitHub ${r.status}: ${(await r.text()).slice(0, 200)}`);
+        }
       } else if (cmd === "/update") {
         if (!env.GH_DISPATCH_TOKEN) {
           await send(env, chat, "Λείπει το GH_DISPATCH_TOKEN — δες README (Telegram /update).");
@@ -132,7 +176,7 @@ export default {
         await send(env, chat, `Ενημέρωση: ${p.generated}\nFantasy: ${p.fantasy_ok ? "OK" : "ΟΧΙ"}\n`
           + ((p.health || []).join("\n") || "Χωρίς προβλήματα"));
       } else {
-        await send(env, chat, "/report — report ημέρας\n/top — top xPTS\n/update — φρέσκα δεδομένα τώρα\n/health — κατάσταση\n"
+        await send(env, chat, "/report — report ημέρας\n/top — top xPTS\n/lineup — πρόταση πεντάδας/αρχηγού με επιβεβαίωση\n/update — φρέσκα δεδομένα τώρα\n/health — κατάσταση\n"
           + (env.DASHBOARD_URL ? `\n${env.DASHBOARD_URL}` : ""));
       }
     } catch (e) {

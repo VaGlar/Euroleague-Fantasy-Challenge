@@ -24,7 +24,8 @@ COURT = ("Guard", "Forward", "Center")
 def _model(players: list[dict], value: str, now: str, budget: float,
            owned: set | None = None, max_trades: int | None = None,
            fixed: set | None = None, keep: set | None = None,
-           bench_bonus: dict | None = None):
+           bench_bonus: dict | None = None, bench_only: set | None = None,
+           no_captain: set | None = None):
     """Build and solve. players: dicts with id, position, price, <value>, <now>."""
     m = pulp.LpProblem("elf", pulp.LpMaximize)
     ids = range(len(players))
@@ -45,6 +46,10 @@ def _model(players: list[dict], value: str, now: str, budget: float,
                 float(p.get(now) or 0) * cap[i]]
         m += full <= pick[i]
         m += cap[i] <= five[i]
+        if bench_only and p["id"] in bench_only:   # already played from the bench: locked
+            m += full == 0
+        if no_captain and p["id"] in no_captain:   # already played: can't take the armband
+            m += cap[i] == 0
     m += pulp.lpSum(obj)
     m += pulp.lpSum(float(players[i]["price"]) * pick[i] for i in ids) <= budget + 1e-6
     for pos, n in SQUAD.items():
@@ -144,3 +149,13 @@ def transfers(squad: list[dict], pool: list[dict], bank: float, max_trades: int 
     inn = [p for p in best["team"] if p["id"] not in owned]
     return {"out": out, "in": inn, "gain": round(best["objective"] - base["objective"], 1)
             if base else None, "result": best, "bank_after": round(budget - best["cost"], 1)}
+
+
+def lineup_in_round(squad: list[dict], now="x_now"):
+    """Lineup during a round. Players who already played carry their real points in
+    `now`; a played bench player cannot enter; the armband can only go to a player
+    who has not played yet (or stay where it is)."""
+    bench_only = {p["id"] for p in squad if p.get("played") and p.get("cur_role") == "πάγκος"}
+    no_cap = {p["id"] for p in squad if p.get("played") and not p.get("cur_captain")}
+    return _model(squad, now, now, budget=1e9, fixed={p["id"] for p in squad},
+                  bench_only=bench_only, no_captain=no_cap)

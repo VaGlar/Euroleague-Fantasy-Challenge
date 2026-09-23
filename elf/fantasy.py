@@ -149,3 +149,25 @@ if __name__ == "__main__":
         print(f"my teams: {json.dumps(teams, indent=1)[:2500]}")
         if teams:
             print(json.dumps(roster(teams[0]["id"], md), indent=1)[:4000])
+
+
+BASKET_GAME_ID = 1  # /games/1/config lists the basketball formations (e.g. "2-2-1" = G-F-C)
+
+
+def formations() -> dict[str, int]:
+    data = get(f"/games/{BASKET_GAME_ID}/config", auth=False)
+    return {f["name"]: f["id"] for f in data.get("formations", [])}
+
+
+def save_roster(fantasy_team_id: int, matchday_id: int, body: dict) -> requests.Response:
+    """The only write in this project: lineup/captain (no trades). POST, PUT fallback."""
+    tok = _token()
+    if not tok:
+        raise TokenError("FANTASY_TOKEN is not set")
+    url = f"{FANTASY_API}/fantasy-teams/{fantasy_team_id}/matchdays/{matchday_id}/roster"
+    headers = {"Accept": "application/json", "Authorization": f"Bearer {tok}",
+               "User-Agent": "elf-fantasy-helper/1.0"}
+    r = requests.post(url, json=body, headers=headers, timeout=30)
+    if r.status_code == 405:
+        r = requests.put(url, json=body, headers=headers, timeout=30)
+    return r

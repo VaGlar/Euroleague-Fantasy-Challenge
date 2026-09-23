@@ -1,0 +1,50 @@
+name: Lineup (Telegram /lineup)
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "preview or apply"
+        type: choice
+        options: [preview, apply]
+        default: preview
+      nonce:
+        description: "proposal id confirmed in Telegram (apply only)"
+        required: false
+        default: ""
+
+concurrency:
+  group: lineup
+  cancel-in-progress: false
+
+jobs:
+  lineup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Lineup
+        env:
+          FANTASY_TOKEN: ${{ secrets.FANTASY_TOKEN }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          MODE: ${{ inputs.mode }}
+          NONCE: ${{ inputs.nonce }}
+        run: |
+          case "$NONCE" in *[!a-f0-9]*) echo "bad nonce"; exit 1;; esac
+          python -m elf.lineup_cmd "$MODE" "$NONCE"
+      - name: Report failure
+        if: failure()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          curl -sS "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "text=❌ /lineup απέτυχε: ${RUN_URL}" > /dev/null
