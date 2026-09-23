@@ -62,10 +62,49 @@ FULL_TEXT = 8000   # fantasy columns: keep (almost) the whole article
 EXCERPT = 600
 
 
-def fetch_rss(src: dict) -> list[dict]:
-    r = requests.get(src["url"], headers=UA, timeout=30)
+BROWSER = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                         "(KHTML, like Gecko) Chrome/128.0 Safari/537.36",
+           "Accept": "application/rss+xml, application/xml, text/xml, */*"}
+
+
+def _get_feed(url: str) -> bytes:
+    """Direct, then (Substack only) its JSON API, then our Pages Function proxy.
+    Substack blocks GitHub Actions' IPs; the proxy fetches from Cloudflare instead."""
+    errors = []
+    r = requests.get(url, headers=BROWSER, timeout=30)
+    if r.status_code == 200:
+        return r.content
+    errors.append(f"direct {r.status_code}")
+    dash = os.environ.get("DASHBOARD_URL", "").rstrip("/")
+    if dash and ".substack.com" in url:
+        p = requests.get(f"{dash}/feed", params={"u": url}, headers=BROWSER, timeout=30)
+        if p.status_code == 200 and p.content.lstrip().startswith(b"<"):
+            return p.content
+        errors.append(f"proxy {p.status_code}")
+    raise requests.HTTPError(", ".join(errors))
+
+
+def _substack_api(src: dict) -> list[dict]:
+    base = src["url"].rsplit("/feed", 1)[0]
+    r = requests.get(f"{base}/api/v1/posts", params={"limit": 10}, headers=BROWSER, timeout=30)
     r.raise_for_status()
-    root = ET.fromstring(r.content)
+    return [{"title": _clean(p.get("title"), 200), "url": p.get("canonical_url"),
+             "date": _date(p.get("post_date")),
+             "text": _clean(p.get("body_html") or p.get("description"),
+                            FULL_TEXT if src.get("fantasy") else EXCERPT)} for p in r.json()]
+
+
+def fetch_rss(src: dict) -> list[dict]:
+    try:
+        content = _get_feed(src["url"])
+    except requests.RequestException as e:
+        if ".substack.com" in src["url"]:
+            try:
+                return _substack_api(src)
+            except requests.RequestException as e2:
+                raise requests.HTTPError(f"{e}; api {e2}") from e2
+        raise
+    root = ET.fromstring(content)
     limit = FULL_TEXT if src.get("fantasy") else EXCERPT
     items = []
     for it in root.iter("item"):
@@ -116,7 +155,7 @@ def collect(names: list[str], hours: int = 96) -> tuple[list[dict], list[str]]:
         try:
             items = fetch_incrowd(src) if src["type"] == "incrowd" else fetch_rss(src)
         except Exception as e:  # a dead source must not kill the run
-            failed.append(f"{src['name']}: {type(e).__name__}")
+            failed.append(f"{src['name']}: {type(e).__name__} {str(e)[:80]}")
             continue
         since = now - timedelta(hours=src.get("hours", hours))
         for it in items:
