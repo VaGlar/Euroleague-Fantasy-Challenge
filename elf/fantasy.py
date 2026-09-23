@@ -112,7 +112,29 @@ def normalize_player(p: dict) -> dict:
         "avg_pts": _pick(p, "avg_points", "avg_pts", "fantasy_avg"),
         "status": _pick(p, "status", "injury_status"),
         "popularity": _pick(p, "popularity"),
+        # the game's own availability info (shown as the injury badge in the app)
+        "is_injured": bool(_pick(p, "is_injured", default=False)),
+        "prob_play": _prob(_pick(p, "probability_of_playing")),
+        "from_bench": _pick(p, "started_from_bench"),
+        "fantasy_avg": _pick(p, "avg_fantasy_pts"),
     }
+
+
+def _prob(v) -> float | None:
+    """probability_of_playing -> 0..1 (the API may send 0-1 or 0-100)."""
+    try:
+        v = float(v)
+    except (TypeError, ValueError):
+        return None
+    return max(0.0, min(1.0, v / 100 if v > 1 else v))
+
+
+def availability(row) -> float:
+    """Game-provided availability factor: probability if given, else injured -> 0."""
+    p = row.get("prob_play")
+    if p is not None and p == p:  # p == p is False for NaN (pandas turns None into NaN)
+        return float(p)
+    return 0.0 if row.get("is_injured") is True or row.get("is_injured") == 1 else 1.0
 
 
 if __name__ == "__main__":

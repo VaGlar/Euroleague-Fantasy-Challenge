@@ -172,7 +172,7 @@ def fantasy_state(clubs: pd.DataFrame, roster: pd.DataFrame) -> dict:
         # price history (append one snapshot per matchday)
         hist_path = PUBLIC / "prices.csv"
         snap = fp[["fantasy_id", "person_id", "first_name", "last_name", "team", "position",
-                   "price"]].assign(matchday=md["number"])
+                   "price", "is_injured", "prob_play", "fantasy_avg"]].assign(matchday=md["number"])
         if hist_path.exists():
             old = pd.read_csv(hist_path, dtype={"person_id": str})
             old = old[old["matchday"] != md["number"]]
@@ -378,6 +378,19 @@ def build(offline: bool = False) -> dict:
                             .rename(columns={"position": "f_position"}), on="person_id", how="left")
         # squad slots follow the fantasy game's position, not the EuroLeague listing
         table["position"] = table["f_position"].fillna(table["position"])
+        # injuries straight from the game: scale this round fully, the horizon only for it
+        avail = fp.dropna(subset=["person_id"]).drop_duplicates("person_id").set_index("person_id")
+        f_game = table["person_id"].map(lambda pid: fantasy.availability(avail.loc[pid])
+                                        if pid in avail.index else 1.0)
+        table["avail_game"] = f_game
+        table["injured"] = table["person_id"].map(
+            lambda pid: bool(avail.loc[pid, "is_injured"]) if pid in avail.index else False)
+        lost_now = table["x_now"].fillna(0) * (1 - f_game)
+        table["x_h"] = table["x_h"] - lost_now
+        table["x_now"] = table["x_now"] - lost_now
+        n_inj = int((f_game < 1).sum())
+        if n_inj == 0:
+            health.append("fantasy: το παιχνίδι δεν έδωσε κανέναν τραυματία/αμφίβολο (έλεγχος πεδίων)")
         table["value"] = table["x_h"] / table["price"]
         if fs["unmatched"] > 40:  # a handful of unregistered bench players is normal
             health.append(f"{fs['unmatched']} παίκτες του fantasy λείπουν από τα ρόστερ EuroLeague")
@@ -481,6 +494,15 @@ def messages(rnd, trn, table, my, dig, health) -> list[dict]:
             lines += ["", "💰 <b>Value (xPTS/credit, 3 αγων.)</b>"]
             lines += [f"• {r['name'].split(',')[0].title()} ({r['team']}) {r['price']}cr — "
                       f"{r['value']:.2f}" for r in v.to_dict("records")]
+        if tu["turn"] == 1 and "avail_game" in t:
+            out_now = t_all[(t_all["avail_game"] < 1) & (t_all["base"].fillna(0) >= 8)] \
+                .sort_values("base", ascending=False).head(10)
+            if len(out_now):
+                lines += ["", "🚑 <b>Τραυματίες/αμφίβολοι (από το παιχνίδι)</b>"]
+                for r in out_now.to_dict("records"):
+                    a = r["avail_game"]
+                    state = "εκτός" if a == 0 else f"{a:.0%} να παίξει"
+                    lines.append(f"• {r['name'].split(',')[0].title()} ({r['team']}) — {state}")
         if dig:
             inj = [a for a in dig.get("availability", []) if a.get("status") != "available"]
             if inj:

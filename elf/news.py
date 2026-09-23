@@ -181,6 +181,8 @@ def digest(articles: list[dict], roster: list[str]) -> dict | None:
         errors.append(f"{r.status_code} {model_name}: {msg}")
         if r.status_code not in (404, 429, 500, 503):  # bad key etc.: no point retrying
             break
+    if errors and all(e.startswith(("503", "500")) for e in errors):
+        raise RuntimeError(f"Gemini υπερφορτωμένο ({', '.join(tried)}) — δοκίμασε /update αργότερα")
     raise RuntimeError("Gemini " + (" | ".join(errors[-2:]) or "δεν βρέθηκε διαθέσιμο μοντέλο"))
 
 
@@ -200,7 +202,12 @@ def _flash_models(base: str, headers: dict) -> list[str]:
         ver = re.search(r"(\d+(?:\.\d+)?)", n)
         return ("lite" in n, "latest" in n, -float(ver.group(1)) if ver else 0.0, n)
 
-    return sorted(stable, key=rank)
+    ordered = sorted(stable, key=rank)
+    full = [n for n in ordered if "lite" not in n]
+    lite = [n for n in ordered if "lite" in n]
+    # interleave: newest flash, newest lite, next flash... (lite is usually less overloaded)
+    return [m for pair in zip(full + [None] * len(lite), lite + [None] * len(full))
+            for m in pair if m]
 
 
 AVAILABILITY_FACTOR = {"out": 0.0, "doubtful": 0.4, "questionable": 0.8, "available": 1.0}

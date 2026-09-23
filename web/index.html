@@ -105,6 +105,8 @@ const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const nm = (n) => { const [s, f] = String(n || "").split(","); return (f ? f.trim()[0] + ". " : "") + (s || "").toLowerCase().replace(/(^|[\s-])\S/g, (m) => m.toUpperCase()); };
 const f1 = (x) => (x == null ? "–" : Number(x).toFixed(1));
+const inj = (r) => (r.avail_game != null && r.avail_game < 1
+  ? ` <span class="pill">🚑 ${r.avail_game === 0 ? "εκτός" : Math.round(r.avail_game * 100) + "%"}</span>` : "");
 const get = (f) => fetch(`data/${f}?t=${Date.now()}`).then((r) => (r.ok ? r.json() : null)).catch(() => null);
 
 document.querySelectorAll("nav button").forEach((b) => b.onclick = () => {
@@ -137,7 +139,7 @@ function renderPlayers() {
   $("#ptable").innerHTML = "<thead><tr>" + cols.map(([k, l, n]) =>
     `<th data-k="${k}" class="${n ? "num" : ""}">${l}${sortKey === k ? (sortDir < 0 ? " ↓" : " ↑") : ""}</th>`).join("") + "</tr></thead><tbody>"
     + rows.slice(0, 250).map((r) => `<tr>
-      <td>${esc(nm(r.name))}${r.no_data ? ' <span class="pill">νέος</span>' : ""}<br><span class="muted">${esc(r.team)} · ${esc(r.position || "")}</span></td>
+      <td>${esc(nm(r.name))}${r.no_data ? ' <span class="pill">νέος</span>' : ""}${inj(r)}<br><span class="muted">${esc(r.team)} · ${esc(r.position || "")}</span></td>
       <td class="num"><span class="bar" style="width:${Math.max(2, 40 * (r.x_now || 0) / max)}px"></span><b>${f1(r.x_now)}</b></td>
       <td>${r.home ? "🏠" : "✈️"} ${esc(r.opp)}</td><td class="num">${matchup(r.pos_dev)}</td>
       <td class="num">${f1(r.x_h)}</td><td class="num">${f1(r.season_pir)}</td><td class="num">${f1(r.prev_pir)}</td>
@@ -157,7 +159,7 @@ function renderTeam(my) {
     <td class="num up">+${m.gain}</td><td class="num">${m.price_out}→${m.price_in}</td></tr>`).join("");
   $("#team").innerHTML = `<div class="card"><h2>${esc(my.name || "Η ομάδα μου")} · Υπόλοιπο ${f1(my.bank)} cr</h2>
     <div class="tablewrap"><table><thead><tr><th>Παίκτης</th><th>Θέση</th><th>Αντ.</th><th class="num">xPTS</th><th class="num">xPTS3</th><th class="num">Τιμή</th></tr></thead><tbody>
-    ${my.players.map((r) => `<tr><td>${esc(nm(r.name))}</td><td>${esc(r.position || "")}</td><td>${r.home ? "🏠" : "✈️"} ${esc(r.opp || "")}</td>
+    ${my.players.map((r) => `<tr><td>${esc(nm(r.name))}${inj(r)}</td><td>${esc(r.position || "")}</td><td>${r.home ? "🏠" : "✈️"} ${esc(r.opp || "")}</td>
       <td class="num">${f1(r.x_now)}</td><td class="num">${f1(r.x_h)}</td><td class="num">${f1(r.price)}</td></tr>`).join("")}
     </tbody></table></div></div>
     <div class="card"><h2>Προτεινόμενες αλλαγές</h2>${tr ? `<div class="tablewrap"><table>${tr}</table></div>` : "<p>Καμία αλλαγή δεν ξεπερνά το όριο κέρδους.</p>"}</div>`;
