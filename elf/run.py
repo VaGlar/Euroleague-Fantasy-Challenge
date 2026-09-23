@@ -353,6 +353,69 @@ def suggest_transfers(team: pd.DataFrame, pool: pd.DataFrame, bank: float, max_t
     return moves
 
 
+def n_fantasy_sources() -> int:
+    try:
+        return sum(1 for x in yaml.safe_load((ROOT / "sources.yaml").read_text())["sources"]
+                   if x.get("fantasy")) or 1
+    except (OSError, KeyError, TypeError):
+        return 1
+
+
+EXPERT_PICK = 0.05     # +5% per fantasy column recommending the player (max 2 counted)
+EXPERT_CAPTAIN = 0.03  # +3% if at least one suggests him as captain
+EXPERT_AVOID = 0.08    # -8% if a column advises against him
+EXPERT_CAP = (0.85, 1.13)
+
+
+def expert_votes(dig: dict | None) -> dict:
+    """{player key: {"pick": {sources}, "captain": {...}, "avoid": {...}}} from fantasy columns."""
+    out = {}
+    for e in (dig or {}).get("expert", []):
+        name = str(e.get("player", "")).split(" (")[0]
+        stance = e.get("stance")
+        if stance not in ("pick", "captain", "avoid") or not name:
+            continue
+        d = out.setdefault(_key(name), {"pick": set(), "captain": set(), "avoid": set()})
+        d[stance].add(e.get("source", "?"))
+        if stance == "captain":
+            d["pick"].add(e.get("source", "?"))
+    return out
+
+
+def expert_factor(v: dict | None) -> float:
+    """Deliberately small and capped: columns mostly see the same data as the model;
+    their edge is roles/minutes/new signings. Re-weight once expert_log.csv shows
+    whether their picks beat the model's expectation."""
+    if not v:
+        return 1.0
+    f = 1 + EXPERT_PICK * min(len(v["pick"]), 2) + EXPERT_CAPTAIN * bool(v["captain"]) \
+        - EXPERT_AVOID * bool(v["avoid"])
+    return min(max(f, EXPERT_CAP[0]), EXPERT_CAP[1])
+
+
+def log_experts(dig: dict, rnd: int, cur: pd.DataFrame) -> None:
+    """Append this round's column picks with the model's own expectation, so their
+    hit rate can be measured later (actual vs xPTS for picked vs not picked)."""
+    path = PUBLIC / "expert_log.csv"
+    by_key = {_key(n): r for n, r in zip(cur["name"], cur.to_dict("records"))}
+    rows = []
+    for e in dig.get("expert", []):
+        r = by_key.get(_key(str(e.get("player", "")).split(" (")[0]))
+        if r is None:
+            continue
+        rows.append({"round": rnd, "source": e.get("source"), "stance": e.get("stance"),
+                     "person_id": r["person_id"], "name": r["name"], "team": r["team"],
+                     "model_xpts": round(float(r["xpir"]), 2)})
+    if not rows:
+        return
+    new = pd.DataFrame(rows)
+    if path.exists():
+        old = pd.read_csv(path, dtype={"person_id": str})
+        old = old[old["round"] != rnd]  # latest view of this round's picks wins
+        new = pd.concat([old, new], ignore_index=True)
+    new.drop_duplicates(["round", "source", "stance", "person_id"]).to_csv(path, index=False)
+
+
 def previous_digest(max_hours: int = 36):
     """Last successful Gemini digest if recent enough (Gemini is often overloaded)."""
     try:
@@ -467,8 +530,25 @@ def build(offline: bool = False) -> dict:
     # --- per-player tables (coaches ride along with position "Head Coach")
     if not pr["coaches"].empty:
         ctx = pd.concat([ctx, pr["coaches"]], ignore_index=True)
+
+    # --- fantasy columns: small, capped nudge for this round only (see expert_factor)
+    ex = expert_votes(dig)
+    if ex:
+        log_experts(dig, rnd, ctx[ctx["round"] == rnd])  # model's own view, before the nudge
+        k = ctx["name"].map(_key)
+        f_ex = k.map(lambda x: expert_factor(ex.get(x)))
+        cur = ctx["round"] == rnd
+        ctx.loc[cur, "xpir"] = ctx.loc[cur, "xpir"] * f_ex[cur]
+        ctx["expert_pick"] = k.map(lambda x: len(ex.get(x, {}).get("pick", ())))
+        ctx["expert_cap"] = k.map(lambda x: len(ex.get(x, {}).get("captain", ())))
+        ctx["expert_avoid"] = k.map(lambda x: len(ex.get(x, {}).get("avoid", ())))
     now_round = ctx[ctx["round"] == rnd]
+    for col in ("expert_pick", "expert_cap", "expert_avoid"):
+        if col not in ctx:
+            ctx[col] = 0
     agg = ctx.groupby("person_id").agg(
+        expert_pick=("expert_pick", "first"), expert_cap=("expert_cap", "first"),
+        expert_avoid=("expert_avoid", "first"),
         name=("name", "first"), team=("team", "first"), position=("position", "first"),
         x_h=("xpir", "sum"), base=("base", "first"), no_data=("no_data", "first"),
         season_pir=("season_pir", "first"), prev_pir=("prev_pir", "first"),
@@ -501,6 +581,23 @@ def build(offline: bool = False) -> dict:
         lost_now = table["x_now"].fillna(0) * (1 - f_game)
         table["x_h"] = table["x_h"] - lost_now
         table["x_now"] = table["x_now"] - lost_now
+        # no history (new to EuroLeague): the game's price is the market's estimate.
+        # Map price -> xPTS per position from players with data, discounted 20% for
+        # the extra uncertainty, instead of leaving them at 0.
+        known = table[~table["no_data"].fillna(False) & table["price"].notna()
+                      & (table["x_now"] > 0) & (table["position"] != "Head Coach")]
+        nd = table["no_data"].fillna(False) & table["price"].notna() \
+            & (table["position"] != "Head Coach")
+        table["prior"] = None
+        for pos, g in known.groupby("position"):
+            if len(g) < 10:
+                continue
+            slope, icpt = np.polyfit(g["price"], g["x_now"], 1)
+            m = nd & (table["position"] == pos)
+            est = (0.8 * (slope * table.loc[m, "price"] + icpt)).clip(lower=0)
+            table.loc[m, "x_now"] = est * f_game[m]
+            table.loc[m, "x_h"] = est * HORIZON
+            table.loc[m, "prior"] = "τιμή"
         n_inj = int((f_game < 1).sum())
         if n_inj == 0:
             health.append("fantasy: το παιχνίδι δεν έδωσε κανέναν τραυματία/αμφίβολο (έλεγχος πεδίων)")
@@ -770,6 +867,16 @@ def messages(rnd, trn, table, my, dig, health) -> list[dict]:
                     a = r["avail_game"]
                     state = "εκτός" if a == 0 else f"{a:.0%} να παίξει"
                     lines.append(f"• {r['name'].split(',')[0].title()} ({r['team']}) — {state}")
+        if tu["turn"] == 1 and "expert_pick" in t_all:
+            cons = t_all[t_all["expert_pick"] > 0].sort_values(["expert_pick", "x_now"],
+                                                               ascending=False).head(8)
+            if len(cons):
+                lines += ["", "🗣️ <b>Προτάσεις στηλών fantasy</b> (πηγές που τον προτείνουν)"]
+                for r in cons.to_dict("records"):
+                    extra = " · ★ αρχηγός" if r.get("expert_cap") else ""
+                    lines.append(f"• {r['name'].split(',')[0].title()} ({r['team']}) — "
+                                 f"{int(r['expert_pick'])}/{n_fantasy_sources()}{extra} · "
+                                 f"xPTS {r['x_now']:.1f}")
         if dig:
             inj = [a for a in dig.get("availability", []) if a.get("status") != "available"]
             if inj:

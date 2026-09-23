@@ -4,6 +4,10 @@
 # filter: true keeps only items that mention a EuroLeague team or player
 # (use it for general sports sites that also cover football etc.).
 # weight: how much the summariser should trust it (1 = normal, 2 = expert/fantasy).
+# fantasy: true -> a fantasy-tips column: full article text is read, its player picks
+#   count (a little) in the xPTS ranking and are logged to measure their hit rate.
+# title_has: keep only items whose title contains this text.
+# hours: how far back to look (default 96).
 
 sources:
   - name: EuroLeague (official)
@@ -13,12 +17,34 @@ sources:
     weight: 1
     filter: false
 
+  - name: EuroLeague Fantasy Tips (official)
+    type: incrowd
+    category: news
+    category_text: Fantasy Challenge
+    lang: en
+    weight: 2
+    filter: false
+    fantasy: true
+    hours: 168
+
   - name: Basketball Sphere – Fantasy
     type: rss
     url: https://basketballsphere.com/en/category/euroleague-fantasy/feed/
     lang: en
     weight: 2
     filter: false
+    fantasy: true
+    hours: 168
+
+  - name: EuroBallin (Substack)
+    type: rss
+    url: https://euroballinjpg.substack.com/feed
+    lang: en
+    weight: 2
+    filter: false
+    fantasy: true
+    title_has: Fantasy
+    hours: 168
 
   - name: Eurohoops
     type: rss

@@ -58,10 +58,15 @@ def _date(s: str | None):
     return d if d.tzinfo else d.replace(tzinfo=timezone.utc)
 
 
+FULL_TEXT = 8000   # fantasy columns: keep (almost) the whole article
+EXCERPT = 600
+
+
 def fetch_rss(src: dict) -> list[dict]:
     r = requests.get(src["url"], headers=UA, timeout=30)
     r.raise_for_status()
     root = ET.fromstring(r.content)
+    limit = FULL_TEXT if src.get("fantasy") else EXCERPT
     items = []
     for it in root.iter("item"):
         items.append({
@@ -69,23 +74,33 @@ def fetch_rss(src: dict) -> list[dict]:
             "url": it.findtext("link"),
             "date": _date(it.findtext("pubDate")),
             "text": _clean(it.findtext("{http://purl.org/rss/1.0/modules/content/}encoded")
-                           or it.findtext("description")),
+                           or it.findtext("description"), limit),
         })
     return items
 
 
 def fetch_incrowd(src: dict) -> list[dict]:
     r = requests.get(INCROWD, headers=UA, timeout=30, params={
-        "clientId": "EUROLEAGUE", "categorySlug": src.get("category", "news"), "size": 40})
+        "clientId": "EUROLEAGUE", "categorySlug": src.get("category", "news"),
+        "size": 100 if src.get("category_text") else 40})
     r.raise_for_status()
     items = []
     for a in r.json()["data"]["articles"]:
+        cats = {c.get("text") for c in a.get("categories") or []}
+        if src.get("category_text") and src["category_text"] not in cats:
+            continue
         meta = a.get("articleMetadata") or {}
+        if src.get("fantasy"):  # full body from the article's text blocks
+            body = " ".join(str(b.get("content") or "") for b in a.get("content") or []
+                            if isinstance(b, dict) and b.get("contentType") == "TEXT")
+            text = _clean(re.sub(r"\]\([^)]*\)", "]", body), FULL_TEXT)
+        else:
+            text = _clean(a.get("heroMedia", {}).get("summary") or meta.get("description"))
         items.append({
             "title": _clean(a.get("heroMedia", {}).get("title") or meta.get("title"), 200),
             "url": f"https://www.euroleaguebasketball.net/en/euroleague/news/{a['slug']}/",
             "date": _date(a.get("publishDate")),
-            "text": _clean(a.get("heroMedia", {}).get("summary") or meta.get("description")),
+            "text": text,
         })
     return items
 
@@ -93,17 +108,21 @@ def fetch_incrowd(src: dict) -> list[dict]:
 def collect(names: list[str], hours: int = 96) -> tuple[list[dict], list[str]]:
     """Recent relevant items from all sources, plus a list of failed sources."""
     cfg = yaml.safe_load((ROOT / "sources.yaml").read_text())
-    since = datetime.now(timezone.utc) - timedelta(hours=hours)
+    now = datetime.now(timezone.utc)
     name_keys = {_norm(n.split(",")[0]) for n in names if n and len(n.split(",")[0]) > 3}
     out, failed, seen = [], [], set()
-    for src in cfg["sources"]:
+    # fantasy columns first so they claim their articles before a general feed does
+    for src in sorted(cfg["sources"], key=lambda x: not x.get("fantasy")):
         try:
             items = fetch_incrowd(src) if src["type"] == "incrowd" else fetch_rss(src)
         except Exception as e:  # a dead source must not kill the run
             failed.append(f"{src['name']}: {type(e).__name__}")
             continue
+        since = now - timedelta(hours=src.get("hours", hours))
         for it in items:
             if not it["url"] or it["url"] in seen or (it["date"] and it["date"] < since):
+                continue
+            if src.get("title_has") and src["title_has"].lower() not in it["title"].lower():
                 continue
             blob = _norm(f"{it['title']} {it['text']}")
             if src.get("filter") and not (any(k in blob for k in KEYWORDS)
@@ -111,8 +130,11 @@ def collect(names: list[str], hours: int = 96) -> tuple[list[dict], list[str]]:
                 continue
             seen.add(it["url"])
             out.append({**it, "date": it["date"].isoformat() if it["date"] else None,
-                        "source": src["name"], "weight": src.get("weight", 1)})
-    out.sort(key=lambda x: x["date"] or "", reverse=True)
+                        "source": src["name"], "weight": src.get("weight", 1),
+                        "fantasy": bool(src.get("fantasy"))})
+    # fantasy columns first (they carry the picks), then news by date
+    out.sort(key=lambda x: (not x["fantasy"], -(datetime.fromisoformat(x["date"]).timestamp()
+                                                 if x["date"] else 0)))
     return out, failed
 
 
@@ -126,9 +148,13 @@ Return ONLY JSON with this schema:
                    "note": "<short, Greek>", "source": "<source name>"}],
  "expert": [{"player": "<exact roster name>", "stance": "pick|avoid|captain",
              "note": "<short, Greek>", "source": "<source name>"}],
+ "round": <EuroLeague round the fantasy tips refer to, integer or null>,
  "summary_el": "<5-8 bullet points in Greek, formal-neutral, most fantasy-relevant first>"
 }
 Only include players explicitly discussed. Do not guess injuries that are not stated.
+"expert": from articles marked FANTASY only, list EVERY player (and head coach) the
+author recommends (stance "pick"), suggests as captain ("captain"), or advises against
+("avoid"). One entry per player per source; use the article's source name exactly.
 
 ROSTER:
 {roster}
@@ -142,9 +168,19 @@ def digest(articles: list[dict], roster: list[str]) -> dict | None:
     key = os.environ.get("GEMINI_API_KEY")
     if not key or not articles:
         return None
+    # per fantasy source: up to 4 newest, round-tips articles first
+    fan, per = [], {}
+    for a in sorted((a for a in articles if a.get("fantasy")),
+                    key=lambda a: ("round" not in a["title"].lower() and "tips" not in
+                                   a["title"].lower(), -(datetime.fromisoformat(a["date"])
+                                                         .timestamp() if a["date"] else 0))):
+        if per.get(a["source"], 0) < 4:
+            per[a["source"]] = per.get(a["source"], 0) + 1
+            fan.append(a)
+    rest = [a for a in articles if not a.get("fantasy")][:60]
     arts = "\n\n".join(
-        f"[{a['source']} | w={a['weight']} | {a['date']}] {a['title']}\n{a['text'][:500]}"
-        for a in articles[:80])
+        [f"[FANTASY | {a['source']} | {a['date']}] {a['title']}\n{a['text']}" for a in fan]
+        + [f"[NEWS | {a['source']} | {a['date']}] {a['title']}\n{a['text'][:500]}" for a in rest])
     body = {
         "contents": [{"parts": [{"text": PROMPT.replace("{roster}", "\n".join(roster))
                                  .replace("{articles}", arts)}]}],
