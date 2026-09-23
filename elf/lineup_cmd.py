@@ -103,6 +103,7 @@ def load_state():
             "x_now": float(p.get("pts") or 0) if played else float(xnow.get(p["id"]) or 0),
             "cur_role": roles.get(p["id"], "coach"), "cur_captain": bool(p.get("is_captain")),
             "court_position": p["court_position"],
+            "turn": (p.get("round") or {}).get("number"),
         })
     return {"team": team, "md": md, "raw": raw, "squad": squad, "forms": forms,
             "slots": [p["court_position"] for p in court], "direction": direction,
@@ -113,6 +114,7 @@ def propose(st: dict) -> dict:
     res = optimize.lineup_in_round(st["squad"])
     if not res:
         raise Abort("ο βελτιστοποιητής δεν βρήκε έγκυρη πεντάδα")
+    res["team"], res["plan"] = optimize.defer_later_turns(res["team"])
     new = {p["id"]: p for p in res["team"]}
     changes = [p for p in st["squad"] if p["position"] != "Head Coach"
                and (new[p["id"]]["role"] != p["cur_role"]
@@ -153,6 +155,12 @@ def describe(st: dict, pr: dict) -> str:
     lines = [f"👥 <b>Πρόταση πεντάδας</b> ({pr['formation']})",
              ", ".join(lab(p) for p in five), f"6ος: {', '.join(lab(p) for p in six)}",
              f"★ Αρχηγός: {cap['name']}", ""]
+    for pl in pr["res"].get("plan") or []:
+        lines.append(f"🕐 Πριν το T{pl['bench'].get('turn')}: αν ο {pl['start']['name']} φέρει "
+                     f"κάτω από {pl['bench']['x_now']:.0f}, βάλε τον {pl['bench']['name']} "
+                     "(στείλε ξανά /lineup μετά το προηγούμενο Turn).")
+    if pr["res"].get("plan"):
+        lines.append("")
     if not pr["changes"]:
         lines.append("✅ Η ομάδα σου είναι ήδη έτσι — τίποτα να αλλάξει.")
         return "\n".join(lines)

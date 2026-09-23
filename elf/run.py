@@ -533,7 +533,14 @@ def build(offline: bool = False) -> dict:
             try:
                 sq = _opt_rows(mine)
                 lu = optimize.lineup(sq) if len(sq) == 11 else None
-                my["lineup"] = lu["team"] if lu else None
+                if lu:
+                    team_lu, plan = optimize.defer_later_turns(lu["team"])
+                    my["lineup"] = team_lu
+                    my["lineup_plan"] = [{"start": p["start"]["name"], "bench": p["bench"]["name"],
+                                          "bench_x": round(p["bench"]["x_now"], 1),
+                                          "bench_turn": p["bench"].get("turn")} for p in plan]
+                else:
+                    my["lineup"] = None
                 tr = optimize.transfers(sq, _opt_rows(pool[~pool["fantasy_id"].isin(avoid_ids)]),
                                         bank, max_trades=max_trades,
                                         keep={int(i) for i in keep_ids})
@@ -706,6 +713,11 @@ def messages(rnd, trn, table, my, dig, health) -> list[dict]:
                 lines.append(", ".join(nm_(p) for p in role("5άδα")))
                 lines.append("6ος: " + ", ".join(nm_(p) for p in role("6ος")))
                 lines.append("Πάγκος: " + ", ".join(nm_(p) for p in role("πάγκος")))
+                for pl in my.get("lineup_plan") or []:
+                    lines.append(f"🕐 <b>Πριν το T{pl['bench_turn']}</b>: αν ο "
+                                 f"{pl['start'].split(',')[0].title()} φέρει κάτω από "
+                                 f"{pl['bench_x']:.0f}, βάλε τον {pl['bench'].split(',')[0].title()} "
+                                 "στη θέση του (/lineup το κάνει).")
                 real = {r["fantasy_id"]: r for r in (my.get("actual_lineup") or [])}
                 if real:
                     diff = []

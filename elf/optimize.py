@@ -159,3 +159,48 @@ def lineup_in_round(squad: list[dict], now="x_now"):
     no_cap = {p["id"] for p in squad if p.get("played") and not p.get("cur_captain")}
     return _model(squad, now, now, budget=1e9, fixed={p["id"] for p in squad},
                   bench_only=bench_only, no_captain=no_cap)
+
+
+def defer_later_turns(team: list[dict]) -> tuple[list[dict], list[dict]]:
+    """Start the earlier-turn player, keep the later-turn one on the bench.
+
+    If a starter (five or sixth man) plays in a later turn than a bench player who
+    could take his slot, swapping them now is never worse *provided you swap back
+    before the later turn when needed*: after the early game you know what the early
+    player scored; bring the later one in only if the early one fell short. You also
+    keep a valid lineup if the later player is ruled out. Returns the adjusted team
+    and the plan [{"start": early, "bench": later}] to act on before the later turn.
+    Players who already played are never moved."""
+    team = [dict(p) for p in team]
+    court = [p for p in team if p["role"] in ("5άδα", "6ος", "πάγκος")]
+    turns = [p.get("turn") for p in court if p.get("turn") and not p.get("played")]
+    if not turns:
+        return team, []
+    first = min(turns)
+    plan = []
+
+    def five_ok(five):
+        return all(any(q["position"] == pos for q in five) for pos in COURT)
+
+    later = sorted((p for p in court if p["role"] in ("5άδα", "6ος") and not p.get("played")
+                    and (p.get("turn") or first) > first),
+                   key=lambda p: -(p.get("x_now") or 0))
+    for lp in later:
+        cands = [e for e in court if e["role"] == "πάγκος" and not e.get("played")
+                 and (e.get("turn") or first) < (lp.get("turn") or first)]
+        if lp["role"] == "5άδα":  # the five must keep >= 1 Guard, Forward and Center
+            five = [q for q in court if q["role"] == "5άδα" and q is not lp]
+            cands = [e for e in cands if five_ok(five + [e])]
+        if not cands:
+            continue
+        e = max(cands, key=lambda q: q.get("x_now") or 0)
+        e["role"], lp["role"] = lp["role"], "πάγκος"
+        plan.append({"start": e, "bench": lp})
+    # the armband must stay on a starter: if it moved to the bench, give it to the best
+    # early starter (the later player remains the plan-B captain)
+    cap = next((p for p in team if p.get("captain")), None)
+    if cap is not None and cap["role"] != "5άδα":
+        cap["captain"] = False
+        best = max((p for p in team if p["role"] == "5άδα"), key=lambda p: p.get("x_now") or 0)
+        best["captain"] = True
+    return team, plan
