@@ -127,11 +127,38 @@
    "fantasy": true
   },
   {
+   "title": "Ερνανγκόμεθ: «Όταν ήρθα στην Αθήνα, οι οπαδοί του Ολυμπιακού πέταξαν ακέφαλο κοτόπουλο στο βανάκι»",
+   "url": "https://www.gazzetta.gr/basketball/euroleague/2571629/ernangkometh-otan-irtha-stin-athina-oi-opadoi-toy-olympiakoy-petaxan",
+   "date": "2026-09-23T20:36:13+02:00",
+   "text": "Ο Χουάντσο Ερνανγκόμεθ σε συνέντευξη που παραχώρησε στη «Marca» θυμήθηκε την πρώτη του μέρα στην Αθήνα, ενώ αποθέωσε μεταξύ άλλων τον Ζέλικο Ομπράντοβιτς.",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false
+  },
+  {
+   "title": "Γάλλος προπονητής που ήταν στο Ρέντη αναλύει τον Ολυμπιακό ενόψει Μαρσέϊγ!",
+   "url": "https://www.gazzetta.gr/football/superleague/2571608/gallos-proponitis-poy-itan-sto-renti-analyei-ton-olympiako-enopsei",
+   "date": "2026-09-23T20:30:00+02:00",
+   "text": "Ο Κ. Νικολακόπουλος καταγράφει στο blog του στο gazzetta την άποψη του Μπερνάρντ Ροντριγκές για τον Ολυμπιακό όπως την αποτύπωσε στη Μασσαλία.",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false
+  },
+  {
    "title": "Παναθηναϊκός: Το πρόγραμμα των «πράσινων» για το Champions League",
    "url": "https://www.gazzetta.gr/volleyball/volleyball-champions-league/2571596/panathinaikos-programma-ton-prasinon-gia-champions",
    "date": "2026-09-23T19:50:16+02:00",
    "text": "Η CEV έκανε γνωστό το πρόγραμμα του Παναθηναϊκού στο Champions League με τους «πράσινους» να αρχίζουν στις 8/12 και να ολοκληρώνουν την φάση των ομίλων στις 17/2.",
    "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false
+  },
+  {
+   "title": "Ερυθρός Αστέρας: Επιστρέφει ο Οτζελέι για την πρεμιέρα με τη Ζάλγκιρις",
+   "url": "https://www.novasports.gr/sport/mpasket/event/euroleague/article/15129957/erythros-asteras-epistrefei-o-otzelei-gia-tin-premiera-me-ti-zalgkiris/",
+   "date": "2026-09-23T17:36:51+00:00",
+   "text": "Ευχάριστα νέα προέκυψαν στον Ερυθρό Αστέρα ενόψει της πρεμιέρας της Euroleague , καθώς ο Σέμι Οτζελέι ξεπέρασε το πρόβλημα τραυματισμού που αντιμετώπιζε και τέθηκε στη διάθεση του Ίμπον Ναβάρο για την εντός έδρας αναμέτρηση απέναντι στη Ζάλγκιρις Κάουνας (24/9, 21:00). Στον αντίποδα, ο Ισπανός τεχνικός δεν μπορεί να υπολογίζει στον Τζούρισιτς , ο οποίος παραμένει εκτός προπονήσεων και συνεχίζει το πρόγραμμα αποκατάστασής του. Αναλυτικά όσα δήλωσε ο Ίμπον Ναβάρο: «Ο Οτζελέι θα είναι έτοιμος για τον αγώνα. Ο Τζούρισιτς δεν έχει προπονηθεί ακόμα με την ομάδα, επομένως δεν θα αγωνιστεί. Συνεχίζουμ",
+   "source": "Novasports",
    "weight": 1,
    "fantasy": false
   },
@@ -289,15 +316,6 @@
    "fantasy": false
   },
   {
-   "title": "ΜακΙντάιρ: «Δεν έχει σημασία πώς ξεκινάς τη σεζόν αλλά πώς την τελειώνεις»",
-   "url": "https://www.gazzetta.gr/basketball/euroleague/2571545/makintair-den-ehei-simasia-pos-xekinas-ti-sezon-alla-pos-tin",
-   "date": "2026-09-23T16:49:43+02:00",
-   "text": "Διαβάστε τα όσα ανέφερε ο Κόντι Μίλερ-ΜακΙντάιρ λίγο πριν από την αναχώρηση της αποστολής του Ολυμπιακού για τη Βιτόρια ενόψει του αγώνα μετ ην Μπασκόνια (24/09, 21:30).",
-   "source": "Gazzetta",
-   "weight": 1,
-   "fantasy": false
-  },
-  {
    "title": "Injury report, Round 1: Milutinov available; quartet missing for Panathinaikos; two out for Barça",
    "url": "https://www.euroleaguebasketball.net/en/euroleague/news/injury-report-round-1-el2627/",
    "date": "2026-09-23T14:45:33.917000+00:00",
@@ -312,15 +330,6 @@
    "date": "2026-09-23T14:43:00+00:00",
    "text": "Ο Ιταλός τεχνικός αποκάλυψε πώς ο διοικητικός ηγέτης των «ασπρόμαυρων» πήρε πάνω του την υπόθεση της απόκτησης του Τούρκου φόργουορντ, ενώ υπογράμμισε την ανάγκη για υπομονή και συνολική αναβάθμιση του οργανισμού του ΠΑΟΚ. Αναλυτικά όσα δήλωσε ο Αντρέα Τρινκιέρι: «Υπάρχουν πολλές ομοιότητες με την Παρτιζάν. Ο ΠΑΟΚ έχει οπαδούς, ιστορία, τίτλους, αλλά μιλάμε για μια άλλη εποχή που είναι αρκετά μακρινή. Μου αρέσουν προκλήσεις σαν κι αυτή. Μερικές φορές, όταν δεν έχεις σχεδόν τίποτα, είναι πιο εύκολο, γιατί το αποδέχεσαι και δουλεύεις κάθε μέρα και αρχίζεις να το συναρμολογείς κομμάτι-κομμάτι. Αυ",
    "source": "Novasports",
-   "weight": 1,
-   "fantasy": false
-  },
-  {
-   "title": "Θα τα «φάει» όλα στις εγγυήσεις: Κέρδισε 143 εκατ. ευρώ στο Powerball αλλά συνελήφθη για 5η φορά μέσα σε 17 μήνες",
-   "url": "https://www.gazzetta.gr/plus/2571527/tha-ta-faei-ola-stis-eggyiseis-kerdise-143-ekat-dolaria-sto-powerball-alla-synelifthi",
-   "date": "2026-09-23T16:36:00+02:00",
-   "text": "Ο James Farthing κέρδισε 167,3 εκατ. δολάρια στο Powerball του Κεντάκι το 2025, όμως έκτοτε έχει συλληφθεί πέντε φορές.",
-   "source": "Gazzetta",
    "weight": 1,
    "fantasy": false
   },
@@ -688,45 +697,39 @@
  "digest": {
   "availability": [
    {
-    "player": "NUNN, KENDRICK",
-    "status": "out",
-    "note": "Τραυματίας, εκτός δράσης.",
-    "source": "Basketball Sphere – Fantasy"
+    "player": "OJELEYE, SEMI",
+    "status": "available",
+    "note": "Ξεπέρασε τον τραυματισμό του και είναι διαθέσιμος για την πρεμιέρα.",
+    "source": "Novasports"
    },
    {
-    "player": "FALL, MOUSTAPHA",
+    "player": "DJURISIC, NIKOLA",
     "status": "out",
-    "note": "Τραυματίας, εκτός δράσης.",
-    "source": "Basketball Sphere – Fantasy"
-   },
-   {
-    "player": "HAYES-DAVIS, NIGEL",
-    "status": "out",
-    "note": "Τραυματίας, εκτός δράσης.",
-    "source": "Basketball Sphere – Fantasy"
-   },
-   {
-    "player": "LEN, ALEX",
-    "status": "out",
-    "note": "Δεν θα αγωνιστεί στην πρεμιέρα.",
-    "source": "Eurohoops"
+    "note": "Παραμένει εκτός προπονήσεων και συνεχίζει πρόγραμμα αποκατάστασης.",
+    "source": "Novasports"
    },
    {
     "player": "MILUTINOV, NIKOLA",
     "status": "available",
-    "note": "Συμπεριλήφθηκε στην αποστολή, διαθέσιμος.",
-    "source": "EuroLeague (official)"
+    "note": "Ξεπέρασε την τενοντίτιδα και συμπεριλήφθηκε στην αποστολή για Βιτόρια.",
+    "source": "Eurohoops (GR)"
+   },
+   {
+    "player": "LEN, ALEX",
+    "status": "out",
+    "note": "Εκτός μάχης για την πρεμιέρα σύμφωνα με τον προπονητή της Μπασκόνια.",
+    "source": "Eurohoops"
    },
    {
     "player": "ROGKAVOPOULOS, NIKOLAOS",
     "status": "available",
-    "note": "Ξεπέρασε τον τραυματισμό του, διαθέσιμος.",
+    "note": "Ξεπέρασε τη θλάση και είναι στη διάθεση του προπονητή του.",
     "source": "Eurohoops (GR)"
    },
    {
     "player": "MORAITIS, DIMITRIS",
     "status": "available",
-    "note": "Κανονικά στη διάθεση της ομάδας.",
+    "note": "Κανονικά στην αποστολή για την αναμέτρηση με την Παρί.",
     "source": "Eurohoops (GR)"
    }
   ],
@@ -734,154 +737,154 @@
    {
     "player": "BRYANT, ELIJAH",
     "stance": "pick",
-    "note": "Εξαιρερετική επιλογή για την πρεμιέρα, βασικός.",
+    "note": "Κορυφαία επιλογή στα γκαρντ, ιδανικό ματς απέναντι στην Μπάγερν.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "FRANCISCO, SYLVAIN",
     "stance": "pick",
-    "note": "Αυξημένος χρόνος και ρόλος λόγω απουσιών.",
+    "note": "Αυξημένος ρόλος λόγω της απουσίας του Ναν και ευνοϊκό πρόγραμμα.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "JONES, CARLIK",
     "stance": "pick",
-    "note": "Βασικός πυλώνας της επίθεσης, εντός έδρας αγώνας.",
+    "note": "Βασικός πυλώνας της επίθεσης της Παρτιζάν στην έδρα της.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "DEJULIUS, DAVID",
     "stance": "pick",
-    "note": "Προσιτή επιλογή με πλεονέκτημα μεγέθους.",
+    "note": "Αξιόλογη και οικονομική λύση με πλεονέκτημα μεγέθους στην πρεμιέρα.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "MADAR, YAM",
     "stance": "pick",
-    "note": "Αυξημένος ρόλος και ευνοϊκός αντίπαλος.",
+    "note": "Αναβαθμισμένος ρόλος στη Μακάμπι απέναντι σε βατή αντίπαλο.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "NUNEZ, JUAN",
     "stance": "pick",
-    "note": "Φθηνή λύση value για εξοικονόμηση credits.",
+    "note": "Φθηνό ρίσκο για εξοικονόμηση μπάτζετ στη θέση των γκαρντ.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "VEZENKOV, SASHA",
     "stance": "captain",
-    "note": "Αδιαμφισβήτητη σταθερά και κορυφαία επιλογή για αρχηγός.",
+    "note": "Ο απόλυτος βασιλιάς του Fantasy, ιδανικός για αρχηγός.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "YABUSELE, GUERSCHON",
     "stance": "pick",
-    "note": "Αυξημένος χρόνος συμμετοχής λόγω απουσιών.",
+    "note": "Αυξημένος χρόνος συμμετοχής λόγω απουσιών στη γραμμή ψηλών.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "OMORUYI, EUGENE",
     "stance": "pick",
-    "note": "Βοηθάει σημαντικά στο πρόγραμμα και το rotation.",
+    "note": "Εξαιρερετική επιλογή φόργουορντ με ευνοϊκό πρόγραμμα.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "STEVENS, LAMAR",
     "stance": "pick",
-    "note": "Οικονομική λύση με εξασφαλισμένο χρόνο.",
+    "note": "Οικονομικός φόργουορντ με προβλεπόμενο μεγάλο χρόνο συμμετοχής.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "PARRA, JOEL",
     "stance": "pick",
-    "note": "Εξαιρετικό value for money με προοπτική ανόδου τιμής.",
+    "note": "Εξαιρετικό 'steal' σε χαμηλή τιμή με αναβαθμισμένο ρόλο.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "JOKSIMOVIC, STEFAN",
     "stance": "pick",
-    "note": "Ελάχιστο ρίσκο, επιλογή χαμηλού προϋπολογισμού.",
+    "note": "Ακραία οικονομική λύση (punt) χωρίς ρίσκο απώλειας αξίας.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "VALANCIUNAS, JONAS",
     "stance": "pick",
-    "note": "Κορυφαίος σέντερ, μηχανή των double-double.",
-    "source": "EuroLeague Fantasy Tips (official)"
+    "note": "Κορυφαίος και πιο ακριβός σέντερ, μηχανισμός νταμπλ-νταμπλ.",
+    "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "WRIGHT, MOSES",
     "stance": "pick",
-    "note": "Αποδοτικός σκόρερ και ριμπάουντερ.",
+    "note": "Εξαιρετική επιλογή για τη θέση των σέντερ με μεγάλη συνεισφορά.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "WILEY, AUSTIN",
     "stance": "pick",
-    "note": "Σταθερό floor και καλός ριμπάουντερ.",
+    "note": "Πιο προσιτός σέντερ με σταθερότατο floor στο PIR.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "DOKOSSI, ALLAN",
     "stance": "pick",
-    "note": "Γεμίζει τη στατιστική με ενέργεια.",
+    "note": "Παίκτης ενέργειας που γεμίζει τη στατιστική σε καλή τιμή.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "HAYES, KEVARRIUS",
     "stance": "pick",
-    "note": "Οικονομική λύση για μπλοκ και ριμπάουντ.",
+    "note": "Οικονομικός σέντερ, δυνατός στα κοψίματα και τα ριμπάουντ.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "NWORA, JORDAN",
     "stance": "pick",
-    "note": "Εξαιρετικός σκόρερ σε σύστημα υψηλού ρυθμού.",
+    "note": "Ανοδική πορεία και ιδανικό σύστημα για υψηλές πτήσεις.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "LUWAWU-CABARROT, TIMOTHE",
     "stance": "pick",
-    "note": "Σταθερή απόδοση και αποτελεσματικότητα.",
+    "note": "Σταθερότατος φόργουορντ ταιριαστός στο σύστημα της ομάδας του.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "MANTZOUKAS, ELEFTHERIOS",
     "stance": "pick",
-    "note": "Ευκαιρία απόκτησης credits σε χαμηλή τιμή.",
+    "note": "Ευκαιρία απόκτησης σε ελάχιστη τιμή λόγω των απουσιών.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "SHORTS, TJ",
     "stance": "pick",
-    "note": "Ηγέτης με υψηλή παραγωγικότητα.",
+    "note": "Ηγέτης με εξαιρερετικά στατιστικά και ταιριαστό στυλ παιχνιδιού.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "WILLIAMS-GOSS, NIGEL",
     "stance": "pick",
-    "note": "Αυξημένες αρμοδιότητες στην οργάνωση.",
+    "note": "Αυξημένες αρμοδιότητες στην οργάνωση και το σκοράρισμα.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "SPAGNOLO, MATTEO",
     "stance": "pick",
-    "note": "Εξαιρετικό value για την τιμή του.",
+    "note": "Απίστευτο value for money στα γκαρντ.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "SAINT-SUPERY, MARIO",
     "stance": "pick",
-    "note": "Value επιλογή με σημαντικό χρόνο συμμετοχής.",
+    "note": "Εξαιρετική και φθηνή λύση με σημαντικό χρόνο συμμετοχής.",
     "source": "EuroLeague Fantasy Tips (official)"
    }
   ],
   "round": 1,
-  "summary_el": "Ξεκινάει η νέα αγωνιστική περίοδος του EuroLeague Fantasy Challenge με μεγάλες προσδοκίες και επιλογές για όλα τα βαλάντια. Ο Σασά Βεζένκοφ παραμένει η ασφαλέστερη και κορυφαία επιλογή για αρχηγό στην πρεμιέρα. Σημαντικές απουσίες, όπως αυτές των Κέντρικ Ναν, Μουσταφά Φαλ και Νίγκελ Χέιζ-Ντέιβις, ανακατεύουν την τράπουλα στους ρόλους και αυξάνουν τη ζήτηση για εναλλακτικές λύσεις. Οι παίκτες χαμηλού προϋπολογισμού (value picks) όπως ο Μάριο Σαιντ-Σουπερί και ο Ελευθέριος Μαντζούκας προσφέρουν ευελιξία στο μπάτζετ. Η διαχείριση των αλλαγών και η επιλογή σωστού δευτεριάρικου αρχηγού αποτελούν κλειδιά για την επιτυχία.",
+  "summary_el": "- Ξεκινά η νέα σεζόν 2026-27 στη EuroLeague Fantasy με την 1η αγωνιστική να συγκεντρώνει τεράστιο ενδιαφέρον.\n- Ο Σάσα Βεζένκοφ παραμένει η κορυφαία και ασφαλέστερη επιλογή για αρχηγός και βασικός πυλώνας κάθε ομάδας.\n- Ο Γιόνας Βαλαντσιούνας και ο Μόσουες Ράιτ προτείνονται ως τα βασικά «βαριά χαρτιά» για τη θέση των σέντερ.\n- Σημαντικές ευκαιρίες σε χαμηλές τιμές προσφέρουν παίκτες όπως ο Μάριο Σαιντ-Συπερύ, ο Ελευθέριος Μαντζούκας και ο Στέφαν Γιοκσίμοβιτς.\n- Προτείνεται η προσεκτική διαχείριση των μεταγραφών και η επένδυση σε προπονητές και παίκτες με ευνοϊκό πρόγραμμα στις πρώτες αγωνιστικές.\n- Ορισμένες ομάδες, όπως ο Παναθηναϊκός, έχουν ευνοϊκό πρόγραμμα στην αρχή, καθιστώντας τους παίκτες τους εξαιρετικούς στόχους.",
   "_model": "gemini-3.5-flash-lite"
  },
- "digest_at": "2026-09-23T17:26:48.353430+00:00",
+ "digest_at": "2026-09-23T17:43:20.455068+00:00",
  "failed": [
-  "EuroBallin (Substack): HTTPError"
+  "EuroBallin (Substack): ParseError syntax error: line 1, column 0"
  ]
 }
