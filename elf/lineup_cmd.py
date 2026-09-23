@@ -83,9 +83,15 @@ def load_state():
     if forms.get(name) != raw.get("formation_id"):
         raise Abort(f"η πεντάδα που διαβάζω ({name}) δεν ταιριάζει με το formation της ομάδας "
                     f"(id {raw.get('formation_id')}) — δεν αλλάζω τίποτα")
-    if [POS[p["position"]["name"]] for p in five] != sorted(POS[p["position"]["name"]] for p in five):
-        raise Abort("οι θέσεις της πεντάδας δεν είναι με σειρά G→F→C — άγνωστη διάταξη, "
-                    "δεν αλλάζω τίποτα")
+    # slot order inside the five: learn it from the current roster (the game uses C->F->G)
+    seq = [POS[p["position"]["name"]] for p in five]
+    if seq == sorted(seq, reverse=True):
+        direction = -1   # Center, Forward, Guard
+    elif seq == sorted(seq):
+        direction = 1    # Guard, Forward, Center
+    else:
+        order = "".join(LETTER[p["position"]["name"]] for p in five)
+        raise Abort(f"άγνωστη διάταξη θέσεων στην πεντάδα ({order}) — δεν αλλάζω τίποτα")
 
     squad = []
     for p in players:
@@ -99,7 +105,7 @@ def load_state():
             "court_position": p["court_position"],
         })
     return {"team": team, "md": md, "raw": raw, "squad": squad, "forms": forms,
-            "slots": [p["court_position"] for p in court],
+            "slots": [p["court_position"] for p in court], "direction": direction,
             "coach": coach[0]}
 
 
@@ -117,9 +123,11 @@ def propose(st: dict) -> dict:
         if p["played"] and new[p["id"]]["captain"] and not p["cur_captain"]:
             raise Abort(f"ο {p['name']} έχει ήδη παίξει και δεν μπορεί να γίνει αρχηγός")
 
-    # body: five in slots 1-5 ordered G->F->C, sixth next, bench G->F->C, coach unchanged
+    # body: five in the first 5 slots grouped like the game does (learned direction),
+    # sixth man next, then the bench; coach keeps its slot
+    d = st["direction"]
     order = lambda r: sorted((p for p in res["team"] if p["role"] == r),  # noqa: E731
-                             key=lambda p: (POS[p["position"]], p["id"]))
+                             key=lambda p: (d * POS[p["position"]], p["id"]))
     seq = order("5άδα") + order("6ος") + order("πάγκος")
     five = order("5άδα")
     fname = "-".join(str(sum(p["position"] == pos for p in five)) for pos in POS)
