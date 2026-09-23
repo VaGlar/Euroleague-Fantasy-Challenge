@@ -14,9 +14,10 @@ from zoneinfo import ZoneInfo
 
 import numpy as np
 import pandas as pd
+import yaml
 
 from . import el_api, fantasy, history, model, news
-from .config import BUDGET, CURRENT_SEASON, PUBLIC, TIMEZONE
+from .config import BUDGET, CURRENT_SEASON, PUBLIC, ROOT, TIMEZONE
 
 ATH = ZoneInfo(TIMEZONE)
 HORIZON = 3  # rounds used for transfer value
@@ -166,6 +167,26 @@ def suggest_transfers(team: pd.DataFrame, pool: pd.DataFrame, bank: float, max_t
     return moves
 
 
+def manual_team(table: pd.DataFrame) -> dict | None:
+    """Fallback when the fantasy API is unavailable: my_team.yaml lists the squad.
+
+    No prices -> no transfer suggestions, but lineup/captain advice still works.
+    """
+    path = ROOT / "my_team.yaml"
+    if not path.exists():
+        return None
+    cfg = yaml.safe_load(path.read_text()) or {}
+    wanted = [(_key(p.split("(")[0]), p.split("(")[1].strip(" )").upper() if "(" in p else None)
+              for p in cfg.get("players", [])]
+    t = table.assign(sk=table["name"].str.split(",").str[0].map(_key))
+    rows = [t[(t["sk"] == k) & ((t["team"] == tm) if tm else True)].head(1) for k, tm in wanted]
+    mine = pd.concat(rows) if rows else t.head(0)
+    return {"name": cfg.get("name", "Η ομάδα μου (χειροκίνητα)"), "manual": True,
+            "players": mine.drop(columns="sk").sort_values("x_now", ascending=False)
+            .replace({np.nan: None}).to_dict("records"),
+            "bank": None, "captain_id": None, "transfers": [], "parsed_players": len(mine)}
+
+
 # ---------------------------------------------------------------- report
 
 def turns(fx: pd.DataFrame, rnd: int) -> list[dict]:
@@ -252,6 +273,12 @@ def build(offline: bool = False) -> dict:
                 health.append(f"ομάδα: βρέθηκαν {len(ids)}/10 παίκτες — έλεγχος parser")
     elif fs.get("error"):
         health.append(f"fantasy: {fs['error']}")
+    tok = fantasy.token_expiry()
+    if tok["days_left"] is not None and tok["days_left"] < 3:
+        health.insert(0, "🔑 Το FANTASY_TOKEN λήγει σε "
+                      f"{max(tok['days_left'], 0):.1f} μέρες — ανανέωσέ το")
+    if my is None:
+        my = manual_team(table)
 
     table = table.sort_values("x_now", ascending=False)
     trn = turns(pr["fixtures"], rnd)

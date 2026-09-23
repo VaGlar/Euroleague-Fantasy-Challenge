@@ -1,0 +1,14 @@
+# Fallback αν το fantasy API δεν είναι διαθέσιμο (token έληξε κ.λπ.).
+# Μετονόμασε σε my_team.yaml. Μορφή: "Επώνυμο (ΚΩΔΙΚΟΣ ΟΜΑΔΑΣ EuroLeague)".
+name: Η ομάδα μου
+players:
+  - Francisco (PAN)
+  - Jones (PAR)
+  - Montero (OLY)
+  - Larkin (ULK)
+  - Shengelia (DUB)
+  - Leday (HTA)
+  - Luwawu-Cabarrot (MAD)
+  - Clyburn (ULK)
+  - Wright (MIL)
+  - Nebo (BAR)

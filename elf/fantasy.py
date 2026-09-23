@@ -7,9 +7,11 @@ run `python -m elf.fantasy dump` to print what the API returns.
 """
 from __future__ import annotations
 
+import base64
 import json
 import os
 import sys
+import time
 
 import requests
 
@@ -22,6 +24,28 @@ class TokenError(RuntimeError):
 
 def _token() -> str | None:
     return os.environ.get("FANTASY_TOKEN", "").strip() or None
+
+
+def token_expiry() -> dict:
+    """Decode the token's expiry if it is a JWT (no signature check, read-only).
+
+    Returns {"kind": "jwt"|"opaque"|"missing", "days_left": float|None}.
+    Opaque (e.g. Laravel Sanctum) tokens carry no expiry: we only learn it
+    from a 401, which the pipeline reports.
+    """
+    tok = _token()
+    if not tok:
+        return {"kind": "missing", "days_left": None}
+    parts = tok.split(".")
+    if len(parts) != 3:
+        return {"kind": "opaque", "days_left": None}
+    try:
+        pad = parts[1] + "=" * (-len(parts[1]) % 4)
+        exp = json.loads(base64.urlsafe_b64decode(pad)).get("exp")
+    except (ValueError, json.JSONDecodeError):
+        return {"kind": "opaque", "days_left": None}
+    days = None if exp is None else round((exp - time.time()) / 86400, 2)
+    return {"kind": "jwt", "days_left": days}
 
 
 def get(path: str, params: dict | None = None, auth: bool = True):

@@ -41,7 +41,11 @@ xPIR = base × (1 + calib + pos·pos_dev + pace·pace_dev + margin·m/10 + blowo
 Από υπολογιστή: login στο site → F12 → Network → φίλτρο `dunkest` → refresh →
 κλικ σε request προς `fantaking-api.dunkest.com` → Request Headers → `Authorization: Bearer …` →
 αντέγραψε ό,τι ακολουθεί το `Bearer ` στο secret `FANTASY_TOKEN`.
-Αν λήξει, το `/health` και το report θα το αναφέρουν.
+- Αν είναι JWT, το pipeline διαβάζει την ημερομηνία λήξης και σε προειδοποιεί **3 μέρες πριν**.
+- Αν είναι opaque token, η λήξη φαίνεται μόνο από `401`. Τότε το report και το `/health` το αναφέρουν.
+- **Fallback χωρίς token:** αντέγραψε το `my_team.example.yaml` σε `my_team.yaml` με τους 10 παίκτες σου.
+  Πρόταση αρχηγού και xPIR της ομάδας δουλεύουν κανονικά. Τιμές και προτάσεις αλλαγών χρειάζονται το token.
+- Χρήση: μόνο GET, 3 φορές τη μέρα, για τον δικό σου λογαριασμό. Είναι ανεπίσημο API και μπορεί να αλλάξει χωρίς προειδοποίηση.
 
 ## Τοπικά
 ```
