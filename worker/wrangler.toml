@@ -1,0 +1,12 @@
+name = "elf-bot"
+main = "src/index.js"
+compatibility_date = "2026-09-01"
+
+[triggers]
+# 08:00 and 09:00 UTC = 11:00 Athens in summer / winter time (handler checks).
+crons = ["0 8 * * *", "0 9 * * *"]
+
+[vars]
+# Overridden at deploy time by the GitHub workflow.
+DATA_URL = "https://elf-dashboard.pages.dev/data"
+DASHBOARD_URL = "https://elf-dashboard.pages.dev"

@@ -1,0 +1,9 @@
+{
+  "name": "EuroLeague Fantasy Dashboard",
+  "short_name": "ELF",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#121211",
+  "theme_color": "#1a1a19",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}

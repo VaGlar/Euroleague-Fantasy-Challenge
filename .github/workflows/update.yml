@@ -1,0 +1,71 @@
+name: Update data & dashboard
+
+on:
+  schedule:
+    # UTC. Morning runs land before the 11:00 Athens notification even when
+    # GitHub's scheduler is late; the night run picks up finished games.
+    - cron: "15 4 * * *"
+    - cron: "30 7 * * *"
+    - cron: "30 22 * * *"
+  workflow_dispatch:
+    inputs:
+      backtest:
+        description: "Re-run the backtest and refit model weights"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Backtest (first run or on request)
+        if: ${{ inputs.backtest || hashFiles('data/public/model_params.json') == '' }}
+        run: |
+          python -m elf.history 2024 2025
+          python -m elf.backtest 2025 --save
+
+      - name: Pipeline
+        env:
+          FANTASY_TOKEN: ${{ secrets.FANTASY_TOKEN }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          DASHBOARD_URL: ${{ vars.DASHBOARD_URL || 'https://elf-dashboard.pages.dev' }}
+        run: python -m elf.run
+
+      - name: Commit data
+        run: |
+          git config user.name "elf-bot"
+          git config user.email "elf-bot@users.noreply.github.com"
+          git add data
+          git diff --cached --quiet || git commit -m "data: update $(date -u +%F\ %H:%M)"
+          git push
+
+      - name: Build site
+        run: |
+          mkdir -p site/data
+          cp -r web/* site/
+          cp data/public/*.json site/data/
+
+      - name: Deploy to Cloudflare Pages
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          npx --yes wrangler@3 pages project create elf-dashboard --production-branch main || true
+          npx --yes wrangler@3 pages deploy site --project-name elf-dashboard --branch main --commit-dirty=true

@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="ELF">
+<meta name="theme-color" content="#1a1a19">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon.svg">
+<title>ELF Dashboard</title>
+<style>
+:root {
+  color-scheme: light;
+  --surface-0: #f3f3f1; --surface-1: #fcfcfb; --border: #e2e1dc;
+  --text-primary: #0b0b0b; --text-secondary: #52514e; --text-muted: #7a7974;
+  --series-1: #2a78d6; --good: #008300; --critical: #d13a39; --accent: #eb6834;
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark;
+    --surface-0: #121211; --surface-1: #1a1a19; --border: #2e2e2c;
+    --text-primary: #ffffff; --text-secondary: #c3c2b7; --text-muted: #8f8e86;
+    --series-1: #3987e5; --good: #2fa84f; --critical: #e66767; --accent: #d95926;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --surface-0: #121211; --surface-1: #1a1a19; --border: #2e2e2c;
+  --text-primary: #ffffff; --text-secondary: #c3c2b7; --text-muted: #8f8e86;
+  --series-1: #3987e5; --good: #2fa84f; --critical: #e66767; --accent: #d95926;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--surface-0); color: var(--text-primary);
+  font: 15px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+header { position: sticky; top: 0; z-index: 2; background: var(--surface-1);
+  border-bottom: 1px solid var(--border); padding: 12px 16px 0; padding-top: max(12px, env(safe-area-inset-top)); }
+h1 { font-size: 18px; margin: 0; }
+.sub { color: var(--text-secondary); font-size: 13px; }
+nav { display: flex; gap: 4px; overflow-x: auto; margin-top: 8px; }
+nav button { border: 0; background: none; color: var(--text-secondary); padding: 8px 10px;
+  font: inherit; border-bottom: 2px solid transparent; white-space: nowrap; cursor: pointer; }
+nav button.on { color: var(--text-primary); border-color: var(--accent); font-weight: 600; }
+main { max-width: 1100px; margin: 0 auto; padding: 12px 16px 40px; }
+section { display: none; } section.on { display: block; }
+.card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px;
+  padding: 12px 14px; margin-bottom: 12px; }
+.card h2 { font-size: 15px; margin: 0 0 8px; }
+.filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+select, input { font: inherit; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--border);
+  background: var(--surface-1); color: var(--text-primary); }
+.tablewrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { text-align: left; padding: 6px 6px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+th { color: var(--text-secondary); font-weight: 600; font-size: 12px; cursor: pointer; user-select: none; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.bar { display: inline-block; height: 8px; border-radius: 0 4px 4px 0; background: var(--series-1);
+  vertical-align: middle; margin-right: 6px; }
+.up { color: var(--good); } .down { color: var(--critical); }
+.muted { color: var(--text-muted); }
+.pill { display: inline-block; font-size: 12px; padding: 1px 6px; border-radius: 999px;
+  border: 1px solid var(--border); color: var(--text-secondary); }
+.msg { white-space: pre-wrap; font-size: 14px; }
+.warn { border-left: 3px solid var(--accent); }
+a { color: var(--series-1); }
+ul.news { list-style: none; padding: 0; margin: 0; }
+ul.news li { padding: 8px 0; border-bottom: 1px solid var(--border); }
+</style>
+</head>
+<body>
+<header>
+  <h1>🏀 EuroLeague Fantasy — <span id="round">…</span></h1>
+  <div class="sub" id="updated">Φόρτωση…</div>
+  <nav id="tabs">
+    <button data-t="report" class="on">Report</button>
+    <button data-t="players">Παίκτες</button>
+    <button data-t="team">Η ομάδα μου</button>
+    <button data-t="teams">Ομάδες</button>
+    <button data-t="news">Νέα</button>
+    <button data-t="model">Μοντέλο</button>
+  </nav>
+</header>
+<main>
+  <section id="report" class="on"></section>
+  <section id="players">
+    <div class="filters">
+      <select id="fpos"><option value="">Όλες οι θέσεις</option><option>Guard</option><option>Forward</option><option>Center</option></select>
+      <select id="fteam"><option value="">Όλες οι ομάδες</option></select>
+      <select id="fturn"><option value="">Όλα τα turns</option></select>
+      <input id="fsearch" placeholder="Αναζήτηση" size="12">
+    </div>
+    <div class="card tablewrap"><table id="ptable"></table></div>
+    <p class="muted">xPIR: αναμενόμενο PIR αγωνιστικής. xPIR3: άθροισμα επόμενων 3 αγωνιστικών.
+      Ματσάρισμα: πόσο περισσότερο/λιγότερο PIR δίνει ο αντίπαλος στη θέση (▲ ευνοϊκό).</p>
+  </section>
+  <section id="team"></section>
+  <section id="teams"><div class="card tablewrap"><table id="rtable"></table></div>
+    <p class="muted">Net: διαφορά πόντων ανά 100 κατοχές (φετινά + περσινά με shrinkage).
+      Έδρα: πλεονέκτημα έδρας της ομάδας σε πόντους/100 κατοχές.</p></section>
+  <section id="news"></section>
+  <section id="model"></section>
+</main>
+<script>
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const nm = (n) => { const [s, f] = String(n || "").split(","); return (f ? f.trim()[0] + ". " : "") + (s || "").toLowerCase().replace(/(^|[\s-])\S/g, (m) => m.toUpperCase()); };
+const f1 = (x) => (x == null ? "–" : Number(x).toFixed(1));
+const get = (f) => fetch(`data/${f}?t=${Date.now()}`).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+
+document.querySelectorAll("nav button").forEach((b) => b.onclick = () => {
+  document.querySelectorAll("nav button, section").forEach((x) => x.classList.remove("on"));
+  b.classList.add("on"); $("#" + b.dataset.t).classList.add("on");
+  try { localStorage.setItem("tab", b.dataset.t); } catch (e) {}
+});
+try { const t = localStorage.getItem("tab"); if (t) document.querySelector(`nav [data-t=${t}]`)?.click(); } catch (e) {}
+
+function matchup(dev) {
+  if (dev == null) return "";
+  const pct = Math.round(dev * 100);
+  if (Math.abs(pct) < 3) return `<span class="muted">≈ 0%</span>`;
+  return pct > 0 ? `<span class="up">▲ +${pct}%</span>` : `<span class="down">▼ ${pct}%</span>`;
+}
+
+let P, sortKey = "x_now", sortDir = -1;
+function renderPlayers() {
+  const pos = $("#fpos").value, team = $("#fteam").value, turn = $("#fturn").value, q = $("#fsearch").value.toLowerCase();
+  const turnTeams = turn ? P.turns.find((t) => String(t.turn) === turn).teams : null;
+  let rows = P.players.filter((p) => p.x_now != null
+    && (!pos || p.position === pos) && (!team || p.team === team)
+    && (!turnTeams || turnTeams.includes(p.team)) && (!q || String(p.name).toLowerCase().includes(q)));
+  rows.sort((a, b) => ((a[sortKey] ?? -1e9) > (b[sortKey] ?? -1e9) ? 1 : -1) * sortDir);
+  const max = Math.max(...rows.map((r) => r.x_now || 0), 1);
+  const hasPrice = P.fantasy_ok;
+  const cols = [["name", "Παίκτης"], ["team", "Ομ."], ["position", "Θέση"], ["opp", "Αντ."], ["pos_dev", "Ματσάρ.", 1],
+    ["x_now", "xPIR", 1], ["x_h", "xPIR3", 1], ["season_pir", "PIR φέτος", 1], ["prev_pir", "PIR πέρσι", 1]]
+    .concat(hasPrice ? [["price", "Τιμή", 1], ["value", "Value", 1]] : []);
+  $("#ptable").innerHTML = "<thead><tr>" + cols.map(([k, l, n]) =>
+    `<th data-k="${k}" class="${n ? "num" : ""}">${l}${sortKey === k ? (sortDir < 0 ? " ↓" : " ↑") : ""}</th>`).join("") + "</tr></thead><tbody>"
+    + rows.slice(0, 250).map((r) => `<tr>
+      <td>${esc(nm(r.name))}${r.no_data ? ' <span class="pill">νέος</span>' : ""}</td>
+      <td>${esc(r.team)}</td><td>${esc((r.position || "")[0] || "")}</td>
+      <td>${r.home ? "🏠" : "✈️"} ${esc(r.opp)}</td><td class="num">${matchup(r.pos_dev)}</td>
+      <td class="num"><span class="bar" style="width:${Math.max(2, 60 * (r.x_now || 0) / max)}px"></span>${f1(r.x_now)}</td>
+      <td class="num">${f1(r.x_h)}</td><td class="num">${f1(r.season_pir)}</td><td class="num">${f1(r.prev_pir)}</td>
+      ${hasPrice ? `<td class="num">${f1(r.price)}</td><td class="num">${r.value == null ? "–" : r.value.toFixed(2)}</td>` : ""}</tr>`).join("") + "</tbody>";
+  $("#ptable").querySelectorAll("th").forEach((th) => th.onclick = () => {
+    const k = th.dataset.k; sortDir = sortKey === k ? -sortDir : -1; sortKey = k; renderPlayers();
+  });
+}
+
+function renderTeam(my) {
+  if (!my) {
+    $("#team").innerHTML = `<div class="card warn"><h2>Η ομάδα δεν είναι διαθέσιμη</h2>
+      <p>Χρειάζεται έγκυρο <code>FANTASY_TOKEN</code> στα GitHub Secrets.</p></div>`;
+    return;
+  }
+  const tr = (my.transfers || []).map((m) => `<tr><td>${esc(m.out)}</td><td>➜</td><td>${esc(m.in)}</td>
+    <td class="num up">+${m.gain}</td><td class="num">${m.price_out}→${m.price_in}</td></tr>`).join("");
+  $("#team").innerHTML = `<div class="card"><h2>${esc(my.name || "Η ομάδα μου")} · Υπόλοιπο ${f1(my.bank)} cr</h2>
+    <div class="tablewrap"><table><thead><tr><th>Παίκτης</th><th>Θέση</th><th>Αντ.</th><th class="num">xPIR</th><th class="num">xPIR3</th><th class="num">Τιμή</th></tr></thead><tbody>
+    ${my.players.map((r) => `<tr><td>${esc(nm(r.name))}</td><td>${esc(r.position || "")}</td><td>${r.home ? "🏠" : "✈️"} ${esc(r.opp || "")}</td>
+      <td class="num">${f1(r.x_now)}</td><td class="num">${f1(r.x_h)}</td><td class="num">${f1(r.price)}</td></tr>`).join("")}
+    </tbody></table></div></div>
+    <div class="card"><h2>Προτεινόμενες αλλαγές</h2>${tr ? `<div class="tablewrap"><table>${tr}</table></div>` : "<p>Καμία αλλαγή δεν ξεπερνά το όριο κέρδους.</p>"}</div>`;
+}
+
+(async () => {
+  const [p, rep, nw, mp] = await Promise.all([get("predictions.json"), get("report.json"), get("news.json"), get("model_params.json")]);
+  if (!p) { $("#updated").textContent = "Δεν υπάρχουν δεδομένα ακόμα."; return; }
+  P = p;
+  $("#round").textContent = `Αγωνιστική ${p.round}`;
+  $("#updated").textContent = `Ενημέρωση: ${new Date(p.generated).toLocaleString("el-GR")}`
+    + (p.fantasy_ok ? "" : " · χωρίς τιμές fantasy");
+
+  const health = (p.health || []).length ? `<div class="card warn"><h2>⚠️ Κατάσταση</h2>${p.health.map(esc).join("<br>")}</div>` : "";
+  $("#report").innerHTML = health + (rep?.messages || []).map((m) =>
+    `<div class="card"><div class="msg">${m.text.replace(/\n/g, "<br>")}</div></div>`).join("");
+
+  [...new Set(p.players.map((x) => x.team))].sort().forEach((t) => $("#fteam").insertAdjacentHTML("beforeend", `<option>${esc(t)}</option>`));
+  p.turns.forEach((t) => $("#fturn").insertAdjacentHTML("beforeend", `<option value="${t.turn}">Turn ${t.turn} (${t.date})</option>`));
+  ["#fpos", "#fteam", "#fturn", "#fsearch"].forEach((s) => $(s).addEventListener("input", renderPlayers));
+  renderPlayers();
+  renderTeam(p.my_team);
+
+  $("#rtable").innerHTML = `<thead><tr><th>#</th><th>Ομάδα</th><th class="num">Net</th><th class="num">Pace</th><th class="num">Έδρα</th><th class="num">Αγώνες</th></tr></thead><tbody>`
+    + p.team_ratings.map((t, i) => `<tr><td>${i + 1}</td><td>${esc(t.team)}</td>
+      <td class="num ${t.net >= 0 ? "up" : "down"}">${t.net >= 0 ? "+" : ""}${f1(t.net)}</td>
+      <td class="num">${f1(t.pace)}</td><td class="num">+${f1(t.hca)}</td><td class="num">${t.games}</td></tr>`).join("") + "</tbody>";
+
+  const d = nw?.digest;
+  $("#news").innerHTML = (d ? `<div class="card"><h2>Σύνοψη (AI)</h2><div class="msg">${esc(d.summary_el)}</div></div>`
+    + (d.expert?.length ? `<div class="card"><h2>Ειδικοί</h2>${d.expert.map((e) => `• <b>${esc(e.player)}</b> — ${esc(e.stance)}: ${esc(e.note)} <span class="muted">(${esc(e.source)})</span>`).join("<br>")}</div>` : "") : "")
+    + `<div class="card"><h2>Άρθρα</h2><ul class="news">${(nw?.articles || []).slice(0, 60).map((a) =>
+      `<li><a href="${esc(a.url)}" target="_blank" rel="noopener">${esc(a.title)}</a><br><span class="muted">${esc(a.source)} · ${a.date ? new Date(a.date).toLocaleString("el-GR") : ""}</span></li>`).join("")}</ul></div>`;
+
+  if (mp) {
+    const row = (k, l) => mp[k] ? `<tr><td>${l}</td><td class="num">${mp[k].mae}</td><td class="num">${mp[k].spearman}</td><td class="num">${Math.round(mp[k].top20_hit * 100)}%</td></tr>` : "";
+    $("#model").innerHTML = `<div class="card"><h2>Backtest σεζόν ${mp.season}-${(mp.season + 1) % 100}</h2>
+      <div class="tablewrap"><table><thead><tr><th>Μέθοδος</th><th class="num">Μέσο σφάλμα</th><th class="num">Spearman</th><th class="num">Top-20 hit</th></tr></thead><tbody>
+      ${row("baseline_prev_season", "Μόνο περσινό PIR")}${row("baseline_season_avg", "Μέσος όρος σεζόν")}
+      ${row("form_blend", "Φόρμα (blend)")}${row("fitted_context_insample", "Φόρμα + context")}
+      </tbody></table></div>
+      <p class="muted">Εκτός δείγματος (2ος γύρος): φόρμα ${mp.oos_second_half.form_blend.mae} → με context ${mp.oos_second_half.fitted_context.mae}.</p>
+      <pre class="muted" style="white-space:pre-wrap">${esc(JSON.stringify(mp.params, null, 1))}</pre></div>`;
+  }
+})();
+</script>
+</body>
+</html>

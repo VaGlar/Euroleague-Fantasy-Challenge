@@ -1,0 +1,56 @@
+# News & expert sources. Add a new source by appending an entry:
+#   type: rss      -> any RSS/Atom feed URL
+#   type: incrowd  -> EuroLeague official CMS API (categorySlug)
+# filter: true keeps only items that mention a EuroLeague team or player
+# (use it for general sports sites that also cover football etc.).
+# weight: how much the summariser should trust it (1 = normal, 2 = expert/fantasy).
+
+sources:
+  - name: EuroLeague (official)
+    type: incrowd
+    category: news
+    lang: en
+    weight: 1
+    filter: false
+
+  - name: Basketball Sphere – Fantasy
+    type: rss
+    url: https://basketballsphere.com/en/category/euroleague-fantasy/feed/
+    lang: en
+    weight: 2
+    filter: false
+
+  - name: Eurohoops
+    type: rss
+    url: https://www.eurohoops.net/en/feed/
+    lang: en
+    weight: 1
+    filter: true
+
+  - name: Eurohoops (GR)
+    type: rss
+    url: https://www.eurohoops.net/el/feed/
+    lang: el
+    weight: 1
+    filter: true
+
+  - name: Gazzetta
+    type: rss
+    url: https://www.gazzetta.gr/rss
+    lang: el
+    weight: 1
+    filter: true
+
+  - name: SDNA
+    type: rss
+    url: https://www.sdna.gr/rss.xml
+    lang: el
+    weight: 1
+    filter: true
+
+  - name: Novasports
+    type: rss
+    url: https://www.novasports.gr/rss
+    lang: el
+    weight: 1
+    filter: true
