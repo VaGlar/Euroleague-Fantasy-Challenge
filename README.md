@@ -47,6 +47,15 @@ xPIR = base × (1 + calib + pos·pos_dev + pace·pace_dev + margin·m/10 + blowo
   Πρόταση αρχηγού και xPIR της ομάδας δουλεύουν κανονικά. Τιμές και προτάσεις αλλαγών χρειάζονται το token.
 - Χρήση: μόνο GET, 3 φορές τη μέρα, για τον δικό σου λογαριασμό. Είναι ανεπίσημο API και μπορεί να αλλάξει χωρίς προειδοποίηση.
 
+### Telegram `/update` (προαιρετικό)
+Ξεκινάει το update από το κινητό και σου γράφει όταν τελειώσει.
+1. GitHub → Settings (του λογαριασμού) → Developer settings → Personal access tokens →
+   **Fine-grained tokens** → Generate new token.
+2. Repository access: **Only select repositories** → αυτό το repo.
+3. Permissions → Repository permissions → **Actions: Read and write**. Τίποτα άλλο.
+4. Expiration: έως το τέλος της σεζόν.
+5. Βάλ' το στο secret `GH_DISPATCH_TOKEN` και ξανατρέξε το **Deploy Telegram bot**.
+
 ## Τοπικά
 ```
 pip install -r requirements.txt

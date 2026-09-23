@@ -269,6 +269,18 @@ def suggest_transfers(team: pd.DataFrame, pool: pd.DataFrame, bank: float, max_t
     return moves
 
 
+def previous_digest(max_hours: int = 36):
+    """Last successful Gemini digest if recent enough (Gemini is often overloaded)."""
+    try:
+        old = json.loads((PUBLIC / "news.json").read_text())
+        at = datetime.fromisoformat(old["digest_at"])
+        if old.get("digest") and datetime.now(timezone.utc) - at < pd.Timedelta(hours=max_hours):
+            return old["digest"], old["digest_at"]
+    except (OSError, KeyError, TypeError, ValueError):
+        pass
+    return None, None
+
+
 def manual_team(table: pd.DataFrame) -> dict | None:
     """Fallback when the fantasy API is unavailable: my_team.yaml lists the squad.
 
@@ -322,18 +334,23 @@ def build(offline: bool = False) -> dict:
     team_of = dict(zip(ctx["name"], ctx["team"]))
     arts, failed = ([], []) if offline else news.collect(names)
     health += [f"πηγή εκτός: {f}" for f in failed]
-    dig = None
+    dig, dig_at = None, None
     try:
         dig = news.digest(arts, [f"{n} ({team_of.get(n)})" for n in names])
+        dig_at = datetime.now(timezone.utc).isoformat() if dig else None
     except Exception as e:  # noqa: BLE001
-        health.append(f"{e}" if isinstance(e, RuntimeError) else f"Gemini: {type(e).__name__}")
+        dig, dig_at = previous_digest()
+        note = " — κρατήθηκε η προηγούμενη σύνοψη" if dig else ""
+        health.append((f"{e}" if isinstance(e, RuntimeError)
+                       else f"Gemini: {type(e).__name__}") + note)
     avail = {}
     for a in (dig or {}).get("availability", []):
         f = news.AVAILABILITY_FACTOR.get(a.get("status"), 1.0)
         avail[_key(a.get("player", "").split(" (")[0])] = (f, a)
     ctx["avail"] = ctx["name"].map(lambda n: avail.get(_key(n), (1.0, None))[0])
     ctx["xpir"] = ctx["xpir"] * ctx["avail"]
-    _write("news.json", {"articles": arts[:120], "digest": dig, "failed": failed})
+    _write("news.json", {"articles": arts[:120], "digest": dig, "digest_at": dig_at,
+                         "failed": failed})
 
     # --- per-player tables (coaches ride along with position "Head Coach")
     if not pr["coaches"].empty:

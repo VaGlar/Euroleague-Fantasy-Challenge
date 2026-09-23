@@ -13,6 +13,10 @@ on:
         description: "Re-run the backtest and refit model weights"
         type: boolean
         default: false
+      notify:
+        description: "Message Telegram when finished (used by /update)"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -70,3 +74,20 @@ jobs:
         run: |
           npx --yes wrangler@3 pages project create elf-dashboard --production-branch main || true
           npx --yes wrangler@3 pages deploy site --project-name elf-dashboard --branch main --commit-dirty=true
+
+      - name: Notify Telegram
+        if: ${{ always() && inputs.notify }}
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          STATUS: ${{ job.status }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          if [ "$STATUS" = "success" ]; then
+            health=$(python -c "import json;h=json.load(open('data/public/predictions.json')).get('health') or [];print('\n'.join('⚠️ '+x for x in h) or 'Χωρίς προβλήματα')")
+            text=$(printf '✅ Το update ολοκληρώθηκε.\n%s\n\n/report για το report.' "$health")
+          else
+            text="❌ Το update απέτυχε: $RUN_URL"
+          fi
+          curl -sS "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" --data-urlencode "text=${text}" > /dev/null

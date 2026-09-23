@@ -18,6 +18,9 @@ jobs:
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
       TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+      GH_DISPATCH_TOKEN: ${{ secrets.GH_DISPATCH_TOKEN }}
+      GH_REPO: ${{ github.repository }}
+      GH_REF: ${{ github.event.repository.default_branch }}
       DASHBOARD_URL: ${{ vars.DASHBOARD_URL || 'https://elf-dashboard.pages.dev' }}
     steps:
       - uses: actions/checkout@v4
@@ -43,7 +46,8 @@ jobs:
         run: |
           set -o pipefail
           npx --yes wrangler@3 deploy \
-            --var DATA_URL:"$DASHBOARD_URL/data" --var DASHBOARD_URL:"$DASHBOARD_URL" 2>&1 | tee deploy.log
+            --var DATA_URL:"$DASHBOARD_URL/data" --var DASHBOARD_URL:"$DASHBOARD_URL" \
+            --var GH_REPO:"$GH_REPO" --var GH_REF:"$GH_REF" 2>&1 | tee deploy.log
           url=$(grep -oE 'https://[a-zA-Z0-9.-]+\.workers\.dev' deploy.log | head -1)
           if [ -z "$url" ]; then
             echo "::error::No workers.dev URL. Register a workers.dev subdomain once: Cloudflare dashboard → Workers & Pages → (onboarding) choose a subdomain, then re-run."
@@ -58,6 +62,11 @@ jobs:
           printf '%s' "$TELEGRAM_BOT_TOKEN" | npx --yes wrangler@3 secret put TELEGRAM_BOT_TOKEN
           printf '%s' "${TELEGRAM_CHAT_ID:-unset}" | npx --yes wrangler@3 secret put TELEGRAM_CHAT_ID
           printf '%s' "$hook" | npx --yes wrangler@3 secret put WEBHOOK_SECRET
+          if [ -n "$GH_DISPATCH_TOKEN" ]; then
+            printf '%s' "$GH_DISPATCH_TOKEN" | npx --yes wrangler@3 secret put GH_DISPATCH_TOKEN
+          else
+            echo "::notice::GH_DISPATCH_TOKEN not set: /update will be disabled."
+          fi
 
       - name: Register Telegram webhook
         run: |

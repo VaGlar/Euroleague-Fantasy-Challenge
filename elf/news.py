@@ -12,6 +12,7 @@ import html
 import json
 import os
 import re
+import time
 import unicodedata
 import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta, timezone
@@ -162,8 +163,12 @@ def digest(articles: list[dict], roster: list[str]) -> dict | None:
             break
         model_name = candidates.pop(0)
         tried.append(model_name)
-        r = requests.post(f"{base}/models/{model_name}:generateContent", headers=headers,
-                          json=body, timeout=120)
+        for wait in (0, 20, 45):  # 503 "high demand" is usually over within a minute
+            time.sleep(wait)
+            r = requests.post(f"{base}/models/{model_name}:generateContent", headers=headers,
+                              json=body, timeout=120)
+            if r.status_code not in (500, 503):
+                break
         if r.status_code == 200:
             text = r.json()["candidates"][0]["content"]["parts"][0]["text"]
             out = json.loads(text)

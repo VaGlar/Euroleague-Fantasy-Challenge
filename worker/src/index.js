@@ -1,7 +1,8 @@
 // Cloudflare Worker: 11:00 (Athens) game-day notifications + Telegram bot commands.
 //
-// Secrets (wrangler secret put): TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, WEBHOOK_SECRET
-// Vars (wrangler.toml): DATA_URL (base URL of data/public), DASHBOARD_URL
+// Secrets (wrangler secret put): TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, WEBHOOK_SECRET,
+//   GH_DISPATCH_TOKEN (optional: fine-grained PAT, Actions read/write on this repo only)
+// Vars: DATA_URL (base URL of data/public), DASHBOARD_URL, GH_REPO, GH_REF
 //
 // Two UTC crons (08:00 and 09:00) cover summer/winter time; the handler only
 // acts when it is 11:xx in Athens, so exactly one of them sends.
@@ -105,14 +106,33 @@ export default {
         const rows = p.players.filter((x) => x.x_now != null).slice(0, 15)
           .map((x, i) => `${i + 1}. ${x.name} (${x.team}) ${x.position || ""} — <b>${x.x_now.toFixed(1)}</b>`
             + (x.price ? ` · ${x.price}cr` : ""));
-        await send(env, chat, `📈 <b>Top xPIR — Αγωνιστική ${p.round}</b>\n` + rows.join("\n"));
+        await send(env, chat, `📈 <b>Top xPTS — Αγωνιστική ${p.round}</b>\n` + rows.join("\n"));
+      } else if (cmd === "/update") {
+        if (!env.GH_DISPATCH_TOKEN) {
+          await send(env, chat, "Λείπει το GH_DISPATCH_TOKEN — δες README (Telegram /update).");
+        } else {
+          const r = await fetch(
+            `https://api.github.com/repos/${env.GH_REPO}/actions/workflows/update.yml/dispatches`, {
+              method: "POST",
+              headers: {
+                authorization: `Bearer ${env.GH_DISPATCH_TOKEN}`,
+                accept: "application/vnd.github+json",
+                "user-agent": "elf-bot",
+                "x-github-api-version": "2022-11-28",
+              },
+              body: JSON.stringify({ ref: env.GH_REF, inputs: { notify: "true" } }),
+            });
+          await send(env, chat, r.status === 204
+            ? "⏳ Το update ξεκίνησε (~2–4 λεπτά). Θα σου γράψω όταν τελειώσει."
+            : `⚠️ GitHub ${r.status}: ${(await r.text()).slice(0, 200)}`);
+        }
       } else if (cmd === "/health") {
         const r = await fetch(`${env.DATA_URL}/predictions.json?t=${Date.now()}`);
         const p = await r.json();
         await send(env, chat, `Ενημέρωση: ${p.generated}\nFantasy: ${p.fantasy_ok ? "OK" : "ΟΧΙ"}\n`
           + ((p.health || []).join("\n") || "Χωρίς προβλήματα"));
       } else {
-        await send(env, chat, "/report — report ημέρας\n/top — top xPIR\n/health — κατάσταση\n"
+        await send(env, chat, "/report — report ημέρας\n/top — top xPTS\n/update — φρέσκα δεδομένα τώρα\n/health — κατάσταση\n"
           + (env.DASHBOARD_URL ? `\n${env.DASHBOARD_URL}` : ""));
       }
     } catch (e) {
