@@ -151,12 +151,27 @@ if __name__ == "__main__":
             print(json.dumps(roster(teams[0]["id"], md), indent=1)[:4000])
 
 
-BASKET_GAME_ID = 1  # /games/1/config lists the basketball formations (e.g. "2-2-1" = G-F-C)
+GAME_ID = 7  # EuroLeague Fantasy Challenge in Dunkest's /games/{id}/config (formations 27-31)
 
 
-def formations() -> dict[str, int]:
-    data = get(f"/games/{BASKET_GAME_ID}/config", auth=False)
-    return {f["name"]: f["id"] for f in data.get("formations", [])}
+def formations(current_id: int | None = None) -> dict[str, int]:
+    """Basketball formations {"2-2-1": id, ...} (G-F-C). The ids differ per game, so if
+    the team's current formation id isn't in the expected game, look it up."""
+    def load(gid):
+        try:
+            data = get(f"/games/{gid}/config", auth=False)
+        except requests.RequestException:
+            return {}
+        return {f["name"]: f["id"] for f in data.get("formations", [])}
+
+    forms = load(GAME_ID)
+    if current_id is None or current_id in forms.values():
+        return forms
+    for gid in range(1, 40):
+        f = load(gid)
+        if current_id in f.values() and "2-2-1" in f:
+            return f
+    return forms
 
 
 def save_roster(fantasy_team_id: int, matchday_id: int, body: dict) -> requests.Response:

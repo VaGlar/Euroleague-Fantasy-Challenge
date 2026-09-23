@@ -77,7 +77,7 @@ def load_state():
              for i, p in enumerate(court)}
 
     # --- sanity: our reading of court_position must agree with the game's formation
-    forms = fantasy.formations()
+    forms = fantasy.formations(raw.get("formation_id"))
     five = court[:5]
     name = "-".join(str(sum(p["position"]["name"] == pos for p in five)) for pos in POS)
     if forms.get(name) != raw.get("formation_id"):
