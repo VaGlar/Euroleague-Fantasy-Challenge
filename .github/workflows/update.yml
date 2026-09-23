@@ -45,6 +45,7 @@ jobs:
         env:
           FANTASY_TOKEN: ${{ secrets.FANTASY_TOKEN }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
           DASHBOARD_URL: ${{ vars.DASHBOARD_URL || 'https://elf-dashboard.pages.dev' }}
         run: python -m elf.run
 

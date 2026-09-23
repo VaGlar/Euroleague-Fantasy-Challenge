@@ -24,7 +24,6 @@ from .config import ROOT
 
 UA = {"User-Agent": "Mozilla/5.0 (elf-fantasy-helper; personal use)"}
 INCROWD = "https://article-cms-api.incrowdsports.com/v2/articles"
-GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
 
 # Greek/English stems that mark an article as EuroLeague-related.
 KEYWORDS = [
@@ -152,37 +151,51 @@ def digest(articles: list[dict], roster: list[str]) -> dict | None:
     }
     headers = {"x-goog-api-key": key}  # header, never in the URL (URLs end up in logs)
     base = "https://generativelanguage.googleapis.com/v1beta"
-    models = [GEMINI_MODEL]
-    last = None
-    for attempt in range(3):
-        if attempt == len(models):  # configured model unknown: ask the API what exists
-            models += _flash_models(base, headers)
-            if attempt == len(models):
-                break
-        model_name = models[attempt]
+    tried, errors = [], []
+    candidates = [m for m in [os.environ.get("GEMINI_MODEL")] if m] or []
+    listed = False
+    while True:
+        if not candidates and not listed:  # ask the API which stable flash models exist
+            candidates, listed = _flash_models(base, headers), True
+        candidates = [c for c in candidates if c not in tried]
+        if not candidates or len(tried) >= 4:
+            break
+        model_name = candidates.pop(0)
+        tried.append(model_name)
         r = requests.post(f"{base}/models/{model_name}:generateContent", headers=headers,
                           json=body, timeout=120)
         if r.status_code == 200:
             text = r.json()["candidates"][0]["content"]["parts"][0]["text"]
-            return json.loads(text)
+            out = json.loads(text)
+            out["_model"] = model_name
+            return out
         try:
-            msg = r.json().get("error", {}).get("message", "")[:160]
+            msg = r.json().get("error", {}).get("message", "")[:120]
         except ValueError:
-            msg = r.text[:160]
-        last = f"{r.status_code} {model_name}: {msg}"
-        if r.status_code != 404:
+            msg = r.text[:120]
+        errors.append(f"{r.status_code} {model_name}: {msg}")
+        if r.status_code not in (404, 429, 500, 503):  # bad key etc.: no point retrying
             break
-    raise RuntimeError(f"Gemini {last}")
+    raise RuntimeError("Gemini " + (" | ".join(errors[-2:]) or "δεν βρέθηκε διαθέσιμο μοντέλο"))
+
+
+_UNSTABLE = ("preview", "exp", "omni", "live", "audio", "image", "tts", "thinking", "embedding")
 
 
 def _flash_models(base: str, headers: dict) -> list[str]:
-    r = requests.get(f"{base}/models", headers=headers, timeout=30)
+    """Stable (free-tier friendly) flash models, newest first; lite variants last."""
+    r = requests.get(f"{base}/models", headers=headers, params={"pageSize": 200}, timeout=30)
     if r.status_code != 200:
         return []
     names = [m["name"].split("/", 1)[1] for m in r.json().get("models", [])
-             if "generateContent" in m.get("supportedGenerationMethods", [])
-             and "flash" in m["name"] and "image" not in m["name"] and "tts" not in m["name"]]
-    return sorted(names, reverse=True)[:2]
+             if "generateContent" in m.get("supportedGenerationMethods", [])]
+    stable = [n for n in names if "flash" in n and not any(u in n for u in _UNSTABLE)]
+
+    def rank(n: str):
+        ver = re.search(r"(\d+(?:\.\d+)?)", n)
+        return ("lite" in n, "latest" in n, -float(ver.group(1)) if ver else 0.0, n)
+
+    return sorted(stable, key=rank)
 
 
 AVAILABILITY_FACTOR = {"out": 0.0, "doubtful": 0.4, "questionable": 0.8, "available": 1.0}
