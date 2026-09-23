@@ -187,9 +187,9 @@ function squadTable(rows) {
   return `<div class="tablewrap"><table><thead><tr><th>Ρόλος</th><th>Παίκτης</th><th>Αντ.</th>
     <th class="num">xPTS</th><th class="num">xPTS3</th><th class="num">Τιμή</th></tr></thead><tbody>
     ${rows.map((r) => `<tr><td>${esc(r.role || "")}${r.captain ? " ★" : ""}</td>
-      <td>${esc(nm(r.name))}${inj(r)}<br><span class="muted">${esc(r.team)} · ${esc(r.position || "")}</span></td>
+      <td>${esc(nm(r.name))}${inj(r)}<br><span class="muted">${esc(r.team)} · ${esc(r.position || "")}${r.turn ? ` · <b>T${r.turn}</b>` : ""}</span></td>
       <td>${r.home ? "🏠" : "✈️"} ${esc(r.opp || "")}</td>
-      <td class="num">${f1(r.x_now)}</td><td class="num">${f1(r.x_h)}</td><td class="num">${f1(r.price)}</td></tr>`).join("")}
+      <td class="num">${r.actual != null ? `<b>${f1(r.actual)}</b>` : f1(r.x_now)}</td><td class="num">${f1(r.x_h)}</td><td class="num">${f1(r.price)}</td></tr>`).join("")}
     </tbody></table></div>`;
 }
 function renderTeam(my, best) {
@@ -206,7 +206,7 @@ function renderTeam(my, best) {
       <td class="num">${m.price_out}→${m.price_in}</td></tr>`).join("");
     const lim = (my.max_trades ?? 4) > 4 ? "απεριόριστες αλλαγές" : "έως 4 αλλαγές";
     html += `<div class="card"><h2>${esc(my.name || "Η ομάδα μου")} · Υπόλοιπο ${f1(my.bank)} cr</h2>
-      <p class="muted">Προτεινόμενη πεντάδα, 6ος και αρχηγός (★) για αυτή την αγωνιστική.</p>${squadTable(rows)}</div>
+      <p class="muted">Προτεινόμενη πεντάδα, 6ος και αρχηγός (★). Με έντονα: πόντοι που έχουν ήδη σημειωθεί. Προτίμησε στον πάγκο παίκτες μεταγενέστερου Turn: αν ένας βασικός αποτύχει, μπαίνουν στη θέση του.</p>${squadTable(rows)}</div>
       <div class="card"><h2>Προτεινόμενες αλλαγές <span class="muted">(${lim})</span></h2>
       ${tr ? `<p class="up">+${f1(my.transfer_gain)} xPTS στις επόμενες 3 αγωνιστικές · υπόλοιπο μετά: ${f1(my.bank_after)} cr</p>
         <div class="tablewrap"><table>${tr}</table></div>` : "<p>Καμία αλλαγή δεν αξίζει (κέρδος &lt; 3 xPTS ανά αλλαγή).</p>"}</div>`;

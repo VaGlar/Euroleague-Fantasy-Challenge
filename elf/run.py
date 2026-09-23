@@ -17,7 +17,7 @@ import pandas as pd
 import yaml
 
 from . import el_api, fantasy, history, model, news, optimize
-from .config import BUDGET, CURRENT_SEASON, PUBLIC, ROOT, TIMEZONE
+from .config import BUDGET, COACH_POINTS, CURRENT_SEASON, PUBLIC, ROOT, TIMEZONE, WIN_BONUS
 
 ATH = ZoneInfo(TIMEZONE)
 HORIZON = 3  # rounds used for transfer value
@@ -83,7 +83,9 @@ def predictions(season: int, extra: pd.DataFrame | None = None):
     if upcoming.empty:
         return None
     first = int(upcoming["round"].iloc[0])
-    fx = upcoming[upcoming["round"].between(first, first + HORIZON - 1)]
+    # whole current round (incl. turns already played, so the squad stays complete)
+    fx = games[games["round"].between(first, first + HORIZON - 1)
+               & (games["phase"] == upcoming["phase"].iloc[0])]
     ctx = model.context_rows(fx, roster, ratings, pdev)
     ctx = ctx.merge(base[["base", "last3_pir", "season_pir", "prev_pir", "games", "season_min",
                           "prev_min"]] if "prev_min" in base else base,
@@ -290,7 +292,10 @@ def _opt_rows(df: pd.DataFrame) -> list[dict]:
              "x_h": float(r["x_h"]) if r["x_h"] == r["x_h"] else 0.0,
              "x_now": float(r["x_now"]) if r["x_now"] == r["x_now"] else 0.0,
              "name": r["name"], "team": r["team"], "label": r.get("label") or r["name"],
-             "opp": r.get("opp"), "home": r.get("home")} for r in d.to_dict("records")]
+             "opp": r.get("opp"), "home": r.get("home"),
+             "turn": int(r["turn"]) if r.get("turn") == r.get("turn") and r.get("turn") else None,
+             "actual": r.get("actual") if r.get("actual") == r.get("actual") else None}
+            for r in d.to_dict("records")]
 
 
 def _pair_trades(tr: dict) -> list[dict]:
@@ -362,6 +367,30 @@ def manual_team(table: pd.DataFrame) -> dict | None:
 
 # ---------------------------------------------------------------- report
 
+def actual_points(fx: pd.DataFrame, rnd: int, table: pd.DataFrame) -> pd.Series:
+    """Fantasy points already scored this round (PIR, +10% on a win; coach by margin)."""
+    played = fx[(fx["round"] == rnd) & fx["played"]]
+    if played.empty:
+        return pd.Series(np.nan, index=table.index)
+    box = history.load("players", CURRENT_SEASON)
+    box = box[box["gamecode"].isin(played["gamecode"])]
+    margin = {}
+    for g in played.itertuples():
+        margin[g.home] = g.home_score - g.away_score
+        margin[g.away] = g.away_score - g.home_score
+    pir = dict(zip(box["person_id"], box["pir"]))
+
+    def pts(r):
+        m = margin.get(r["team"])
+        if m is None:
+            return np.nan
+        if r["position"] == "Head Coach":
+            return next(p for lo, hi, p in COACH_POINTS if lo < m <= hi)
+        v = pir.get(r["person_id"])
+        return np.nan if v is None else v * (1 + WIN_BONUS * (m > 0))
+    return table.apply(pts, axis=1)
+
+
 def turns(fx: pd.DataFrame, rnd: int) -> list[dict]:
     g = fx[fx["round"] == rnd].copy()
     g["local"] = g["utc"].dt.tz_convert(ATH)
@@ -369,6 +398,7 @@ def turns(fx: pd.DataFrame, rnd: int) -> list[dict]:
     out = []
     for i, (day, d) in enumerate(sorted(g.groupby("day"), key=lambda x: x[0]), 1):
         out.append({"turn": i, "date": str(day), "first_tip": d["local"].min().strftime("%H:%M"),
+                    "done": bool(d["played"].all()),
                     "teams": sorted(set(d["home"]) | set(d["away"])),
                     "games": [f"{a.home}-{a.away} {a.local:%H:%M}" for a in d.itertuples()]})
     return out
@@ -427,6 +457,10 @@ def build(offline: bool = False) -> dict:
                                             home=("is_home", "first"), margin=("margin", "first"),
                                             pos_dev=("pos_dev", "first"))
     table = agg.join(nr, how="left").reset_index()
+    trn = turns(pr["fixtures"], rnd)
+    team_turn = {tm: tu["turn"] for tu in trn for tm in tu["teams"]}
+    table["turn"] = table["team"].map(team_turn)
+    table["actual"] = actual_points(pr["fixtures"], rnd, table)
 
     # --- fantasy prices / my team
     my, best = None, None
@@ -503,7 +537,6 @@ def build(offline: bool = False) -> dict:
         my = manual_team(table)
 
     table = table.sort_values("x_now", ascending=False)
-    trn = turns(pr["fixtures"], rnd)
     ratings = pr["ratings"].sort_values("net", ascending=False).reset_index()
     _write("predictions.json", {
         "generated": datetime.now(timezone.utc).isoformat(), "round": rnd, "turns": trn,
@@ -524,6 +557,67 @@ def _fmt(r) -> str:
     return f"{r['name'].split(',')[0].title()} ({r['team']}) {ha} vs {r.get('opp')} — <b>{r['x_now']:.1f}</b>"
 
 
+def _short(r) -> str:
+    return f"{str(r['name']).split(',')[0].title()} ({r['team']})"
+
+
+def turn_check(tu: dict, table: pd.DataFrame, my: dict | None) -> list[str]:
+    """Before a later turn: compare what your earlier-turn players actually scored
+    with what your players of this turn are expected to score."""
+    lines = ["⭐ <b>Αρχηγός & αλλαγές πάγκου πριν το Turn " f"{tu['turn']}</b>"]
+    if not my:
+        today = table[table["team"].isin(tu["teams"]) & (table["position"] != "Head Coach")]
+        lines.append("Κράτα τον αρχηγό σου αν έφερε τουλάχιστον όσα ο καλύτερος σήμερα:")
+        return lines + [f"• {_fmt(r)}" for r in today.head(3).to_dict("records")]
+    squad = table[table["fantasy_id"].isin([p["fantasy_id"] for p in my["players"]])
+                  & (table["position"] != "Head Coach")]
+    role = {p["id"]: p["role"] for p in (my.get("lineup") or [])}
+    squad = squad.assign(role=squad["fantasy_id"].map(lambda i: role.get(int(i)) if i == i else None))
+    done = squad[squad["actual"].notna()].sort_values("actual")
+    today = squad[squad["team"].isin(tu["teams"])].sort_values("x_now", ascending=False)
+    if done.empty:
+        lines.append("<i>Θα ενημερωθεί το πρωί του Turn με τα πραγματικά σκορ του "
+                     "προηγούμενου Turn (αρχηγός & αλλαγές πάγκου).</i>")
+        return lines
+    if len(done):
+        lines.append("Έφεραν ήδη: " + ", ".join(f"{_short(r)} <b>{r['actual']:.0f}</b>"
+                                                 for r in done.to_dict("records")))
+    if len(today):
+        lines.append("Παίζουν σήμερα: " + ", ".join(f"{_short(r)} xPTS {r['x_now']:.1f}"
+                                                    for r in today.to_dict("records")))
+    # captain: switch if today's best expected beats what the captain already scored
+    cap_id = my.get("captain_id")
+    cap = squad[squad["fantasy_id"] == cap_id]
+    today_court = today[today["role"].isin(["5άδα"])] if role else today
+    if len(cap) and len(today_court):
+        c, best = cap.iloc[0], today_court.iloc[0]
+        if c["actual"] == c["actual"]:  # captain already played
+            if best["x_now"] > c["actual"] and best["fantasy_id"] != cap_id:
+                lines.append(f"👉 Ο αρχηγός {_short(c)} έφερε {c['actual']:.0f} < xPTS "
+                             f"{best['x_now']:.1f} του {_short(best)}: <b>μετέφερε το x2</b>.")
+            else:
+                lines.append(f"👉 Ο αρχηγός {_short(c)} έφερε {c['actual']:.0f}: <b>κράτα τον</b>.")
+    # bench swaps: a played starter below a not-yet-played bench player's expectation
+    starters_done = done[done["role"].isin(["5άδα", "6ος"])] if role else done
+    bench_today = today[today["role"] == "πάγκος"] if role else today
+    swaps = [(d, t) for d in starters_done.to_dict("records") for t in bench_today.to_dict("records")
+             if t["x_now"] > d["actual"] + 1
+             and (d["role"] == "6ος" or t["position"] == d["position"]
+                  or (starters_done["position"] == d["position"]).sum() > 1)]
+    if swaps:
+        lines.append("🔄 <b>Αλλαγή βασικού ↔ πάγκου</b> (βάσει της πεντάδας που σου πρότεινα):")
+        seen = set()
+        for d, t in swaps:
+            if d["fantasy_id"] in seen or t["fantasy_id"] in seen:
+                continue
+            seen |= {d["fantasy_id"], t["fantasy_id"]}
+            lines.append(f"• {_short(d)} ({d['actual']:.0f}) ➜ {_short(t)} (xPTS {t['x_now']:.1f})")
+    elif len(bench_today):
+        lines.append("🔄 Καμία αλλαγή πάγκου δεν αξίζει: οι βασικοί σου έφεραν περισσότερα "
+                     "από όσα αναμένονται από τον πάγκο σήμερα.")
+    return lines
+
+
 def messages(rnd, trn, table, my, dig, health) -> list[dict]:
     dash = os.environ.get("DASHBOARD_URL", "")
     t_all = table.dropna(subset=["x_now"])
@@ -531,6 +625,8 @@ def messages(rnd, trn, table, my, dig, health) -> list[dict]:
     t = t_all[t_all["position"] != "Head Coach"]
     msgs = []
     for tu in trn:
+        if tu.get("done"):
+            continue
         day = datetime.fromisoformat(tu["date"])
         playing = t[t["team"].isin(tu["teams"])]
         lines = [f"🏀 <b>Αγωνιστική {rnd} — Turn {tu['turn']}</b> "
@@ -558,10 +654,12 @@ def messages(rnd, trn, table, my, dig, health) -> list[dict]:
                 lines += ["🔁 Καμία αλλαγή δεν αξίζει αυτή την αγωνιστική.", ""]
             if lu:
                 role = lambda r: [p for p in lu if p["role"] == r]  # noqa: E731
-                nm_ = lambda p: f"{p['name'].split(',')[0].title()} ({p['position'][0]})"  # noqa: E731
+                nm_ = lambda p: (f"{p['name'].split(',')[0].title()} ({p['position'][0]}"  # noqa: E731
+                                 + (f", T{p['turn']}" if p.get("turn") else "") + ")")
                 lines.append("👥 <b>Προτεινόμενη πεντάδα</b> (με την τωρινή ομάδα)")
                 lines.append(", ".join(nm_(p) for p in role("5άδα")))
                 lines.append("6ος: " + ", ".join(nm_(p) for p in role("6ος")))
+                lines.append("Πάγκος: " + ", ".join(nm_(p) for p in role("πάγκος")))
                 lines.append("")
             lines.append("⭐ <b>Αρχηγός</b>" + (" (από την πεντάδα σου)" if lu else ""))
             if len(cand_now):
@@ -571,10 +669,7 @@ def messages(rnd, trn, table, my, dig, health) -> list[dict]:
             lines.append("<i>Βάλε αρχηγό στο Turn 1· αν δεν φτάσει το xPTS του plan B, "
                          "μεταφέρεις το x2 πριν το Turn 2.</i>")
         else:
-            lines.append("⭐ <b>Έλεγχος αρχηγού</b>")
-            lines.append("Κράτα τον αρχηγό σου αν έφερε τουλάχιστον όσα ο καλύτερος σήμερα:")
-            lines += [f"• {_fmt(r)}" for r in (cand_now if len(cand_now) else playing)
-                      .head(3).to_dict("records")]
+            lines += turn_check(tu, table, my)
         if tu["turn"] == 1 and len(coaches):
             c = coaches.sort_values("x_now", ascending=False).iloc[0]
             line = (f"🧑‍💼 <b>Καλύτερος coach αγωνιστικής</b>: {c['name'].split(',')[0].title()} ({c['team']}) "
