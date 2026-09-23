@@ -19,14 +19,30 @@ from .config import BENCH_MULTIPLIER, BUDGET
 
 SQUAD = {"Guard": 4, "Forward": 4, "Center": 2, "Head Coach": 1}
 COURT = ("Guard", "Forward", "Center")
+LATER_PENALTY = 1000.0
+PLAN_MIN_X = 5.0  # a later-turn bench player below this is not worth a swap plan
+
+
+def later_turn_ids(squad: list[dict]) -> set:
+    """Unplayed court players whose game is after the current turn (the earliest turn
+    among unplayed court players). Rule: the lineup for a turn is built from players
+    of that turn; later-turn players wait on the bench and come in if needed."""
+    court = [p for p in squad if p["position"] != "Head Coach" and not p.get("played")]
+    turns = [p["turn"] for p in court if p.get("turn")]
+    if not turns:
+        return set()
+    first = min(turns)
+    return {p["id"] for p in court if (p.get("turn") or first) > first}
 
 
 def _model(players: list[dict], value: str, now: str, budget: float,
            owned: set | None = None, max_trades: int | None = None,
            fixed: set | None = None, keep: set | None = None,
            bench_bonus: dict | None = None, bench_only: set | None = None,
-           no_captain: set | None = None):
-    """Build and solve. players: dicts with id, position, price, <value>, <now>."""
+           no_captain: set | None = None, later: set | None = None):
+    """Build and solve. players: dicts with id, position, price, <value>, <now>.
+    `later`: players whose game is in a later turn; they start (five / sixth man) only
+    if the lineup is impossible otherwise (big penalty per such starter)."""
     m = pulp.LpProblem("elf", pulp.LpMaximize)
     ids = range(len(players))
     pick = {i: pulp.LpVariable(f"p{i}", cat="Binary") for i in ids}
@@ -50,6 +66,8 @@ def _model(players: list[dict], value: str, now: str, budget: float,
             m += full == 0
         if no_captain and p["id"] in no_captain:   # already played: can't take the armband
             m += cap[i] == 0
+        if later and p["id"] in later:
+            obj.append(-LATER_PENALTY * full)
     m += pulp.lpSum(obj)
     m += pulp.lpSum(float(players[i]["price"]) * pick[i] for i in ids) <= budget + 1e-6
     for pos, n in SQUAD.items():
@@ -71,6 +89,8 @@ def _model(players: list[dict], value: str, now: str, budget: float,
     status = m.solve(pulp.PULP_CBC_CMD(msg=0, timeLimit=30))
     if pulp.LpStatus[status] != "Optimal":
         return None
+    n_later = sum(1 for i, p in enumerate(players) if later and p["id"] in later
+                  and five[i].value() + six[i].value() > .5)
 
     def role(i):
         if players[i]["position"] == "Head Coach":
@@ -79,7 +99,7 @@ def _model(players: list[dict], value: str, now: str, budget: float,
 
     team = [{**players[i], "role": role(i), "captain": cap[i].value() > .5}
             for i in ids if pick[i].value() > .5]
-    return {"team": team, "objective": round(pulp.value(m.objective), 1),
+    return {"team": team, "objective": round(pulp.value(m.objective) + LATER_PENALTY * n_later, 1),
             "cost": round(sum(float(p["price"]) for p in team), 1)}
 
 
@@ -118,7 +138,7 @@ def lineup(squad: list[dict], now="x_now"):
                 bonus[p["id"]] = (1 - BENCH_MULTIPLIER) * _expected_shortfall(
                     float(p.get(now) or 0), typical_starter)
     return _model(squad, now, now, budget=1e9, fixed={p["id"] for p in squad},
-                  bench_bonus=bonus)
+                  bench_bonus=bonus, later=later_turn_ids(squad))
 
 
 def transfers(squad: list[dict], pool: list[dict], bank: float, max_trades: int = 4,
@@ -158,46 +178,55 @@ def lineup_in_round(squad: list[dict], now="x_now"):
     bench_only = {p["id"] for p in squad if p.get("played") and p.get("cur_role") == "πάγκος"}
     no_cap = {p["id"] for p in squad if p.get("played") and not p.get("cur_captain")}
     return _model(squad, now, now, budget=1e9, fixed={p["id"] for p in squad},
-                  bench_only=bench_only, no_captain=no_cap)
+                  bench_only=bench_only, no_captain=no_cap, later=later_turn_ids(squad))
 
 
 def defer_later_turns(team: list[dict]) -> tuple[list[dict], list[dict]]:
-    """Start the earlier-turn player, keep the later-turn one on the bench.
+    """Swap plan for the later turns.
 
-    If a starter (five or sixth man) plays in a later turn than a bench player who
-    could take his slot, swapping them now is never worse *provided you swap back
-    before the later turn when needed*: after the early game you know what the early
-    player scored; bring the later one in only if the early one fell short. You also
-    keep a valid lineup if the later player is ruled out. Returns the adjusted team
-    and the plan [{"start": early, "bench": later}] to act on before the later turn.
-    Players who already played are never moved."""
+    The lineup starts only current-turn players (see `later_turn_ids`); each later-turn
+    bench player is paired with the weakest current-turn starter he could replace
+    (the five must keep >= 1 Guard, Forward and Center). Before the later turn: if the
+    early starter scored less than the later player's xPTS, swap them.
+    If a later-turn player still starts (no valid lineup otherwise), he is moved to the
+    bench when an earlier-turn bench player can take his slot. Players who already
+    played are never moved. Returns (team, plan [{"start": early, "bench": later}])."""
     team = [dict(p) for p in team]
     court = [p for p in team if p["role"] in ("5άδα", "6ος", "πάγκος")]
     turns = [p.get("turn") for p in court if p.get("turn") and not p.get("played")]
     if not turns:
         return team, []
     first = min(turns)
-    plan = []
+    turn = lambda p: p.get("turn") or first  # noqa: E731
 
     def five_ok(five):
         return all(any(q["position"] == pos for q in five) for pos in COURT)
 
-    later = sorted((p for p in court if p["role"] in ("5άδα", "6ος") and not p.get("played")
-                    and (p.get("turn") or first) > first),
-                   key=lambda p: -(p.get("x_now") or 0))
-    for lp in later:
+    def fits(out, inn):  # can `inn` take the slot of `out`?
+        if out["role"] != "5άδα":
+            return True
+        return five_ok([q for q in court if q["role"] == "5άδα" and q is not out] + [inn])
+
+    # safety net: a later-turn starter left by an infeasible lineup
+    for lp in sorted((p for p in court if p["role"] in ("5άδα", "6ος") and not p.get("played")
+                      and turn(p) > first), key=lambda p: -(p.get("x_now") or 0)):
         cands = [e for e in court if e["role"] == "πάγκος" and not e.get("played")
-                 and (e.get("turn") or first) < (lp.get("turn") or first)]
-        if lp["role"] == "5άδα":  # the five must keep >= 1 Guard, Forward and Center
-            five = [q for q in court if q["role"] == "5άδα" and q is not lp]
-            cands = [e for e in cands if five_ok(five + [e])]
+                 and turn(e) < turn(lp) and fits(lp, e)]
+        if cands:
+            e = max(cands, key=lambda q: q.get("x_now") or 0)
+            e["role"], lp["role"] = lp["role"], "πάγκος"
+
+    plan, used = [], set()
+    for lp in sorted((p for p in court if p["role"] == "πάγκος" and not p.get("played")
+                      and turn(p) > first and (p.get("x_now") or 0) >= PLAN_MIN_X), key=lambda p: -(p.get("x_now") or 0)):
+        cands = [e for e in court if e["role"] in ("5άδα", "6ος") and id(e) not in used
+                 and turn(e) < turn(lp) and fits(e, lp)]
         if not cands:
             continue
-        e = max(cands, key=lambda q: q.get("x_now") or 0)
-        e["role"], lp["role"] = lp["role"], "πάγκος"
+        e = min(cands, key=lambda q: q.get("x_now") or 0)
+        used.add(id(e))
         plan.append({"start": e, "bench": lp})
-    # the armband must stay on a starter: if it moved to the bench, give it to the best
-    # early starter (the later player remains the plan-B captain)
+    # the armband must stay on a starter
     cap = next((p for p in team if p.get("captain")), None)
     if cap is not None and cap["role"] != "5άδα":
         cap["captain"] = False
