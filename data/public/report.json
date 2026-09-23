@@ -1,16 +1,16 @@
 {
- "generated": "2026-09-23T11:11:34.031151+00:00",
+ "generated": "2026-09-23T12:40:32.694417+00:00",
  "round": 1,
  "messages": [
   {
    "date": "2026-09-24",
    "turn": 1,
-   "text": "🏀 <b>Αγωνιστική 1 — Turn 1</b> (Πέμπτη 24/09, 1ο τζάμπολ 19:00)\n\n📅 DUB-MAD 19:00 · HTA-MUN 19:00 · RED-ZAL 21:00 · PAN-PRS 21:15 · BAS-OLY 21:30 · BAR-IST 21:30 · ASV-TEL 21:45\n\n⭐ <b>Αρχηγός</b>\nTurn 1: Francisco (PAN) 🏠 vs PRS — <b>19.6</b>\nPlan B (Turn 2+): Jones (PAR) 🏠 vs MIL — <b>17.2</b>\n<i>Βάλε αρχηγό στο Turn 1· αν δεν φτάσει το xPIR του plan B, μεταφέρεις το x2 πριν το Turn 2.</i>\n\n📈 <b>Top xPIR αγωνιστικής</b>\n1. Francisco (PAN) 🏠 vs PRS — <b>19.6</b>\n2. Jones (PAR) 🏠 vs MIL — <b>17.2</b>\n3. James (IST) ✈️ vs BAR — <b>17.1</b>\n4. Montero (OLY) ✈️ vs BAS — <b>17.0</b>\n5. Wright (MIL) ✈️ vs PAR — <b>16.5</b>\n6. Shengelia (DUB) 🏠 vs MAD — <b>15.3</b>\n7. Leday (HTA) 🏠 vs MUN — <b>15.3</b>\n8. Luwawu-Cabarrot (MAD) ✈️ vs DUB — <b>15.2</b>\n\n⚠️ fantasy: token: FANTASY_TOKEN is not set"
+   "text": "🏀 <b>Αγωνιστική 1 — Turn 1</b> (Πέμπτη 24/09, 1ο τζάμπολ 19:00)\n\n📅 DUB-MAD 19:00 · HTA-MUN 19:00 · RED-ZAL 21:00 · PAN-PRS 21:15 · BAS-OLY 21:30 · BAR-IST 21:30 · ASV-TEL 21:45\n\n⭐ <b>Αρχηγός</b>\nTurn 1: Francisco (PAN) 🏠 vs PRS — <b>19.6</b>\nPlan B (Turn 2+): Jones (PAR) 🏠 vs MIL — <b>17.2</b>\n<i>Βάλε αρχηγό στο Turn 1· αν δεν φτάσει το xPIR του plan B, μεταφέρεις το x2 πριν το Turn 2.</i>\n\n📈 <b>Top xPIR αγωνιστικής</b>\n1. Francisco (PAN) 🏠 vs PRS — <b>19.6</b>\n2. Jones (PAR) 🏠 vs MIL — <b>17.2</b>\n3. James (IST) ✈️ vs BAR — <b>17.1</b>\n4. Montero (OLY) ✈️ vs BAS — <b>17.0</b>\n5. Wright (MIL) ✈️ vs PAR — <b>16.5</b>\n6. Shengelia (DUB) 🏠 vs MAD — <b>15.3</b>\n7. Leday (HTA) 🏠 vs MUN — <b>15.3</b>\n8. Luwawu-Cabarrot (MAD) ✈️ vs DUB — <b>15.2</b>\n\n⚠️ fantasy: token: FANTASY_TOKEN is not set\n\n🔗 <a href=\"https://elf-dashboard.pages.dev\">Dashboard</a>"
   },
   {
    "date": "2026-09-25",
    "turn": 2,
-   "text": "🏀 <b>Αγωνιστική 1 — Turn 2</b> (Παρασκευή 25/09, 1ο τζάμπολ 20:00)\n\n📅 BES-PAM 20:00 · ULK-VIR 20:45 · PAR-MIL 21:45\n\n⭐ <b>Έλεγχος αρχηγού</b>\nΚράτα τον αρχηγό σου αν έφερε ≥ ×1 του καλύτερου διαθέσιμου σήμερα:\n• Jones (PAR) 🏠 vs MIL — <b>17.2</b>\n• Wright (MIL) ✈️ vs PAR — <b>16.5</b>\n• Clyburn (ULK) 🏠 vs VIR — <b>15.1</b>\n\n📈 <b>Top xPIR σήμερα</b>\n1. Jones (PAR) 🏠 vs MIL — <b>17.2</b>\n2. Wright (MIL) ✈️ vs PAR — <b>16.5</b>\n3. Clyburn (ULK) 🏠 vs VIR — <b>15.1</b>\n4. Larkin (ULK) 🏠 vs VIR — <b>15.1</b>\n5. Forrest (ULK) 🏠 vs VIR — <b>13.5</b>\n6. Shields (ULK) 🏠 vs VIR — <b>12.8</b>\n7. Mirotic (PAM) ✈️ vs BES — <b>11.9</b>\n8. Omoruyi (BES) 🏠 vs PAM — <b>11.0</b>\n\n⚠️ fantasy: token: FANTASY_TOKEN is not set"
+   "text": "🏀 <b>Αγωνιστική 1 — Turn 2</b> (Παρασκευή 25/09, 1ο τζάμπολ 20:00)\n\n📅 BES-PAM 20:00 · ULK-VIR 20:45 · PAR-MIL 21:45\n\n⭐ <b>Έλεγχος αρχηγού</b>\nΚράτα τον αρχηγό σου αν έφερε ≥ ×1 του καλύτερου διαθέσιμου σήμερα:\n• Jones (PAR) 🏠 vs MIL — <b>17.2</b>\n• Wright (MIL) ✈️ vs PAR — <b>16.5</b>\n• Clyburn (ULK) 🏠 vs VIR — <b>15.1</b>\n\n📈 <b>Top xPIR σήμερα</b>\n1. Jones (PAR) 🏠 vs MIL — <b>17.2</b>\n2. Wright (MIL) ✈️ vs PAR — <b>16.5</b>\n3. Clyburn (ULK) 🏠 vs VIR — <b>15.1</b>\n4. Larkin (ULK) 🏠 vs VIR — <b>15.1</b>\n5. Forrest (ULK) 🏠 vs VIR — <b>13.5</b>\n6. Shields (ULK) 🏠 vs VIR — <b>12.8</b>\n7. Mirotic (PAM) ✈️ vs BES — <b>11.9</b>\n8. Omoruyi (BES) 🏠 vs PAM — <b>11.0</b>\n\n⚠️ fantasy: token: FANTASY_TOKEN is not set\n\n🔗 <a href=\"https://elf-dashboard.pages.dev\">Dashboard</a>"
   }
  ]
 }
