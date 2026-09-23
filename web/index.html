@@ -131,16 +131,15 @@ function renderPlayers() {
   rows.sort((a, b) => ((a[sortKey] ?? -1e9) > (b[sortKey] ?? -1e9) ? 1 : -1) * sortDir);
   const max = Math.max(...rows.map((r) => r.x_now || 0), 1);
   const hasPrice = P.fantasy_ok;
-  const cols = [["name", "Παίκτης"], ["team", "Ομ."], ["position", "Θέση"], ["opp", "Αντ."], ["pos_dev", "Ματσάρ.", 1],
-    ["x_now", "xPIR", 1], ["x_h", "xPIR3", 1], ["season_pir", "PIR φέτος", 1], ["prev_pir", "PIR πέρσι", 1]]
+  const cols = [["name", "Παίκτης"], ["x_now", "xPIR", 1], ["opp", "Αντ."], ["pos_dev", "Ματσάρ.", 1],
+    ["x_h", "xPIR3", 1], ["season_pir", "PIR φέτος", 1], ["prev_pir", "PIR πέρσι", 1]]
     .concat(hasPrice ? [["price", "Τιμή", 1], ["value", "Value", 1]] : []);
   $("#ptable").innerHTML = "<thead><tr>" + cols.map(([k, l, n]) =>
     `<th data-k="${k}" class="${n ? "num" : ""}">${l}${sortKey === k ? (sortDir < 0 ? " ↓" : " ↑") : ""}</th>`).join("") + "</tr></thead><tbody>"
     + rows.slice(0, 250).map((r) => `<tr>
-      <td>${esc(nm(r.name))}${r.no_data ? ' <span class="pill">νέος</span>' : ""}</td>
-      <td>${esc(r.team)}</td><td>${esc((r.position || "")[0] || "")}</td>
+      <td>${esc(nm(r.name))}${r.no_data ? ' <span class="pill">νέος</span>' : ""}<br><span class="muted">${esc(r.team)} · ${esc(r.position || "")}</span></td>
+      <td class="num"><span class="bar" style="width:${Math.max(2, 40 * (r.x_now || 0) / max)}px"></span><b>${f1(r.x_now)}</b></td>
       <td>${r.home ? "🏠" : "✈️"} ${esc(r.opp)}</td><td class="num">${matchup(r.pos_dev)}</td>
-      <td class="num"><span class="bar" style="width:${Math.max(2, 60 * (r.x_now || 0) / max)}px"></span>${f1(r.x_now)}</td>
       <td class="num">${f1(r.x_h)}</td><td class="num">${f1(r.season_pir)}</td><td class="num">${f1(r.prev_pir)}</td>
       ${hasPrice ? `<td class="num">${f1(r.price)}</td><td class="num">${r.value == null ? "–" : r.value.toFixed(2)}</td>` : ""}</tr>`).join("") + "</tbody>";
   $("#ptable").querySelectorAll("th").forEach((th) => th.onclick = () => {

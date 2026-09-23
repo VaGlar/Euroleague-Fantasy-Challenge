@@ -16,7 +16,7 @@ import numpy as np
 import pandas as pd
 
 from . import el_api, fantasy, history, model, news
-from .config import BUDGET, CAPTAIN_MULTIPLIER, CURRENT_SEASON, PUBLIC, TIMEZONE
+from .config import BUDGET, CURRENT_SEASON, PUBLIC, TIMEZONE
 
 ATH = ZoneInfo(TIMEZONE)
 HORIZON = 3  # rounds used for transfer value
@@ -229,8 +229,11 @@ def build(offline: bool = False) -> dict:
     my = None
     if fs.get("ok"):
         fp = fs["players"]
-        table = table.merge(fp[["person_id", "fantasy_id", "price", "status"]], on="person_id",
-                            how="left")
+        table = table.merge(fp.dropna(subset=["person_id"]).drop_duplicates("person_id")
+                            [["person_id", "fantasy_id", "price", "status", "position"]]
+                            .rename(columns={"position": "f_position"}), on="person_id", how="left")
+        # squad slots follow the fantasy game's position, not the EuroLeague listing
+        table["position"] = table["f_position"].fillna(table["position"])
         table["value"] = table["x_h"] / table["price"]
         if fs["unmatched"]:
             health.append(f"{fs['unmatched']} παίκτες fantasy χωρίς αντιστοίχιση")

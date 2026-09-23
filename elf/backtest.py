@@ -100,8 +100,8 @@ def run(season: int, save: bool = False) -> dict:
 
     # 1) choose the form blend weights (grid), context off
     best = None
-    grid = [(a, b, c) for a, b, c in itertools.product([0.2, 0.35, 0.5, 0.65], [0.2, 0.35, 0.5],
-                                                       [0.1, 0.2, 0.35, 0.5])]
+    grid = [(a, b, c) for a, b, c in itertools.product([0.0, 0.1, 0.2, 0.35, 0.5], [0.2, 0.35, 0.5],
+                                                       [0.1, 0.2, 0.35, 0.5, 0.75, 1.0, 1.5])]
     raw = walk_forward(season, copy.deepcopy(MODEL))
     for w3, ws, wp in grid:
         p = copy.deepcopy(MODEL)
