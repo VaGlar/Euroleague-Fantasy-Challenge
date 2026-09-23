@@ -49,6 +49,10 @@ section { display: none; } section.on { display: block; }
 .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
 select, input { font: inherit; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--border);
   background: var(--surface-1); color: var(--text-primary); }
+.range input { width: 72px; }
+.chk { display: inline-flex; align-items: center; gap: 6px; color: var(--text-secondary); }
+.linkbtn { border: 0; background: none; color: var(--series-1); font: inherit; cursor: pointer; padding: 6px 4px; }
+#fcount { font-size: 13px; margin: -4px 0 8px; }
 .tablewrap { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; font-size: 14px; }
 th, td { text-align: left; padding: 6px 6px; border-bottom: 1px solid var(--border); white-space: nowrap; }
@@ -88,7 +92,12 @@ ul.news li { padding: 8px 0; border-bottom: 1px solid var(--border); }
       <select id="fteam"><option value="">Όλες οι ομάδες</option></select>
       <select id="fturn"><option value="">Όλα τα turns</option></select>
       <input id="fsearch" placeholder="Αναζήτηση" size="12">
+      <span class="range">Τιμή <input id="fpmin" type="number" inputmode="decimal" step="0.1" min="0" placeholder="από">
+        – <input id="fpmax" type="number" inputmode="decimal" step="0.1" min="0" placeholder="έως"></span>
+      <label class="chk"><input id="fhealthy" type="checkbox"> Χωρίς τραυματίες</label>
+      <button id="freset" class="linkbtn" type="button">Καθαρισμός</button>
     </div>
+    <div class="muted" id="fcount"></div>
     <div class="card tablewrap"><table id="ptable"></table></div>
     <p class="muted">xPTS: αναμενόμενοι πόντοι fantasy αγωνιστικής (PIR +10% αν κερδίσει η ομάδα· coach: βαθμολογία από τη διαφορά σκορ). xPTS3: άθροισμα επόμενων 3 αγωνιστικών.
       Ματσάρισμα: πόσο περισσότερο/λιγότερο PIR δίνει ο αντίπαλος στη θέση (▲ ευνοϊκό).</p>
@@ -124,12 +133,36 @@ function matchup(dev) {
 }
 
 let P, sortKey = "x_now", sortDir = -1;
+const FILTERS = ["fpos", "fteam", "fturn", "fsearch", "fpmin", "fpmax", "fhealthy"];
+function saveFilters() {
+  try {
+    localStorage.setItem("filters", JSON.stringify(Object.fromEntries(FILTERS.map((id) =>
+      [id, $("#" + id).type === "checkbox" ? $("#" + id).checked : $("#" + id).value]))));
+  } catch (e) {}
+}
+function loadFilters() {
+  try {
+    const f = JSON.parse(localStorage.getItem("filters") || "{}");
+    for (const [id, v] of Object.entries(f)) {
+      const el = $("#" + id);
+      if (!el) continue;
+      if (el.type === "checkbox") el.checked = !!v;
+      else if (el.tagName !== "SELECT" || [...el.options].some((o) => o.value === v)) el.value = v;
+    }
+  } catch (e) {}
+}
 function renderPlayers() {
   const pos = $("#fpos").value, team = $("#fteam").value, turn = $("#fturn").value, q = $("#fsearch").value.toLowerCase();
+  const pmin = parseFloat($("#fpmin").value), pmax = parseFloat($("#fpmax").value), healthy = $("#fhealthy").checked;
   const turnTeams = turn ? P.turns.find((t) => String(t.turn) === turn).teams : null;
   let rows = P.players.filter((p) => p.x_now != null
     && (!pos || p.position === pos) && (!team || p.team === team)
-    && (!turnTeams || turnTeams.includes(p.team)) && (!q || String(p.name).toLowerCase().includes(q)));
+    && (!turnTeams || turnTeams.includes(p.team)) && (!q || String(p.name).toLowerCase().includes(q))
+    && (isNaN(pmin) || (p.price != null && p.price >= pmin))
+    && (isNaN(pmax) || (p.price != null && p.price <= pmax))
+    && (!healthy || p.avail_game == null || p.avail_game >= 1));
+  saveFilters();
+  $("#fcount").textContent = `${rows.length} ${rows.length === 1 ? "παίκτης" : "παίκτες"}`;
   rows.sort((a, b) => ((a[sortKey] ?? -1e9) > (b[sortKey] ?? -1e9) ? 1 : -1) * sortDir);
   const max = Math.max(...rows.map((r) => r.x_now || 0), 1);
   const hasPrice = P.fantasy_ok;
@@ -139,7 +172,7 @@ function renderPlayers() {
   $("#ptable").innerHTML = "<thead><tr>" + cols.map(([k, l, n]) =>
     `<th data-k="${k}" class="${n ? "num" : ""}">${l}${sortKey === k ? (sortDir < 0 ? " ↓" : " ↑") : ""}</th>`).join("") + "</tr></thead><tbody>"
     + rows.slice(0, 250).map((r) => `<tr>
-      <td>${esc(nm(r.name))}${r.no_data ? ' <span class="pill">νέος</span>' : ""}${inj(r)}<br><span class="muted">${esc(r.team)} · ${esc(r.position || "")}</span></td>
+      <td>${esc(nm(r.name))}${r.no_data ? ' <span class="pill">νέος</span>' : ""}${inj(r)}<br><span class="muted">${esc(r.team)} · ${esc(r.position || "")}${r.price != null ? ` · <b>${f1(r.price)}cr</b>` : ""}</span></td>
       <td class="num"><span class="bar" style="width:${Math.max(2, 40 * (r.x_now || 0) / max)}px"></span><b>${f1(r.x_now)}</b></td>
       <td>${r.home ? "🏠" : "✈️"} ${esc(r.opp)}</td><td class="num">${matchup(r.pos_dev)}</td>
       <td class="num">${f1(r.x_h)}</td><td class="num">${f1(r.season_pir)}</td><td class="num">${f1(r.prev_pir)}</td>
@@ -179,7 +212,12 @@ function renderTeam(my) {
 
   [...new Set(p.players.map((x) => x.team))].sort().forEach((t) => $("#fteam").insertAdjacentHTML("beforeend", `<option>${esc(t)}</option>`));
   p.turns.forEach((t) => $("#fturn").insertAdjacentHTML("beforeend", `<option value="${t.turn}">Turn ${t.turn} (${t.date})</option>`));
-  ["#fpos", "#fteam", "#fturn", "#fsearch"].forEach((s) => $(s).addEventListener("input", renderPlayers));
+  loadFilters();
+  FILTERS.forEach((id) => $("#" + id).addEventListener("input", renderPlayers));
+  $("#freset").onclick = () => {
+    FILTERS.forEach((id) => { const el = $("#" + id); if (el.type === "checkbox") el.checked = false; else el.value = ""; });
+    sortKey = "x_now"; sortDir = -1; renderPlayers();
+  };
   renderPlayers();
   renderTeam(p.my_team);
 

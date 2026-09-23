@@ -54,7 +54,7 @@ def _write(name: str, obj) -> None:
 
 # ------------------------------------------------------------ predictions
 
-def predictions(season: int):
+def predictions(season: int, extra: pd.DataFrame | None = None):
     games = history.load("games", season)
     games["utc"] = pd.to_datetime(games["utc"], utc=True)
     cur_p, cur_t = history.load("players", season), history.load("teams", season)
@@ -62,6 +62,9 @@ def predictions(season: int):
     people = history.load("people", season)
     roster = people[(people["type"] == "player") & people["active"]] \
         .rename(columns={"club": "team"})[["person_id", "name", "team", "position"]]
+    if extra is not None and len(extra):  # fantasy players missing from EuroLeague rosters
+        roster = pd.concat([roster, extra[~extra["person_id"].isin(roster["person_id"])]],
+                           ignore_index=True)
 
     p = model.params()
     codes = sorted(set(games["home"]) | set(games["away"]))
@@ -153,7 +156,29 @@ def match_people(fp: pd.DataFrame, roster: pd.DataFrame) -> pd.Series:
     return pd.Series(ids, index=fp.index)
 
 
-def fantasy_state(clubs: pd.DataFrame, roster: pd.DataFrame) -> dict:
+def resolve_missing(fp: pd.DataFrame, season: int) -> pd.DataFrame:
+    """Fantasy players absent from this season's EuroLeague roster (late signings,
+    youngsters): find them in past box scores by name, else give a placeholder id.
+    Returns roster rows (person_id, name, team, position) for them."""
+    miss = fp[fp["person_id"].isna() & (fp["position"] != "Head Coach")]
+    if miss.empty:
+        return pd.DataFrame(columns=["person_id", "name", "team", "position"])
+    hist = pd.concat([history.load("players", s)[["person_id", "player"]]
+                      for s in (season - 1, season - 2)]).drop_duplicates("person_id")
+    hist = hist.assign(sur=hist["player"].str.split(",").str[0].map(_surname),
+                       first=hist["player"].str.split(",").str[1].fillna("").map(_key))
+    rows = []
+    for i, p in miss.iterrows():
+        h = hist[(hist["sur"] == _surname(p.last_name))
+                 & hist["first"].str.startswith(_key(p.first_name)[:3])]
+        pid = h["person_id"].iloc[0] if len(h) else f"F{int(p.fantasy_id)}"
+        fp.at[i, "person_id"] = pid
+        rows.append({"person_id": pid, "name": f"{p.last_name.upper()}, {p.first_name.upper()}",
+                     "team": p.team, "position": p.position})
+    return pd.DataFrame(rows)
+
+
+def fantasy_state(clubs: pd.DataFrame, roster: pd.DataFrame, season: int) -> dict:
     """Prices + my team. Never raises: returns {'error': ...} instead."""
     out = {"ok": False}
     try:
@@ -166,8 +191,10 @@ def fantasy_state(clubs: pd.DataFrame, roster: pd.DataFrame) -> dict:
         tv2code = dict(zip(clubs["tv"], clubs["code"]))
         fp["team"] = fp["team"].map(lambda t: tv2code.get(t, t))
         fp["person_id"] = match_people(fp, roster)
+        out["extra_roster"] = resolve_missing(fp, season)
         out["players"] = fp
-        out["unmatched"] = int(fp.loc[fp["position"] != "Head Coach", "person_id"].isna().sum())
+        out["unmatched"] = int(fp.loc[fp["position"] != "Head Coach", "person_id"]
+                               .astype(str).str.startswith("F").sum())
 
         # price history (append one snapshot per matchday)
         hist_path = PUBLIC / "prices.csv"
@@ -322,7 +349,10 @@ def build(offline: bool = False) -> dict:
         history.update_season(season)
     clubs = pd.DataFrame(el_api.clubs(season))
     _write("clubs.json", clubs.to_dict("records"))
-    pr = predictions(season)
+    ppl = history.load("people", season)
+    people_all = ppl[ppl["active"]].rename(columns={"club": "team"})[["person_id", "name", "team"]]
+    fs = {"ok": False, "error": "offline"} if offline else fantasy_state(clubs, people_all, season)
+    pr = predictions(season, fs.get("extra_roster"))
     if pr is None:
         _write("report.json", {"generated": datetime.now(timezone.utc).isoformat(), "messages": []})
         return {}
@@ -367,9 +397,6 @@ def build(offline: bool = False) -> dict:
     table = agg.join(nr, how="left").reset_index()
 
     # --- fantasy prices / my team
-    people_all = pd.concat([pr["roster"], pr["coaches"][["person_id", "name", "team"]]
-                            .drop_duplicates("person_id")], ignore_index=True)
-    fs = {"ok": False, "error": "offline"} if offline else fantasy_state(clubs, people_all)
     my = None
     if fs.get("ok"):
         fp = fs["players"]
