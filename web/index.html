@@ -64,6 +64,8 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .muted { color: var(--text-muted); }
 .pill { display: inline-block; font-size: 12px; padding: 1px 6px; border-radius: 999px;
   border: 1px solid var(--border); color: var(--text-secondary); }
+.pill.up { color: var(--good); border-color: var(--good); font-weight: 700; }
+.pill.down { color: var(--critical); border-color: var(--critical); }
 .msg { white-space: pre-wrap; font-size: 14px; }
 .warn { border-left: 3px solid var(--accent); }
 a { color: var(--series-1); }
@@ -100,7 +102,8 @@ ul.news li { padding: 8px 0; border-bottom: 1px solid var(--border); }
     <div class="muted" id="fcount"></div>
     <div class="card tablewrap"><table id="ptable"></table></div>
     <p class="muted">xPTS: αναμενόμενοι πόντοι fantasy αγωνιστικής (PIR +10% αν κερδίσει η ομάδα· coach: βαθμολογία από τη διαφορά σκορ). xPTS3: άθροισμα επόμενων 3 αγωνιστικών.
-      Ματσάρισμα: πόσο περισσότερο/λιγότερο PIR δίνει ο αντίπαλος στη θέση (▲ ευνοϊκό).</p>
+      Ματσάρισμα: πόσο περισσότερο/λιγότερο PIR δίνει ο αντίπαλος στη θέση (▲ ευνοϊκό).
+      <b>$</b>: πιθανή άνοδος τιμής μετά την αγωνιστική (↓$ πτώση).</p>
   </section>
   <section id="team"></section>
   <section id="teams"><div class="card tablewrap"><table id="rtable"></table></div>
@@ -119,6 +122,9 @@ const inj = (r) => (r.avail_game != null && r.avail_game < 1
 const exb = (r) => (r.expert_pick > 0 ? ` <span class="pill" title="στήλες fantasy που τον προτείνουν">👍${r.expert_pick}${r.expert_cap ? "★" : ""}</span>` : "")
   + (r.expert_avoid > 0 ? ` <span class="pill" title="στήλη που προτείνει να τον αποφύγεις">👎</span>` : "")
   + (r.prior ? ` <span class="pill" title="χωρίς ιστορικό: εκτίμηση από την τιμή">≈τιμή</span>` : "");
+const dol = (r) => (r.price_trend === "up"
+  ? ` <span class="pill up" title="πιθανή άνοδος τιμής μετά την αγωνιστική${r.price_delta != null ? ` (~+${r.price_delta.toFixed(1)} cr)` : ""}">$</span>`
+  : r.price_trend === "down" ? ` <span class="pill down" title="πιθανή πτώση τιμής">↓$</span>` : "");
 const get = (f) => fetch(`data/${f}?t=${Date.now()}`).then((r) => (r.ok ? r.json() : null)).catch(() => null);
 
 document.querySelectorAll("nav button").forEach((b) => b.onclick = () => {
@@ -136,6 +142,14 @@ function matchup(dev) {
 }
 
 let P, sortKey = "x_now", sortDir = -1;
+const STANCE = { pick: "προτείνει", captain: "αρχηγός", avoid: "αποφυγή" };
+const pkey = (s) => String(s || "").split(" (")[0].normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
+function findPlayer(name) {
+  if (!P) return null;
+  const k = pkey(name);
+  return P.players.find((p) => pkey(p.name) === k)
+    || P.players.find((p) => pkey(String(p.name).split(",")[0]) === pkey(String(name).split(",")[0]));
+}
 const FILTERS = ["fpos", "fteam", "fturn", "fsearch", "fpmin", "fpmax", "fhealthy"];
 function saveFilters() {
   try {
@@ -175,7 +189,7 @@ function renderPlayers() {
   $("#ptable").innerHTML = "<thead><tr>" + cols.map(([k, l, n]) =>
     `<th data-k="${k}" class="${n ? "num" : ""}">${l}${sortKey === k ? (sortDir < 0 ? " ↓" : " ↑") : ""}</th>`).join("") + "</tr></thead><tbody>"
     + rows.slice(0, 250).map((r) => `<tr>
-      <td>${esc(nm(r.name))}${r.no_data && !r.prior ? ' <span class="pill">νέος</span>' : ""}${inj(r)}${exb(r)}<br><span class="muted">${esc(r.team)} · ${esc(r.position || "")}${r.price != null ? ` · <b>${f1(r.price)}cr</b>` : ""}</span></td>
+      <td>${esc(nm(r.name))}${r.no_data && !r.prior ? ' <span class="pill">νέος</span>' : ""}${inj(r)}${exb(r)}${dol(r)}<br><span class="muted">${esc(r.team)} · ${esc(r.position || "")}${r.price != null ? ` · <b>${f1(r.price)}cr</b>` : ""}</span></td>
       <td class="num"><span class="bar" style="width:${Math.max(2, 40 * (r.x_now || 0) / max)}px"></span><b>${f1(r.x_now)}</b></td>
       <td>${r.home ? "🏠" : "✈️"} ${esc(r.opp)}</td><td class="num">${matchup(r.pos_dev)}</td>
       <td class="num">${f1(r.x_h)}</td><td class="num">${f1(r.season_pir)}</td><td class="num">${f1(r.prev_pir)}</td>
@@ -190,7 +204,7 @@ function squadTable(rows) {
   return `<div class="tablewrap"><table><thead><tr><th>Ρόλος</th><th>Παίκτης</th><th>Αντ.</th>
     <th class="num">xPTS</th><th class="num">xPTS3</th><th class="num">Τιμή</th></tr></thead><tbody>
     ${rows.map((r) => `<tr><td>${esc(r.role || "")}${r.captain ? " ★" : ""}</td>
-      <td>${esc(nm(r.name))}${inj(r)}<br><span class="muted">${esc(r.team)} · ${esc(r.position || "")}${r.turn ? ` · <b>T${r.turn}</b>` : ""}</span></td>
+      <td>${esc(nm(r.name))}${inj(r)}${dol(r)}<br><span class="muted">${esc(r.team)} · ${esc(r.position || "")}${r.turn ? ` · <b>T${r.turn}</b>` : ""}</span></td>
       <td>${r.home ? "🏠" : "✈️"} ${esc(r.opp || "")}</td>
       <td class="num">${r.actual != null ? `<b>${f1(r.actual)}</b>` : f1(r.x_now)}</td><td class="num">${f1(r.x_h)}</td><td class="num">${f1(r.price)}</td></tr>`).join("")}
     </tbody></table></div>`;
@@ -253,7 +267,9 @@ function renderTeam(my, best) {
 
   const d = nw?.digest;
   $("#news").innerHTML = (d ? `<div class="card"><h2>Σύνοψη (AI)</h2><div class="msg">${esc(d.summary_el)}</div></div>`
-    + (d.expert?.length ? `<div class="card"><h2>Ειδικοί</h2>${d.expert.map((e) => `• <b>${esc(e.player)}</b> — ${esc(e.stance)}: ${esc(e.note)} <span class="muted">(${esc(e.source)})</span>`).join("<br>")}</div>` : "") : "")
+    + (d.expert?.length ? `<div class="card"><h2>Ειδικοί</h2>${d.expert.map((e) => { const r = findPlayer(e.player);
+        const info = r ? ` <span class="muted">${esc(r.team)} · ${esc((r.position || "")[0] || "")}${r.price != null ? " · " + f1(r.price) + "cr" : ""}${r.x_now != null ? " · xPTS " + f1(r.x_now) : ""}</span>${dol(r)}` : "";
+        return `• <b>${esc(nm(String(e.player).split(" (")[0]))}</b>${info} — ${esc(STANCE[e.stance] || e.stance)}: ${esc(e.note || "")} <span class="muted">(${esc(e.source)})</span>`; }).join("<br>")}</div>` : "") : "")
     + `<div class="card"><h2>Άρθρα</h2><ul class="news">${(nw?.articles || []).slice(0, 60).map((a) =>
       `<li><a href="${esc(a.url)}" target="_blank" rel="noopener">${esc(a.title)}</a><br><span class="muted">${esc(a.source)} · ${a.date ? new Date(a.date).toLocaleString("el-GR") : ""}</span></li>`).join("")}</ul></div>`;
 

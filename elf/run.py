@@ -16,7 +16,7 @@ import numpy as np
 import pandas as pd
 import yaml
 
-from . import el_api, fantasy, history, model, news, optimize
+from . import el_api, fantasy, history, model, news, optimize, prices
 from .config import BUDGET, COACH_POINTS, CURRENT_SEASON, PUBLIC, ROOT, TIMEZONE, WIN_BONUS
 
 ATH = ZoneInfo(TIMEZONE)
@@ -294,6 +294,7 @@ def _opt_rows(df: pd.DataFrame) -> list[dict]:
              "name": r["name"], "team": r["team"], "label": r.get("label") or r["name"],
              "opp": r.get("opp"), "home": r.get("home"),
              "turn": int(r["turn"]) if r.get("turn") == r.get("turn") and r.get("turn") else None,
+             "price_trend": r.get("price_trend"),
              "actual": r.get("actual") if r.get("actual") == r.get("actual") else None}
             for r in d.to_dict("records")]
 
@@ -564,6 +565,7 @@ def build(offline: bool = False) -> dict:
 
     # --- fantasy prices / my team
     my, best = None, None
+    price_info = {"method": "none"}
     if fs.get("ok"):
         fp = fs["players"]
         table = table.merge(fp.dropna(subset=["person_id"]).drop_duplicates("person_id")
@@ -598,6 +600,7 @@ def build(offline: bool = False) -> dict:
             table.loc[m, "x_now"] = est * f_game[m]
             table.loc[m, "x_h"] = est * HORIZON
             table.loc[m, "prior"] = "τιμή"
+        table, price_info = prices.annotate(table)  # $ = likely price rise
         n_inj = int((f_game < 1).sum())
         if n_inj == 0:
             health.append("fantasy: το παιχνίδι δεν έδωσε κανέναν τραυματία/αμφίβολο (έλεγχος πεδίων)")
@@ -673,6 +676,7 @@ def build(offline: bool = False) -> dict:
         "fixtures": [{"round": int(f.round), "home": f.home, "away": f.away,
                       "utc": f.utc.isoformat()} for f in pr["fixtures"].itertuples()],
         "my_team": my, "best_team": best, "health": health, "fantasy_ok": fs.get("ok", False),
+        "price_model": price_info,
     })
     msgs = messages(rnd, trn, table, my, dig, health)
     _write("report.json", {"generated": datetime.now(timezone.utc).isoformat(),
@@ -682,7 +686,9 @@ def build(offline: bool = False) -> dict:
 
 def _fmt(r) -> str:
     ha = "🏠" if r.get("home") else "✈️"
-    return f"{r['name'].split(',')[0].title()} ({r['team']}) {ha} vs {r.get('opp')} — <b>{r['x_now']:.1f}</b>"
+    dollar = " $" if r.get("price_trend") == "up" else ""
+    return (f"{r['name'].split(',')[0].title()} ({r['team']}) {ha} vs {r.get('opp')} — "
+            f"<b>{r['x_now']:.1f}</b>{dollar}")
 
 
 def _short(r) -> str:
@@ -874,9 +880,12 @@ def messages(rnd, trn, table, my, dig, health) -> list[dict]:
                 lines += ["", "🗣️ <b>Προτάσεις στηλών fantasy</b> (πηγές που τον προτείνουν)"]
                 for r in cons.to_dict("records"):
                     extra = " · ★ αρχηγός" if r.get("expert_cap") else ""
-                    lines.append(f"• {r['name'].split(',')[0].title()} ({r['team']}) — "
+                    dollar = " $" if r.get("price_trend") == "up" else ""
+                    price = f" · {r['price']}cr" if r.get("price") == r.get("price") and r.get("price") else ""
+                    lines.append(f"• {r['name'].split(',')[0].title()} ({r['team']}, "
+                                 f"{str(r['position'])[:1]}{price}) — "
                                  f"{int(r['expert_pick'])}/{n_fantasy_sources()}{extra} · "
-                                 f"xPTS {r['x_now']:.1f}")
+                                 f"xPTS {r['x_now']:.1f}{dollar}")
         if dig:
             inj = [a for a in dig.get("availability", []) if a.get("status") != "available"]
             if inj:
