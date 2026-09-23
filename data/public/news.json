@@ -1,6 +1,14 @@
 {
  "articles": [
   {
+   "title": "Όμπραντοβιτς: Η διαβολική σύμπτωση με το πρώτο κοουτσάρισμα του Παναθηναϊκού στην Euroleague!",
+   "url": "https://www.gazzetta.gr/basketball/euroleague/2571530/omprantobits-i-diaboliki-symptosi-me-proto-kooytsarisma-toy",
+   "date": "2026-09-23T16:22:02+02:00",
+   "text": "Ο Ζέλικο Ομπράντοβιτς ετοιμάζεται για την επίσημη επιστροφή του στον πάγκο του Παναθηναϊκού κόντρα στην Παρί, ένα ματς το οποίο συνδέεται με μια... διαβολική σύμπτωση με το μακρινό παρελθόν.",
+   "source": "Gazzetta",
+   "weight": 1
+  },
+  {
    "title": "QnA με Βιρβίλη - Ραμαντάνη: Θα γίνει άλλη μεταγραφή; Πόσο έτοιμη είναι η ομάδα του Μπαρτζώκα;",
    "url": "https://www.gazzetta.gr/football/superleague/2571515/qa-me-birbili-ramantani-tha-ginei-alli-metagrafi-poso-etoimi-einai-i",
    "date": "2026-09-23T15:05:26+02:00",
@@ -65,6 +73,22 @@
    "weight": 1
   },
   {
+   "title": "Μίλερ-ΜακΙντάιρ για πρεμιέρα Ευρωλίγκας: “Σημασία έχει πώς τελειώνεις τη χρονιά, όχι πώς την αρχίζεις”",
+   "url": "https://www.eurohoops.net/el/euroleague-el-2/2011339/miler-makintair-gia-premiera-evroligkas-simasia-echi-pos-telionis-ti-chronia-ochi-pos-tin-archizis/",
+   "date": "2026-09-23T13:27:14+00:00",
+   "text": "Του Γιάννη Ράμμα/ irammas@eurohoops.net Ο 32χρονος Αμερικανός -κάτοχος και βουλγαρικού διαβατηρίου και διεθνής με το αντιπροσωπευτικό συγκρότημα της χώρας- πόιντ γκαρντ θα τεθεί αντιμέτωπος της πρώτης του ομάδας στην Ευρωλίγκα, Μπασκόνια. “Είμαι ενθουσιασμένος που επιστρέφω στη Βιτόρια. Είναι μία απίθανη πόλη με απίθανη βάση φιλάθλων κι απίθανη κουλτούρα. Ανυπομονώ να συναντήσω γνώριμα πρόσωπα” , σχολίασε κατά την αναχώρηση της 13μελούς αποστολής από το αεροδρόμιο “Ελευθέριος Βενιζέλος”. “Η Μπασκόνια μου έδωσε την ευκαιρία να κάνω επίδειξη του ταλέντου μου στο υψηλότερο επίπεδο στην Ευρώπη. Θα",
+   "source": "Eurohoops (GR)",
+   "weight": 1
+  },
+  {
+   "title": "Παναθηναϊκός: Επιστρέφει ο Ναν με NBA λουκ! (video)",
+   "url": "https://www.novasports.gr/sport/mpasket/event/euroleague/article/15129627/panathinaikos-epistrefei-o-nan-me-nba-louk-video/",
+   "date": "2026-09-23T13:25:24+00:00",
+   "text": "Στην τελική ευθεία μπαίνει η επιστροφή του Κέντρικ Ναν στην αγωνιστική δράση, καθώς ο Αμερικανός γκαρντ αναμένεται στην Αθήνα (23/09) προκειμένου να ενσωματωθεί στις προπονήσεις του Παναθηναϊκού. Ο 31χρονος σκόρερ ολοκλήρωσε το πρώτο μέρος της αποκατάστασής του στις ΗΠΑ μετά την αρθροσκοπική επέμβαση στην οποία υποβλήθηκε και πλέον τίθεται στη διάθεση του Ζέλικο Ομπράντοβιτς για το τελευταίο στάδιο της προετοιμασίας. Πέρα από την ετοιμότητά του και την αύξηση της έντασης στο ατομικό του πρόγραμμα, ο Ναν τράβηξε τα βλέμματα και με την αλλαγή στην εμφάνισή του. Ο Αμερικανός άσος αποχωρίστηκε το ",
+   "source": "Novasports",
+   "weight": 1
+  },
+  {
    "title": "Μίλερ-ΜακΙντάιρ: «Πρέπει να ανεβάσουμε την άμυνά μας»",
    "url": "https://www.novasports.gr/sport/mpasket/event/euroleague/article/15129618/miler-makintair-prepei-na-anevasoume-tin-amyna-mas/",
    "date": "2026-09-23T13:18:48+00:00",
@@ -100,7 +124,7 @@
    "title": "Barkas Breakdown: 10 things to watch this EuroLeague season",
    "url": "https://www.euroleaguebasketball.net/en/euroleague/news/barkas-breakdown-10-things-to-watch-this-euroleague-season/",
    "date": "2026-09-23T13:00:00+00:00",
-   "text": "From Tony Parker's coaching bow to the Final Four",
+   "text": "The 2026-27 EuroLeague season is about to start, and when all is said and done, it will be the end of an era",
    "source": "EuroLeague (official)",
    "weight": 1
   },
@@ -369,14 +393,6 @@
    "weight": 1
   },
   {
-   "title": "Παναθηναϊκός: Η “after movie” του τουρνουά “Παύλος Γιαννακόπουλος” (Video)",
-   "url": "https://www.eurohoops.net/el/euroleague-el-2/2011009/panathinaikos-i-after-movie-tou-tournoua-pavlos-giannakopoulos-video/",
-   "date": "2026-09-22T15:38:53+00:00",
-   "text": "Του Δημήτρη Μιναρετζή/ info@eurohoops.net Το “Παύλος Γιαννακόπουλος” επέστρεψε στο ΟΑΚΑ, με τον Παναθηναϊκό να κατακτάει το τρόπαιο μπροστά σε χιλιάδες φιλάθλους του. Οι “πράσινοι” αντιμετώπισαν τις Μπουργκ & ΠΑΟΚ, ενώ έλαβε μέρος επίσης η Παρτιζάν. Ο Παναθηναϊκός αναφέρει στην ανάρτηση του. “Ένας φόρος τιμής στον ΗΓΕΤΗ μας, ο οποίος αφιέρωσε τη ζωή του, το πάθος και το όραμά του στον Παναθηναϊκό και άλλαξε για πάντα την ιστορία μας. Αφού ταξίδεψε σε όλες τις ηπείρους και ένωσε τον λαό μας στην άλλη άκρη του πλανήτη, το Τουρνουά επέστρεψε εκεί που ανήκει πραγματικά, στο ΣΠΙΤΙ μας. Τρεις μέρες ",
-   "source": "Eurohoops (GR)",
-   "weight": 1
-  },
-  {
    "title": "Isaac Bonga on LeBron James’ longevity: “Consistency is really important”",
    "url": "https://www.eurohoops.net/en/trademarks/2010864/isaac-bonga-talks-panathinaikos-euroleague/",
    "date": "2026-09-22T15:13:40+00:00",
@@ -538,5 +554,6 @@
   }
  ],
  "digest": null,
+ "digest_at": null,
  "failed": []
 }
