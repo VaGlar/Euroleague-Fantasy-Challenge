@@ -16,11 +16,12 @@ import numpy as np
 import pandas as pd
 import yaml
 
-from . import el_api, fantasy, history, model, news
+from . import el_api, fantasy, history, model, news, optimize
 from .config import BUDGET, CURRENT_SEASON, PUBLIC, ROOT, TIMEZONE
 
 ATH = ZoneInfo(TIMEZONE)
 HORIZON = 3  # rounds used for transfer value
+UNLIMITED_AFTER = {6, 13, 18, 23, 28, 34}  # trades unlimited before the next round
 DAYS_EL = ["Δευτέρα", "Τρίτη", "Τετάρτη", "Πέμπτη", "Παρασκευή", "Σάββατο", "Κυριακή"]
 
 
@@ -269,6 +270,37 @@ def parse_my_roster(raw: dict) -> tuple[list[int], dict]:
     return list(dict.fromkeys(ids)), meta
 
 
+def _prefs() -> dict:
+    """preferences.yaml: surnames to keep (never sell) / avoid (never buy)."""
+    try:
+        cfg = yaml.safe_load((ROOT / "preferences.yaml").read_text()) or {}
+    except OSError:
+        cfg = {}
+    return {k: {_key(x) for x in (cfg.get(k) or [])} for k in ("keep", "avoid")}
+
+
+POS_ORDER = {"Guard": 0, "Forward": 1, "Center": 2, "Head Coach": 3}
+
+
+def _opt_rows(df: pd.DataFrame) -> list[dict]:
+    """Rows for the optimizer: fantasy id, position, price, horizon/round xPTS."""
+    d = df.dropna(subset=["price", "fantasy_id"])
+    d = d[d["position"].isin(POS_ORDER)]
+    return [{"id": int(r["fantasy_id"]), "position": r["position"], "price": float(r["price"]),
+             "x_h": float(r["x_h"]) if r["x_h"] == r["x_h"] else 0.0,
+             "x_now": float(r["x_now"]) if r["x_now"] == r["x_now"] else 0.0,
+             "name": r["name"], "team": r["team"], "label": r.get("label") or r["name"],
+             "opp": r.get("opp"), "home": r.get("home")} for r in d.to_dict("records")]
+
+
+def _pair_trades(tr: dict) -> list[dict]:
+    """Present the optimal swap set as out->in pairs, matched by position."""
+    outs = sorted(tr["out"], key=lambda p: (POS_ORDER[p["position"]], -p["price"]))
+    ins = sorted(tr["in"], key=lambda p: (POS_ORDER[p["position"]], -p["price"]))
+    return [{"out": o["label"], "in": i["label"], "gain": round(i["x_h"] - o["x_h"], 1),
+             "price_out": o["price"], "price_in": i["price"]} for o, i in zip(outs, ins)]
+
+
 def suggest_transfers(team: pd.DataFrame, pool: pd.DataFrame, bank: float, max_trades: int = 4,
                       min_gain: float = 3.0) -> list[dict]:
     """Greedy same-position swaps maximising xPIR over the horizon within budget."""
@@ -397,7 +429,7 @@ def build(offline: bool = False) -> dict:
     table = agg.join(nr, how="left").reset_index()
 
     # --- fantasy prices / my team
-    my = None
+    my, best = None, None
     if fs.get("ok"):
         fp = fs["players"]
         table = table.merge(fp.dropna(subset=["person_id"]).drop_duplicates("person_id")
@@ -421,17 +453,38 @@ def build(offline: bool = False) -> dict:
         table["value"] = table["x_h"] / table["price"]
         if fs["unmatched"] > 40:  # a handful of unregistered bench players is normal
             health.append(f"{fs['unmatched']} παίκτες του fantasy λείπουν από τα ρόστερ EuroLeague")
+        pool = table.dropna(subset=["price", "fantasy_id"]).copy()
+        pool["label"] = pool["name"] + " (" + pool["team"] + ")"
+        prefs = _prefs()
+        sur = pool["name"].str.split(",").str[0].map(_key)
+        avoid_ids = set(pool.loc[sur.isin(prefs["avoid"]), "fantasy_id"])
+        keep_ids = set(pool.loc[sur.isin(prefs["keep"]), "fantasy_id"])
+        try:
+            best = optimize.best_squad(_opt_rows(pool))
+        except Exception as e:  # noqa: BLE001
+            health.append(f"βελτιστοποίηση: {type(e).__name__}")
+        max_trades = 11 if rnd == 1 or (rnd - 1) in UNLIMITED_AFTER else 4
         for t in fs["my_teams"][:1]:
             ids, meta = parse_my_roster(t["raw"])
             mine = table[table["fantasy_id"].isin(ids)].copy()
-            pool = table.dropna(subset=["price", "fantasy_id"]).copy()
-            for d in (mine, pool):
-                d["label"] = d["name"] + " (" + d["team"] + ")"
+            mine["label"] = mine["name"] + " (" + mine["team"] + ")"
             bank = meta.get("bank", max(0.0, BUDGET - mine["price"].sum()))
             my = {"name": t["name"], "players": mine.sort_values("x_now", ascending=False)
                   .to_dict("records"), "bank": bank, "captain_id": meta.get("captain"),
-                  "transfers": suggest_transfers(mine, pool, bank),
-                  "parsed_players": len(ids)}
+                  "parsed_players": len(ids), "max_trades": max_trades}
+            try:
+                sq = _opt_rows(mine)
+                lu = optimize.lineup(sq) if len(sq) == 11 else None
+                my["lineup"] = lu["team"] if lu else None
+                tr = optimize.transfers(sq, _opt_rows(pool[~pool["fantasy_id"].isin(avoid_ids)]),
+                                        bank, max_trades=max_trades,
+                                        keep={int(i) for i in keep_ids})
+                my["transfers"] = _pair_trades(tr) if tr else []
+                my["transfer_gain"] = tr["gain"] if tr else 0
+                my["bank_after"] = tr["bank_after"] if tr else bank
+            except Exception as e:  # noqa: BLE001 - fall back to the greedy heuristic
+                health.append(f"βελτιστοποίηση ομάδας: {type(e).__name__}: {e}")
+                my["transfers"] = suggest_transfers(mine, pool, bank)
             if len(ids) < 10:
                 health.append(f"ομάδα: βρέθηκαν {len(ids)}/10 παίκτες — έλεγχος parser")
     elif fs.get("error"):
@@ -458,7 +511,7 @@ def build(offline: bool = False) -> dict:
         "team_ratings": ratings.round(2).to_dict("records"),
         "fixtures": [{"round": int(f.round), "home": f.home, "away": f.away,
                       "utc": f.utc.isoformat()} for f in pr["fixtures"].itertuples()],
-        "my_team": my, "health": health, "fantasy_ok": fs.get("ok", False),
+        "my_team": my, "best_team": best, "health": health, "fantasy_ok": fs.get("ok", False),
     })
     msgs = messages(rnd, trn, table, my, dig, health)
     _write("report.json", {"generated": datetime.now(timezone.utc).isoformat(),
@@ -480,35 +533,51 @@ def messages(rnd, trn, table, my, dig, health) -> list[dict]:
     for tu in trn:
         day = datetime.fromisoformat(tu["date"])
         playing = t[t["team"].isin(tu["teams"])]
-        later = t[~t["team"].isin(sum([x["teams"] for x in trn if x["turn"] <= tu["turn"]], []))]
         lines = [f"🏀 <b>Αγωνιστική {rnd} — Turn {tu['turn']}</b> "
                  f"({DAYS_EL[day.weekday()]} {day:%d/%m}, 1ο τζάμπολ {tu['first_tip']})", ""]
         lines += ["📅 " + " · ".join(tu["games"]), ""]
-        if tu["turn"] == 1:
-            lines.append("⭐ <b>Αρχηγός</b>")
-            best = t.iloc[0] if len(t) else None
-            best_now = playing.iloc[0] if len(playing) else None
-            if best_now is not None and best is not None:
-                lines.append(f"Turn 1: {_fmt(best_now)}")
-                if len(later):
-                    lines.append(f"Plan B (Turn 2+): {_fmt(later.iloc[0])}")
-                lines.append("<i>Βάλε αρχηγό στο Turn 1· αν δεν φτάσει το xPTS του plan B, "
-                             "μεταφέρεις το x2 πριν το Turn 2.</i>")
-            if my and my["transfers"]:
-                lines += ["", "🔁 <b>Προτεινόμενες αλλαγές</b> (xPTS 3 αγωνιστικών)"]
-                for m in my["transfers"]:
-                    lines.append(f"• {m['out']} ➜ {m['in']}  (+{m['gain']}, "
-                                 f"{m['price_out']}→{m['price_in']})")
-            elif my:
-                lines += ["", "🔁 Καμία αλλαγή δεν αξίζει αυτή την εβδομάδα."]
+        # captain candidates: my starting five if known, else the whole league
+        lu = (my or {}).get("lineup")
+        if lu:
+            five_ids = {p["id"] for p in lu if p["role"] == "5άδα"}
+            cand = t[t["fantasy_id"].isin(five_ids)]
         else:
-            nxt = playing.head(3)
+            cand = t
+        cand_now = cand[cand["team"].isin(tu["teams"])]
+        cand_later = cand[cand["team"].isin(sum([x["teams"] for x in trn
+                                                if x["turn"] > tu["turn"]], []))]
+        if tu["turn"] == 1:
+            if my and my.get("transfers"):
+                lim = "απεριόριστες" if my.get("max_trades", 4) > 4 else "έως 4"
+                lines += [f"🔁 <b>Προτεινόμενες αλλαγές</b> ({lim}· +{my.get('transfer_gain', 0)} "
+                          f"xPTS σε 3 αγωνιστικές)"]
+                for m in my["transfers"]:
+                    lines.append(f"• {m['out']} ➜ {m['in']}  ({m['price_out']}→{m['price_in']}cr)")
+                lines.append("")
+            elif my:
+                lines += ["🔁 Καμία αλλαγή δεν αξίζει αυτή την αγωνιστική.", ""]
+            if lu:
+                role = lambda r: [p for p in lu if p["role"] == r]  # noqa: E731
+                nm_ = lambda p: f"{p['name'].split(',')[0].title()} ({p['position'][0]})"  # noqa: E731
+                lines.append("👥 <b>Προτεινόμενη πεντάδα</b> (με την τωρινή ομάδα)")
+                lines.append(", ".join(nm_(p) for p in role("5άδα")))
+                lines.append("6ος: " + ", ".join(nm_(p) for p in role("6ος")))
+                lines.append("")
+            lines.append("⭐ <b>Αρχηγός</b>" + (" (από την πεντάδα σου)" if lu else ""))
+            if len(cand_now):
+                lines.append(f"Turn 1: {_fmt(cand_now.iloc[0])}")
+            if len(cand_later):
+                lines.append(f"Plan B (Turn 2+): {_fmt(cand_later.iloc[0])}")
+            lines.append("<i>Βάλε αρχηγό στο Turn 1· αν δεν φτάσει το xPTS του plan B, "
+                         "μεταφέρεις το x2 πριν το Turn 2.</i>")
+        else:
             lines.append("⭐ <b>Έλεγχος αρχηγού</b>")
-            lines.append("Κράτα τον αρχηγό σου αν έφερε ≥ ×1 του καλύτερου διαθέσιμου σήμερα:")
-            lines += [f"• {_fmt(r)}" for r in nxt.to_dict("records")]
+            lines.append("Κράτα τον αρχηγό σου αν έφερε τουλάχιστον όσα ο καλύτερος σήμερα:")
+            lines += [f"• {_fmt(r)}" for r in (cand_now if len(cand_now) else playing)
+                      .head(3).to_dict("records")]
         if tu["turn"] == 1 and len(coaches):
             c = coaches.sort_values("x_now", ascending=False).iloc[0]
-            line = (f"🧑‍💼 <b>Coach</b>: {c['name'].split(',')[0].title()} ({c['team']}) "
+            line = (f"🧑‍💼 <b>Καλύτερος coach αγωνιστικής</b>: {c['name'].split(',')[0].title()} ({c['team']}) "
                     f"{'🏠' if c.get('home') else '✈️'} vs {c.get('opp')} — <b>{c['x_now']:.1f}</b>")
             if c.get("price") == c.get("price") and c.get("price") is not None:
                 line += f" · {c['price']}cr"

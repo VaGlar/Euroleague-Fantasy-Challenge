@@ -182,20 +182,42 @@ function renderPlayers() {
   });
 }
 
-function renderTeam(my) {
-  if (!my) {
-    $("#team").innerHTML = `<div class="card warn"><h2>Η ομάδα δεν είναι διαθέσιμη</h2>
-      <p>Χρειάζεται έγκυρο <code>FANTASY_TOKEN</code> στα GitHub Secrets.</p></div>`;
-    return;
-  }
-  const tr = (my.transfers || []).map((m) => `<tr><td>${esc(m.out)}</td><td>➜</td><td>${esc(m.in)}</td>
-    <td class="num up">+${m.gain}</td><td class="num">${m.price_out}→${m.price_in}</td></tr>`).join("");
-  $("#team").innerHTML = `<div class="card"><h2>${esc(my.name || "Η ομάδα μου")} · Υπόλοιπο ${f1(my.bank)} cr</h2>
-    <div class="tablewrap"><table><thead><tr><th>Παίκτης</th><th>Θέση</th><th>Αντ.</th><th class="num">xPTS</th><th class="num">xPTS3</th><th class="num">Τιμή</th></tr></thead><tbody>
-    ${my.players.map((r) => `<tr><td>${esc(nm(r.name))}${inj(r)}</td><td>${esc(r.position || "")}</td><td>${r.home ? "🏠" : "✈️"} ${esc(r.opp || "")}</td>
+const ROLE_ORDER = { "5άδα": 0, "6ος": 1, "πάγκος": 2, "coach": 3 };
+function squadTable(rows) {
+  return `<div class="tablewrap"><table><thead><tr><th>Ρόλος</th><th>Παίκτης</th><th>Αντ.</th>
+    <th class="num">xPTS</th><th class="num">xPTS3</th><th class="num">Τιμή</th></tr></thead><tbody>
+    ${rows.map((r) => `<tr><td>${esc(r.role || "")}${r.captain ? " ★" : ""}</td>
+      <td>${esc(nm(r.name))}${inj(r)}<br><span class="muted">${esc(r.team)} · ${esc(r.position || "")}</span></td>
+      <td>${r.home ? "🏠" : "✈️"} ${esc(r.opp || "")}</td>
       <td class="num">${f1(r.x_now)}</td><td class="num">${f1(r.x_h)}</td><td class="num">${f1(r.price)}</td></tr>`).join("")}
-    </tbody></table></div></div>
-    <div class="card"><h2>Προτεινόμενες αλλαγές</h2>${tr ? `<div class="tablewrap"><table>${tr}</table></div>` : "<p>Καμία αλλαγή δεν ξεπερνά το όριο κέρδους.</p>"}</div>`;
+    </tbody></table></div>`;
+}
+function renderTeam(my, best) {
+  let html = "";
+  if (!my) {
+    html += `<div class="card warn"><h2>Η ομάδα δεν είναι διαθέσιμη</h2>
+      <p>Χρειάζεται έγκυρο <code>FANTASY_TOKEN</code> στα GitHub Secrets.</p></div>`;
+  } else {
+    const byId = Object.fromEntries((my.lineup || []).map((p) => [p.id, p]));
+    const rows = my.players.map((r) => ({ ...r, role: byId[r.fantasy_id]?.role ?? (r.position === "Head Coach" ? "coach" : ""),
+      captain: byId[r.fantasy_id]?.captain }))
+      .sort((a, b) => (ROLE_ORDER[a.role] ?? 9) - (ROLE_ORDER[b.role] ?? 9) || (b.x_now ?? 0) - (a.x_now ?? 0));
+    const tr = (my.transfers || []).map((m) => `<tr><td>${esc(m.out)}</td><td>➜</td><td>${esc(m.in)}</td>
+      <td class="num">${m.price_out}→${m.price_in}</td></tr>`).join("");
+    const lim = (my.max_trades ?? 4) > 4 ? "απεριόριστες αλλαγές" : "έως 4 αλλαγές";
+    html += `<div class="card"><h2>${esc(my.name || "Η ομάδα μου")} · Υπόλοιπο ${f1(my.bank)} cr</h2>
+      <p class="muted">Προτεινόμενη πεντάδα, 6ος και αρχηγός (★) για αυτή την αγωνιστική.</p>${squadTable(rows)}</div>
+      <div class="card"><h2>Προτεινόμενες αλλαγές <span class="muted">(${lim})</span></h2>
+      ${tr ? `<p class="up">+${f1(my.transfer_gain)} xPTS στις επόμενες 3 αγωνιστικές · υπόλοιπο μετά: ${f1(my.bank_after)} cr</p>
+        <div class="tablewrap"><table>${tr}</table></div>` : "<p>Καμία αλλαγή δεν αξίζει (κέρδος &lt; 3 xPTS ανά αλλαγή).</p>"}</div>`;
+  }
+  if (best) {
+    const rows = [...best.team].sort((a, b) => (ROLE_ORDER[a.role] ?? 9) - (ROLE_ORDER[b.role] ?? 9) || b.x_now - a.x_now);
+    html += `<div class="card"><h2>Βέλτιστη ομάδα από το μηδέν · ${f1(best.cost)} cr</h2>
+      <p class="muted">Με απεριόριστες αλλαγές (π.χ. μετά τις αγωνιστικές 6, 13, 18…). Κανόνες: 4G/4F/2C/coach, πεντάδα με ≥1 από κάθε θέση, πάγκος 50%, αρχηγός ×2.</p>
+      ${squadTable(rows)}</div>`;
+  }
+  $("#team").innerHTML = html;
 }
 
 (async () => {
@@ -219,7 +241,7 @@ function renderTeam(my) {
     sortKey = "x_now"; sortDir = -1; renderPlayers();
   };
   renderPlayers();
-  renderTeam(p.my_team);
+  renderTeam(p.my_team, p.best_team);
 
   $("#rtable").innerHTML = `<thead><tr><th>#</th><th>Ομάδα</th><th class="num">Net</th><th class="num">Pace</th><th class="num">Έδρα</th><th class="num">Αγώνες</th></tr></thead><tbody>`
     + p.team_ratings.map((t, i) => `<tr><td>${i + 1}</td><td>${esc(t.team)}</td>

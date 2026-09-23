@@ -56,6 +56,10 @@ xPIR = base × (1 + calib + pos·pos_dev + pace·pace_dev + margin·m/10 + blowo
 4. Expiration: έως το τέλος της σεζόν.
 5. Βάλ' το στο secret `GH_DISPATCH_TOKEN` και ξανατρέξε το **Deploy Telegram bot**.
 
+### Προτιμήσεις (`preferences.yaml`)
+`keep`: παίκτες που δεν θέλεις να σου προτείνει να πουλήσεις (π.χ. έχεις άποψη που το μοντέλο δεν ξέρει).
+`avoid`: παίκτες που δεν θέλεις να σου προτείνει. Αλλάζεις το αρχείο από το GitHub (✏️) και τρέχεις `/update`.
+
 ## Τοπικά
 ```
 pip install -r requirements.txt
