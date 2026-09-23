@@ -84,13 +84,13 @@ ul.news li { padding: 8px 0; border-bottom: 1px solid var(--border); }
   <section id="report" class="on"></section>
   <section id="players">
     <div class="filters">
-      <select id="fpos"><option value="">Όλες οι θέσεις</option><option>Guard</option><option>Forward</option><option>Center</option></select>
+      <select id="fpos"><option value="">Όλες οι θέσεις</option><option>Guard</option><option>Forward</option><option>Center</option><option>Head Coach</option></select>
       <select id="fteam"><option value="">Όλες οι ομάδες</option></select>
       <select id="fturn"><option value="">Όλα τα turns</option></select>
       <input id="fsearch" placeholder="Αναζήτηση" size="12">
     </div>
     <div class="card tablewrap"><table id="ptable"></table></div>
-    <p class="muted">xPIR: αναμενόμενο PIR αγωνιστικής. xPIR3: άθροισμα επόμενων 3 αγωνιστικών.
+    <p class="muted">xPTS: αναμενόμενοι πόντοι fantasy αγωνιστικής (PIR +10% αν κερδίσει η ομάδα· coach: βαθμολογία από τη διαφορά σκορ). xPTS3: άθροισμα επόμενων 3 αγωνιστικών.
       Ματσάρισμα: πόσο περισσότερο/λιγότερο PIR δίνει ο αντίπαλος στη θέση (▲ ευνοϊκό).</p>
   </section>
   <section id="team"></section>
@@ -131,8 +131,8 @@ function renderPlayers() {
   rows.sort((a, b) => ((a[sortKey] ?? -1e9) > (b[sortKey] ?? -1e9) ? 1 : -1) * sortDir);
   const max = Math.max(...rows.map((r) => r.x_now || 0), 1);
   const hasPrice = P.fantasy_ok;
-  const cols = [["name", "Παίκτης"], ["x_now", "xPIR", 1], ["opp", "Αντ."], ["pos_dev", "Ματσάρ.", 1],
-    ["x_h", "xPIR3", 1], ["season_pir", "PIR φέτος", 1], ["prev_pir", "PIR πέρσι", 1]]
+  const cols = [["name", "Παίκτης"], ["x_now", "xPTS", 1], ["opp", "Αντ."], ["pos_dev", "Ματσάρ.", 1],
+    ["x_h", "xPTS3", 1], ["season_pir", "PIR φέτος", 1], ["prev_pir", "PIR πέρσι", 1]]
     .concat(hasPrice ? [["price", "Τιμή", 1], ["value", "Value", 1]] : []);
   $("#ptable").innerHTML = "<thead><tr>" + cols.map(([k, l, n]) =>
     `<th data-k="${k}" class="${n ? "num" : ""}">${l}${sortKey === k ? (sortDir < 0 ? " ↓" : " ↑") : ""}</th>`).join("") + "</tr></thead><tbody>"
@@ -156,7 +156,7 @@ function renderTeam(my) {
   const tr = (my.transfers || []).map((m) => `<tr><td>${esc(m.out)}</td><td>➜</td><td>${esc(m.in)}</td>
     <td class="num up">+${m.gain}</td><td class="num">${m.price_out}→${m.price_in}</td></tr>`).join("");
   $("#team").innerHTML = `<div class="card"><h2>${esc(my.name || "Η ομάδα μου")} · Υπόλοιπο ${f1(my.bank)} cr</h2>
-    <div class="tablewrap"><table><thead><tr><th>Παίκτης</th><th>Θέση</th><th>Αντ.</th><th class="num">xPIR</th><th class="num">xPIR3</th><th class="num">Τιμή</th></tr></thead><tbody>
+    <div class="tablewrap"><table><thead><tr><th>Παίκτης</th><th>Θέση</th><th>Αντ.</th><th class="num">xPTS</th><th class="num">xPTS3</th><th class="num">Τιμή</th></tr></thead><tbody>
     ${my.players.map((r) => `<tr><td>${esc(nm(r.name))}</td><td>${esc(r.position || "")}</td><td>${r.home ? "🏠" : "✈️"} ${esc(r.opp || "")}</td>
       <td class="num">${f1(r.x_now)}</td><td class="num">${f1(r.x_h)}</td><td class="num">${f1(r.price)}</td></tr>`).join("")}
     </tbody></table></div></div>

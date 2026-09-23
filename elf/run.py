@@ -29,9 +29,27 @@ def _key(s: str) -> str:
     return "".join(c for c in s if c.isalnum() and unicodedata.category(c) != "Mn")
 
 
+def _clean(o):
+    """NaN/inf -> None recursively: browsers reject NaN in JSON."""
+    if isinstance(o, float) and not np.isfinite(o):
+        return None
+    if isinstance(o, dict):
+        return {k: _clean(v) for k, v in o.items()}
+    if isinstance(o, (list, tuple)):
+        return [_clean(v) for v in o]
+    if isinstance(o, (np.floating,)):
+        return _clean(float(o))
+    if isinstance(o, (np.integer,)):
+        return int(o)
+    if isinstance(o, (np.bool_,)):
+        return bool(o)
+    return o
+
+
 def _write(name: str, obj) -> None:
     PUBLIC.mkdir(parents=True, exist_ok=True)
-    (PUBLIC / name).write_text(json.dumps(obj, ensure_ascii=False, indent=1, default=str))
+    (PUBLIC / name).write_text(json.dumps(_clean(obj), ensure_ascii=False, indent=1,
+                                          default=str, allow_nan=False))
 
 
 # ------------------------------------------------------------ predictions
@@ -70,8 +88,30 @@ def predictions(season: int):
     ctx["no_data"] = ctx["base"].isna()
     ctx["base"] = ctx["base"].fillna(0)
     ctx["xpir"] = model.xpir(ctx, p).clip(lower=0)
+    ctx["xpir"] = model.fantasy_points(ctx["xpir"], ctx["margin"])  # +10% win bonus
+    coaches = coach_rows(fx, people, ratings)
     return {"round": first, "fixtures": fx, "ctx": ctx, "ratings": ratings, "roster": roster,
-            "params": p}
+            "params": p, "coaches": coaches}
+
+
+def coach_rows(fx: pd.DataFrame, people: pd.DataFrame, ratings: pd.DataFrame) -> pd.DataFrame:
+    """Expected coach score per fixture from the expected margin distribution."""
+    heads = people[(people["type"] == "coach") & people["active"]] \
+        .drop_duplicates("club", keep="last").set_index("club")
+    rows = []
+    for f in fx.itertuples():
+        for team, opp, home in ((f.home, f.away, True), (f.away, f.home, False)):
+            if team not in ratings.index or opp not in ratings.index or team not in heads.index:
+                continue
+            rt, ro = ratings.loc[team], ratings.loc[opp]
+            pace = (rt["pace"] + ro["pace"]) / 2
+            m = (rt["net"] - ro["net"] + (rt["hca"] if home else -ro["hca"])) * pace / 100
+            rows.append({"round": f.round, "person_id": heads.loc[team, "person_id"],
+                         "name": heads.loc[team, "name"], "team": team, "opp": opp,
+                         "is_home": home, "margin": m, "xpir": model.coach_points(m),
+                         "position": "Head Coach", "pos_dev": np.nan, "base": np.nan,
+                         "no_data": False, "win_prob": model.win_prob(m)})
+    return pd.DataFrame(rows)
 
 
 # --------------------------------------------------------------- fantasy
@@ -286,7 +326,7 @@ def build(offline: bool = False) -> dict:
     try:
         dig = news.digest(arts, [f"{n} ({team_of.get(n)})" for n in names])
     except Exception as e:  # noqa: BLE001
-        health.append(f"Gemini: {type(e).__name__}")
+        health.append(f"{e}" if isinstance(e, RuntimeError) else f"Gemini: {type(e).__name__}")
     avail = {}
     for a in (dig or {}).get("availability", []):
         f = news.AVAILABILITY_FACTOR.get(a.get("status"), 1.0)
@@ -295,7 +335,9 @@ def build(offline: bool = False) -> dict:
     ctx["xpir"] = ctx["xpir"] * ctx["avail"]
     _write("news.json", {"articles": arts[:120], "digest": dig, "failed": failed})
 
-    # --- per-player tables
+    # --- per-player tables (coaches ride along with position "Head Coach")
+    if not pr["coaches"].empty:
+        ctx = pd.concat([ctx, pr["coaches"]], ignore_index=True)
     now_round = ctx[ctx["round"] == rnd]
     agg = ctx.groupby("person_id").agg(
         name=("name", "first"), team=("team", "first"), position=("position", "first"),
@@ -308,7 +350,9 @@ def build(offline: bool = False) -> dict:
     table = agg.join(nr, how="left").reset_index()
 
     # --- fantasy prices / my team
-    fs = {"ok": False, "error": "offline"} if offline else fantasy_state(clubs, pr["roster"])
+    people_all = pd.concat([pr["roster"], pr["coaches"][["person_id", "name", "team"]]
+                            .drop_duplicates("person_id")], ignore_index=True)
+    fs = {"ok": False, "error": "offline"} if offline else fantasy_state(clubs, people_all)
     my = None
     if fs.get("ok"):
         fp = fs["players"]
@@ -318,8 +362,8 @@ def build(offline: bool = False) -> dict:
         # squad slots follow the fantasy game's position, not the EuroLeague listing
         table["position"] = table["f_position"].fillna(table["position"])
         table["value"] = table["x_h"] / table["price"]
-        if fs["unmatched"]:
-            health.append(f"{fs['unmatched']} παίκτες fantasy χωρίς αντιστοίχιση")
+        if fs["unmatched"] > 40:  # a handful of unregistered bench players is normal
+            health.append(f"{fs['unmatched']} παίκτες του fantasy λείπουν από τα ρόστερ EuroLeague")
         for t in fs["my_teams"][:1]:
             ids, meta = parse_my_roster(t["raw"])
             mine = table[table["fantasy_id"].isin(ids)].copy()
@@ -372,7 +416,9 @@ def _fmt(r) -> str:
 
 def messages(rnd, trn, table, my, dig, health) -> list[dict]:
     dash = os.environ.get("DASHBOARD_URL", "")
-    t = table.dropna(subset=["x_now"])
+    t_all = table.dropna(subset=["x_now"])
+    coaches = t_all[t_all["position"] == "Head Coach"]
+    t = t_all[t_all["position"] != "Head Coach"]
     msgs = []
     for tu in trn:
         day = datetime.fromisoformat(tu["date"])
@@ -389,10 +435,10 @@ def messages(rnd, trn, table, my, dig, health) -> list[dict]:
                 lines.append(f"Turn 1: {_fmt(best_now)}")
                 if len(later):
                     lines.append(f"Plan B (Turn 2+): {_fmt(later.iloc[0])}")
-                lines.append("<i>Βάλε αρχηγό στο Turn 1· αν δεν φτάσει το xPIR του plan B, "
+                lines.append("<i>Βάλε αρχηγό στο Turn 1· αν δεν φτάσει το xPTS του plan B, "
                              "μεταφέρεις το x2 πριν το Turn 2.</i>")
             if my and my["transfers"]:
-                lines += ["", "🔁 <b>Προτεινόμενες αλλαγές</b> (xPIR 3 αγωνιστικών)"]
+                lines += ["", "🔁 <b>Προτεινόμενες αλλαγές</b> (xPTS 3 αγωνιστικών)"]
                 for m in my["transfers"]:
                     lines.append(f"• {m['out']} ➜ {m['in']}  (+{m['gain']}, "
                                  f"{m['price_out']}→{m['price_in']})")
@@ -403,12 +449,19 @@ def messages(rnd, trn, table, my, dig, health) -> list[dict]:
             lines.append("⭐ <b>Έλεγχος αρχηγού</b>")
             lines.append("Κράτα τον αρχηγό σου αν έφερε ≥ ×1 του καλύτερου διαθέσιμου σήμερα:")
             lines += [f"• {_fmt(r)}" for r in nxt.to_dict("records")]
-        lines += ["", f"📈 <b>Top xPIR {'σήμερα' if tu['turn'] > 1 else 'αγωνιστικής'}</b>"]
+        if tu["turn"] == 1 and len(coaches):
+            c = coaches.sort_values("x_now", ascending=False).iloc[0]
+            line = (f"🧑‍💼 <b>Coach</b>: {c['name'].split(',')[0].title()} ({c['team']}) "
+                    f"{'🏠' if c.get('home') else '✈️'} vs {c.get('opp')} — <b>{c['x_now']:.1f}</b>")
+            if c.get("price") == c.get("price") and c.get("price") is not None:
+                line += f" · {c['price']}cr"
+            lines += ["", line]
+        lines += ["", f"📈 <b>Top xPTS {'σήμερα' if tu['turn'] > 1 else 'αγωνιστικής'}</b>"]
         src = playing if tu["turn"] > 1 else t
         lines += [f"{i}. {_fmt(r)}" for i, r in enumerate(src.head(8).to_dict("records"), 1)]
         if "value" in t and tu["turn"] == 1:
             v = t.dropna(subset=["value"]).sort_values("value", ascending=False).head(5)
-            lines += ["", "💰 <b>Value (xPIR/credit, 3 αγων.)</b>"]
+            lines += ["", "💰 <b>Value (xPTS/credit, 3 αγων.)</b>"]
             lines += [f"• {r['name'].split(',')[0].title()} ({r['team']}) {r['price']}cr — "
                       f"{r['value']:.2f}" for r in v.to_dict("records")]
         if dig:

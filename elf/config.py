@@ -16,6 +16,11 @@ SQUAD = {"G": 4, "F": 4, "C": 2}  # + 1 head coach
 BUDGET = 100.0
 CAPTAIN_MULTIPLIER = 2.0
 BENCH_MULTIPLIER = 0.5             # starters (5) + sixth man get 100%
+WIN_BONUS = 0.10                   # player score +10% when his team wins
+# coach score by final margin (official rules, classic mode)
+COACH_POINTS = [(-99, -20.5, -20), (-20.5, -10.5, -10), (-10.5, 0, -5),
+                (0, 10.5, 10), (10.5, 20.5, 20), (20.5, 99, 25)]
+MARGIN_SD = 11.7                   # sd of actual vs predicted margin (2025-26 walk-forward)
 
 # Model priors. Context coefficients are overwritten by the backtest fit
 # (data/public/model_params.json) once it has been run.

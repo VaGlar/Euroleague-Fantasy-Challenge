@@ -150,11 +150,39 @@ def digest(articles: list[dict], roster: list[str]) -> dict | None:
                                  .replace("{articles}", arts)}]}],
         "generationConfig": {"responseMimeType": "application/json", "temperature": 0.2},
     }
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
-    r = requests.post(url, params={"key": key}, json=body, timeout=120)
-    r.raise_for_status()
-    text = r.json()["candidates"][0]["content"]["parts"][0]["text"]
-    return json.loads(text)
+    headers = {"x-goog-api-key": key}  # header, never in the URL (URLs end up in logs)
+    base = "https://generativelanguage.googleapis.com/v1beta"
+    models = [GEMINI_MODEL]
+    last = None
+    for attempt in range(3):
+        if attempt == len(models):  # configured model unknown: ask the API what exists
+            models += _flash_models(base, headers)
+            if attempt == len(models):
+                break
+        model_name = models[attempt]
+        r = requests.post(f"{base}/models/{model_name}:generateContent", headers=headers,
+                          json=body, timeout=120)
+        if r.status_code == 200:
+            text = r.json()["candidates"][0]["content"]["parts"][0]["text"]
+            return json.loads(text)
+        try:
+            msg = r.json().get("error", {}).get("message", "")[:160]
+        except ValueError:
+            msg = r.text[:160]
+        last = f"{r.status_code} {model_name}: {msg}"
+        if r.status_code != 404:
+            break
+    raise RuntimeError(f"Gemini {last}")
+
+
+def _flash_models(base: str, headers: dict) -> list[str]:
+    r = requests.get(f"{base}/models", headers=headers, timeout=30)
+    if r.status_code != 200:
+        return []
+    names = [m["name"].split("/", 1)[1] for m in r.json().get("models", [])
+             if "generateContent" in m.get("supportedGenerationMethods", [])
+             and "flash" in m["name"] and "image" not in m["name"] and "tts" not in m["name"]]
+    return sorted(names, reverse=True)[:2]
 
 
 AVAILABILITY_FACTOR = {"out": 0.0, "doubtful": 0.4, "questionable": 0.8, "available": 1.0}

@@ -13,11 +13,12 @@ from __future__ import annotations
 
 import copy
 import json
+from math import erf, sqrt
 
 import numpy as np
 import pandas as pd
 
-from .config import MODEL, PUBLIC
+from .config import COACH_POINTS, MARGIN_SD, MODEL, PUBLIC, WIN_BONUS
 
 
 def params() -> dict:
@@ -230,3 +231,23 @@ def xpir(df: pd.DataFrame, p: dict | None = None) -> pd.Series:
     p = p or params()
     c = np.array([p["coef"][k] for k in COEF_ORDER])
     return df["base"] + design(df) @ c
+
+
+# ------------------------------------------------------- fantasy scoring
+
+def _cdf(x: float) -> float:
+    return 0.5 * (1 + erf(x / (MARGIN_SD * sqrt(2))))
+
+
+def win_prob(margin: float) -> float:
+    return _cdf(margin)
+
+
+def fantasy_points(xpir: pd.Series, margin: pd.Series) -> pd.Series:
+    """Player fantasy score = PIR, +10% if the team wins (official rules)."""
+    return xpir * (1 + WIN_BONUS * margin.map(win_prob))
+
+
+def coach_points(margin: float) -> float:
+    """Expected coach score for a game with this expected margin."""
+    return sum(pts * (_cdf(hi - margin) - _cdf(lo - margin)) for lo, hi, pts in COACH_POINTS)
