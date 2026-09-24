@@ -142,12 +142,12 @@ def lineup(squad: list[dict], now="x_now"):
 
 
 def transfers(squad: list[dict], pool: list[dict], bank: float, max_trades: int = 4,
-              min_gain_per_trade: float = 3.0, value="x_h", now="x_now",
+              min_gain_per_trade: float = 2.0, value="x_h", now="x_now",
               keep: set | None = None):
     """Best set of at most `max_trades` swaps.
 
     A trade is only worth it if it adds at least `min_gain_per_trade` expected
-    points over the horizon (trades are scarce: 4 per round)."""
+    points over the weighted horizon (~2 rounds; trades are scarce: 4 per round)."""
     owned = {p["id"] for p in squad}
     budget = sum(float(p["price"]) for p in squad) + bank
     universe = {p["id"]: p for p in pool}

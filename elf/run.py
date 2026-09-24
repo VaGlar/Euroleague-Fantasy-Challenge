@@ -21,6 +21,9 @@ from .config import BUDGET, COACH_POINTS, CURRENT_SEASON, PUBLIC, ROOT, TIMEZONE
 
 ATH = ZoneInfo(TIMEZONE)
 HORIZON = 3  # rounds used for transfer value
+# weight of each round in x_h: later rounds are less certain and can still be fixed
+# with the next rounds' trades, so the next round counts as much as the other two
+HORIZON_WEIGHTS = (1.0, 0.6, 0.35)
 UNLIMITED_AFTER = {6, 13, 18, 23, 28, 34}  # trades unlimited before the next round
 DAYS_EL = ["Δευτέρα", "Τρίτη", "Τετάρτη", "Πέμπτη", "Παρασκευή", "Σάββατο", "Κυριακή"]
 
@@ -543,6 +546,8 @@ def build(offline: bool = False) -> dict:
         ctx["expert_pick"] = k.map(lambda x: len(ex.get(x, {}).get("pick", ())))
         ctx["expert_cap"] = k.map(lambda x: len(ex.get(x, {}).get("captain", ())))
         ctx["expert_avoid"] = k.map(lambda x: len(ex.get(x, {}).get("avoid", ())))
+    ctx["xpir_w"] = ctx["xpir"] * (ctx["round"] - rnd).map(
+        lambda k: HORIZON_WEIGHTS[k] if 0 <= k < len(HORIZON_WEIGHTS) else 0.0)
     now_round = ctx[ctx["round"] == rnd]
     for col in ("expert_pick", "expert_cap", "expert_avoid"):
         if col not in ctx:
@@ -551,7 +556,7 @@ def build(offline: bool = False) -> dict:
         expert_pick=("expert_pick", "first"), expert_cap=("expert_cap", "first"),
         expert_avoid=("expert_avoid", "first"),
         name=("name", "first"), team=("team", "first"), position=("position", "first"),
-        x_h=("xpir", "sum"), base=("base", "first"), no_data=("no_data", "first"),
+        x_h=("xpir_w", "sum"), base=("base", "first"), no_data=("no_data", "first"),
         season_pir=("season_pir", "first"), prev_pir=("prev_pir", "first"),
         season_min=("season_min", "first"))
     nr = now_round.groupby("person_id").agg(x_now=("xpir", "sum"), opp=("opp", "first"),
@@ -598,7 +603,7 @@ def build(offline: bool = False) -> dict:
             m = nd & (table["position"] == pos)
             est = (0.8 * (slope * table.loc[m, "price"] + icpt)).clip(lower=0)
             table.loc[m, "x_now"] = est * f_game[m]
-            table.loc[m, "x_h"] = est * HORIZON
+            table.loc[m, "x_h"] = est * sum(HORIZON_WEIGHTS)
             table.loc[m, "prior"] = "τιμή"
         table, price_info = prices.annotate(table)  # $ = likely price rise
         n_inj = int((f_game < 1).sum())
@@ -802,7 +807,7 @@ def messages(rnd, trn, table, my, dig, health) -> list[dict]:
             if my and my.get("transfers"):
                 lim = "απεριόριστες" if my.get("max_trades", 4) > 4 else "έως 4"
                 lines += [f"🔁 <b>Προτεινόμενες αλλαγές</b> ({lim}· +{my.get('transfer_gain', 0)} "
-                          f"xPTS σε 3 αγωνιστικές)"]
+                          f"σταθμισμένα xPTS 3 αγωνιστικών)"]
                 for m in my["transfers"]:
                     lines.append(f"• {m['out']} ➜ {m['in']}  ({m['price_out']}→{m['price_in']}cr)")
                 lines.append("")
