@@ -104,8 +104,8 @@ ul.news li { padding: 8px 0; border-bottom: 1px solid var(--border); }
       <select id="fteam"><option value="">Όλες οι ομάδες</option></select>
       <select id="fturn"><option value="">Όλα τα turns</option></select>
       <input id="fsearch" placeholder="Αναζήτηση" size="12">
-      <span class="range">Τιμή <input id="fpmin" type="number" inputmode="decimal" step="0.1" min="0" placeholder="από">
-        – <input id="fpmax" type="number" inputmode="decimal" step="0.1" min="0" placeholder="έως"></span>
+      <span class="range">Τιμή <input id="fpmin" type="text" inputmode="decimal" autocomplete="off" placeholder="από">
+        – <input id="fpmax" type="text" inputmode="decimal" autocomplete="off" placeholder="έως"></span>
       <label class="chk"><input id="fhealthy" type="checkbox"> Χωρίς τραυματίες</label>
       <button id="freset" class="linkbtn" type="button">Καθαρισμός</button>
     </div>
@@ -179,6 +179,8 @@ function findPlayer(name) {
   return P.players.find((p) => pkey(p.name) === k)
     || P.players.find((p) => pkey(String(p.name).split(",")[0]) === pkey(String(name).split(",")[0]));
 }
+// price boxes: accept "6,5" (Greek keyboard) as well as "6.5"
+const num = (v) => parseFloat(String(v).trim().replace(",", "."));
 const FILTERS = ["fpos", "fteam", "fturn", "fsearch", "fpmin", "fpmax", "fhealthy"];
 function saveFilters() {
   try {
@@ -199,7 +201,7 @@ function loadFilters() {
 }
 function renderPlayers() {
   const pos = $("#fpos").value, team = $("#fteam").value, turn = $("#fturn").value, q = $("#fsearch").value.toLowerCase();
-  const pmin = parseFloat($("#fpmin").value), pmax = parseFloat($("#fpmax").value), healthy = $("#fhealthy").checked;
+  const pmin = num($("#fpmin").value), pmax = num($("#fpmax").value), healthy = $("#fhealthy").checked;
   const turnTeams = turn ? P.turns.find((t) => String(t.turn) === turn).teams : null;
   let rows = P.players.filter((p) => p.x_now != null
     && (!pos || p.position === pos) && (!team || p.team === team)
