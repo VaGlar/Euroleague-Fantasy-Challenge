@@ -99,3 +99,16 @@ def test_incomplete_roster_aborts(monkeypatch, public):
     g.state["players"].pop()
     with pytest.raises(lineup_cmd.Abort, match="11"):
         lineup_cmd.load_state()
+
+
+def test_locked_league_gives_clear_message(monkeypatch, public):
+    reply = '{"code": "FORBIDDEN", "message": "The league status does not allow the request."}'
+    g = game(monkeypatch, public, BAD, captain=10, status=403, league_status=2, reply=reply)
+    said = []
+    monkeypatch.setattr(lineup_cmd, "say", lambda text, *a, **k: said.append(text))
+    lineup_cmd.preview()
+    assert "🔒" in said[-1], "η προεπισκόπηση πρέπει να προειδοποιεί ότι είναι κλειδωμένο"
+    pr = lineup_cmd.propose(lineup_cmd.load_state())
+    with pytest.raises(lineup_cmd.Abort, match="🔒"):
+        lineup_cmd.apply(pr["nonce"])
+    assert g.lineup()[1] == 10, "τίποτα δεν άλλαξε"

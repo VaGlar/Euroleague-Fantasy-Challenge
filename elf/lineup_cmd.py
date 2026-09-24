@@ -26,6 +26,12 @@ from .config import PUBLIC
 
 POS = {"Guard": 0, "Forward": 1, "Center": 2}
 LETTER = {"Guard": "G", "Forward": "F", "Center": "C"}
+# league status_id values seen with a refused save (403 "The league status does not
+# allow the request"): 2 = games of the round live / being scored
+LOCKED_STATUS = {2}
+LOCKED_MSG = ("🔒 Το παιχνίδι δεν δέχεται αλλαγές αυτή τη στιγμή (κλειδώνει όσο παίζονται ή "
+              "βαθμολογούνται αγώνες). Δεν άλλαξε τίποτα — στείλε ξανά /lineup αργότερα, "
+              "π.χ. το πρωί μετά το report των 11:00.")
 
 
 # ------------------------------------------------------------------ telegram
@@ -106,6 +112,7 @@ def load_state():
             "turn": (p.get("round") or {}).get("number"),
         })
     return {"team": team, "md": md, "raw": raw, "squad": squad, "forms": forms,
+            "league_status": cfg.get("status_id"),
             "slots": [p["court_position"] for p in court], "direction": direction,
             "coach": coach[0]}
 
@@ -180,6 +187,9 @@ def preview():
     st = load_state()
     pr = propose(st)
     text = describe(st, pr)
+    if pr["changes"] and st.get("league_status") in LOCKED_STATUS:
+        text = LOCKED_MSG.replace("Δεν άλλαξε τίποτα — ", "Το ✅ μάλλον θα απορριφθεί· ") \
+            + "\n\n" + text
     if pr["changes"]:
         say(text + "\n\nΝα εφαρμοστεί στο παιχνίδι;",
             [{"text": "✅ Εφάρμοσε", "callback_data": f"lu:apply:{pr['nonce']}"},
@@ -198,6 +208,8 @@ def apply(nonce: str):
         say("✅ Τίποτα να αλλάξει — η ομάδα είναι ήδη έτσι.")
         return
     r = fantasy.save_roster(st["team"]["id"], st["md"]["id"], pr["body"])
+    if r.status_code == 403 and "league status" in r.text.lower():
+        raise Abort(LOCKED_MSG + f"\n(league status {st.get('league_status')})")
     if r.status_code >= 400:
         raise Abort(f"το παιχνίδι απέρριψε την αλλαγή ({r.status_code}): {r.text[:200]}")
     # read back and verify

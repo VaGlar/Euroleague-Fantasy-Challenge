@@ -76,10 +76,12 @@ def squad_t1_t2():
 class FakeGame:
     """In-memory stand-in for the Dunkest fantasy API (roster read/write)."""
 
-    def __init__(self, squad, roles, captain, played=None, persist=True, status=200):
+    def __init__(self, squad, roles, captain, played=None, persist=True, status=200,
+                 league_status=1, reply="ok"):
         self.squad = {p["id"]: p for p in squad}
         self.played = played or {}          # id -> real points
         self.persist, self.status = persist, status
+        self.league_status, self.reply = league_status, reply
         self.saved = []
         order = {"Center": 0, "Forward": 1, "Guard": 2}   # the game's slot order: C -> F -> G
         rank = {"5άδα": 0, "6ος": 1, "πάγκος": 2}
@@ -103,7 +105,8 @@ class FakeGame:
 
     # API surface used by elf.lineup_cmd / elf.run
     def config(self):
-        return {"current_matchday": {"id": 500, "number": 1}, "current_round": {"number": 1},
+        return {"status_id": self.league_status,
+                "current_matchday": {"id": 500, "number": 1}, "current_round": {"number": 1},
                 "current_players_list_id": 9}
 
     def my_teams(self, *a, **k):
@@ -126,7 +129,7 @@ class FakeGame:
 
         class R:
             status_code = self.status
-            text = "err" if self.status >= 400 else "ok"
+            text = self.reply
         return R()
 
     def install(self, monkeypatch):
