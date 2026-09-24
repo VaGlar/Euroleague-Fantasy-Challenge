@@ -27,7 +27,11 @@ jobs:
         with:
           python-version: "3.11"
           cache: pip
-      - run: pip install -r requirements.txt
+      - run: pip install -r requirements.txt pytest
+      # never write to the game with code that breaks the lineup rules
+      - name: Tests
+        if: inputs.mode == 'apply'
+        run: python -m pytest -q
       - name: Lineup
         env:
           FANTASY_TOKEN: ${{ secrets.FANTASY_TOKEN }}

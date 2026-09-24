@@ -1,0 +1,32 @@
+name: Tests
+
+on:
+  push:
+    paths-ignore: ["data/**"]   # the bot's data commits don't change code
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r requirements.txt pytest
+      - name: Python tests (no network)
+        run: python -m pytest -q
+      - name: JavaScript syntax (bot, feed proxy, dashboard)
+        run: |
+          node --check worker/src/index.js
+          node --input-type=module --check < functions/feed.js
+          python - <<'PY'
+          import re, pathlib
+          html = pathlib.Path("web/index.html").read_text()
+          js = "\n".join(re.findall(r"<script>(.*?)</script>", html, re.S))
+          pathlib.Path("/tmp/dashboard.js").write_text(js)
+          PY
+          node --check /tmp/dashboard.js
