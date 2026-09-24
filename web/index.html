@@ -111,7 +111,7 @@ ul.news li { padding: 8px 0; border-bottom: 1px solid var(--border); }
     </div>
     <div class="muted" id="fcount"></div>
     <div class="card tablewrap"><table id="ptable"></table></div>
-    <p class="muted">xPTS: αναμενόμενοι πόντοι fantasy αγωνιστικής (PIR +10% αν κερδίσει η ομάδα· coach: βαθμολογία από τη διαφορά σκορ). xPTS3: xPTS των επόμενων 3 αγωνιστικών με βάρη 1 / 0.6 / 0.35 (η επόμενη μετράει όσο οι άλλες δύο μαζί).
+    <p class="muted">xPTS: αναμενόμενοι πόντοι fantasy αγωνιστικής (PIR +10% αν κερδίσει η ομάδα· coach: βαθμολογία από τη διαφορά σκορ). xPTS3: xPTS των επόμενων 3 αγωνιστικών με βάρη 1 / 0.6 / 0.35 (η επόμενη μετράει όσο οι άλλες δύο μαζί)· αγωνιστικές μετά από παράθυρο απεριόριστων μεταγραφών δεν μετράνε.
       Ματσάρισμα: πόσο περισσότερο/λιγότερο PIR δίνει ο αντίπαλος στη θέση (▲ ευνοϊκό).
       <b>$</b>: πιθανή άνοδος τιμής μετά την αγωνιστική (↓$ πτώση).</p>
   </section>
@@ -254,7 +254,7 @@ function renderTeam(my, best) {
     html += `<div class="card"><h2>${esc(my.name || "Η ομάδα μου")} · Υπόλοιπο ${f1(my.bank)} cr</h2>
       <p class="muted">Προτεινόμενη πεντάδα, 6ος και αρχηγός (★). Με έντονα: πόντοι που έχουν ήδη σημειωθεί. Προτίμησε στον πάγκο παίκτες μεταγενέστερου Turn: αν ένας βασικός αποτύχει, μπαίνουν στη θέση του.</p>${squadTable(rows)}</div>
       <div class="card"><h2>Προτεινόμενες αλλαγές <span class="muted">(${lim})</span></h2>
-      ${tr ? `<p class="up">+${f1(my.transfer_gain)} σταθμισμένα xPTS 3 αγωνιστικών · υπόλοιπο μετά: ${f1(my.bank_after)} cr</p>
+      ${tr ? `<p class="up">+${f1(my.transfer_gain)} σταθμισμένα xPTS · υπόλοιπο μετά: ${f1(my.bank_after)} cr</p>
         <div class="tablewrap"><table>${tr}</table></div>` : "<p>Καμία αλλαγή δεν αξίζει (κέρδος &lt; 3 xPTS ανά αλλαγή).</p>"}</div>`;
   }
   if (best) {

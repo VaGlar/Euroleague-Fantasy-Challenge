@@ -25,6 +25,16 @@ HORIZON = 3  # rounds used for transfer value
 # with the next rounds' trades, so the next round counts as much as the other two
 HORIZON_WEIGHTS = (1.0, 0.6, 0.35)
 UNLIMITED_AFTER = {6, 13, 18, 23, 28, 34}  # trades unlimited before the next round
+MIN_GAIN_PER_TRADE = 2.0  # weighted xPTS a trade must add over the full 3-round horizon
+
+
+def horizon_weights(rnd: int) -> list[float]:
+    """Weights of rounds rnd, rnd+1, ... in x_h. A squad only lasts until the next
+    unlimited-trades window (after rounds in UNLIMITED_AFTER the whole team can be
+    rebuilt), so rounds after that window count 0: in round 5 only rounds 5-6 count,
+    in round 6 only round 6."""
+    end = min((r for r in UNLIMITED_AFTER if r >= rnd), default=10 ** 6)
+    return [w if rnd + k <= end else 0.0 for k, w in enumerate(HORIZON_WEIGHTS)]
 DAYS_EL = ["Δευτέρα", "Τρίτη", "Τετάρτη", "Πέμπτη", "Παρασκευή", "Σάββατο", "Κυριακή"]
 
 
@@ -546,8 +556,9 @@ def build(offline: bool = False) -> dict:
         ctx["expert_pick"] = k.map(lambda x: len(ex.get(x, {}).get("pick", ())))
         ctx["expert_cap"] = k.map(lambda x: len(ex.get(x, {}).get("captain", ())))
         ctx["expert_avoid"] = k.map(lambda x: len(ex.get(x, {}).get("avoid", ())))
+    hw = horizon_weights(rnd)
     ctx["xpir_w"] = ctx["xpir"] * (ctx["round"] - rnd).map(
-        lambda k: HORIZON_WEIGHTS[k] if 0 <= k < len(HORIZON_WEIGHTS) else 0.0)
+        lambda k: hw[k] if 0 <= k < len(hw) else 0.0)
     now_round = ctx[ctx["round"] == rnd]
     for col in ("expert_pick", "expert_cap", "expert_avoid"):
         if col not in ctx:
@@ -603,7 +614,7 @@ def build(offline: bool = False) -> dict:
             m = nd & (table["position"] == pos)
             est = (0.8 * (slope * table.loc[m, "price"] + icpt)).clip(lower=0)
             table.loc[m, "x_now"] = est * f_game[m]
-            table.loc[m, "x_h"] = est * sum(HORIZON_WEIGHTS)
+            table.loc[m, "x_h"] = est * sum(horizon_weights(rnd))
             table.loc[m, "prior"] = "τιμή"
         table, price_info = prices.annotate(table)  # $ = likely price rise
         n_inj = int((f_game < 1).sum())
@@ -648,6 +659,8 @@ def build(offline: bool = False) -> dict:
                     my["lineup"] = None
                 tr = optimize.transfers(sq, _opt_rows(pool[~pool["fantasy_id"].isin(avoid_ids)]),
                                         bank, max_trades=max_trades,
+                                        min_gain_per_trade=MIN_GAIN_PER_TRADE
+                                        * sum(horizon_weights(rnd)) / sum(HORIZON_WEIGHTS),
                                         keep={int(i) for i in keep_ids})
                 my["transfers"] = _pair_trades(tr) if tr else []
                 my["transfer_gain"] = tr["gain"] if tr else 0
@@ -807,7 +820,7 @@ def messages(rnd, trn, table, my, dig, health) -> list[dict]:
             if my and my.get("transfers"):
                 lim = "απεριόριστες" if my.get("max_trades", 4) > 4 else "έως 4"
                 lines += [f"🔁 <b>Προτεινόμενες αλλαγές</b> ({lim}· +{my.get('transfer_gain', 0)} "
-                          f"σταθμισμένα xPTS 3 αγωνιστικών)"]
+                          f"σταθμισμένα xPTS R{rnd}–R{rnd + sum(w > 0 for w in horizon_weights(rnd)) - 1})"]
                 for m in my["transfers"]:
                     lines.append(f"• {m['out']} ➜ {m['in']}  ({m['price_out']}→{m['price_in']}cr)")
                 lines.append("")
