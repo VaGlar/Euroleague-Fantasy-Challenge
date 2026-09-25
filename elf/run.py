@@ -97,7 +97,8 @@ def predictions(season: int, extra: pd.DataFrame | None = None):
         return None
     first = int(upcoming["round"].iloc[0])
     # whole current round (incl. turns already played, so the squad stays complete)
-    fx = games[games["round"].between(first, first + HORIZON - 1)
+    # one extra round: once the current round is under way, trades target the next one
+    fx = games[games["round"].between(first, first + HORIZON)
                & (games["phase"] == upcoming["phase"].iloc[0])]
     ctx = model.context_rows(fx, roster, ratings, pdev)
     ctx = ctx.merge(base[["base", "last3_pir", "season_pir", "prev_pir", "games", "season_min",
@@ -557,9 +558,15 @@ def build(offline: bool = False) -> dict:
         ctx["expert_pick"] = k.map(lambda x: len(ex.get(x, {}).get("pick", ())))
         ctx["expert_cap"] = k.map(lambda x: len(ex.get(x, {}).get("captain", ())))
         ctx["expert_avoid"] = k.map(lambda x: len(ex.get(x, {}).get("avoid", ())))
-    hw = horizon_weights(rnd)
-    ctx["xpir_w"] = ctx["xpir"] * (ctx["round"] - rnd).map(
+    # trades: before the round starts they count from this round; once a game of it has
+    # been played, the squad is locked until the next round, so they count from there
+    fxr = pr["fixtures"]
+    started = bool(fxr.loc[fxr["round"] == rnd, "played"].any())
+    trade_rnd = rnd + 1 if started else rnd
+    hw = horizon_weights(trade_rnd)
+    ctx["xpir_w"] = ctx["xpir"] * (ctx["round"] - trade_rnd).map(
         lambda k: hw[k] if 0 <= k < len(hw) else 0.0)
+    ctx["xpir_first"] = ctx["xpir"].where(ctx["round"] == trade_rnd, 0.0)
     now_round = ctx[ctx["round"] == rnd]
     for col in ("expert_pick", "expert_cap", "expert_avoid"):
         if col not in ctx:
@@ -568,7 +575,8 @@ def build(offline: bool = False) -> dict:
         expert_pick=("expert_pick", "first"), expert_cap=("expert_cap", "first"),
         expert_avoid=("expert_avoid", "first"),
         name=("name", "first"), team=("team", "first"), position=("position", "first"),
-        x_h=("xpir_w", "sum"), base=("base", "first"), no_data=("no_data", "first"),
+        x_h=("xpir_w", "sum"), x_first=("xpir_first", "sum"),
+        base=("base", "first"), no_data=("no_data", "first"),
         season_pir=("season_pir", "first"), prev_pir=("prev_pir", "first"),
         season_min=("season_min", "first"))
     nr = now_round.groupby("person_id").agg(x_now=("xpir", "sum"), opp=("opp", "first"),
@@ -598,7 +606,7 @@ def build(offline: bool = False) -> dict:
         table["injured"] = table["person_id"].map(
             lambda pid: bool(avail.loc[pid, "is_injured"]) if pid in avail.index else False)
         lost_now = table["x_now"].fillna(0) * (1 - f_game)
-        table["x_h"] = table["x_h"] - lost_now
+        table["x_h"] = table["x_h"] - table["x_first"].fillna(0) * (1 - f_game)
         table["x_now"] = table["x_now"] - lost_now
         # no history (new to EuroLeague): the game's price is the market's estimate.
         # Map price -> xPTS per position from players with data, discounted 20% for
@@ -615,7 +623,7 @@ def build(offline: bool = False) -> dict:
             m = nd & (table["position"] == pos)
             est = (0.8 * (slope * table.loc[m, "price"] + icpt)).clip(lower=0)
             table.loc[m, "x_now"] = est * f_game[m]
-            table.loc[m, "x_h"] = est * sum(horizon_weights(rnd))
+            table.loc[m, "x_h"] = est * sum(horizon_weights(trade_rnd))
             table.loc[m, "prior"] = "τιμή"
         table, price_info = prices.annotate(table)  # $ = likely price rise
         n_inj = int((f_game < 1).sum())
@@ -634,7 +642,7 @@ def build(offline: bool = False) -> dict:
             best = optimize.best_squad(_opt_rows(pool))
         except Exception as e:  # noqa: BLE001
             health.append(f"βελτιστοποίηση: {type(e).__name__}")
-        max_trades = 11 if rnd == 1 or (rnd - 1) in UNLIMITED_AFTER else 4
+        max_trades = 11 if trade_rnd == 1 or (trade_rnd - 1) in UNLIMITED_AFTER else 4
         for t in fs["my_teams"][:1]:
             ids, meta = parse_my_roster(t["raw"])
             mine = table[table["fantasy_id"].isin(ids)].copy()
@@ -642,7 +650,7 @@ def build(offline: bool = False) -> dict:
             bank = meta.get("bank", max(0.0, BUDGET - mine["price"].sum()))
             my = {"name": t["name"], "players": mine.sort_values("x_now", ascending=False)
                   .to_dict("records"), "bank": bank, "captain_id": meta.get("captain"),
-                  "parsed_players": len(ids), "max_trades": max_trades,
+                  "parsed_players": len(ids), "max_trades": max_trades, "trade_round": trade_rnd,
                   "actual_lineup": actual_lineup(t["raw"])}
             five = [r for r in my["actual_lineup"] if r["role"] == "5άδα"]
             if five and not {"Guard", "Forward", "Center"} <= {r["position"] for r in five}:
@@ -669,7 +677,7 @@ def build(offline: bool = False) -> dict:
                 tr = optimize.transfers(sq, _opt_rows(pool[~pool["fantasy_id"].isin(avoid_ids)]),
                                         bank, max_trades=max_trades,
                                         min_gain_per_trade=MIN_GAIN_PER_TRADE
-                                        * sum(horizon_weights(rnd)) / sum(HORIZON_WEIGHTS),
+                                        * sum(horizon_weights(trade_rnd)) / sum(HORIZON_WEIGHTS),
                                         keep={int(i) for i in keep_ids})
                 my["transfers"] = _pair_trades(tr) if tr else []
                 my["transfer_gain"] = tr["gain"] if tr else 0
@@ -805,8 +813,9 @@ def messages(rnd, trn, table, my, dig, health) -> list[dict]:
         if tu["turn"] == 1:
             if my and my.get("transfers"):
                 lim = "απεριόριστες" if my.get("max_trades", 4) > 4 else "έως 4"
+                tr_r = my.get("trade_round", rnd)
                 lines += [f"🔁 <b>Προτεινόμενες αλλαγές</b> ({lim}· +{my.get('transfer_gain', 0)} "
-                          f"σταθμισμένα xPTS R{rnd}–R{rnd + sum(w > 0 for w in horizon_weights(rnd)) - 1})"]
+                          f"σταθμισμένα xPTS R{tr_r}–R{tr_r + sum(w > 0 for w in horizon_weights(tr_r)) - 1})"]
                 for m in my["transfers"]:
                     lines.append(f"• {m['out']} ➜ {m['in']}  ({m['price_out']}→{m['price_in']}cr)")
                 lines.append("")

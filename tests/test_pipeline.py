@@ -105,3 +105,13 @@ def test_best_squad_is_legal(pipeline):
 def test_news_digest_reaches_the_model(pipeline):
     players = pipeline["pred"]["players"]
     assert any(p.get("expert_cap") for p in players), "η πρόταση της στήλης χάθηκε"
+
+
+def test_trades_target_next_round_once_the_round_started(pipeline):
+    pred, my = pipeline["pred"], pipeline["pred"]["my_team"]
+    rnd = pred["round"]
+    games = pd.read_csv(REPO / "data/history/games_2026.csv.gz")
+    started = bool(games.loc[games["round"] == rnd, "played"].any())
+    assert my["trade_round"] == (rnd + 1 if started else rnd)
+    expected = 11 if my["trade_round"] == 1 or (my["trade_round"] - 1) in run.UNLIMITED_AFTER else 4
+    assert my["max_trades"] == expected

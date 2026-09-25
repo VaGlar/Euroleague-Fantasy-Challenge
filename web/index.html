@@ -177,7 +177,7 @@ ul.news li { padding: 8px 0; border-bottom: 1px solid var(--border); }
     <div class="muted" id="fcount"></div>
     <div class="card tablewrap"><table id="ptable"></table></div>
     <div class="plist" id="plist"></div>
-    <p class="muted">xPTS: αναμενόμενοι πόντοι fantasy αγωνιστικής (PIR +10% αν κερδίσει η ομάδα· coach: βαθμολογία από τη διαφορά σκορ). xPTS3: xPTS των επόμενων 3 αγωνιστικών με βάρη 1 / 0.6 / 0.35 (η επόμενη μετράει όσο οι άλλες δύο μαζί)· αγωνιστικές μετά από παράθυρο απεριόριστων μεταγραφών δεν μετράνε.
+    <p class="muted">xPTS: αναμενόμενοι πόντοι fantasy αγωνιστικής (PIR +10% αν κερδίσει η ομάδα· coach: βαθμολογία από τη διαφορά σκορ). xPTS3: xPTS των επόμενων 3 αγωνιστικών όπου μπορεί να γίνει μεταγραφή (αφού ξεκινήσει η αγωνιστική, από την επόμενη) με βάρη 1 / 0.6 / 0.35 (η επόμενη μετράει όσο οι άλλες δύο μαζί)· αγωνιστικές μετά από παράθυρο απεριόριστων μεταγραφών δεν μετράνε.
       Ματσάρισμα: πόσο περισσότερο/λιγότερο PIR δίνει ο αντίπαλος στη θέση (▲ ευνοϊκό).
       <b>$</b>: πιθανή άνοδος τιμής μετά την αγωνιστική (↓$ πτώση).</p>
   </section>
@@ -374,7 +374,7 @@ function renderTeam(my, best) {
       ${planLines ? `<ul class="plan">${planLines}</ul>` : ""}
       <details style="margin-top:10px"><summary class="muted">Πίνακας με xPTS3 και τιμές</summary>${squadTable(
         [...cur].sort((a, b) => (ROLE_ORDER[a.role] ?? 9) - (ROLE_ORDER[b.role] ?? 9) || (b.x_now ?? 0) - (a.x_now ?? 0)))}</details></div>
-      <div class="card"><h2>Προτεινόμενες αλλαγές <span class="muted">(${lim})</span></h2>
+      <div class="card"><h2>Προτεινόμενες αλλαγές${my.trade_round && my.trade_round !== P.round ? ` για την αγωνιστική ${my.trade_round}` : ""} <span class="muted">(${lim})</span></h2>
       ${tr ? `<p class="up">+${f1(my.transfer_gain)} σταθμισμένα xPTS · υπόλοιπο μετά: ${f1(my.bank_after)} cr</p>
         <div class="tablewrap"><table>${tr}</table></div>` : "<p>Καμία αλλαγή δεν αξίζει.</p>"}</div>`;
   }
