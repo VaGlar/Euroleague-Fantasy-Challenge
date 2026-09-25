@@ -136,7 +136,8 @@ details.fbox > summary::-webkit-details-marker { display: none; }
 .lane .crow { justify-content: flex-start; flex-wrap: wrap; }
 .lane .chip { width: calc(25% - 5px); }
 .lane.bench .chip { opacity: .85; }
-.lane.six .chip, .lane.coach .chip { width: calc(25% - 5px); }
+.lanes .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.pair .lane .chip { width: 100%; max-width: 128px; }
 @media (max-width: 420px) { .lane .chip { width: calc(33.3% - 4px); } }
 .plan { margin: 10px 0 0; padding-left: 0; list-style: none; font-size: 14px; }
 
@@ -416,7 +417,8 @@ function courtView(list, ref) {
     ps.map((p) => chip(p, ref && ref[p.id] !== p.role)).join("")}</div></div>` : "";
   return `<div class="court"><div class="crow">${row("Center")}</div><div class="crow">${row("Forward")}</div>
     <div class="crow">${row("Guard")}</div></div>
-    <div class="lanes">${lane("six", "6ος · 100%", by("6ος"))}${lane("bench", "Πάγκος · 50%", by("πάγκος").sort((a, b) => (b.x_now ?? 0) - (a.x_now ?? 0)))}${lane("coach", "Coach", by("coach"))}</div>`;
+    <div class="lanes"><div class="pair">${lane("six", "6ος · 100%", by("6ος"))}${lane("coach", "Coach", by("coach"))}</div>
+      ${lane("bench", "Πάγκος · 50%", by("πάγκος").sort((a, b) => (b.x_now ?? 0) - (a.x_now ?? 0)))}</div>`;
 }
 let teamView = "plan";
 try { teamView = localStorage.getItem("teamView") || "plan"; } catch (e) {}
