@@ -172,6 +172,23 @@ details.fbox > summary::-webkit-details-marker { display: none; }
 .W { color: var(--good); font-weight: 700; } .L { color: var(--critical); font-weight: 700; }
 body.noscroll { overflow: hidden; }
 
+/* ---- teams */
+.tk { width: 100%; border-collapse: separate; border-spacing: 3px; table-layout: fixed; }
+.tk td, .tk th { border: 0; padding: 0; white-space: normal; }
+.tk th { font-size: 11px; color: var(--text-secondary); text-align: center; cursor: default; }
+.tk td.tn { font-weight: 700; font-size: 13px; width: 52px; cursor: pointer; }
+.tk td.tn small { display: block; font-weight: 400; color: var(--text-muted); font-size: 10px; }
+.tk td.fx { border-radius: 6px; text-align: center; font-size: 12px; line-height: 1.25; padding: 5px 1px; }
+.tk td.fx small { display: block; font-size: 10px; opacity: .8; }
+.tk td.none { color: var(--text-muted); font-size: 11px; text-align: center; }
+.legend { display: flex; gap: 4px; align-items: center; font-size: 11px; color: var(--text-muted); margin: 6px 0 0; flex-wrap: wrap; }
+.legend i { display: inline-block; width: 18px; height: 12px; border-radius: 3px; }
+.dots { display: inline-flex; gap: 2px; }
+.dots b { display: inline-block; width: 16px; height: 16px; border-radius: 50%; font-size: 10px; line-height: 16px;
+  text-align: center; color: #fff; }
+.dots b.w { background: var(--good); } .dots b.l { background: var(--critical); }
+#rtable tbody tr, #dtable tbody tr { cursor: pointer; }
+
 /* ---- compare */
 .cmp { width: 20px; height: 20px; margin: 0 6px 0 0; vertical-align: -4px; accent-color: var(--series-1); cursor: pointer; }
 nav .cnt { display: inline-block; min-width: 18px; padding: 0 5px; margin-left: 4px; border-radius: 999px;
@@ -237,9 +254,7 @@ ul.news li { padding: 8px 0; border-bottom: 1px solid var(--border); }
       <b>$</b>: πιθανή άνοδος τιμής μετά την αγωνιστική (↓$ πτώση).</p>
   </section>
   <section id="team"></section>
-  <section id="teams"><div class="card tablewrap"><table id="rtable"></table></div>
-    <p class="muted">Net: διαφορά πόντων ανά 100 κατοχές (φετινά + περσινά με shrinkage).
-      Έδρα: πλεονέκτημα έδρας της ομάδας σε πόντους/100 κατοχές.</p></section>
+  <section id="teams"></section>
   <section id="news"></section>
   <section id="compare"></section>
   <section id="model"></section>
@@ -453,6 +468,107 @@ function renderTeam(my, best) {
   });
 }
 
+// ---------------------------------------------------------------- teams
+let teamsView = "power";
+try { teamsView = localStorage.getItem("teamsView") || "power"; } catch (e) {}
+const TR = () => Object.fromEntries(P.team_ratings.map((t) => [t.team, t]));
+// expected margin for `team` vs `opp` (same formula as the model), + = team favoured
+function margin(team, opp, home) {
+  const r = TR(), a = r[team], b = r[opp];
+  if (!a || !b) return null;
+  return (a.net - b.net + (home ? a.hca : -b.hca)) * ((a.pace + b.pace) / 2) / 100;
+}
+const winp = (m) => Math.round(100 / (1 + Math.exp(-m / 6.45)));
+// difficulty colour: green = easy (team favoured), red = hard
+function tint(m) {
+  if (m == null) return "";
+  const k = Math.min(1, Math.abs(m) / 12), c = m >= 0 ? "--good" : "--critical";
+  return `background: color-mix(in srgb, var(${c}) ${Math.round(12 + 50 * k)}%, var(--surface-1));`;
+}
+function upcoming(team, n = 4) {
+  return (P.fixtures || []).filter((f) => !f.played && (f.home === team || f.away === team))
+    .sort((x, y) => x.utc.localeCompare(y.utc)).slice(0, n)
+    .map((f) => { const home = f.home === team, opp = home ? f.away : f.home;
+      return { round: f.round, opp, home, utc: f.utc, m: margin(team, opp, home) }; });
+}
+const dots = (team) => `<span class="dots">${((P.team_form || {})[team] || []).slice().reverse()
+  .map((g) => `<b class="${g.won ? "w" : "l"}" title="R${g.round} ${g.home ? "vs" : "@"} ${esc(g.opp)} ${esc(g.score)}">${g.won ? "Ν" : "Η"}</b>`).join("") || '<span class="muted">–</span>'}</span>`;
+function renderTeams() {
+  const seg = `<div class="seg">${[["power", "Δύναμη"], ["fixtures", "Πρόγραμμα"], ["defense", "Άμυνες ανά θέση"]]
+    .map(([k, l]) => `<button data-tv="${k}" class="${teamsView === k ? "on" : ""}">${l}</button>`).join("")}</div>`;
+  let body = "";
+  if (teamsView === "power") {
+    body = `<div class="card tablewrap"><table id="rtable"><thead><tr><th>#</th><th>Ομάδα</th><th class="num">Net</th>
+      <th class="num">Pace</th><th class="num">Έδρα</th><th>Φόρμα</th></tr></thead><tbody>
+      ${P.team_ratings.map((t, i) => `<tr data-team="${esc(t.team)}"><td>${i + 1}</td><td><b>${esc(t.team)}</b></td>
+        <td class="num ${t.net >= 0 ? "up" : "down"}">${t.net >= 0 ? "+" : ""}${f1(t.net)}</td>
+        <td class="num">${f1(t.pace)}</td><td class="num">+${f1(t.hca)}</td><td>${dots(t.team)}</td></tr>`).join("")}</tbody></table></div>
+      <p class="muted">Net: πόσους πόντους περισσότερους βάζει απ' όσους δέχεται ανά 100 κατοχές (φέτος + πέρσι, με το φετινό να βαραίνει όσο παίζονται αγώνες).
+      Pace: κατοχές ανά αγώνα (γρήγορο παιχνίδι = περισσότερο PIR). Έδρα: πλεονέκτημα έδρας της ομάδας. Πάτα μια ομάδα για λεπτομέρειες.</p>`;
+  } else if (teamsView === "fixtures") {
+    const rows = P.team_ratings.map((t) => { const u = upcoming(t.team);
+      const w = [1, 0.6, 0.35, 0.2], ms = u.map((g) => g.m ?? 0);
+      const score = ms.reduce((a, m, i) => a + m * (w[i] ?? 0), 0) / (ms.length ? w.slice(0, ms.length).reduce((a, b) => a + b, 0) : 1);
+      return { team: t.team, u, score }; }).sort((a, b) => b.score - a.score);
+    const rounds = [...new Set(rows.flatMap((r) => r.u.map((g) => g.round)))].sort((a, b) => a - b).slice(0, 4);
+    body = `<div class="card"><h2>Δυσκολία προγράμματος</h2>
+      <p class="muted" style="margin-top:0">Ταξινόμηση από το ευκολότερο πρόγραμμα (η επόμενη αγωνιστική βαραίνει περισσότερο). Σε κάθε κουτί: αντίπαλος και πιθανότητα νίκης.</p>
+      <table class="tk"><thead><tr><th></th>${rounds.map((r) => `<th>R${r}</th>`).join("")}</tr></thead><tbody>
+      ${rows.map((r) => `<tr><td class="tn" data-team="${esc(r.team)}">${esc(r.team)}<small>${r.score >= 0 ? "+" : ""}${f1(r.score)}</small></td>${rounds.map((rd) => {
+        const g = r.u.find((x) => x.round === rd);
+        return g ? `<td class="fx" style="${tint(g.m)}">${g.home ? "🏠" : "✈️"}${esc(g.opp)}<small>${winp(g.m)}%</small></td>` : `<td class="none">–</td>`; }).join("")}</tr>`).join("")}
+      </tbody></table>
+      <div class="legend">δύσκολο <i style="${tint(-12)}"></i><i style="${tint(-5)}"></i><i style="${tint(0)}"></i><i style="${tint(5)}"></i><i style="${tint(12)}"></i> εύκολο
+        · ο αριθμός κάτω από την ομάδα = σταθμισμένη αναμενόμενη διαφορά σκορ</div></div>`;
+  } else {
+    const pa = P.pos_allowed || [];
+    body = `<div class="card tablewrap"><h2>PIR που δίνει κάθε άμυνα ανά θέση</h2>
+      <p class="muted" style="margin-top:0">Πόσο περισσότερο (πράσινο) ή λιγότερο (κόκκινο) PIR από τον μέσο όρο δίνει η ομάδα στους αντιπάλους της σε κάθε θέση.
+      Πράσινο = καλό ματς για τους παίκτες σου απέναντί της. Πάτα μια στήλη για ταξινόμηση.</p>
+      <table id="dtable"><thead><tr><th>Ομάδα</th>${["Guard", "Forward", "Center"].map((pos) =>
+        `<th class="num" data-dk="${pos}">${pos}${defSort === pos ? " ↓" : ""}</th>`).join("")}</tr></thead><tbody>
+      ${[...pa].sort((a, b) => (b[defSort] ?? 0) - (a[defSort] ?? 0)).map((t) => `<tr data-team="${esc(t.team)}"><td><b>${esc(t.team)}</b></td>${
+        ["Guard", "Forward", "Center"].map((pos) => `<td class="num" style="${tint((t[pos] ?? 0) * 60)}">${t[pos] >= 0 ? "+" : ""}${Math.round((t[pos] ?? 0) * 100)}%</td>`).join("")}</tr>`).join("")}
+      </tbody></table></div>`;
+  }
+  $("#teams").innerHTML = seg + body;
+  $("#teams").querySelectorAll(".seg button").forEach((b) => b.onclick = () => {
+    teamsView = b.dataset.tv;
+    try { localStorage.setItem("teamsView", teamsView); } catch (e) {}
+    renderTeams();
+  });
+  $("#teams").querySelectorAll("th[data-dk]").forEach((th) => th.onclick = () => { defSort = th.dataset.dk; renderTeams(); });
+}
+let defSort = "Center";
+function openTeam(team) {
+  const t = TR()[team];
+  if (!t) return;
+  const rank = P.team_ratings.findIndex((x) => x.team === team) + 1;
+  const pa = (P.pos_allowed || []).find((x) => x.team === team) || {};
+  const form = (P.team_form || {})[team] || [];
+  const turn = P.turns.find((x) => x.teams.includes(team));
+  const players = P.players.filter((x) => x.team === team && x.x_now != null).sort((a, b) => (b.x_now ?? 0) - (a.x_now ?? 0));
+  const coach = players.find((x) => x.position === "Head Coach");
+  const top = players.filter((x) => x.position !== "Head Coach").slice(0, 6);
+  $("#sheet").innerHTML = `<div class="sh"><div><h2>${esc((P.clubs || {})[team] || team)}</h2>
+      <div class="muted">${esc(team)} · #${rank} σε δύναμη${turn ? ` · Αγωνιστική ${P.round}: Turn ${turn.turn} (${esc(turn.date.slice(8))}/${esc(turn.date.slice(5, 7))})` : ""}${coach ? ` · coach ${esc(nm(coach.name))}` : ""}</div></div>
+      <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
+    <div class="kpis"><div class="kpi"><b class="${t.net >= 0 ? "up" : "down"}">${t.net >= 0 ? "+" : ""}${f1(t.net)}</b><span>Net /100</span></div>
+      <div class="kpi"><b>${f1(t.pace)}</b><span>Pace</span></div><div class="kpi"><b>+${f1(t.hca)}</b><span>Έδρα</span></div></div>
+    <h3>Φόρμα φέτος</h3>${form.length ? `<div class="games">${form.map((g) => `<div class="game"><div>R${g.round} · ${g.home ? "🏠" : "✈️"} <b>${esc(g.opp)}</b> <span class="${g.won ? "W" : "L"}">${g.won ? "Ν" : "Η"}</span> ${esc(g.score)}</div></div>`).join("")}</div>` : `<p class="muted">Κανένας αγώνας ακόμα.</p>`}
+    <h3>Επόμενοι αγώνες</h3><div class="games">${upcoming(team).map((g) => `<div class="game" style="${tint(g.m)}">
+      <div>R${g.round} · ${g.home ? "🏠" : "✈️"} <b>${esc(g.opp)}</b></div><div class="gv"><b>${winp(g.m)}%</b><small>νίκη</small></div>
+      <div class="gs">${new Date(g.utc).toLocaleString("el-GR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Europe/Athens" })} · διαφορά ${g.m >= 0 ? "+" : ""}${f1(g.m)}</div></div>`).join("") || '<p class="muted">–</p>'}</div>
+    <h3>Άμυνα: PIR που δίνει ανά θέση</h3><ul class="why">${["Guard", "Forward", "Center"].map((pos) =>
+      `<li><span>${pos}</span><span>${matchup(pa[pos]) || "≈ 0%"}</span></li>`).join("")}</ul>
+    <h3>Κορυφαίοι παίκτες (xPTS αγωνιστικής)</h3><div class="games">${top.map((x) => `<div class="game" data-pid="${esc(x.person_id)}" style="cursor:pointer">
+      <div><b>${esc(nm(x.name))}</b>${inj(x)}${dol(x)}</div><div class="gv"><b>${f1(x.actual ?? x.x_now)}</b><small>${x.actual != null ? "πόντοι" : "xPTS"}</small></div>
+      <div class="gs">${esc(x.position || "")}${x.price != null ? ` · ${f1(x.price)} cr` : ""} · xPTS3 ${f1(x.x_h)}</div></div>`).join("")}</div>`;
+  $("#modal").classList.add("on");
+  document.body.classList.add("noscroll");
+  $("#sheet").scrollTop = 0;
+}
+
 // ---------------------------------------------------------------- compare
 const CMP_MAX = 4;
 let CMP = [];
@@ -620,9 +736,11 @@ function closePlayer() { $("#modal").classList.remove("on"); document.body.class
 $("#modal").addEventListener("click", (e) => { if (e.target.id === "modal") closePlayer(); });
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") closePlayer(); });
 document.addEventListener("click", (e) => {
-  if (e.target.closest("#modal, th, button, a, summary, select, input")) return;
-  const el = e.target.closest("[data-pid]");
-  if (el && el.dataset.pid) openPlayer(el.dataset.pid);
+  if (e.target.closest("th, button, a, summary, select, input")) return;
+  const el = e.target.closest("[data-pid], [data-team]");
+  if (!el) return;
+  if (el.dataset.pid) openPlayer(el.dataset.pid);
+  else if (el.dataset.team) openTeam(el.dataset.team);
 });
 
 (async () => {
@@ -651,10 +769,7 @@ document.addEventListener("click", (e) => {
   setCmp(CMP.filter((id) => p.players.some((x) => x.person_id === id)));
   try { const t = localStorage.getItem("tab"); if (t) document.querySelector(`nav [data-t=${t}]`)?.click(); } catch (e) {}
 
-  $("#rtable").innerHTML = `<thead><tr><th>#</th><th>Ομάδα</th><th class="num">Net</th><th class="num">Pace</th><th class="num">Έδρα</th><th class="num">Αγώνες</th></tr></thead><tbody>`
-    + p.team_ratings.map((t, i) => `<tr><td>${i + 1}</td><td>${esc(t.team)}</td>
-      <td class="num ${t.net >= 0 ? "up" : "down"}">${t.net >= 0 ? "+" : ""}${f1(t.net)}</td>
-      <td class="num">${f1(t.pace)}</td><td class="num">+${f1(t.hca)}</td><td class="num">${t.games}</td></tr>`).join("") + "</tbody>";
+  renderTeams();
 
   const d = nw?.digest;
   $("#news").innerHTML = (d ? `<div class="card"><h2>Σύνοψη (AI)</h2><div class="msg">${esc(d.summary_el)}</div></div>`

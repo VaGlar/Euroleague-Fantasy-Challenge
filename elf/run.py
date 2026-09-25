@@ -111,6 +111,7 @@ def predictions(season: int, extra: pd.DataFrame | None = None):
     ctx["xpir"] = model.fantasy_points(ctx["xpir"], ctx["margin"])  # +10% win bonus
     coaches = coach_rows(fx, people, ratings)
     return {"round": first, "fixtures": fx, "ctx": ctx, "ratings": ratings, "roster": roster,
+            "pdev": pdev,
             "params": p, "coaches": coaches}
 
 
@@ -571,6 +572,24 @@ def player_details(season: int, ctx: pd.DataFrame, fixtures: pd.DataFrame,
     return out
 
 
+def team_form(season: int, n: int = 5) -> dict:
+    """{team: last n results this season, newest first} for the Teams tab."""
+    g = history.load("games", season)
+    if g.empty:
+        return {}
+    g = g[g["played"]].copy()
+    g["utc"] = pd.to_datetime(g["utc"], utc=True)
+    out = {}
+    for r in g.sort_values("utc", ascending=False).itertuples():
+        for team, opp, home, a, b in ((r.home, r.away, True, r.home_score, r.away_score),
+                                      (r.away, r.home, False, r.away_score, r.home_score)):
+            lst = out.setdefault(team, [])
+            if len(lst) < n:
+                lst.append({"round": int(r.round), "opp": opp, "home": home, "won": bool(a > b),
+                            "score": f"{int(a)}-{int(b)}"})
+    return out
+
+
 def build(offline: bool = False) -> dict:
     season = CURRENT_SEASON
     if not offline:
@@ -783,7 +802,13 @@ def build(offline: bool = False) -> dict:
         "players": table.replace({np.nan: None}).to_dict("records"),
         "team_ratings": ratings.round(2).to_dict("records"),
         "fixtures": [{"round": int(f.round), "home": f.home, "away": f.away,
-                      "utc": f.utc.isoformat()} for f in pr["fixtures"].itertuples()],
+                      "utc": f.utc.isoformat(), "played": bool(f.played)}
+                     for f in pr["fixtures"].itertuples()],
+        "pos_allowed": [{"team": t, **{pos: round(float(pr["pdev"].get((t, pos), 0.0)), 3)
+                                       for pos in ("Guard", "Forward", "Center")}}
+                        for t in pr["ratings"].index],
+        "team_form": team_form(CURRENT_SEASON),
+        "clubs": dict(zip(clubs["code"], clubs["name"])),
         "my_team": my, "best_team": best, "health": health, "fantasy_ok": fs.get("ok", False),
         "price_model": price_info,
     })
