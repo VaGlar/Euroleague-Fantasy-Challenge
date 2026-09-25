@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-25T15:26:06.315159+00:00",
+ "generated": "2026-09-25T15:47:26.410077+00:00",
  "season": 2026,
  "round": 1,
  "turns": [
@@ -12137,243 +12137,555 @@
    "round": 4,
    "home": "BAR",
    "away": "ZAL",
-   "utc": "2026-10-09T18:30:00+00:00"
+   "utc": "2026-10-09T18:30:00+00:00",
+   "played": false
   },
   {
    "round": 4,
    "home": "BAS",
    "away": "BES",
-   "utc": "2026-10-09T18:30:00+00:00"
+   "utc": "2026-10-09T18:30:00+00:00",
+   "played": false
   },
   {
    "round": 4,
    "home": "OLY",
    "away": "IST",
-   "utc": "2026-10-09T18:15:00+00:00"
+   "utc": "2026-10-09T18:15:00+00:00",
+   "played": false
   },
   {
    "round": 4,
    "home": "MAD",
    "away": "PAR",
-   "utc": "2026-10-08T18:45:00+00:00"
+   "utc": "2026-10-08T18:45:00+00:00",
+   "played": false
   },
   {
    "round": 4,
    "home": "PAM",
    "away": "HTA",
-   "utc": "2026-10-08T18:30:00+00:00"
+   "utc": "2026-10-08T18:30:00+00:00",
+   "played": false
   },
   {
    "round": 4,
    "home": "PAN",
    "away": "ULK",
-   "utc": "2026-10-08T18:15:00+00:00"
+   "utc": "2026-10-08T18:15:00+00:00",
+   "played": false
   },
   {
    "round": 4,
    "home": "MUN",
    "away": "VIR",
-   "utc": "2026-10-08T18:00:00+00:00"
+   "utc": "2026-10-08T18:00:00+00:00",
+   "played": false
   },
   {
    "round": 4,
    "home": "DUB",
    "away": "RED",
-   "utc": "2026-10-08T16:00:00+00:00"
+   "utc": "2026-10-08T16:00:00+00:00",
+   "played": false
   },
   {
    "round": 4,
    "home": "TEL",
    "away": "MIL",
-   "utc": "2026-10-08T16:00:00+00:00"
+   "utc": "2026-10-08T16:00:00+00:00",
+   "played": false
   },
   {
    "round": 4,
    "home": "PRS",
    "away": "ASV",
-   "utc": "2026-10-07T18:45:00+00:00"
+   "utc": "2026-10-07T18:45:00+00:00",
+   "played": false
   },
   {
    "round": 3,
    "home": "BAS",
    "away": "MIL",
-   "utc": "2026-10-02T18:30:00+00:00"
+   "utc": "2026-10-02T18:30:00+00:00",
+   "played": false
   },
   {
    "round": 3,
    "home": "PAN",
    "away": "TEL",
-   "utc": "2026-10-02T18:15:00+00:00"
+   "utc": "2026-10-02T18:15:00+00:00",
+   "played": false
   },
   {
    "round": 3,
    "home": "MUN",
    "away": "PAR",
-   "utc": "2026-10-02T18:00:00+00:00"
+   "utc": "2026-10-02T18:00:00+00:00",
+   "played": false
   },
   {
    "round": 3,
    "home": "ASV",
    "away": "PAM",
-   "utc": "2026-10-02T18:00:00+00:00"
+   "utc": "2026-10-02T18:00:00+00:00",
+   "played": false
   },
   {
    "round": 3,
    "home": "ULK",
    "away": "DUB",
-   "utc": "2026-10-02T17:45:00+00:00"
+   "utc": "2026-10-02T17:45:00+00:00",
+   "played": false
   },
   {
    "round": 3,
    "home": "BES",
    "away": "BAR",
-   "utc": "2026-10-02T17:00:00+00:00"
+   "utc": "2026-10-02T17:00:00+00:00",
+   "played": false
   },
   {
    "round": 3,
    "home": "PRS",
    "away": "ZAL",
-   "utc": "2026-10-01T18:45:00+00:00"
+   "utc": "2026-10-01T18:45:00+00:00",
+   "played": false
   },
   {
    "round": 3,
    "home": "VIR",
    "away": "OLY",
-   "utc": "2026-10-01T18:30:00+00:00"
+   "utc": "2026-10-01T18:30:00+00:00",
+   "played": false
   },
   {
    "round": 3,
    "home": "RED",
    "away": "IST",
-   "utc": "2026-10-01T18:00:00+00:00"
+   "utc": "2026-10-01T18:00:00+00:00",
+   "played": false
   },
   {
    "round": 3,
    "home": "HTA",
    "away": "MAD",
-   "utc": "2026-10-01T16:00:00+00:00"
+   "utc": "2026-10-01T16:00:00+00:00",
+   "played": false
   },
   {
    "round": 2,
    "home": "PAN",
    "away": "ASV",
-   "utc": "2026-09-30T18:15:00+00:00"
+   "utc": "2026-09-30T18:15:00+00:00",
+   "played": false
   },
   {
    "round": 2,
    "home": "TEL",
    "away": "BES",
-   "utc": "2026-09-30T18:05:00+00:00"
+   "utc": "2026-09-30T18:05:00+00:00",
+   "played": false
   },
   {
    "round": 2,
    "home": "PRS",
    "away": "PAR",
-   "utc": "2026-09-29T18:45:00+00:00"
+   "utc": "2026-09-29T18:45:00+00:00",
+   "played": false
   },
   {
    "round": 2,
    "home": "MIL",
    "away": "VIR",
-   "utc": "2026-09-29T18:30:00+00:00"
+   "utc": "2026-09-29T18:30:00+00:00",
+   "played": false
   },
   {
    "round": 2,
    "home": "PAM",
    "away": "BAS",
-   "utc": "2026-09-29T18:30:00+00:00"
+   "utc": "2026-09-29T18:30:00+00:00",
+   "played": false
   },
   {
    "round": 2,
    "home": "RED",
    "away": "HTA",
-   "utc": "2026-09-29T18:00:00+00:00"
+   "utc": "2026-09-29T18:00:00+00:00",
+   "played": false
   },
   {
    "round": 2,
    "home": "ULK",
    "away": "MUN",
-   "utc": "2026-09-29T17:45:00+00:00"
+   "utc": "2026-09-29T17:45:00+00:00",
+   "played": false
   },
   {
    "round": 2,
    "home": "ZAL",
    "away": "OLY",
-   "utc": "2026-09-29T17:00:00+00:00"
+   "utc": "2026-09-29T17:00:00+00:00",
+   "played": false
   },
   {
    "round": 2,
    "home": "IST",
    "away": "MAD",
-   "utc": "2026-09-29T17:00:00+00:00"
+   "utc": "2026-09-29T17:00:00+00:00",
+   "played": false
   },
   {
    "round": 2,
    "home": "DUB",
    "away": "BAR",
-   "utc": "2026-09-29T16:00:00+00:00"
+   "utc": "2026-09-29T16:00:00+00:00",
+   "played": false
   },
   {
    "round": 1,
    "home": "PAR",
    "away": "MIL",
-   "utc": "2026-09-25T18:45:00+00:00"
+   "utc": "2026-09-25T18:45:00+00:00",
+   "played": false
   },
   {
    "round": 1,
    "home": "ULK",
    "away": "VIR",
-   "utc": "2026-09-25T17:45:00+00:00"
+   "utc": "2026-09-25T17:45:00+00:00",
+   "played": false
   },
   {
    "round": 1,
    "home": "BES",
    "away": "PAM",
-   "utc": "2026-09-25T17:00:00+00:00"
+   "utc": "2026-09-25T17:00:00+00:00",
+   "played": false
   },
   {
    "round": 1,
    "home": "ASV",
    "away": "TEL",
-   "utc": "2026-09-24T18:45:00+00:00"
+   "utc": "2026-09-24T18:45:00+00:00",
+   "played": true
   },
   {
    "round": 1,
    "home": "BAS",
    "away": "OLY",
-   "utc": "2026-09-24T18:30:00+00:00"
+   "utc": "2026-09-24T18:30:00+00:00",
+   "played": true
   },
   {
    "round": 1,
    "home": "BAR",
    "away": "IST",
-   "utc": "2026-09-24T18:30:00+00:00"
+   "utc": "2026-09-24T18:30:00+00:00",
+   "played": true
   },
   {
    "round": 1,
    "home": "PAN",
    "away": "PRS",
-   "utc": "2026-09-24T18:15:00+00:00"
+   "utc": "2026-09-24T18:15:00+00:00",
+   "played": true
   },
   {
    "round": 1,
    "home": "RED",
    "away": "ZAL",
-   "utc": "2026-09-24T18:00:00+00:00"
+   "utc": "2026-09-24T18:00:00+00:00",
+   "played": true
   },
   {
    "round": 1,
    "home": "HTA",
    "away": "MUN",
-   "utc": "2026-09-24T16:00:00+00:00"
+   "utc": "2026-09-24T16:00:00+00:00",
+   "played": true
   },
   {
    "round": 1,
    "home": "DUB",
    "away": "MAD",
-   "utc": "2026-09-24T16:00:00+00:00"
+   "utc": "2026-09-24T16:00:00+00:00",
+   "played": true
   }
  ],
+ "pos_allowed": [
+  {
+   "team": "ASV",
+   "Guard": 0.018,
+   "Forward": 0.03,
+   "Center": 0.038
+  },
+  {
+   "team": "BAR",
+   "Guard": -0.026,
+   "Forward": -0.012,
+   "Center": 0.016
+  },
+  {
+   "team": "BAS",
+   "Guard": 0.108,
+   "Forward": 0.094,
+   "Center": 0.044
+  },
+  {
+   "team": "BES",
+   "Guard": 0.0,
+   "Forward": 0.0,
+   "Center": 0.0
+  },
+  {
+   "team": "DUB",
+   "Guard": 0.012,
+   "Forward": -0.04,
+   "Center": 0.047
+  },
+  {
+   "team": "HTA",
+   "Guard": -0.003,
+   "Forward": -0.08,
+   "Center": 0.131
+  },
+  {
+   "team": "IST",
+   "Guard": 0.063,
+   "Forward": -0.033,
+   "Center": -0.006
+  },
+  {
+   "team": "MAD",
+   "Guard": -0.041,
+   "Forward": -0.049,
+   "Center": -0.077
+  },
+  {
+   "team": "MIL",
+   "Guard": 0.073,
+   "Forward": -0.043,
+   "Center": 0.019
+  },
+  {
+   "team": "MUN",
+   "Guard": -0.025,
+   "Forward": 0.027,
+   "Center": 0.091
+  },
+  {
+   "team": "OLY",
+   "Guard": -0.006,
+   "Forward": -0.019,
+   "Center": -0.193
+  },
+  {
+   "team": "PAM",
+   "Guard": 0.01,
+   "Forward": 0.014,
+   "Center": -0.033
+  },
+  {
+   "team": "PAN",
+   "Guard": 0.059,
+   "Forward": -0.085,
+   "Center": -0.106
+  },
+  {
+   "team": "PAR",
+   "Guard": 0.018,
+   "Forward": 0.024,
+   "Center": 0.107
+  },
+  {
+   "team": "PRS",
+   "Guard": 0.045,
+   "Forward": 0.068,
+   "Center": 0.17
+  },
+  {
+   "team": "RED",
+   "Guard": 0.005,
+   "Forward": 0.026,
+   "Center": 0.01
+  },
+  {
+   "team": "TEL",
+   "Guard": 0.06,
+   "Forward": 0.053,
+   "Center": 0.036
+  },
+  {
+   "team": "ULK",
+   "Guard": -0.052,
+   "Forward": -0.043,
+   "Center": 0.011
+  },
+  {
+   "team": "VIR",
+   "Guard": 0.022,
+   "Forward": 0.023,
+   "Center": 0.057
+  },
+  {
+   "team": "ZAL",
+   "Guard": -0.018,
+   "Forward": -0.028,
+   "Center": -0.091
+  }
+ ],
+ "team_form": {
+  "ASV": [
+   {
+    "round": 1,
+    "opp": "TEL",
+    "home": true,
+    "won": true,
+    "score": "84-74"
+   }
+  ],
+  "TEL": [
+   {
+    "round": 1,
+    "opp": "ASV",
+    "home": false,
+    "won": false,
+    "score": "74-84"
+   }
+  ],
+  "BAS": [
+   {
+    "round": 1,
+    "opp": "OLY",
+    "home": true,
+    "won": false,
+    "score": "89-106"
+   }
+  ],
+  "OLY": [
+   {
+    "round": 1,
+    "opp": "BAS",
+    "home": false,
+    "won": true,
+    "score": "106-89"
+   }
+  ],
+  "BAR": [
+   {
+    "round": 1,
+    "opp": "IST",
+    "home": true,
+    "won": true,
+    "score": "89-82"
+   }
+  ],
+  "IST": [
+   {
+    "round": 1,
+    "opp": "BAR",
+    "home": false,
+    "won": false,
+    "score": "82-89"
+   }
+  ],
+  "PAN": [
+   {
+    "round": 1,
+    "opp": "PRS",
+    "home": true,
+    "won": true,
+    "score": "91-72"
+   }
+  ],
+  "PRS": [
+   {
+    "round": 1,
+    "opp": "PAN",
+    "home": false,
+    "won": false,
+    "score": "72-91"
+   }
+  ],
+  "RED": [
+   {
+    "round": 1,
+    "opp": "ZAL",
+    "home": true,
+    "won": false,
+    "score": "77-83"
+   }
+  ],
+  "ZAL": [
+   {
+    "round": 1,
+    "opp": "RED",
+    "home": false,
+    "won": true,
+    "score": "83-77"
+   }
+  ],
+  "HTA": [
+   {
+    "round": 1,
+    "opp": "MUN",
+    "home": true,
+    "won": false,
+    "score": "84-86"
+   }
+  ],
+  "MUN": [
+   {
+    "round": 1,
+    "opp": "HTA",
+    "home": false,
+    "won": true,
+    "score": "86-84"
+   }
+  ],
+  "DUB": [
+   {
+    "round": 1,
+    "opp": "MAD",
+    "home": true,
+    "won": true,
+    "score": "78-77"
+   }
+  ],
+  "MAD": [
+   {
+    "round": 1,
+    "opp": "DUB",
+    "home": false,
+    "won": false,
+    "score": "77-78"
+   }
+  ]
+ },
+ "clubs": {
+  "IST": "Anadolu Efes Istanbul",
+  "MIL": "Armani Olimpia Milan",
+  "BES": "Besiktas Istanbul",
+  "RED": "Crvena Zvezda Meridianbet Belgrade",
+  "DUB": "Dubai Basketball",
+  "BAR": "FC Barcelona",
+  "MUN": "FC Bayern Munich",
+  "ULK": "Fenerbahce Tarfin Istanbul",
+  "HTA": "Hapoel IBI Tel Aviv",
+  "BAS": "Kosner Baskonia Vitoria-Gasteiz",
+  "ASV": "LDLC ASVEL Villeurbanne",
+  "TEL": "Maccabi Rapyd Tel Aviv",
+  "OLY": "Olympiacos Piraeus",
+  "PAN": "Panathinaikos AKTOR Athens",
+  "PRS": "Paris Basketball",
+  "PAR": "Partizan Mozzart Bet Belgrade",
+  "MAD": "Real Madrid",
+  "PAM": "Valencia Basket",
+  "VIR": "Virtus Bologna",
+  "ZAL": "Zalgiris Kaunas"
+ },
  "my_team": {
   "name": "Nunn like Osman",
   "players": [
@@ -13315,9 +13627,7 @@
   "objective": 353.7,
   "cost": 98.4
  },
- "health": [
-  "Gemini: JSONDecodeError — κρατήθηκε η προηγούμενη σύνοψη"
- ],
+ "health": [],
  "fantasy_ok": true,
  "price_model": {
   "method": "proxy",
