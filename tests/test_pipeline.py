@@ -62,7 +62,7 @@ def _run(monkeypatch, public):
     load = lambda n: json.loads((public / n).read_text(),  # noqa: E731
                                 parse_constant=lambda c: pytest.fail(f"{c} in {n}"))
     return {"res": res, "pred": load("predictions.json"), "report": load("report.json"),
-            "game": game}
+            "game": game, "details": load("players.json")}
 
 
 def test_outputs_are_valid_and_complete(pipeline):
@@ -115,3 +115,27 @@ def test_trades_target_next_round_once_the_round_started(pipeline):
     assert my["trade_round"] == (rnd + 1 if started else rnd)
     expected = 11 if my["trade_round"] == 1 or (my["trade_round"] - 1) in run.UNLIMITED_AFTER else 4
     assert my["max_trades"] == expected
+
+
+def test_player_details_for_the_popup(pipeline):
+    det, players = pipeline["details"], pipeline["pred"]["players"]
+    with_x = [p for p in players if p["x_now"] is not None and p["position"] != "Head Coach"]
+    assert all(p["person_id"] in det for p in with_x)
+    vez = next(d for pid, d in det.items() if d["stats"] and d["last"])   # someone with history
+    assert {"season", "g", "pts", "reb", "ast", "pir", "fg3"} <= set(vez["stats"][0])
+    assert 1 <= len(vez["last"]) <= 3 and {"opp", "pir", "fp", "score"} <= set(vez["last"][0])
+    nxt = [d for d in det.values() if d["next"]]
+    assert nxt and all(len(d["next"]) <= 3 for d in nxt)
+    assert all(0 <= g["win"] <= 100 for d in nxt for g in d["next"])
+    rounds = [g["round"] for g in nxt[0]["next"]]
+    assert rounds == sorted(rounds), "επόμενα με χρονολογική σειρά"
+
+
+def test_coach_next_games_are_future_and_ordered(pipeline):
+    det, players = pipeline["details"], pipeline["pred"]["players"]
+    coaches = [p for p in players if p["position"] == "Head Coach" and p["person_id"] in det]
+    assert coaches
+    for c in coaches:
+        nxt = det[c["person_id"]]["next"]
+        assert [g["round"] for g in nxt] == sorted(g["round"] for g in nxt)
+        assert all(g["date"] for g in nxt), "ο coach χρειάζεται ημερομηνία αγώνα"

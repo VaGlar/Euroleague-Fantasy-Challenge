@@ -139,6 +139,38 @@ details.fbox > summary::-webkit-details-marker { display: none; }
 .lane.six .chip, .lane.coach .chip { width: calc(25% - 5px); }
 @media (max-width: 420px) { .lane .chip { width: calc(33.3% - 4px); } }
 .plan { margin: 10px 0 0; padding-left: 0; list-style: none; font-size: 14px; }
+
+/* ---- player popup */
+.pcard, .chip, #ptable tbody tr { cursor: pointer; }
+#ptable tbody tr:hover, .pcard:hover { background: color-mix(in srgb, var(--series-1) 6%, var(--surface-1)); }
+.modal { position: fixed; inset: 0; z-index: 10; display: none; background: rgba(0,0,0,.45);
+  align-items: flex-end; justify-content: center; }
+.modal.on { display: flex; }
+.sheet { background: var(--surface-0); color: var(--text-primary); width: 100%; max-width: 640px; max-height: 88vh;
+  overflow-y: auto; border-radius: 16px 16px 0 0; padding: 14px 16px calc(20px + env(safe-area-inset-bottom));
+  box-shadow: 0 -4px 20px rgba(0,0,0,.25); }
+@media (min-width: 700px) { .modal { align-items: center; } .sheet { border-radius: 16px; } }
+.sheet .sh { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.sheet h2 { margin: 0; font-size: 20px; }
+.sheet .x { border: 0; background: var(--surface-1); color: var(--text-primary); font-size: 20px; width: 36px; height: 36px;
+  border-radius: 50%; cursor: pointer; flex: none; }
+.sheet h3 { font-size: 13px; text-transform: uppercase; letter-spacing: .04em; color: var(--text-secondary); margin: 16px 0 6px; }
+.kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
+.kpi { background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px; padding: 8px; text-align: center; }
+.kpi b { display: block; font-size: 22px; font-variant-numeric: tabular-nums; }
+.kpi span { font-size: 11px; color: var(--text-muted); }
+.why { list-style: none; padding: 0; margin: 0; font-size: 14px; }
+.why li { padding: 5px 0; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; gap: 10px; }
+.why li span:last-child { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.games { display: grid; gap: 6px; }
+.game { background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px;
+  display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; font-size: 14px; }
+.game .gs { color: var(--text-muted); font-size: 12px; }
+.game .gv { grid-row: span 2; align-self: center; text-align: right; }
+.game .gv b { font-size: 18px; font-variant-numeric: tabular-nums; }
+.game .gv small { display: block; font-size: 11px; color: var(--text-muted); }
+.W { color: var(--good); font-weight: 700; } .L { color: var(--critical); font-weight: 700; }
+body.noscroll { overflow: hidden; }
 .plan li { padding: 4px 0; }
 ul.news li { padding: 8px 0; border-bottom: 1px solid var(--border); }
 </style>
@@ -188,6 +220,7 @@ ul.news li { padding: 8px 0; border-bottom: 1px solid var(--border); }
   <section id="news"></section>
   <section id="model"></section>
 </main>
+<div class="modal" id="modal" role="dialog" aria-modal="true"><div class="sheet" id="sheet"></div></div>
 <script>
 // hide the header on scroll down, show it on scroll up (or near the top)
 (() => {
@@ -285,7 +318,7 @@ function renderPlayers() {
     .concat(hasPrice ? [["price", "Τιμή", 1], ["value", "Value", 1]] : []);
   $("#ptable").innerHTML = "<thead><tr>" + cols.map(([k, l, n]) =>
     `<th data-k="${k}" class="${n ? "num" : ""}">${l}${sortKey === k ? (sortDir < 0 ? " ↓" : " ↑") : ""}</th>`).join("") + "</tr></thead><tbody>"
-    + rows.slice(0, 250).map((r) => `<tr>
+    + rows.slice(0, 250).map((r) => `<tr data-pid="${esc(r.person_id)}">
       <td>${esc(nm(r.name))}${r.no_data && !r.prior ? ' <span class="pill">νέος</span>' : ""}${inj(r)}${exb(r)}${dol(r)}<br><span class="muted">${esc(r.team)} · ${esc(r.position || "")}${r.price != null ? ` · <b>${f1(r.price)}cr</b>` : ""}</span></td>
       <td class="num"><span class="bar" style="width:${Math.max(2, 40 * (r.x_now || 0) / max)}px"></span><b>${f1(r.x_now)}</b></td>
       <td>${r.home ? "🏠" : "✈️"} ${esc(r.opp)}</td><td class="num">${matchup(r.pos_dev)}</td>
@@ -294,7 +327,7 @@ function renderPlayers() {
   $("#ptable").querySelectorAll("th").forEach((th) => th.onclick = () => {
     const k = th.dataset.k; sortDir = sortKey === k ? -sortDir : -1; sortKey = k; renderPlayers();
   });
-  $("#plist").innerHTML = rows.slice(0, 150).map((r) => `<div class="pcard">
+  $("#plist").innerHTML = rows.slice(0, 150).map((r) => `<div class="pcard" data-pid="${esc(r.person_id)}">
     <div class="pn">${esc(nm(r.name))}${r.no_data && !r.prior ? ' <span class="pill">νέος</span>' : ""}${inj(r)}${exb(r)}${dol(r)}</div>
     <div class="px"><b>${f1(r.x_now)}</b><small>xPTS</small></div>
     <div class="pm">${esc(r.team)} · ${esc((r.position || "")[0] || "")}${r.price != null ? ` · <b>${f1(r.price)}cr</b>` : ""} · ${r.home ? "🏠" : "✈️"} ${esc(r.opp || "")} ${matchup(r.pos_dev)}</div>
@@ -321,7 +354,8 @@ function chip(p, changed) {
   const played = p.actual != null;
   const pts = played ? p.actual : p.x_now;
   const cls = ["chip", p.captain ? "cap" : "", changed ? "chg" : ""].join(" ");
-  return `<div class="${cls}" title="${esc(nm(p.name))}">
+  const pid = p.person_id ?? byFid(p.id ?? p.fantasy_id)?.person_id;
+  return `<div class="${cls}" title="${esc(nm(p.name))}" data-pid="${esc(pid ?? "")}">
     <div class="ct"><span>${LET[p.position] || ""}</span>${p.turn ? `<span class="tb t${p.turn > 1 ? 2 : 1}">T${p.turn}</span>` : ""}</div>
     <div class="cn">${esc(surname(p.name))}${inj(p) ? " 🚑" : ""}${p.price_trend === "up" ? " $" : ""}</div>
     <div class="cp${played ? " done" : ""}">${f1(pts)}</div>
@@ -390,6 +424,74 @@ function renderTeam(my, best) {
     renderTeam(my, best);
   });
 }
+
+// ---------------------------------------------------------------- player popup
+const byFid = (fid) => P && fid != null ? P.players.find((x) => x.fantasy_id === fid || x.fantasy_id === Number(fid)) : null;
+let DET = null;
+const seasonLbl = (s) => `${s}-${String((s + 1) % 100).padStart(2, "0")}`;
+const pct = (x) => (x == null ? "–" : `${Math.round(x)}%`);
+async function openPlayer(pid) {
+  const r = P.players.find((x) => x.person_id === pid);
+  if (!r) return;
+  if (!DET) DET = (await get("players.json")) || {};
+  const d = DET[pid] || { stats: [], last: [], next: [] };
+  const f = d.form || {};
+  const coach = r.position === "Head Coach";
+  const wp = r.margin != null ? Math.round(100 / (1 + Math.exp(-r.margin / 6.45))) : null;
+  const turn = P.turns.find((t) => t.teams.includes(r.team));
+  const why = coach ? [
+      ["Αναμενόμενη διαφορά σκορ", r.margin != null ? `${r.margin >= 0 ? "+" : ""}${f1(r.margin)}` : "–"],
+      ["Βαθμολογία coach", "+10/+20/+25 νίκη · −5/−10/−20 ήττα"]]
+    : [
+      ["Φόρμα: τελευταία 3 / σεζόν / πέρσι (PIR)", `${f1(f.last3_pir)} / ${f1(f.season_pir)} / ${f1(f.prev_pir)}`],
+      ["Βάση μοντέλου (blend)", `<b>${f1(f.base ?? r.base)}</b> PIR`],
+      ["Ματσάρισμα θέσης vs " + esc(r.opp || ""), matchup(r.pos_dev) || "–"],
+      ["Έδρα", r.home ? "🏠 εντός" : "✈️ εκτός"],
+      ["Αναμενόμενη διαφορά σκορ", r.margin != null ? `${r.margin >= 0 ? "+" : ""}${f1(r.margin)} (${wp}% νίκη → +10%)` : "–"],
+      ["Διαθεσιμότητα (παιχνίδι / νέα)", `${r.avail_game == null ? "–" : Math.round(r.avail_game * 100) + "%"} / ${d.news_avail == null ? "–" : Math.round(d.news_avail * 100) + "%"}`],
+      ["Στήλες fantasy", r.expert_pick || r.expert_avoid ? `👍${r.expert_pick || 0}${r.expert_cap ? " ★" : ""}${r.expert_avoid ? " 👎" : ""}` : "–"],
+      ["Τιμή", r.price_trend === "up" ? "$ πιθανή άνοδος" : r.price_trend === "down" ? "↓$ πιθανή πτώση" : "σταθερή"]];
+  const stats = d.stats.length ? `<div class="tablewrap"><table><thead><tr><th>Σεζόν</th><th class="num">Αγ</th><th class="num">Λεπ</th><th class="num">PIR</th>
+      <th class="num">Πόν</th><th class="num">Ριμ</th><th class="num">Ασ</th><th class="num">Κλ</th><th class="num">Κοψ</th>
+      <th class="num">Λαθ</th><th class="num">2Π%</th><th class="num">3Π%</th><th class="num">ΒΛ%</th></tr></thead><tbody>
+      ${[...d.stats].reverse().map((s) => `<tr><td>${seasonLbl(s.season)}</td><td class="num">${s.g}</td><td class="num">${f1(s.min)}</td><td class="num"><b>${f1(s.pir)}</b></td>
+        <td class="num">${f1(s.pts)}</td><td class="num">${f1(s.reb)}</td><td class="num">${f1(s.ast)}</td><td class="num">${f1(s.stl)}</td>
+        <td class="num">${f1(s.blk)}</td><td class="num">${f1(s.tov)}</td>
+        <td class="num">${pct(s.fg2)}</td><td class="num">${pct(s.fg3)}</td><td class="num">${pct(s.ft)}</td></tr>`).join("")}
+      </tbody></table></div>` : `<p class="muted">Χωρίς αγώνες EuroLeague στα δεδομένα${r.prior ? " — εκτίμηση από την τιμή του" : ""}.</p>`;
+  const last = d.last.length ? `<div class="games">${d.last.map((g) => `<div class="game">
+      <div>${g.home ? "🏠" : "✈️"} <b>${esc(g.opp)}</b> <span class="${g.won ? "W" : "L"}">${g.won ? "Ν" : "Η"}</span> ${esc(g.score)}</div>
+      <div class="gv"><b>${f1(g.fp)}</b><small>fantasy</small></div>
+      <div class="gs">R${g.round}${P.season && g.season !== P.season ? ` · ${seasonLbl(g.season)}` : ""} · ${esc(g.date || "")} · ${g.min}' · ${g.pts}π ${g.reb}ρ ${g.ast}α · PIR ${g.pir}</div></div>`).join("")}</div>`
+    : `<p class="muted">Κανένας αγώνας ακόμα.</p>`;
+  const next = d.next.length ? `<div class="games">${d.next.map((g) => `<div class="game">
+      <div>R${g.round} · ${g.home ? "🏠" : "✈️"} <b>${esc(g.opp)}</b></div>
+      <div class="gv"><b>${f1(g.x)}</b><small>xPTS</small></div>
+      <div class="gs">${esc(g.date || "")} · ${g.win}% πιθανότητα νίκης</div></div>`).join("")}</div>`
+    : `<p class="muted">Δεν υπάρχουν προγραμματισμένοι αγώνες στα δεδομένα.</p>`;
+  $("#sheet").innerHTML = `<div class="sh"><div><h2>${esc(nm(r.name))}${inj(r)}${exb(r)}${dol(r)}</h2>
+      <div class="muted">${esc(r.team)} · ${esc(r.position || "")}${r.price != null ? ` · <b>${f1(r.price)} cr</b>` : ""}${turn ? ` · Turn ${turn.turn} (${esc(turn.date.slice(8))}/${esc(turn.date.slice(5, 7))})` : ""}</div></div>
+      <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
+    <div class="kpis"><div class="kpi"><b>${r.actual != null ? f1(r.actual) : f1(r.x_now)}</b><span>${r.actual != null ? "πόντοι (έπαιξε)" : "xPTS αγωνιστικής"}</span></div>
+      <div class="kpi"><b>${f1(r.x_h)}</b><span>xPTS3</span></div>
+      <div class="kpi"><b>${r.value == null ? "–" : r.value.toFixed(2)}</b><span>xPTS3 / cr</span></div></div>
+    <h3>Ανάλυση${r.opp ? ` · ${r.home ? "🏠" : "✈️"} vs ${esc(r.opp)}` : ""}</h3>
+    <ul class="why">${why.map(([k, v]) => `<li><span>${k}</span><span>${v}</span></li>`).join("")}</ul>
+    ${coach ? "" : `<h3>Στατιστικά (μ.ό. ανά αγώνα)</h3>${stats}`}
+    ${coach ? "" : `<h3>Τελευταία 3 παιχνίδια</h3>${last}`}
+    <h3>Επόμενα 3 παιχνίδια</h3>${next}`;
+  $("#modal").classList.add("on");
+  document.body.classList.add("noscroll");
+  $("#sheet").scrollTop = 0;
+}
+function closePlayer() { $("#modal").classList.remove("on"); document.body.classList.remove("noscroll"); }
+$("#modal").addEventListener("click", (e) => { if (e.target.id === "modal") closePlayer(); });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") closePlayer(); });
+document.addEventListener("click", (e) => {
+  if (e.target.closest("#modal, th, button, a, summary, select, input")) return;
+  const el = e.target.closest("[data-pid]");
+  if (el && el.dataset.pid) openPlayer(el.dataset.pid);
+});
 
 (async () => {
   const [p, rep, nw, mp] = await Promise.all([get("predictions.json"), get("report.json"), get("news.json"), get("model_params.json")]);

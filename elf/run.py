@@ -126,7 +126,8 @@ def coach_rows(fx: pd.DataFrame, people: pd.DataFrame, ratings: pd.DataFrame) ->
             rt, ro = ratings.loc[team], ratings.loc[opp]
             pace = (rt["pace"] + ro["pace"]) / 2
             m = (rt["net"] - ro["net"] + (rt["hca"] if home else -ro["hca"])) * pace / 100
-            rows.append({"round": f.round, "person_id": heads.loc[team, "person_id"],
+            rows.append({"round": f.round, "gamecode": f.gamecode, "utc": getattr(f, "utc", None),
+                         "person_id": heads.loc[team, "person_id"],
                          "name": heads.loc[team, "name"], "team": team, "opp": opp,
                          "is_home": home, "margin": m, "xpir": model.coach_points(m),
                          "position": "Head Coach", "pos_dev": np.nan, "base": np.nan,
@@ -503,6 +504,71 @@ def turns(fx: pd.DataFrame, rnd: int) -> list[dict]:
     return out
 
 
+def _pct(m, a):
+    return round(100 * m / a, 1) if a else None
+
+
+def player_details(season: int, ctx: pd.DataFrame, fixtures: pd.DataFrame,
+                   ids: set) -> dict:
+    """Per player, for the dashboard popup: season stats (this and last season), the
+    last 3 games played and the next 3 with their xPTS. Keyed by person_id."""
+    box, games = [], []
+    for s in (season - 1, season):
+        b, g = history.load("players", s), history.load("games", s)
+        if not b.empty and not g.empty:
+            box.append(b.assign(season=s))
+            games.append(g.assign(season=s))
+    out = {pid: {"stats": [], "last": [], "next": []} for pid in ids}
+    if box:
+        b = pd.concat(box, ignore_index=True)
+        b = b[b["person_id"].isin(ids)]
+        g = pd.concat(games, ignore_index=True)[["season", "gamecode", "round", "utc", "home",
+                                                   "away", "home_score", "away_score"]]
+        g["utc"] = pd.to_datetime(g["utc"], utc=True)
+        b = b.merge(g, on=["season", "gamecode"], how="left")
+        b["opp"] = np.where(b["team"] == b["home"], b["away"], b["home"])
+        mine = np.where(b["team"] == b["home"], b["home_score"], b["away_score"])
+        theirs = np.where(b["team"] == b["home"], b["away_score"], b["home_score"])
+        b["won"] = mine > theirs
+        b["reb"] = b["oreb"] + b["dreb"]
+        b["fp"] = b["pir"] * np.where(b["won"], 1 + WIN_BONUS, 1.0)
+        for (pid, s), d in b.groupby(["person_id", "season"]):
+            n = len(d)
+            out[pid]["stats"].append({
+                "season": int(s), "g": n, **{k: round(float(d[k].mean()), 1) for k in
+                                             ("min", "pts", "reb", "ast", "stl", "blk", "tov", "pir")},
+                "fg2": _pct(d["fgm2"].sum(), d["fga2"].sum()),
+                "fg3": _pct(d["fgm3"].sum(), d["fga3"].sum()),
+                "ft": _pct(d["ftm"].sum(), d["fta"].sum())})
+        b = b.sort_values("utc", ascending=False)
+        for pid, d in b.groupby("person_id", sort=False):
+            out[pid]["last"] = [{
+                "season": int(r.season), "round": int(r.round),
+                "date": r.utc.tz_convert(ATH).strftime("%d/%m/%y") if pd.notna(r.utc) else None,
+                "opp": r.opp, "home": bool(r.team == r.home), "won": bool(r.won),
+                "score": f"{int(r.home_score)}-{int(r.away_score)}", "min": round(float(r.min)),
+                "pts": int(r.pts), "reb": int(r.reb), "ast": int(r.ast), "pir": int(r.pir),
+                "fp": round(float(r.fp), 1)} for r in d.head(3).itertuples()]
+    played = set(fixtures.loc[fixtures["played"], "gamecode"])
+    nxt = ctx[ctx["person_id"].isin(ids) & ~ctx["gamecode"].isin(played)].copy()
+    nxt["utc"] = pd.to_datetime(nxt["utc"], utc=True)
+    nxt = nxt.sort_values(["round", "utc"], kind="stable")
+    for pid, d in nxt.groupby("person_id"):
+        out[pid]["next"] = [{
+            "round": int(r.round), "opp": r.opp, "home": bool(r.is_home),
+            "date": r.utc.tz_convert(ATH).strftime("%d/%m %H:%M") if pd.notna(r.utc) else None,
+            "win": round(100 * model.win_prob(r.margin)), "x": round(float(r.xpir), 1)}
+            for r in d.head(3).itertuples()]
+    form = ctx.drop_duplicates("person_id").set_index("person_id")
+    for pid in ids:
+        if pid in form.index:
+            f = form.loc[pid]
+            out[pid]["form"] = {k: (None if pd.isna(f.get(k)) else round(float(f.get(k)), 1))
+                                for k in ("last3_pir", "season_pir", "prev_pir", "base")}
+            out[pid]["news_avail"] = None if pd.isna(f.get("avail")) else float(f.get("avail"))
+    return out
+
+
 def build(offline: bool = False) -> dict:
     season = CURRENT_SEASON
     if not offline:
@@ -703,9 +769,15 @@ def build(offline: bool = False) -> dict:
         my = manual_team(table)
 
     table = table.sort_values("x_now", ascending=False)
+    try:
+        _write("players.json", player_details(
+            CURRENT_SEASON, ctx, pr["fixtures"], set(table.loc[table["x_now"].notna(), "person_id"])))
+    except Exception as e:  # noqa: BLE001 - the popup is a nice-to-have
+        health.append(f"λεπτομέρειες παικτών: {type(e).__name__}: {e}")
     ratings = pr["ratings"].sort_values("net", ascending=False).reset_index()
     _write("predictions.json", {
-        "generated": datetime.now(timezone.utc).isoformat(), "round": rnd, "turns": trn,
+        "generated": datetime.now(timezone.utc).isoformat(), "season": CURRENT_SEASON,
+        "round": rnd, "turns": trn,
         "players": table.replace({np.nan: None}).to_dict("records"),
         "team_ratings": ratings.round(2).to_dict("records"),
         "fixtures": [{"round": int(f.round), "home": f.home, "away": f.away,
