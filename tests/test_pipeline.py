@@ -152,3 +152,11 @@ def test_teams_tab_data(pipeline):
     assert set(pred["clubs"]) >= teams
     assert all(len(v) <= 5 for v in pred["team_form"].values())
     assert all("played" in f for f in pred["fixtures"])
+
+
+def test_tracking_written(pipeline):
+    pub = run.PUBLIC
+    tr = json.loads((pub / "tracking.json").read_text())
+    assert {"rounds", "total", "experts", "lineups"} <= set(tr)
+    log = pd.read_csv(pub / "pred_log.csv", dtype={"person_id": str})
+    assert len(log) and log["x_pred"].notna().all(), "προβλέψεις για αγώνες που δεν έχουν αρχίσει"

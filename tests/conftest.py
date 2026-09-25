@@ -4,12 +4,20 @@ from __future__ import annotations
 import copy
 import json
 import shutil
+import sys
 from pathlib import Path
 
 import pytest
 import requests
 
-from elf import config, fantasy, lineup_cmd, model, notify, prices, run
+import importlib
+import pkgutil
+
+import elf
+from elf import fantasy
+
+for _m in pkgutil.iter_modules(elf.__path__):  # load all, so each one's PUBLIC gets redirected
+    importlib.import_module(f"elf.{_m.name}")
 
 REPO = Path(__file__).resolve().parent.parent
 FORMS = {"2-2-1": 27, "2-1-2": 28, "1-2-2": 29, "1-3-1": 30, "3-1-1": 31}
@@ -28,8 +36,9 @@ def block_network(mp):
 def use_public(mp, pub: Path) -> Path:
     """Point every module that reads/writes data/public at a private folder."""
     pub.mkdir(parents=True, exist_ok=True)
-    for mod in (config, run, prices, lineup_cmd, model, notify):
-        if hasattr(mod, "PUBLIC"):
+    # every elf module that imported PUBLIC (new modules included automatically)
+    for name, mod in list(sys.modules.items()):
+        if (name == "elf" or name.startswith("elf.")) and hasattr(mod, "PUBLIC"):
             mp.setattr(mod, "PUBLIC", pub)
     return pub
 

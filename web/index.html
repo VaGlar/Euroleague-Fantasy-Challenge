@@ -193,6 +193,9 @@ body.noscroll { overflow: hidden; }
 .cmp { width: 20px; height: 20px; margin: 0 6px 0 0; vertical-align: -4px; accent-color: var(--series-1); cursor: pointer; }
 nav .cnt { display: inline-block; min-width: 18px; padding: 0 5px; margin-left: 4px; border-radius: 999px;
   background: var(--series-1); color: #fff; font-size: 11px; font-weight: 700; text-align: center; }
+nav .cnt[hidden] { display: none; }
+table.fit th, table.fit td { white-space: normal; padding: 6px 4px; font-size: 13px; }
+table.fit th { font-size: 11px; }
 .cmpbar { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(14px + env(safe-area-inset-bottom)); z-index: 5;
   display: none; gap: 8px; align-items: center; background: var(--text-primary); color: var(--surface-1);
   padding: 8px 8px 8px 14px; border-radius: 999px; box-shadow: 0 4px 16px rgba(0,0,0,.25); font-size: 14px; white-space: nowrap; }
@@ -743,8 +746,85 @@ document.addEventListener("click", (e) => {
   else if (el.dataset.team) openTeam(el.dataset.team);
 });
 
+// ---------------------------------------------------------------- model tab
+function renderModel(mp, trk) {
+  const pctd = (a, b) => (a && b ? Math.round((1 - a / b) * 100) : null);
+  let html = "";
+  // 1. this season
+  const tot = trk?.total;
+  html += `<div class="card"><h2>Φέτος: πρόβλεψη vs πραγματικότητα</h2>`;
+  if (tot) {
+    const gain = pctd(tot.mae_model, tot.mae_naive);
+    html += `<div class="kpis"><div class="kpi"><b>${f1(tot.mae_model)}</b><span>μέσο σφάλμα μοντέλου</span></div>
+        <div class="kpi"><b>${f1(tot.mae_naive)}</b><span>χωρίς μοντέλο (μ.ό.)</span></div>
+        <div class="kpi"><b class="${gain > 0 ? "up" : "down"}">${gain > 0 ? "+" : ""}${gain}%</b><span>βελτίωση</span></div></div>
+      <p class="muted">${tot.n} προβλέψεις παικτών με xPTS ≥ ${trk.min_xpred}, καταγεγραμμένες <b>πριν</b> από κάθε τζάμπολ. Spearman ${tot.spearman ?? "–"} · top-20 ${tot.top20 != null ? Math.round(tot.top20 * 100) + "%" : "–"}.</p>
+      <div class="tablewrap"><table class="fit"><thead><tr><th>Αγων.</th><th class="num">Παίκτες</th><th class="num">Σφάλμα μοντέλου</th>
+        <th class="num">Χωρίς μοντέλο</th><th class="num">Top-20</th></tr></thead><tbody>
+      ${trk.rounds.map((r) => `<tr><td>R${r.round}</td><td class="num">${r.n}</td>
+        <td class="num ${r.mae_model <= r.mae_naive ? "up" : "down"}"><b>${f1(r.mae_model)}</b></td><td class="num">${f1(r.mae_naive)}</td>
+        <td class="num">${r.top20 != null ? Math.round(r.top20 * 100) + "%" : "–"}</td></tr>`).join("")}</tbody></table></div>`;
+  } else {
+    html += `<p>Η καταγραφή ξεκίνησε: κάθε update κρατά την πρόβλεψη για τους αγώνες που δεν έχουν αρχίσει ακόμα (μετράει η τελευταία πριν το τζάμπολ).
+      Τα πρώτα αποτελέσματα εμφανίζονται μόλις παιχτούν αυτοί οι αγώνες.</p>`;
+  }
+  html += `<p class="muted">«Χωρίς μοντέλο» = απλώς ο μέσος όρος PIR του παίκτη (φέτος, αλλιώς πέρσι). Αν το μοντέλο δεν τον κερδίζει σταθερά, κάτι πάει στραβά.
+    Μία αγωνιστική δεν λέει τίποτα· κρίνεται σε 5–10.</p></div>`;
+  // 2. my lineup
+  const lu = trk?.lineups || [];
+  html += `<div class="card"><h2>Η πεντάδα σου vs η πρόταση</h2>`;
+  if (lu.length) {
+    const s = lu.reduce((a, r) => a + r.diff, 0);
+    html += `<div class="tablewrap"><table class="fit"><thead><tr><th>Αγων.</th><th class="num">Πρόταση</th><th class="num">Έπαιξες</th><th class="num">Διαφορά</th></tr></thead><tbody>
+      ${lu.map((r) => `<tr><td>R${r.round}</td><td class="num">${f1(r.suggested)}</td><td class="num">${f1(r.actual)}</td>
+        <td class="num ${r.diff >= 0 ? "up" : "down"}"><b>${r.diff >= 0 ? "+" : ""}${f1(r.diff)}</b></td></tr>`).join("")}
+      <tr><td><b>Σύνολο</b></td><td></td><td></td><td class="num ${s >= 0 ? "up" : "down"}"><b>${s >= 0 ? "+" : ""}${f1(s)}</b></td></tr></tbody></table></div>
+      <p class="muted">Και οι δύο βαθμολογούνται με τους πραγματικούς πόντους (πάγκος 50%, αρχηγός x2, coach). Θετικό = οι δικές σου αλλαγές (π.χ. στο T2) κέρδισαν πόντους σε σχέση με την πρόταση πριν την αγωνιστική.</p>`;
+  } else {
+    html += `<p class="muted">Εμφανίζεται μόλις ολοκληρωθεί μια αγωνιστική για την οποία κρατήθηκε η πρόταση πριν ξεκινήσει.</p>`;
+  }
+  html += `</div>`;
+  // 3. fantasy columns
+  const ex = trk?.experts || [];
+  html += `<div class="card"><h2>Στήλες ειδικών</h2>`;
+  html += ex.length ? `<div class="tablewrap"><table class="fit"><thead><tr><th>Στήλη</th><th class="num">Επιλογές</th><th class="num">Έφεραν</th><th class="num">Μοντέλο έλεγε</th><th class="num">Διαφορά</th></tr></thead><tbody>
+      ${ex.map((e) => `<tr><td>${esc(e.source)}</td><td class="num">${e.n}</td><td class="num">${f1(e.actual)}</td><td class="num">${f1(e.model)}</td>
+        <td class="num ${e.diff >= 0 ? "up" : "down"}"><b>${e.diff >= 0 ? "+" : ""}${f1(e.diff)}</b></td></tr>`).join("")}</tbody></table></div>
+      <p class="muted">Μέσοι πόντοι fantasy των παικτών που πρότεινε κάθε στήλη, έναντι του xPTS που τους έδινε το μοντέλο. Σταθερά θετικό = η στήλη βλέπει κάτι που το μοντέλο δεν βλέπει (τότε αξίζει να της δώσουμε μεγαλύτερο βάρος). Με λίγες επιλογές, αγνόησέ το.</p>`
+    : `<p class="muted">Εμφανίζεται μόλις ολοκληρωθεί μια αγωνιστική με καταγεγραμμένες προτάσεις στηλών.</p>`;
+  html += `</div>`;
+  // 4. last season's backtest
+  if (mp) {
+    const row = (k, l, me) => mp[k] ? `<tr${me ? ' style="font-weight:700"' : ""}><td>${l}</td><td class="num">${mp[k].mae}</td><td class="num">${mp[k].spearman}</td><td class="num">${Math.round(mp[k].top20_hit * 100)}%</td></tr>` : "";
+    const c = mp.params?.coef || {}, w = mp.params || {};
+    const pc = (x, sgn) => `${sgn && x >= 0 ? "+" : ""}${(x * 100).toFixed(1)}%`;
+    html += `<div class="card"><h2>Backtest σεζόν ${mp.season}-${String((mp.season + 1) % 100).padStart(2, "0")}</h2>
+      <p class="muted" style="margin-top:0">Σαν να έτρεχε το μοντέλο πέρσι: κάθε αγωνιστική με όσα ήξερε ως τότε, σε σύγκριση με το PIR που έγινε.</p>
+      <div class="tablewrap"><table class="fit"><thead><tr><th>Μέθοδος</th><th class="num">Σφάλμα</th><th class="num">Spearman</th><th class="num">Top-20</th></tr></thead><tbody>
+      ${row("baseline_prev_season", "Μόνο περσινό PIR")}${row("baseline_season_avg", "Μέσος όρος σεζόν")}
+      ${row("form_blend", "Φόρμα (blend)")}${row("fitted_context_insample", "Φόρμα + context (αυτό)", true)}
+      </tbody></table></div>
+      <p class="muted">Σφάλμα: πόσους πόντους PIR πέφτει έξω κατά μέσο όρο ανά παίκτη/αγώνα. Spearman: πόσο σωστά βάζει τους παίκτες σε σειρά (0 τυχαία, 1 τέλεια).
+        Top-20: από τους 20 που προβλέπει ως καλύτερους, πόσοι βγήκαν όντως στο top-20.
+        Εκτός δείγματος (2ος γύρος, βάρη μόνο από τον 1ο): ${mp.oos_second_half.form_blend.mae} → ${mp.oos_second_half.fitted_context.mae}.</p>
+      <h3 style="font-size:13px;margin:12px 0 6px">Τι έμαθε το μοντέλο</h3>
+      <ul class="why">
+        <li><span>Φόρμα: τελευταία 3 / φετινή σεζόν / περσινή</span><span>${Math.round(w.w_last3 * 100)}% / ${Math.round(w.w_season * 100)}% / ${Math.round(w.w_prev * 100)}%</span></li>
+        <li><span>Ματσάρισμα θέσης (πόσο περνά από τη διαφορά της άμυνας)</span><span>×${(c.pos ?? 0).toFixed(2)}</span></li>
+        <li><span>Pace (ρυθμός αγώνα)</span><span>×${(c.pace ?? 0).toFixed(2)}</span></li>
+        <li><span>Έδρα</span><span>${pc(c.home ?? 0, true)}</span></li>
+        <li><span>Αναμενόμενη διαφορά σκορ, ανά 10 πόντους</span><span>${pc(c.margin ?? 0, true)}</span></li>
+        <li><span>Blowout (λιγότερα λεπτά), ανά 10 πόντους διαφοράς</span><span>${pc(c.blowout ?? 0, true)}</span></li>
+        <li><span>Βαθμονόμηση</span><span>${pc(c.calib ?? 0, true)}</span></li>
+      </ul>
+      <p class="muted">Π.χ. αν μια άμυνα δίνει +20% PIR στους centers, ο center απέναντί της παίρνει ~+${Math.round(20 * (c.pos ?? 0))}%. Η φόρμα των τελευταίων αγώνων μετράει λίγο: προβλέπει ελάχιστα πέρα από τον μέσο όρο.</p></div>`;
+  }
+  $("#model").innerHTML = html;
+}
+
 (async () => {
-  const [p, rep, nw, mp] = await Promise.all([get("predictions.json"), get("report.json"), get("news.json"), get("model_params.json")]);
+  const [p, rep, nw, mp, trk] = await Promise.all([get("predictions.json"), get("report.json"), get("news.json"),
+    get("model_params.json"), get("tracking.json")]);
   if (!p) { $("#updated").textContent = "Δεν υπάρχουν δεδομένα ακόμα."; return; }
   P = p;
   $("#round").textContent = `Αγωνιστική ${p.round}`;
@@ -779,16 +859,7 @@ document.addEventListener("click", (e) => {
     + `<div class="card"><h2>Άρθρα</h2><ul class="news">${(nw?.articles || []).slice(0, 60).map((a) =>
       `<li><a href="${esc(a.url)}" target="_blank" rel="noopener">${esc(a.title)}</a><br><span class="muted">${esc(a.source)} · ${a.date ? new Date(a.date).toLocaleString("el-GR") : ""}</span></li>`).join("")}</ul></div>`;
 
-  if (mp) {
-    const row = (k, l) => mp[k] ? `<tr><td>${l}</td><td class="num">${mp[k].mae}</td><td class="num">${mp[k].spearman}</td><td class="num">${Math.round(mp[k].top20_hit * 100)}%</td></tr>` : "";
-    $("#model").innerHTML = `<div class="card"><h2>Backtest σεζόν ${mp.season}-${(mp.season + 1) % 100}</h2>
-      <div class="tablewrap"><table><thead><tr><th>Μέθοδος</th><th class="num">Μέσο σφάλμα</th><th class="num">Spearman</th><th class="num">Top-20 hit</th></tr></thead><tbody>
-      ${row("baseline_prev_season", "Μόνο περσινό PIR")}${row("baseline_season_avg", "Μέσος όρος σεζόν")}
-      ${row("form_blend", "Φόρμα (blend)")}${row("fitted_context_insample", "Φόρμα + context")}
-      </tbody></table></div>
-      <p class="muted">Εκτός δείγματος (2ος γύρος): φόρμα ${mp.oos_second_half.form_blend.mae} → με context ${mp.oos_second_half.fitted_context.mae}.</p>
-      <pre class="muted" style="white-space:pre-wrap">${esc(JSON.stringify(mp.params, null, 1))}</pre></div>`;
-  }
+  renderModel(mp, trk);
 })();
 </script>
 </body>

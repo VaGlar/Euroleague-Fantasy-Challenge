@@ -16,7 +16,7 @@ import numpy as np
 import pandas as pd
 import yaml
 
-from . import el_api, fantasy, history, model, news, optimize, prices
+from . import el_api, fantasy, history, model, news, optimize, prices, tracking
 from .config import BUDGET, COACH_POINTS, CURRENT_SEASON, PUBLIC, ROOT, TIMEZONE, WIN_BONUS
 
 ATH = ZoneInfo(TIMEZONE)
@@ -790,6 +790,11 @@ def build(offline: bool = False) -> dict:
         my = manual_team(table)
 
     table = table.sort_values("x_now", ascending=False)
+    try:  # this season's accuracy: log predictions before tip-off, grade them after
+        md_num = ((fs.get("config") or {}).get("current_matchday") or {}).get("number")
+        tracking.update(ctx, CURRENT_SEASON, my, rnd, md_num, started)
+    except Exception as e:  # noqa: BLE001
+        health.append(f"tracking: {type(e).__name__}: {e}")
     try:
         _write("players.json", player_details(
             CURRENT_SEASON, ctx, pr["fixtures"], set(table.loc[table["x_now"].notna(), "person_id"])))
