@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-25T14:24:19.596967+00:00",
+ "generated": "2026-09-25T15:26:06.315159+00:00",
  "season": 2026,
  "round": 1,
  "turns": [
@@ -13315,7 +13315,9 @@
   "objective": 353.7,
   "cost": 98.4
  },
- "health": [],
+ "health": [
+  "Gemini: JSONDecodeError — κρατήθηκε η προηγούμενη σύνοψη"
+ ],
  "fantasy_ok": true,
  "price_model": {
   "method": "proxy",
