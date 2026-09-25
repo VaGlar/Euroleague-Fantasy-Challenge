@@ -714,81 +714,53 @@ def _short(r) -> str:
 
 
 def turn_check(tu: dict, table: pd.DataFrame, my: dict | None) -> list[str]:
-    """Before a later turn: compare what your earlier-turn players actually scored
-    with what your players of this turn are expected to score."""
-    lines = ["⭐ <b>Αρχηγός & αλλαγές πάγκου πριν το Turn " f"{tu['turn']}</b>"]
-    if not my:
+    """Before a later turn: the best legal lineup given what already happened. The game
+    freezes every player whose team has played (role and armband), so only players
+    who have not played yet can be rearranged."""
+    lines = ["⭐ <b>Αρχηγός & αλλαγές πριν το Turn " f"{tu['turn']}</b>"]
+    real = {r["fantasy_id"]: r for r in ((my or {}).get("actual_lineup") or []) if r.get("role")}
+    sq = []
+    for r in (my or {}).get("players", []):
+        fid = r.get("fantasy_id")
+        a = real.get(int(fid)) if fid == fid and fid is not None else None
+        if a is None:
+            continue
+        played = bool(a["played"])
+        sq.append({"id": int(fid), "position": r["position"], "price": 0.0, "name": r["name"],
+                   "team": r["team"], "turn": a.get("turn"), "played": played,
+                   "x_now": float(a["pts"] or 0) if played else float(r.get("x_now") or 0),
+                   "cur_role": a["role"], "cur_captain": bool(a["captain"])})
+    res = optimize.lineup_in_round(sq) if len(sq) == 11 else None
+    if not res:
         today = table[table["team"].isin(tu["teams"]) & (table["position"] != "Head Coach")]
-        lines.append("Κράτα τον αρχηγό σου αν έφερε τουλάχιστον όσα ο καλύτερος σήμερα:")
+        lines.append("Οι καλύτεροι σήμερα:")
         return lines + [f"• {_fmt(r)}" for r in today.head(3).to_dict("records")]
-    squad = table[table["fantasy_id"].isin([p["fantasy_id"] for p in my["players"]])
-                  & (table["position"] != "Head Coach")]
-    real = {r["fantasy_id"]: r for r in (my.get("actual_lineup") or []) if r.get("role")}
-    if real:  # the lineup you actually set in the game
-        role = {i: r["role"] for i, r in real.items()}
-        pts = {i: r["pts"] for i, r in real.items() if r["played"] and r["pts"] is not None}
-        cap_real = next((i for i, r in real.items() if r["captain"]), None)
-        if cap_real is not None:
-            my = {**my, "captain_id": cap_real}
-    else:     # fall back to the lineup we suggested
-        role = {p["id"]: p["role"] for p in (my.get("lineup") or [])}
-        pts = {}
-    squad = squad.assign(role=squad["fantasy_id"].map(lambda i: role.get(int(i)) if i == i else None))
-    if pts:
-        squad = squad.assign(actual=squad["fantasy_id"].map(
-            lambda i: pts.get(int(i)) if i == i and int(i) in pts else None).fillna(squad["actual"]))
-    done = squad[squad["actual"].notna()].sort_values("actual")
-    today = squad[squad["team"].isin(tu["teams"])].sort_values("x_now", ascending=False)
-    if done.empty:
-        lines.append("<i>Θα ενημερωθεί το πρωί του Turn με τα πραγματικά σκορ του "
-                     "προηγούμενου Turn (αρχηγός & αλλαγές πάγκου).</i>")
-        return lines
-    if len(done):
-        lines.append("Έφεραν ήδη: " + ", ".join(f"{_short(r)} <b>{r['actual']:.0f}</b>"
-                                                 for r in done.to_dict("records")))
-    if len(today):
-        lines.append("Παίζουν σήμερα: " + ", ".join(f"{_short(r)} xPTS {r['x_now']:.1f}"
-                                                    for r in today.to_dict("records")))
-    # captain: switch if today's best expected beats what the captain already scored
-    cap_id = my.get("captain_id")
-    cap = squad[squad["fantasy_id"] == cap_id]
-    today_court = today[today["role"].isin(["5άδα"])] if role else today
-    if len(cap) and len(today_court):
-        c, best = cap.iloc[0], today_court.iloc[0]
-        if c["actual"] == c["actual"]:  # captain already played
-            if best["x_now"] > c["actual"] and best["fantasy_id"] != cap_id:
-                lines.append(f"👉 Ο αρχηγός {_short(c)} έφερε {c['actual']:.0f} < xPTS "
-                             f"{best['x_now']:.1f} του {_short(best)}: <b>μετέφερε το x2</b>.")
-            else:
-                lines.append(f"👉 Ο αρχηγός {_short(c)} έφερε {c['actual']:.0f}: <b>κράτα τον</b>.")
-    # bench swaps: a played starter below a not-yet-played bench player's expectation
-    starters_done = done[done["role"].isin(["5άδα", "6ος"])] if role else done
-    bench_today = today[today["role"] == "πάγκος"] if role else today
-    swaps = [(d, t) for d in starters_done.to_dict("records") for t in bench_today.to_dict("records")
-             if t["x_now"] > d["actual"] + 1
-             and (d["role"] == "6ος" or t["position"] == d["position"]
-                  or (starters_done["position"] == d["position"]).sum() > 1)]
-    if swaps:
-        src = "της πεντάδας σου στο παιχνίδι" if real else "της πεντάδας που σου πρότεινα"
-        lines.append(f"🔄 <b>Αλλαγή βασικού ↔ πάγκου</b> (βάσει {src}):")
-        seen = set()
-        for d, t in swaps:
-            if d["fantasy_id"] in seen or t["fantasy_id"] in seen:
-                continue
-            seen |= {d["fantasy_id"], t["fantasy_id"]}
-            lines.append(f"• {_short(d)} ({d['actual']:.0f}) ➜ {_short(t)} (xPTS {t['x_now']:.1f})")
-        # the incoming player can also take the armband if the captain flopped
-        if len(cap) and cap.iloc[0]["actual"] == cap.iloc[0]["actual"]:
-            c = cap.iloc[0]
-            best_in = max((t for d, t in swaps if d["role"] == "5άδα"), key=lambda t: t["x_now"],
-                          default=None)
-            if best_in is not None and best_in["x_now"] > c["actual"] \
-                    and not (len(today_court) and today_court.iloc[0]["x_now"] >= best_in["x_now"]):
-                lines.append(f"👉 Μετά την αλλαγή, δώσε το x2 στον {_short(best_in)}: ο αρχηγός "
-                             f"{_short(c)} έφερε {c['actual']:.0f}.")
-    elif len(bench_today):
-        lines.append("🔄 Καμία αλλαγή πάγκου δεν αξίζει: οι βασικοί σου έφεραν περισσότερα "
-                     "από όσα αναμένονται από τον πάγκο σήμερα.")
+    nm = lambda p: p["name"].split(",")[0].title()  # noqa: E731
+    done = sorted((p for p in sq if p["played"] and p["position"] != "Head Coach"),
+                  key=lambda p: -p["x_now"])
+    if not done:
+        lines.append("<i>Κανείς σου δεν έχει παίξει ακόμα — η πρόταση του Turn 1 ισχύει.</i>")
+    else:
+        lines.append("Έφεραν ήδη: " + ", ".join(f"{nm(p)} <b>{p['x_now']:.0f}</b>" for p in done))
+        lines.append("<i>🔒 Όσοι έπαιξαν μένουν όπου είναι (κανόνας του παιχνιδιού).</i>")
+    new = {p["id"]: p for p in res["team"]}
+    start = ("5άδα", "6ος")
+    ins = [p for p in sq if not p["played"] and p["cur_role"] == "πάγκος"
+           and new[p["id"]]["role"] in start]
+    outs = [p for p in sq if not p["played"] and p["cur_role"] in start
+            and new[p["id"]]["role"] == "πάγκος"]
+    cap_new = next(p for p in res["team"] if p["captain"])
+    cap_cur = next((p for p in sq if p["cur_captain"]), None)
+    if ins:
+        lines.append("🔄 <b>Αλλαγή</b>: μπαίνει " + ", ".join(
+            f"{nm(p)} (xPTS {p['x_now']:.1f})" for p in ins) + " — βγαίνει " + ", ".join(
+            f"{nm(p)} (xPTS {p['x_now']:.1f})" for p in outs))
+    if cap_cur is None or cap_new["id"] != cap_cur["id"]:
+        lines.append(f"👉 <b>Αρχηγός</b>: {nm(cap_new)} (xPTS {cap_new['x_now']:.1f})")
+    if ins or cap_cur is None or cap_new["id"] != cap_cur["id"]:
+        lines.append("<i>Το /lineup το εφαρμόζει.</i>")
+    else:
+        lines.append("✅ Καμία αλλαγή: η ομάδα σου είναι ήδη η καλύτερη δυνατή για σήμερα.")
     return lines
 
 
@@ -814,8 +786,6 @@ def messages(rnd, trn, table, my, dig, health) -> list[dict]:
         else:
             cand = t
         cand_now = cand[cand["team"].isin(tu["teams"])]
-        cand_later = cand[cand["team"].isin(sum([x["teams"] for x in trn
-                                                if x["turn"] > tu["turn"]], []))]
         if tu["turn"] == 1:
             if my and my.get("transfers"):
                 lim = "απεριόριστες" if my.get("max_trades", 4) > 4 else "έως 4"
@@ -834,11 +804,6 @@ def messages(rnd, trn, table, my, dig, health) -> list[dict]:
                 lines.append(", ".join(nm_(p) for p in role("5άδα")))
                 lines.append("6ος: " + ", ".join(nm_(p) for p in role("6ος")))
                 lines.append("Πάγκος: " + ", ".join(nm_(p) for p in role("πάγκος")))
-                for pl in my.get("lineup_plan") or []:
-                    lines.append(f"🕐 <b>Πριν το T{pl['bench_turn']}</b>: αν ο "
-                                 f"{pl['start'].split(',')[0].title()} φέρει κάτω από "
-                                 f"{pl['bench_x']:.0f}, βάλε τον {pl['bench'].split(',')[0].title()} "
-                                 "στη θέση του (/lineup το κάνει).")
                 real = {r["fantasy_id"]: r for r in (my.get("actual_lineup") or [])}
                 if real:
                     diff = []
@@ -861,10 +826,8 @@ def messages(rnd, trn, table, my, dig, health) -> list[dict]:
             lines.append("⭐ <b>Αρχηγός</b>" + (" (από την πεντάδα σου)" if lu else ""))
             if len(cand_now):
                 lines.append(f"Turn 1: {_fmt(cand_now.iloc[0])}")
-            if len(cand_later):
-                lines.append(f"Plan B (Turn 2+): {_fmt(cand_later.iloc[0])}")
-            lines.append("<i>Βάλε αρχηγό στο Turn 1· αν δεν φτάσει το xPTS του plan B, "
-                         "μεταφέρεις το x2 πριν το Turn 2.</i>")
+            lines.append("<i>Ο αρχηγός κλειδώνει μόλις παίξει η ομάδα του. Αν είναι παίκτης "
+                         "επόμενου Turn, μπορείς να τον αλλάξεις μέχρι να παίξει.</i>")
         else:
             lines += turn_check(tu, table, my)
         if tu["turn"] == 1 and len(coaches):

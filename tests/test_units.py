@@ -193,3 +193,22 @@ def test_turns_split_by_athens_day():
     t = run.turns(fx, 1)
     assert [x["turn"] for x in t] == [1, 2]
     assert t[0]["teams"] == ["A", "B", "C", "D"] and t[0]["done"] and not t[1]["done"]
+
+
+def test_turn2_message_never_suggests_moving_a_played_player():
+    from conftest import squad_t1_t2
+    sq = squad_t1_t2()
+    pts = {1: 30, 2: 2, 5: 25, 6: 3, 7: 1, 9: 0}
+    roles = {1: "5άδα", 2: "5άδα", 5: "5άδα", 6: "5άδα", 9: "5άδα", 4: "6ος",
+             3: "πάγκος", 7: "πάγκος", 8: "πάγκος", 10: "πάγκος", 11: "coach"}
+    players = [{"fantasy_id": p["id"], "position": p["position"], "name": f"P{p['id']}, X",
+                "team": "T2" if p["turn"] == 2 else "T1", "x_now": p["x_now"]} for p in sq]
+    actual = [{"fantasy_id": p["id"], "role": roles[p["id"]], "captain": p["id"] == 1,
+               "played": p["id"] in pts, "pts": pts.get(p["id"]), "turn": p["turn"]} for p in sq]
+    lines = run.turn_check({"turn": 2, "teams": ["T2"]}, pd.DataFrame(players),
+                           {"players": players, "actual_lineup": actual})
+    text = "\n".join(lines)
+    assert "μπαίνει P10" in text and "βγαίνει P4" in text   # unplayed 6th -> unplayed bench C
+    assert "Αρχηγός" not in text.split("🔄")[-1], "ο αρχηγός έπαιξε: δεν αλλάζει"
+    for pid in pts:                                          # nobody who played is moved
+        assert f"βγαίνει P{pid} " not in text and f"μπαίνει P{pid} " not in text

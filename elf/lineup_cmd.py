@@ -126,25 +126,31 @@ def propose(st: dict) -> dict:
     changes = [p for p in st["squad"] if p["position"] != "Head Coach"
                and (new[p["id"]]["role"] != p["cur_role"]
                     or new[p["id"]]["captain"] != p["cur_captain"])]
-    for p in changes:  # the game forbids moving a player who already played onto the court
-        if p["played"] and new[p["id"]]["role"] != "πάγκος" and p["cur_role"] == "πάγκος":
-            raise Abort(f"ο {p['name']} έχει ήδη παίξει από τον πάγκο")
-        if p["played"] and new[p["id"]]["captain"] and not p["cur_captain"]:
-            raise Abort(f"ο {p['name']} έχει ήδη παίξει και δεν μπορεί να γίνει αρχηγός")
+    for p in changes:  # the game freezes every player whose team has already played
+        if p["played"]:
+            raise Abort(f"ο {p['name']} έχει ήδη παίξει — δεν μετακινείται")
 
-    # body: five in the first 5 slots grouped like the game does (learned direction),
-    # sixth man next, then the bench; coach keeps its slot
+    # body: players who played keep their exact slot; the others fill the free slots of
+    # their group (five grouped like the game does, learned direction; sixth; bench)
     d = st["direction"]
-    order = lambda r: sorted((p for p in res["team"] if p["role"] == r),  # noqa: E731
-                             key=lambda p: (d * POS[p["position"]], p["id"]))
-    seq = order("5άδα") + order("6ος") + order("πάγκος")
-    five = order("5άδα")
+    cur = {p["id"]: p for p in st["squad"]}
+    groups = (("5άδα", st["slots"][:5]), ("6ος", st["slots"][5:6]), ("πάγκος", st["slots"][6:]))
+    placed = []
+    for role, slots in groups:
+        members = [p for p in res["team"] if p["role"] == role]
+        fixed = [p for p in members if cur[p["id"]]["played"]]
+        free = sorted(set(slots) - {cur[p["id"]]["court_position"] for p in fixed})
+        movable = sorted((p for p in members if not cur[p["id"]]["played"]),
+                         key=lambda p: (d * POS[p["position"]], p["id"]))
+        placed += [(p, cur[p["id"]]["court_position"]) for p in fixed]
+        placed += list(zip(movable, free))
+    five = [p for p in res["team"] if p["role"] == "5άδα"]
     fname = "-".join(str(sum(p["position"] == pos for p in five)) for pos in POS)
     if fname not in st["forms"]:
         raise Abort(f"το formation {fname} δεν υπάρχει στο παιχνίδι")
     body = {"formation_id": st["forms"][fname], "players": [
         {"id": p["id"], "court_position": slot, "is_captain": bool(p["captain"])}
-        for p, slot in zip(seq, st["slots"])] + [
+        for p, slot in sorted(placed, key=lambda x: x[1])] + [
         {"id": st["coach"]["id"], "court_position": st["coach"]["court_position"],
          "is_captain": False}]}
     key = json.dumps(body, sort_keys=True)
@@ -162,12 +168,9 @@ def describe(st: dict, pr: dict) -> str:
     lines = [f"👥 <b>Πρόταση πεντάδας</b> ({pr['formation']})",
              ", ".join(lab(p) for p in five), f"6ος: {', '.join(lab(p) for p in six)}",
              f"★ Αρχηγός: {cap['name']}", ""]
-    for pl in pr["res"].get("plan") or []:
-        lines.append(f"🕐 Πριν το T{pl['bench'].get('turn')}: αν ο {pl['start']['name']} φέρει "
-                     f"κάτω από {pl['bench']['x_now']:.0f}, βάλε τον {pl['bench']['name']} "
-                     "(στείλε ξανά /lineup μετά το προηγούμενο Turn).")
-    if pr["res"].get("plan"):
-        lines.append("")
+    frozen = [p["name"] for p in st["squad"] if p["played"] and p["position"] != "Head Coach"]
+    if frozen:
+        lines += [f"🔒 Έχουν παίξει (δεν μετακινούνται): {', '.join(frozen)}", ""]
     if not pr["changes"]:
         lines.append("✅ Η ομάδα σου είναι ήδη έτσι — τίποτα να αλλάξει.")
         return "\n".join(lines)

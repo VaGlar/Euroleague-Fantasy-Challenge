@@ -54,14 +54,29 @@ def test_stale_confirmation_is_refused(monkeypatch, public):
     assert g.saved == []
 
 
-def test_turn2_morning_brings_in_turn2_players(monkeypatch, public):
-    pts = {1: 30, 2: 2, 5: 25, 6: 3, 7: 1, 9: 0}
-    g = game(monkeypatch, public, GOOD, captain=1, played=pts)
+T1_PTS = {1: 30, 2: 2, 5: 25, 6: 3, 7: 1, 9: 0}
+
+
+def test_turn2_morning_played_players_are_never_moved(monkeypatch, public):
+    # all starters played in T1: the game forbids any move, so nothing is sent
+    g = game(monkeypatch, public, GOOD, captain=1, played=T1_PTS)
     pr = lineup_cmd.propose(lineup_cmd.load_state())
+    assert pr["changes"] == []
     lineup_cmd.apply(pr["nonce"])
-    roles, cap = g.lineup()
-    assert {i for i, r in roles.items() if r == "5άδα"} >= {3, 8, 10}
-    assert roles[9] == "πάγκος" and cap == 1
+    assert g.saved == []
+
+
+def test_turn2_morning_swaps_only_unplayed_and_keeps_played_slots(monkeypatch, public):
+    roles = {**GOOD, 7: "πάγκος", 4: "6ος"}          # T2 guard 4 (xPTS 3) is sixth man
+    g = game(monkeypatch, public, roles, captain=1, played=T1_PTS)
+    before = {p["id"]: p["court_position"] for p in g.state["players"]}
+    pr = lineup_cmd.propose(lineup_cmd.load_state())
+    assert {p["id"] for p in pr["changes"]} == {4, 10}
+    lineup_cmd.apply(pr["nonce"])
+    after = {p["id"]: p["court_position"] for p in g.state["players"]}
+    assert all(after[i] == before[i] for i in T1_PTS), "όσοι έπαιξαν κρατούν την ίδια θέση"
+    new_roles, cap = g.lineup()
+    assert new_roles[10] == "6ος" and new_roles[4] == "πάγκος" and cap == 1
 
 
 def test_wrong_formation_id_aborts(monkeypatch, public):
