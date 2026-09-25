@@ -142,3 +142,13 @@ def test_coach_next_games_are_future_and_ordered(pipeline):
         nxt = det[c["person_id"]]["next"]
         assert [g["round"] for g in nxt] == sorted(g["round"] for g in nxt)
         assert all(g["date"] for g in nxt), "ο coach χρειάζεται ημερομηνία αγώνα"
+
+
+def test_teams_tab_data(pipeline):
+    pred = pipeline["pred"]
+    teams = {t["team"] for t in pred["team_ratings"]}
+    assert {t["team"] for t in pred["pos_allowed"]} == teams
+    assert all(-1 < t[pos] < 1 for t in pred["pos_allowed"] for pos in ("Guard", "Forward", "Center"))
+    assert set(pred["clubs"]) >= teams
+    assert all(len(v) <= 5 for v in pred["team_form"].values())
+    assert all("played" in f for f in pred["fixtures"])
