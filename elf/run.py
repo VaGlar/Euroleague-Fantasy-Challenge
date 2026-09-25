@@ -317,7 +317,8 @@ def _pair_trades(tr: dict) -> list[dict]:
     outs = sorted(tr["out"], key=lambda p: (POS_ORDER[p["position"]], -p["price"]))
     ins = sorted(tr["in"], key=lambda p: (POS_ORDER[p["position"]], -p["price"]))
     return [{"out": o["label"], "in": i["label"], "gain": round(i["x_h"] - o["x_h"], 1),
-             "price_out": o["price"], "price_in": i["price"]} for o, i in zip(outs, ins)]
+             "price_out": o["price"], "price_in": i["price"], "out_id": o["id"], "in_id": i["id"]}
+            for o, i in zip(outs, ins)]
 
 
 def actual_lineup(raw: dict) -> list[dict]:

@@ -16,12 +16,9 @@ from __future__ import annotations
 
 import hashlib
 import json
-import os
 import sys
 
-import requests
-
-from . import fantasy, optimize
+from . import fantasy, notify, optimize
 from .config import PUBLIC
 
 POS = {"Guard": 0, "Forward": 1, "Center": 2}
@@ -36,20 +33,8 @@ LOCKED_MSG = ("🔒 Το παιχνίδι δεν δέχεται αλλαγές �
 
 # ------------------------------------------------------------------ telegram
 
-def tg(method: str, **body):
-    tok, chat = os.environ.get("TELEGRAM_BOT_TOKEN"), os.environ.get("TELEGRAM_CHAT_ID")
-    if not tok or not chat:
-        print(body.get("text", ""))
-        return None
-    body.setdefault("chat_id", chat)
-    return requests.post(f"https://api.telegram.org/bot{tok}/{method}", json=body, timeout=30)
-
-
 def say(text: str, buttons: list | None = None):
-    body = {"text": text, "parse_mode": "HTML", "disable_web_page_preview": True}
-    if buttons:
-        body["reply_markup"] = {"inline_keyboard": [buttons]}
-    tg("sendMessage", **body)
+    notify.send(text, buttons)
 
 
 class Abort(RuntimeError):
@@ -233,11 +218,45 @@ def apply(nonce: str):
         + describe(st, pr).split("\n\n<b>Αλλαγές:</b>")[0])
 
 
+def check():
+    """~2 hours before today's first tip-off (the bot triggers it): remind only if the
+    lineup in the game differs from the proposal or suggested trades are still pending."""
+    pred = json.loads((PUBLIC / "predictions.json").read_text())
+    tu = next((t for t in pred.get("turns", []) if t.get("date") == notify.today()), None)
+    if not tu:
+        print("δεν υπάρχουν αγώνες σήμερα")
+        return
+    st = load_state()
+    notes = []
+    if tu["turn"] == 1:  # trades are only possible before the round starts
+        owned = {p["id"] for p in st["squad"]}
+        pending = [t for t in (pred.get("my_team") or {}).get("transfers") or []
+                   if t.get("out_id") in owned]
+        if pending:
+            notes += ["🔁 <b>Εκκρεμούν μεταγραφές</b> που πρότεινα (γίνονται μόνο στο app):"]
+            notes += [f"• {t['out']} ➜ {t['in']}" for t in pending]
+            notes.append("")
+    pr = propose(st)
+    if not pr["changes"] and not notes:
+        print("όλα εντάξει — καμία υπενθύμιση")
+        return
+    head = (f"⏰ <b>Σε ~2 ώρες κλείνει το Turn {tu['turn']}</b> "
+            f"(1ο τζάμπολ {tu['first_tip']})\n\n")
+    if pr["changes"]:
+        say(head + "\n".join(notes) + describe(st, pr) + "\n\nΝα εφαρμοστεί στο παιχνίδι;",
+            [{"text": "✅ Εφάρμοσε", "callback_data": f"lu:apply:{pr['nonce']}"},
+             {"text": "❌ Άκυρο", "callback_data": "lu:cancel"}])
+    else:
+        say(head + "\n".join(notes) + "✅ Η πεντάδα σου στο παιχνίδι είναι ήδη η προτεινόμενη.")
+
+
 if __name__ == "__main__":
     mode = sys.argv[1] if len(sys.argv) > 1 else "preview"
     try:
         if mode == "apply":
             apply(sys.argv[2])
+        elif mode == "check":
+            check()
         else:
             preview()
     except (Abort, fantasy.TokenError) as e:

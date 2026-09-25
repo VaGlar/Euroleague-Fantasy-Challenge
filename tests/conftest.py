@@ -9,7 +9,7 @@ from pathlib import Path
 import pytest
 import requests
 
-from elf import config, fantasy, lineup_cmd, model, prices, run
+from elf import config, fantasy, lineup_cmd, model, notify, prices, run
 
 REPO = Path(__file__).resolve().parent.parent
 FORMS = {"2-2-1": 27, "2-1-2": 28, "1-2-2": 29, "1-3-1": 30, "3-1-1": 31}
@@ -28,7 +28,7 @@ def block_network(mp):
 def use_public(mp, pub: Path) -> Path:
     """Point every module that reads/writes data/public at a private folder."""
     pub.mkdir(parents=True, exist_ok=True)
-    for mod in (config, run, prices, lineup_cmd, model):
+    for mod in (config, run, prices, lineup_cmd, model, notify):
         if hasattr(mod, "PUBLIC"):
             mp.setattr(mod, "PUBLIC", pub)
     return pub

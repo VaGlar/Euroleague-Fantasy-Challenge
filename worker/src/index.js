@@ -4,8 +4,11 @@
 //   GH_DISPATCH_TOKEN (optional: fine-grained PAT, Actions read/write on this repo only)
 // Vars: DATA_URL (base URL of data/public), DASHBOARD_URL, GH_REPO, GH_REF
 //
-// Two UTC crons (08:00 and 09:00) cover summer/winter time; the handler only
-// acts when it is 11:xx in Athens, so exactly one of them sends.
+// One hourly cron (xx:05 UTC); the handler works in Athens time (DST-proof):
+//   10:05  game day -> start a fresh update that sends the report when done (~10:10)
+//   11:05  fallback: send the report from the last data if the 10:05 one did not go out
+//   first tip-off - 2h  -> pre-deadline check (lineup differs / trades pending)
+// GitHub's own schedule runs hours late, so the timing lives here.
 
 const TZ = "Europe/Athens";
 
@@ -18,6 +21,14 @@ function athensNow() {
   return { date: `${parts.year}-${parts.month}-${parts.day}`, hour: Number(parts.hour) % 24 };
 }
 
+const LINEUP_BUTTON = [[{ text: "👥 Πρόταση πεντάδας (/lineup)", callback_data: "lu:preview" }]];
+
+async function getJson(env, name) {
+  const r = await fetch(`${env.DATA_URL}/${name}?t=${Date.now()}`, { cf: { cacheTtl: 0 } });
+  if (!r.ok) throw new Error(`${name} ${r.status}`);
+  return r.json();
+}
+
 async function tg(env, method, body) {
   const r = await fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/${method}`, {
     method: "POST",
@@ -27,7 +38,7 @@ async function tg(env, method, body) {
   return r.json();
 }
 
-async function send(env, chatId, text) {
+async function send(env, chatId, text, keyboard) {
   // Telegram limit is 4096 chars; split on line boundaries.
   const chunks = [];
   let cur = "";
@@ -36,17 +47,15 @@ async function send(env, chatId, text) {
     cur += line + "\n";
   }
   if (cur.trim()) chunks.push(cur);
-  for (const c of chunks) {
-    await tg(env, "sendMessage", {
-      chat_id: chatId, text: c, parse_mode: "HTML", disable_web_page_preview: true,
-    });
+  for (const [i, c] of chunks.entries()) {
+    const body = { chat_id: chatId, text: c, parse_mode: "HTML", disable_web_page_preview: true };
+    if (keyboard && i === chunks.length - 1) body.reply_markup = { inline_keyboard: keyboard };
+    await tg(env, "sendMessage", body);
   }
 }
 
 async function loadReport(env) {
-  const r = await fetch(`${env.DATA_URL}/report.json?t=${Date.now()}`, { cf: { cacheTtl: 0 } });
-  if (!r.ok) throw new Error(`report.json ${r.status}`);
-  return r.json();
+  return getJson(env, "report.json");
 }
 
 async function gameDayMessage(env, date) {
@@ -79,6 +88,10 @@ async function onCallback(env, cq) {
   if (chat !== String(env.TELEGRAM_CHAT_ID)) return;
   const [ns, action, nonce] = String(cq.data || "").split(":");
   if (ns !== "lu") return;
+  if (action === "preview") {  // report button: keep it, it can be pressed again
+    await startLineupPreview(env, chat);
+    return;
+  }
   // remove the buttons so a proposal can only be confirmed once
   await tg(env, "editMessageReplyMarkup", {
     chat_id: chat, message_id: cq.message.message_id, reply_markup: { inline_keyboard: [] },
@@ -92,15 +105,60 @@ async function onCallback(env, cq) {
   }
 }
 
+async function startLineupPreview(env, chat) {
+  if (!env.GH_DISPATCH_TOKEN) {
+    await send(env, chat, "Λείπει το GH_DISPATCH_TOKEN — δες README.");
+    return;
+  }
+  const r = await dispatch(env, "lineup.yml", { mode: "preview", nonce: "" });
+  await send(env, chat, r.status === 204 ? "⏳ Διαβάζω την ομάδα σου και υπολογίζω… (~1 λεπτό)"
+    : `⚠️ GitHub ${r.status}: ${(await r.text()).slice(0, 200)}`);
+}
+
+// Hourly: decide what (if anything) this hour is for. See the header comment.
+async function hourly(env) {
+  const now = athensNow();
+  const rep = await loadReport(env);
+  const gameDay = (rep.messages || []).some((m) => m.date === now.date);
+  if (!gameDay) return;
+  const canDispatch = Boolean(env.GH_DISPATCH_TOKEN);
+
+  if (now.hour === 10 && canDispatch) {
+    const r = await dispatch(env, "update.yml", { report: "true" });
+    if (r.status !== 204) {
+      await send(env, env.TELEGRAM_CHAT_ID,
+        `⚠️ Το πρωινό update δεν ξεκίνησε (GitHub ${r.status}) — στις 11:00 έρχεται το report με τα τελευταία δεδομένα.`);
+    }
+  }
+  if (now.hour === 11) {
+    let sent = null;
+    try { sent = await getJson(env, "sent.json"); } catch (e) { /* first run: no file yet */ }
+    if (!sent || sent.date !== now.date) {
+      const text = await gameDayMessage(env, now.date);
+      if (text) {
+        await send(env, env.TELEGRAM_CHAT_ID,
+          text + "\n\n<i>(από τα τελευταία δεδομένα — το πρωινό update δεν ολοκληρώθηκε)</i>",
+          LINEUP_BUTTON);
+      }
+    }
+  }
+  if (canDispatch) {
+    const pred = await getJson(env, "predictions.json");
+    const tu = (pred.turns || []).find((t) => t.date === now.date);
+    const tipHour = tu ? Number(String(tu.first_tip).split(":")[0]) : NaN;
+    if (now.hour === tipHour - 2) {
+      await dispatch(env, "lineup.yml", { mode: "check", nonce: "" });
+    }
+  }
+}
+
 export default {
   async scheduled(event, env, ctx) {
-    const now = athensNow();
-    if (now.hour !== 11) return;
     try {
-      const text = await gameDayMessage(env, now.date);
-      if (text) await send(env, env.TELEGRAM_CHAT_ID, text);
+      await hourly(env);
     } catch (e) {
-      await send(env, env.TELEGRAM_CHAT_ID, `⚠️ Αποτυχία report: ${e.message}`);
+      const h = athensNow().hour;
+      if (h === 10 || h === 11) await send(env, env.TELEGRAM_CHAT_ID, `⚠️ Αποτυχία report: ${e.message}`);
     }
   },
 
@@ -135,7 +193,7 @@ export default {
         const today = athensNow().date;
         const msgs = rep.messages || [];
         const msg = msgs.find((x) => x.date === today) || msgs.find((x) => x.date > today) || msgs[0];
-        await send(env, chat, msg ? msg.text : "Δεν υπάρχει report ακόμα.");
+        await send(env, chat, msg ? msg.text : "Δεν υπάρχει report ακόμα.", msg ? LINEUP_BUTTON : null);
       } else if (cmd === "/top") {
         const r = await fetch(`${env.DATA_URL}/predictions.json?t=${Date.now()}`);
         const p = await r.json();
@@ -144,13 +202,7 @@ export default {
             + (x.price ? ` · ${x.price}cr` : ""));
         await send(env, chat, `📈 <b>Top xPTS — Αγωνιστική ${p.round}</b>\n` + rows.join("\n"));
       } else if (cmd === "/lineup") {
-        if (!env.GH_DISPATCH_TOKEN) {
-          await send(env, chat, "Λείπει το GH_DISPATCH_TOKEN — δες README.");
-        } else {
-          const r = await dispatch(env, "lineup.yml", { mode: "preview", nonce: "" });
-          await send(env, chat, r.status === 204 ? "⏳ Διαβάζω την ομάδα σου και υπολογίζω… (~1 λεπτό)"
-            : `⚠️ GitHub ${r.status}: ${(await r.text()).slice(0, 200)}`);
-        }
+        await startLineupPreview(env, chat);
       } else if (cmd === "/update") {
         if (!env.GH_DISPATCH_TOKEN) {
           await send(env, chat, "Λείπει το GH_DISPATCH_TOKEN — δες README (Telegram /update).");

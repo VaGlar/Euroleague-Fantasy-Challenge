@@ -179,7 +179,8 @@ def test_expert_votes_and_capped_factor():
 
 
 def test_pair_trades_matches_positions():
-    mk = lambda i, pos, price, x: {"label": f"P{i}", "position": pos, "price": price, "x_h": x}  # noqa: E731
+    mk = lambda i, pos, price, x: {"id": i, "label": f"P{i}", "position": pos,  # noqa: E731
+                                   "price": price, "x_h": x}
     tr = {"out": [mk(1, "Center", 5, 3), mk(2, "Guard", 6, 4)],
           "in": [mk(3, "Guard", 8, 10), mk(4, "Center", 4, 6)]}
     pairs = {(p["out"], p["in"]) for p in run._pair_trades(tr)}

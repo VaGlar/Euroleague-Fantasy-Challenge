@@ -17,6 +17,10 @@ on:
         description: "Message Telegram when finished (used by /update)"
         type: boolean
         default: false
+      report:
+        description: "Send today's report to Telegram when done (the bot's 10:05 run)"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -52,6 +56,13 @@ jobs:
           GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
           DASHBOARD_URL: ${{ vars.DASHBOARD_URL || 'https://elf-dashboard.pages.dev' }}
         run: python -m elf.run
+
+      - name: Send today's report
+        if: ${{ inputs.report }}
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python -m elf.notify report
 
       - name: Commit data
         run: |

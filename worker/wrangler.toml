@@ -3,8 +3,9 @@ main = "src/index.js"
 compatibility_date = "2026-09-01"
 
 [triggers]
-# 08:00 and 09:00 UTC = 11:00 Athens in summer / winter time (handler checks).
-crons = ["0 8 * * *", "0 9 * * *"]
+# Hourly at xx:05 UTC; the handler decides in Athens time (10:05 update + report,
+# 11:05 fallback, pre-deadline check 2h before the first tip-off).
+crons = ["5 * * * *"]
 
 [vars]
 # Overridden at deploy time by the GitHub workflow.

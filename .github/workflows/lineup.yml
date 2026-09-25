@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "preview or apply"
+        description: "preview, apply, or check (pre-deadline reminder)"
         type: choice
-        options: [preview, apply]
+        options: [preview, apply, check]
         default: preview
       nonce:
         description: "proposal id confirmed in Telegram (apply only)"
