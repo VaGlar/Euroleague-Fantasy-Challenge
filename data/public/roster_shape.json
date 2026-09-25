@@ -1,7 +1,24 @@
 {
  "formation_id": "int",
- "latest_snapshot": "NoneType",
- "snapshot_players_current_status": "NoneType",
+ "latest_snapshot": {
+  "formation_id": "int",
+  "players": [
+   {
+    "id": "int",
+    "court_position": "int",
+    "is_captain": "bool",
+    "active": "bool"
+   },
+   "×11"
+  ]
+ },
+ "snapshot_players_current_status": [
+  {
+   "id": "int",
+   "active": "bool"
+  },
+  "×11"
+ ],
  "players": [
   {
    "id": "int",
