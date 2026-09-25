@@ -126,21 +126,24 @@ def propose(st: dict) -> dict:
     changes = [p for p in st["squad"] if p["position"] != "Head Coach"
                and (new[p["id"]]["role"] != p["cur_role"]
                     or new[p["id"]]["captain"] != p["cur_captain"])]
-    for p in changes:  # the game freezes every player whose team has already played
-        if p["played"]:
-            raise Abort(f"ο {p['name']} έχει ήδη παίξει — δεν μετακινείται")
+    for p in changes:  # a played player may only leave the starting six for the bench
+        n = new[p["id"]]
+        if p["played"] and n["role"] != p["cur_role"] and n["role"] != "πάγκος":
+            raise Abort(f"ο {p['name']} έχει ήδη παίξει: μπορεί μόνο να πάει στον πάγκο")
+        if p["played"] and n["captain"] and not p["cur_captain"]:
+            raise Abort(f"ο {p['name']} έχει ήδη παίξει και δεν μπορεί να γίνει αρχηγός")
 
-    # body: players who played keep their exact slot; the others fill the free slots of
-    # their group (five grouped like the game does, learned direction; sixth; bench)
+    # body: played players who keep their role keep their exact slot; the others fill
+    # the free slots of their group (five grouped like the game does; sixth; bench)
     d = st["direction"]
     cur = {p["id"]: p for p in st["squad"]}
     groups = (("5άδα", st["slots"][:5]), ("6ος", st["slots"][5:6]), ("πάγκος", st["slots"][6:]))
     placed = []
     for role, slots in groups:
         members = [p for p in res["team"] if p["role"] == role]
-        fixed = [p for p in members if cur[p["id"]]["played"]]
+        fixed = [p for p in members if cur[p["id"]]["played"] and cur[p["id"]]["cur_role"] == role]
         free = sorted(set(slots) - {cur[p["id"]]["court_position"] for p in fixed})
-        movable = sorted((p for p in members if not cur[p["id"]]["played"]),
+        movable = sorted((p for p in members if p not in fixed),
                          key=lambda p: (d * POS[p["position"]], p["id"]))
         placed += [(p, cur[p["id"]]["court_position"]) for p in fixed]
         placed += list(zip(movable, free))
@@ -168,9 +171,12 @@ def describe(st: dict, pr: dict) -> str:
     lines = [f"👥 <b>Πρόταση πεντάδας</b> ({pr['formation']})",
              ", ".join(lab(p) for p in five), f"6ος: {', '.join(lab(p) for p in six)}",
              f"★ Αρχηγός: {cap['name']}", ""]
-    frozen = [p["name"] for p in st["squad"] if p["played"] and p["position"] != "Head Coach"]
-    if frozen:
-        lines += [f"🔒 Έχουν παίξει (δεν μετακινούνται): {', '.join(frozen)}", ""]
+    for pl in pr["res"].get("plan") or []:
+        lines.append(f"🕐 Πριν το T{pl['bench'].get('turn')}: αν ο {pl['start']['name']} φέρει "
+                     f"κάτω από {pl['bench']['x_now']:.0f}, βάλε τον {pl['bench']['name']} "
+                     "(στείλε ξανά /lineup μετά το προηγούμενο Turn).")
+    if pr["res"].get("plan"):
+        lines.append("")
     if not pr["changes"]:
         lines.append("✅ Η ομάδα σου είναι ήδη έτσι — τίποτα να αλλάξει.")
         return "\n".join(lines)

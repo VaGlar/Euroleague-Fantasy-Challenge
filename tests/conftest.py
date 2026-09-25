@@ -118,8 +118,31 @@ class FakeGame:
     def formations(self, current_id=None):
         return dict(FORMS)
 
+    def illegal(self, body):
+        """The game's in-round rule: a played player may leave the starting six only
+        for the bench; a played bench player stays; the armband only to the unplayed."""
+        court = sorted(p["court_position"] for p in self.state["players"]
+                       if p["position"]["name"] in POS)
+        start = set(court[:6])
+        new = {b["id"]: b for b in body["players"]}
+        for p in self.state["players"]:
+            if not p["match_played"] or p["position"]["name"] not in POS:
+                continue
+            old_s, new_s = p["court_position"], new[p["id"]]["court_position"]
+            if new_s in start and new_s != old_s:
+                return True
+            if new[p["id"]]["is_captain"] and not p["is_captain"]:
+                return True
+        return False
+
     def save_roster(self, tid, md, body):
         self.saved.append(body)
+        if self.status < 400 and self.illegal(body):
+            class Bad:
+                status_code = 422
+                text = ('{"code":"VALIDATION_ERROR","message":"Illegal moves: at least one '
+                        'team has already played."}')
+            return Bad()
         if self.status < 400 and self.persist:
             for b in body["players"]:
                 for p in self.state["players"]:

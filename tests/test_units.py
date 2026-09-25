@@ -195,7 +195,7 @@ def test_turns_split_by_athens_day():
     assert t[0]["teams"] == ["A", "B", "C", "D"] and t[0]["done"] and not t[1]["done"]
 
 
-def test_turn2_message_never_suggests_moving_a_played_player():
+def test_turn2_message_follows_the_game_rules():
     from conftest import squad_t1_t2
     sq = squad_t1_t2()
     pts = {1: 30, 2: 2, 5: 25, 6: 3, 7: 1, 9: 0}
@@ -208,7 +208,8 @@ def test_turn2_message_never_suggests_moving_a_played_player():
     lines = run.turn_check({"turn": 2, "teams": ["T2"]}, pd.DataFrame(players),
                            {"players": players, "actual_lineup": actual})
     text = "\n".join(lines)
-    assert "μπαίνει P10" in text and "βγαίνει P4" in text   # unplayed 6th -> unplayed bench C
-    assert "Αρχηγός" not in text.split("🔄")[-1], "ο αρχηγός έπαιξε: δεν αλλάζει"
-    for pid in pts:                                          # nobody who played is moved
-        assert f"βγαίνει P{pid} " not in text and f"μπαίνει P{pid} " not in text
+    swap = next(line for line in lines if "μπαίνει" in line)
+    assert all(f"P{i} " in swap.split("βγαίνει")[0] for i in (3, 8, 10))   # T2 players in
+    assert all(f"P{i} " in swap.split("βγαίνει")[1] for i in (2, 6, 9))    # T1 flops out
+    assert "P7 " not in swap, "όποιος έπαιξε από τον πάγκο μένει εκεί"
+    assert "👉" not in text, "ο αρχηγός έφερε 30: μένει"

@@ -714,9 +714,9 @@ def _short(r) -> str:
 
 
 def turn_check(tu: dict, table: pd.DataFrame, my: dict | None) -> list[str]:
-    """Before a later turn: the best legal lineup given what already happened. The game
-    freezes every player whose team has played (role and armband), so only players
-    who have not played yet can be rearranged."""
+    """Before a later turn: the best legal lineup given what already happened, from the
+    same optimizer as /lineup (a played starter can only go to the bench, the armband
+    only to a player who has not played)."""
     lines = ["⭐ <b>Αρχηγός & αλλαγές πριν το Turn " f"{tu['turn']}</b>"]
     real = {r["fantasy_id"]: r for r in ((my or {}).get("actual_lineup") or []) if r.get("role")}
     sq = []
@@ -742,19 +742,17 @@ def turn_check(tu: dict, table: pd.DataFrame, my: dict | None) -> list[str]:
         lines.append("<i>Κανείς σου δεν έχει παίξει ακόμα — η πρόταση του Turn 1 ισχύει.</i>")
     else:
         lines.append("Έφεραν ήδη: " + ", ".join(f"{nm(p)} <b>{p['x_now']:.0f}</b>" for p in done))
-        lines.append("<i>🔒 Όσοι έπαιξαν μένουν όπου είναι (κανόνας του παιχνιδιού).</i>")
     new = {p["id"]: p for p in res["team"]}
     start = ("5άδα", "6ος")
     ins = [p for p in sq if not p["played"] and p["cur_role"] == "πάγκος"
            and new[p["id"]]["role"] in start]
-    outs = [p for p in sq if not p["played"] and p["cur_role"] in start
-            and new[p["id"]]["role"] == "πάγκος"]
+    outs = [p for p in sq if p["cur_role"] in start and new[p["id"]]["role"] == "πάγκος"]
     cap_new = next(p for p in res["team"] if p["captain"])
     cap_cur = next((p for p in sq if p["cur_captain"]), None)
     if ins:
         lines.append("🔄 <b>Αλλαγή</b>: μπαίνει " + ", ".join(
             f"{nm(p)} (xPTS {p['x_now']:.1f})" for p in ins) + " — βγαίνει " + ", ".join(
-            f"{nm(p)} (xPTS {p['x_now']:.1f})" for p in outs))
+            f"{nm(p)} ({'έφερε' if p['played'] else 'xPTS'} {p['x_now']:.1f})" for p in outs))
     if cap_cur is None or cap_new["id"] != cap_cur["id"]:
         lines.append(f"👉 <b>Αρχηγός</b>: {nm(cap_new)} (xPTS {cap_new['x_now']:.1f})")
     if ins or cap_cur is None or cap_new["id"] != cap_cur["id"]:
@@ -786,6 +784,8 @@ def messages(rnd, trn, table, my, dig, health) -> list[dict]:
         else:
             cand = t
         cand_now = cand[cand["team"].isin(tu["teams"])]
+        cand_later = cand[cand["team"].isin(sum([x["teams"] for x in trn
+                                                if x["turn"] > tu["turn"]], []))]
         if tu["turn"] == 1:
             if my and my.get("transfers"):
                 lim = "απεριόριστες" if my.get("max_trades", 4) > 4 else "έως 4"
@@ -804,6 +804,11 @@ def messages(rnd, trn, table, my, dig, health) -> list[dict]:
                 lines.append(", ".join(nm_(p) for p in role("5άδα")))
                 lines.append("6ος: " + ", ".join(nm_(p) for p in role("6ος")))
                 lines.append("Πάγκος: " + ", ".join(nm_(p) for p in role("πάγκος")))
+                for pl in my.get("lineup_plan") or []:
+                    lines.append(f"🕐 <b>Πριν το T{pl['bench_turn']}</b>: αν ο "
+                                 f"{pl['start'].split(',')[0].title()} φέρει κάτω από "
+                                 f"{pl['bench_x']:.0f}, βάλε τον {pl['bench'].split(',')[0].title()} "
+                                 "στη θέση του (/lineup το κάνει).")
                 real = {r["fantasy_id"]: r for r in (my.get("actual_lineup") or [])}
                 if real:
                     diff = []
@@ -826,8 +831,10 @@ def messages(rnd, trn, table, my, dig, health) -> list[dict]:
             lines.append("⭐ <b>Αρχηγός</b>" + (" (από την πεντάδα σου)" if lu else ""))
             if len(cand_now):
                 lines.append(f"Turn 1: {_fmt(cand_now.iloc[0])}")
-            lines.append("<i>Ο αρχηγός κλειδώνει μόλις παίξει η ομάδα του. Αν είναι παίκτης "
-                         "επόμενου Turn, μπορείς να τον αλλάξεις μέχρι να παίξει.</i>")
+            if len(cand_later):
+                lines.append(f"Plan B (Turn 2+): {_fmt(cand_later.iloc[0])}")
+            lines.append("<i>Βάλε αρχηγό στο Turn 1· αν δεν φτάσει το xPTS του plan B, "
+                         "μεταφέρεις το x2 σε παίκτη του Turn 2 (όχι σε κάποιον που έπαιξε).</i>")
         else:
             lines += turn_check(tu, table, my)
         if tu["turn"] == 1 and len(coaches):

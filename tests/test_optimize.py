@@ -95,9 +95,13 @@ def test_lineup_falls_back_to_one_later_player_when_no_turn1_center():
     assert [p["position"] for p in later] == ["Center"], "μόνο ο αναγκαίος C από το T2"
 
 
-def test_no_swap_plan_the_game_forbids_it():
-    _, plan = optimize.defer_later_turns(optimize.lineup(squad_t1_t2())["team"])
-    assert plan == [], "ο παίκτης που έπαιξε δεν μπορεί να βγει για παίκτη επόμενου Turn"
+def test_swap_plan_pairs_later_players_with_weakest_compatible_starter():
+    team, plan = optimize.defer_later_turns(optimize.lineup(squad_t1_t2())["team"])
+    pairs = {(pl["bench"]["id"], pl["start"]["id"]) for pl in plan}
+    # C 10 -> sixth man 7 (weakest); F 8 cannot take the only T1 Center's slot -> F 6;
+    # G 3 -> G 2; G 4 (xPTS 3) is below PLAN_MIN_X -> no plan
+    assert pairs == {(10, 7), (8, 6), (3, 2)}
+    check_lineup(team)
 
 
 def turn2_morning(roles, captain, pts):
@@ -115,36 +119,33 @@ def roles_of(team, pid):
 
 
 T1_PTS = {1: 30, 2: 2, 5: 25, 6: 3, 7: 1, 9: 0}
-
-
-def test_in_round_played_players_are_frozen():
-    # the only T1 Center scored 0, the T2 Center on the bench expects 17: still no move
-    roles = {1: "5άδα", 2: "5άδα", 5: "5άδα", 6: "5άδα", 9: "5άδα", 7: "6ος",
+T1_LINEUP = {1: "5άδα", 2: "5άδα", 5: "5άδα", 6: "5άδα", 9: "5άδα", 7: "6ος",
              3: "πάγκος", 4: "πάγκος", 8: "πάγκος", 10: "πάγκος"}
-    team = optimize.lineup_in_round(turn2_morning(roles, 1, T1_PTS))["team"]
-    got = {p["id"]: p["role"] for p in team if p["position"] != "Head Coach"}
-    assert got == roles, "κανείς δεν αλλάζει: όλοι οι βασικοί έχουν παίξει"
-    assert next(p["id"] for p in team if p["captain"]) == 1
 
 
-def test_in_round_unplayed_players_can_swap_among_themselves():
-    roles = {1: "5άδα", 2: "5άδα", 5: "5άδα", 6: "5άδα", 9: "5άδα", 4: "6ος",
-             3: "πάγκος", 7: "πάγκος", 8: "πάγκος", 10: "πάγκος"}
-    team = optimize.lineup_in_round(turn2_morning(roles, 1, T1_PTS))["team"]
+def test_in_round_turn2_morning():
+    team = optimize.lineup_in_round(turn2_morning(T1_LINEUP, 1, T1_PTS))["team"]
     check_lineup(team)
-    assert roles_of(team, 10) == "6ος" and roles_of(team, 4) == "πάγκος"
-    assert roles_of(team, 7) == "πάγκος", "ο 7 έπαιξε από τον πάγκο: μένει εκεί"
-    assert all(roles_of(team, i) == "5άδα" for i in (1, 2, 5, 6, 9))
+    assert roles(team, "5άδα") == {1, 5, 3, 8, 10}, "όσοι απέτυχαν στο T1 βγαίνουν στον πάγκο"
+    assert roles(team, "6ος") == {4}
+    assert next(p["id"] for p in team if p["captain"]) == 1, "30 πραγματικοί > 17 αναμενόμενοι"
 
 
-def test_in_round_armband_moves_only_if_captain_has_not_played():
-    roles = {1: "5άδα", 2: "5άδα", 5: "5άδα", 6: "5άδα", 10: "5άδα", 7: "6ος",
-             3: "πάγκος", 4: "πάγκος", 8: "πάγκος", 9: "πάγκος"}
-    pts = {1: 2, 2: 2, 5: 2, 6: 2, 7: 2, 9: 2}
-    team = optimize.lineup_in_round(turn2_morning(roles, 1, pts))["team"]
-    assert next(p["id"] for p in team if p["captain"]) == 1, "ο αρχηγός έπαιξε: κλειδωμένος"
-    team = optimize.lineup_in_round(turn2_morning(roles, 10, pts))["team"]
-    assert next(p["id"] for p in team if p["captain"]) == 10
+def test_in_round_played_starters_only_go_to_the_bench():
+    # sixth man scored 40, a five player 1: both full points, but they may not swap
+    pts = {1: 1, 2: 2, 5: 3, 6: 3, 9: 3, 7: 40}
+    team = optimize.lineup_in_round(turn2_morning(T1_LINEUP, 1, pts))["team"]
+    for pid, was in T1_LINEUP.items():
+        if pid in pts:
+            assert roles_of(team, pid) in (was, "πάγκος"), f"ο {pid} πήγε {was} -> 5άδα/6ος"
+
+
+def test_in_round_armband_goes_only_to_unplayed_players():
+    pts = {1: 2, 2: 2, 5: 40, 6: 2, 7: 2, 9: 2}
+    team = optimize.lineup_in_round(turn2_morning(T1_LINEUP, 1, pts))["team"]
+    cap = next(p for p in team if p["captain"])
+    assert cap["id"] != 5, "ο 5 έφερε 40 αλλά έχει παίξει: δεν παίρνει το x2"
+    assert cap["id"] in (3, 8, 10), "το x2 πάει σε παίκτη του T2"
 
 
 def test_in_round_played_bench_player_stays_and_played_player_cannot_take_armband():
