@@ -39,7 +39,7 @@
     "name": "str",
     "abbreviation": "str"
    },
-   "quotation": "float",
+   "quotation": "int",
    "is_on_fire": "NoneType",
    "pts": "int",
    "is_injured": "bool",
