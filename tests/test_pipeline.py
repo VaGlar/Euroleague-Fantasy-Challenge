@@ -124,9 +124,12 @@ def test_player_details_for_the_popup(pipeline):
     vez = next(d for pid, d in det.items() if d["stats"] and d["last"])   # someone with history
     assert {"season", "g", "pts", "reb", "ast", "pir", "fg3"} <= set(vez["stats"][0])
     assert 1 <= len(vez["last"]) <= 3 and {"opp", "pir", "fp", "score"} <= set(vez["last"][0])
+    season = pipeline["pred"]["season"]
+    assert all(g["season"] == season for d in det.values() for g in d["last"]), "όχι περσινά"
     nxt = [d for d in det.values() if d["next"]]
     assert nxt and all(len(d["next"]) <= 3 for d in nxt)
     assert all(0 <= g["win"] <= 100 for d in nxt for g in d["next"])
+    assert all({"margin", "pos_dev"} <= set(g) for d in nxt for g in d["next"])
     rounds = [g["round"] for g in nxt[0]["next"]]
     assert rounds == sorted(rounds), "επόμενα με χρονολογική σειρά"
 

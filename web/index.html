@@ -437,19 +437,31 @@ async function openPlayer(pid) {
   const d = DET[pid] || { stats: [], last: [], next: [] };
   const f = d.form || {};
   const coach = r.position === "Head Coach";
-  const wp = r.margin != null ? Math.round(100 / (1 + Math.exp(-r.margin / 6.45))) : null;
+  // this round's game already played -> analyse the next one
+  const nx = d.next[0];
+  const done = nx ? nx.round !== P.round : r.actual != null;
+  const g = done && nx
+    ? { opp: nx.opp, home: nx.home, pos_dev: nx.pos_dev, margin: nx.margin, win: nx.win, x: nx.x,
+        label: `επόμενου αγώνα · R${nx.round} ${nx.home ? "🏠" : "✈️"} vs ${esc(nx.opp)} (${esc((nx.date || "").slice(0, 5))})` }
+    : { opp: r.opp, home: r.home, pos_dev: r.pos_dev, margin: r.margin, x: r.x_now,
+        win: r.margin != null ? Math.round(100 / (1 + Math.exp(-r.margin / 6.45))) : null,
+        label: r.opp ? `${r.home ? "🏠" : "✈️"} vs ${esc(r.opp)}` : "" };
+  const wp = g.win;
   const turn = P.turns.find((t) => t.teams.includes(r.team));
+  const marg = g.margin != null ? `${g.margin >= 0 ? "+" : ""}${f1(g.margin)} (${wp}% νίκη)` : "–";
   const why = coach ? [
-      ["Αναμενόμενη διαφορά σκορ", r.margin != null ? `${r.margin >= 0 ? "+" : ""}${f1(r.margin)}` : "–"],
+      ["Αναμενόμενη διαφορά σκορ", marg],
+      ["xPTS", `<b>${f1(g.x)}</b>`],
       ["Βαθμολογία coach", "+10/+20/+25 νίκη · −5/−10/−20 ήττα"]]
     : [
       ["Φόρμα: τελευταία 3 / σεζόν / πέρσι (PIR)", `${f1(f.last3_pir)} / ${f1(f.season_pir)} / ${f1(f.prev_pir)}`],
       ["Βάση μοντέλου (blend)", `<b>${f1(f.base ?? r.base)}</b> PIR`],
-      ["Ματσάρισμα θέσης vs " + esc(r.opp || ""), matchup(r.pos_dev) || "–"],
-      ["Έδρα", r.home ? "🏠 εντός" : "✈️ εκτός"],
-      ["Αναμενόμενη διαφορά σκορ", r.margin != null ? `${r.margin >= 0 ? "+" : ""}${f1(r.margin)} (${wp}% νίκη → +10%)` : "–"],
+      ["Ματσάρισμα θέσης vs " + esc(g.opp || ""), matchup(g.pos_dev) || "–"],
+      ["Έδρα", g.home ? "🏠 εντός" : "✈️ εκτός"],
+      ["Αναμενόμενη διαφορά σκορ", g.margin != null ? `${marg.replace(")", " → +10%)")}` : "–"],
       ["Διαθεσιμότητα (παιχνίδι / νέα)", `${r.avail_game == null ? "–" : Math.round(r.avail_game * 100) + "%"} / ${d.news_avail == null ? "–" : Math.round(d.news_avail * 100) + "%"}`],
-      ["Στήλες fantasy", r.expert_pick || r.expert_avoid ? `👍${r.expert_pick || 0}${r.expert_cap ? " ★" : ""}${r.expert_avoid ? " 👎" : ""}` : "–"],
+      ...(done ? [] : [["Στήλες fantasy", r.expert_pick || r.expert_avoid ? `👍${r.expert_pick || 0}${r.expert_cap ? " ★" : ""}${r.expert_avoid ? " 👎" : ""}` : "–"]]),
+      ["xPTS", `<b>${f1(g.x)}</b>`],
       ["Τιμή", r.price_trend === "up" ? "$ πιθανή άνοδος" : r.price_trend === "down" ? "↓$ πιθανή πτώση" : "σταθερή"]];
   const stats = d.stats.length ? `<div class="tablewrap"><table><thead><tr><th>Σεζόν</th><th class="num">Αγ</th><th class="num">Λεπ</th><th class="num">PIR</th>
       <th class="num">Πόν</th><th class="num">Ριμ</th><th class="num">Ασ</th><th class="num">Κλ</th><th class="num">Κοψ</th>
@@ -462,8 +474,8 @@ async function openPlayer(pid) {
   const last = d.last.length ? `<div class="games">${d.last.map((g) => `<div class="game">
       <div>${g.home ? "🏠" : "✈️"} <b>${esc(g.opp)}</b> <span class="${g.won ? "W" : "L"}">${g.won ? "Ν" : "Η"}</span> ${esc(g.score)}</div>
       <div class="gv"><b>${f1(g.fp)}</b><small>fantasy</small></div>
-      <div class="gs">R${g.round}${P.season && g.season !== P.season ? ` · ${seasonLbl(g.season)}` : ""} · ${esc(g.date || "")} · ${g.min}' · ${g.pts}π ${g.reb}ρ ${g.ast}α · PIR ${g.pir}</div></div>`).join("")}</div>`
-    : `<p class="muted">Κανένας αγώνας ακόμα.</p>`;
+      <div class="gs">R${g.round} · ${esc(g.date || "")} · ${g.min}' · ${g.pts}π ${g.reb}ρ ${g.ast}α · PIR ${g.pir}</div></div>`).join("")}</div>`
+    : `<p class="muted">Κανένας αγώνας φέτος ακόμα.</p>`;
   const next = d.next.length ? `<div class="games">${d.next.map((g) => `<div class="game">
       <div>R${g.round} · ${g.home ? "🏠" : "✈️"} <b>${esc(g.opp)}</b></div>
       <div class="gv"><b>${f1(g.x)}</b><small>xPTS</small></div>
@@ -475,7 +487,7 @@ async function openPlayer(pid) {
     <div class="kpis"><div class="kpi"><b>${r.actual != null ? f1(r.actual) : f1(r.x_now)}</b><span>${r.actual != null ? "πόντοι (έπαιξε)" : "xPTS αγωνιστικής"}</span></div>
       <div class="kpi"><b>${f1(r.x_h)}</b><span>xPTS3</span></div>
       <div class="kpi"><b>${r.value == null ? "–" : r.value.toFixed(2)}</b><span>xPTS3 / cr</span></div></div>
-    <h3>Ανάλυση${r.opp ? ` · ${r.home ? "🏠" : "✈️"} vs ${esc(r.opp)}` : ""}</h3>
+    <h3>Ανάλυση${g.label ? ` ${done ? "" : "· "}${g.label}` : ""}</h3>
     <ul class="why">${why.map(([k, v]) => `<li><span>${k}</span><span>${v}</span></li>`).join("")}</ul>
     ${coach ? "" : `<h3>Στατιστικά (μ.ό. ανά αγώνα)</h3>${stats}`}
     ${coach ? "" : `<h3>Τελευταία 3 παιχνίδια</h3>${last}`}

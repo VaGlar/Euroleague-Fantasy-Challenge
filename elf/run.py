@@ -540,7 +540,7 @@ def player_details(season: int, ctx: pd.DataFrame, fixtures: pd.DataFrame,
                 "fg2": _pct(d["fgm2"].sum(), d["fga2"].sum()),
                 "fg3": _pct(d["fgm3"].sum(), d["fga3"].sum()),
                 "ft": _pct(d["ftm"].sum(), d["fta"].sum())})
-        b = b.sort_values("utc", ascending=False)
+        b = b[b["season"] == season].sort_values("utc", ascending=False)  # this season only
         for pid, d in b.groupby("person_id", sort=False):
             out[pid]["last"] = [{
                 "season": int(r.season), "round": int(r.round),
@@ -557,7 +557,9 @@ def player_details(season: int, ctx: pd.DataFrame, fixtures: pd.DataFrame,
         out[pid]["next"] = [{
             "round": int(r.round), "opp": r.opp, "home": bool(r.is_home),
             "date": r.utc.tz_convert(ATH).strftime("%d/%m %H:%M") if pd.notna(r.utc) else None,
-            "win": round(100 * model.win_prob(r.margin)), "x": round(float(r.xpir), 1)}
+            "win": round(100 * model.win_prob(r.margin)), "x": round(float(r.xpir), 1),
+            "margin": round(float(r.margin), 1),
+            "pos_dev": None if pd.isna(r.pos_dev) else round(float(r.pos_dev), 3)}
             for r in d.head(3).itertuples()]
     form = ctx.drop_duplicates("person_id").set_index("person_id")
     for pid in ids:
