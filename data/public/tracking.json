@@ -1,8 +1,45 @@
 {
- "generated": "2026-09-25T17:17:46.086099+00:00",
- "rounds": [],
- "total": null,
- "experts": [],
+ "generated": "2026-09-25T22:11:12.923419+00:00",
+ "rounds": [
+  {
+   "round": 1,
+   "n": 25,
+   "mae_model": 6.44,
+   "mae_naive": 6.53,
+   "spearman": -0.044,
+   "top20": 0.8
+  }
+ ],
+ "total": {
+  "n": 25,
+  "mae_model": 6.44,
+  "mae_naive": 6.53,
+  "spearman": -0.044,
+  "top20": 0.8
+ },
+ "experts": [
+  {
+   "source": "Basketball Sphere – Fantasy",
+   "n": 12,
+   "actual": 14.0,
+   "model": 10.8,
+   "diff": 3.2
+  },
+  {
+   "source": "EuroBallin (Substack)",
+   "n": 13,
+   "actual": 9.7,
+   "model": 8.7,
+   "diff": 1.0
+  },
+  {
+   "source": "EuroLeague Fantasy Tips (official)",
+   "n": 11,
+   "actual": 16.0,
+   "model": 12.4,
+   "diff": 3.6
+  }
+ ],
  "lineups": [],
  "min_xpred": 5.0
 }
