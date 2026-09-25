@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-25T15:47:26.410077+00:00",
+ "generated": "2026-09-25T17:17:47.367814+00:00",
  "season": 2026,
  "round": 1,
  "turns": [
@@ -13185,7 +13185,7 @@
     "court_position": 10,
     "captain": false,
     "pts": 0,
-    "played": false,
+    "played": true,
     "position": "Guard",
     "turn": 2,
     "name": "Saint-supery",
@@ -13195,8 +13195,8 @@
     "fantasy_id": 4255,
     "court_position": 11,
     "captain": false,
-    "pts": 0,
-    "played": false,
+    "pts": -5,
+    "played": true,
     "position": "Head Coach",
     "turn": 2,
     "name": "Albert",
@@ -13627,7 +13627,9 @@
   "objective": 353.7,
   "cost": 98.4
  },
- "health": [],
+ "health": [
+  "Gemini: JSONDecodeError — κρατήθηκε η προηγούμενη σύνοψη"
+ ],
  "fantasy_ok": true,
  "price_model": {
   "method": "proxy",
