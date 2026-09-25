@@ -171,6 +171,28 @@ details.fbox > summary::-webkit-details-marker { display: none; }
 .game .gv small { display: block; font-size: 11px; color: var(--text-muted); }
 .W { color: var(--good); font-weight: 700; } .L { color: var(--critical); font-weight: 700; }
 body.noscroll { overflow: hidden; }
+
+/* ---- compare */
+.cmp { width: 20px; height: 20px; margin: 0 6px 0 0; vertical-align: -4px; accent-color: var(--series-1); cursor: pointer; }
+nav .cnt { display: inline-block; min-width: 18px; padding: 0 5px; margin-left: 4px; border-radius: 999px;
+  background: var(--series-1); color: #fff; font-size: 11px; font-weight: 700; text-align: center; }
+.cmpbar { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(14px + env(safe-area-inset-bottom)); z-index: 5;
+  display: none; gap: 8px; align-items: center; background: var(--text-primary); color: var(--surface-1);
+  padding: 8px 8px 8px 14px; border-radius: 999px; box-shadow: 0 4px 16px rgba(0,0,0,.25); font-size: 14px; white-space: nowrap; }
+.cmpbar.on { display: flex; }
+.cmpbar button { border: 0; border-radius: 999px; padding: 6px 12px; font: inherit; cursor: pointer; }
+.cmpbar .go { background: var(--series-1); color: #fff; font-weight: 600; }
+.cmpbar .clr { background: transparent; color: inherit; opacity: .8; }
+table.h2h { table-layout: fixed; min-width: 100%; }
+table.h2h th, table.h2h td { white-space: normal; vertical-align: top; text-align: center; font-variant-numeric: tabular-nums; }
+table.h2h th:first-child, table.h2h td:first-child { text-align: left; color: var(--text-secondary); font-size: 12px;
+  width: 104px; position: sticky; left: 0; background: var(--surface-1); z-index: 1; }
+table.h2h thead th { cursor: default; color: var(--text-primary); font-size: 14px; }
+table.h2h td.best { background: color-mix(in srgb, var(--good) 14%, transparent); font-weight: 700; }
+table.h2h tr.sec td { background: var(--surface-0); font-weight: 700; color: var(--text-primary); text-transform: uppercase;
+  font-size: 11px; letter-spacing: .04em; text-align: left; }
+.h2h .rm { border: 0; background: none; color: var(--text-muted); cursor: pointer; font-size: 16px; }
+.h2h .ng { font-size: 12px; line-height: 1.5; }
 .plan li { padding: 4px 0; }
 ul.news li { padding: 8px 0; border-bottom: 1px solid var(--border); }
 </style>
@@ -185,6 +207,7 @@ ul.news li { padding: 8px 0; border-bottom: 1px solid var(--border); }
     <button data-t="team">Η ομάδα μου</button>
     <button data-t="teams">Ομάδες</button>
     <button data-t="news">Νέα</button>
+    <button data-t="compare">Σύγκριση<span class="cnt" id="cmpcnt" hidden></span></button>
     <button data-t="model">Μοντέλο</button>
   </nav>
 </header>
@@ -218,8 +241,12 @@ ul.news li { padding: 8px 0; border-bottom: 1px solid var(--border); }
     <p class="muted">Net: διαφορά πόντων ανά 100 κατοχές (φετινά + περσινά με shrinkage).
       Έδρα: πλεονέκτημα έδρας της ομάδας σε πόντους/100 κατοχές.</p></section>
   <section id="news"></section>
+  <section id="compare"></section>
   <section id="model"></section>
 </main>
+<div class="cmpbar" id="cmpbar"><span id="cmptxt"></span>
+  <button class="go" type="button" onclick="document.querySelector('nav [data-t=compare]').click()">Σύγκριση →</button>
+  <button class="clr" type="button" onclick="setCmp([])">✕</button></div>
 <div class="modal" id="modal" role="dialog" aria-modal="true"><div class="sheet" id="sheet"></div></div>
 <script>
 // hide the header on scroll down, show it on scroll up (or near the top)
@@ -258,9 +285,10 @@ const get = (f) => fetch(`data/${f}?t=${Date.now()}`).then((r) => (r.ok ? r.json
 document.querySelectorAll("nav button").forEach((b) => b.onclick = () => {
   document.querySelectorAll("nav button, section").forEach((x) => x.classList.remove("on"));
   b.classList.add("on"); $("#" + b.dataset.t).classList.add("on");
+  if (b.dataset.t === "compare" && P) renderCompare();
+  $("#cmpbar").classList.toggle("on", CMP.length > 0 && b.dataset.t === "players");
   try { localStorage.setItem("tab", b.dataset.t); } catch (e) {}
 });
-try { const t = localStorage.getItem("tab"); if (t) document.querySelector(`nav [data-t=${t}]`)?.click(); } catch (e) {}
 
 function matchup(dev) {
   if (dev == null) return "";
@@ -319,7 +347,7 @@ function renderPlayers() {
   $("#ptable").innerHTML = "<thead><tr>" + cols.map(([k, l, n]) =>
     `<th data-k="${k}" class="${n ? "num" : ""}">${l}${sortKey === k ? (sortDir < 0 ? " ↓" : " ↑") : ""}</th>`).join("") + "</tr></thead><tbody>"
     + rows.slice(0, 250).map((r) => `<tr data-pid="${esc(r.person_id)}">
-      <td>${esc(nm(r.name))}${r.no_data && !r.prior ? ' <span class="pill">νέος</span>' : ""}${inj(r)}${exb(r)}${dol(r)}<br><span class="muted">${esc(r.team)} · ${esc(r.position || "")}${r.price != null ? ` · <b>${f1(r.price)}cr</b>` : ""}</span></td>
+      <td>${cbox(r)}${esc(nm(r.name))}${r.no_data && !r.prior ? ' <span class="pill">νέος</span>' : ""}${inj(r)}${exb(r)}${dol(r)}<br><span class="muted">${esc(r.team)} · ${esc(r.position || "")}${r.price != null ? ` · <b>${f1(r.price)}cr</b>` : ""}</span></td>
       <td class="num"><span class="bar" style="width:${Math.max(2, 40 * (r.x_now || 0) / max)}px"></span><b>${f1(r.x_now)}</b></td>
       <td>${r.home ? "🏠" : "✈️"} ${esc(r.opp)}</td><td class="num">${matchup(r.pos_dev)}</td>
       <td class="num">${f1(r.x_h)}</td><td class="num">${f1(r.season_pir)}</td><td class="num">${f1(r.prev_pir)}</td>
@@ -328,7 +356,7 @@ function renderPlayers() {
     const k = th.dataset.k; sortDir = sortKey === k ? -sortDir : -1; sortKey = k; renderPlayers();
   });
   $("#plist").innerHTML = rows.slice(0, 150).map((r) => `<div class="pcard" data-pid="${esc(r.person_id)}">
-    <div class="pn">${esc(nm(r.name))}${r.no_data && !r.prior ? ' <span class="pill">νέος</span>' : ""}${inj(r)}${exb(r)}${dol(r)}</div>
+    <div class="pn">${cbox(r)}${esc(nm(r.name))}${r.no_data && !r.prior ? ' <span class="pill">νέος</span>' : ""}${inj(r)}${exb(r)}${dol(r)}</div>
     <div class="px"><b>${f1(r.x_now)}</b><small>xPTS</small></div>
     <div class="pm">${esc(r.team)} · ${esc((r.position || "")[0] || "")}${r.price != null ? ` · <b>${f1(r.price)}cr</b>` : ""} · ${r.home ? "🏠" : "✈️"} ${esc(r.opp || "")} ${matchup(r.pos_dev)}</div>
     <div class="ps">xPTS3 ${f1(r.x_h)} · PIR ${f1(r.season_pir)} (πέρσι ${f1(r.prev_pir)})${r.value != null ? ` · value ${r.value.toFixed(2)}` : ""}</div>
@@ -423,6 +451,98 @@ function renderTeam(my, best) {
     try { localStorage.setItem("teamView", teamView); } catch (e) {}
     renderTeam(my, best);
   });
+}
+
+// ---------------------------------------------------------------- compare
+const CMP_MAX = 4;
+let CMP = [];
+try { CMP = JSON.parse(localStorage.getItem("cmp") || "[]"); } catch (e) {}
+const cbox = (r) => r.person_id ? `<input type="checkbox" class="cmp" data-cmp="${esc(r.person_id)}" aria-label="σύγκριση"${CMP.includes(r.person_id) ? " checked" : ""}>` : "";
+function setCmp(list) {
+  CMP = list;
+  try { localStorage.setItem("cmp", JSON.stringify(CMP)); } catch (e) {}
+  document.querySelectorAll("input.cmp").forEach((el) => { el.checked = CMP.includes(el.dataset.cmp); });
+  const c = $("#cmpcnt");
+  c.hidden = !CMP.length; c.textContent = CMP.length;
+  $("#cmptxt").textContent = `${CMP.length} για σύγκριση`;
+  $("#cmpbar").classList.toggle("on", CMP.length > 0 && $("#players").classList.contains("on"));
+  if ($("#compare").classList.contains("on")) renderCompare();
+}
+document.addEventListener("change", (e) => {
+  const el = e.target.closest("input.cmp");
+  if (!el) return;
+  const id = el.dataset.cmp;
+  if (el.checked && !CMP.includes(id)) {
+    if (CMP.length >= CMP_MAX) { el.checked = false; alert(`Έως ${CMP_MAX} παίκτες στη σύγκριση.`); return; }
+    setCmp([...CMP, id]);
+  } else if (!el.checked) setCmp(CMP.filter((x) => x !== id));
+});
+async function renderCompare() {
+  const box = $("#compare");
+  const rows = CMP.map((id) => P.players.find((x) => x.person_id === id)).filter(Boolean);
+  if (rows.length < 2) {
+    box.innerHTML = `<div class="card"><h2>Σύγκριση head-to-head</h2><p>Διάλεξε ${rows.length ? "ακόμα έναν" : "2 έως 4"} παίκτες με το ☐ στο tab «Παίκτες».</p>
+      ${rows.length ? `<p>Επιλεγμένος: <b>${esc(nm(rows[0].name))}</b></p>` : ""}</div>`;
+    return;
+  }
+  if (!DET) DET = (await get("players.json")) || {};
+  const det = rows.map((r) => DET[r.person_id] || { stats: [], last: [], next: [] });
+  const cur = det.map((d) => d.stats.find((s) => s.season === P.season) || {});
+  const prev = det.map((d) => d.stats.find((s) => s.season === (P.season || 0) - 1) || {});
+  // one metric row: values per player, "hi"/"lo" = which is better (highlighted), fmt for display
+  const line = (label, vals, better, fmt = f1) => {
+    const nums = vals.map((v) => (typeof v === "number" && isFinite(v) ? v : null));
+    const ok = nums.filter((v) => v != null);
+    const best = better && ok.length >= 2 && new Set(ok).size > 1 ? (better === "hi" ? Math.max(...ok) : Math.min(...ok)) : null;
+    return `<tr><td>${label}</td>${vals.map((v, i) => `<td class="${best != null && nums[i] === best ? "best" : ""}">${
+      v == null || v === "" ? "–" : fmt(v)}</td>`).join("")}</tr>`;
+  };
+  const sec = (t) => `<tr class="sec"><td colspan="${rows.length + 1}">${t}</td></tr>`;
+  const nextSum = det.map((d) => d.next.length ? d.next.reduce((a, g) => a + g.x, 0) : null);
+  const pct0 = (x) => `${Math.round(x)}%`;
+  const html = `<div class="card"><h2>Σύγκριση head-to-head</h2>
+    <p class="muted">Πράσινο = καλύτερη τιμή της γραμμής. Πάτα το όνομα για την καρτέλα του παίκτη.</p>
+    <div class="tablewrap"><table class="h2h"><thead><tr><th></th>${rows.map((r) => `<th>
+      <div data-pid="${esc(r.person_id)}" style="cursor:pointer">${esc(nm(r.name))}${inj(r)}${dol(r)}</div>
+      <div class="muted" style="font-weight:400;font-size:12px">${esc(r.team)} · ${esc((r.position || "")[0] || "")}</div>
+      <button class="rm" type="button" title="αφαίρεση" onclick="setCmp(CMP.filter((x) => x !== '${esc(r.person_id)}'))">✕</button></th>`).join("")}</tr></thead><tbody>
+    ${sec("Fantasy")}
+    ${line("Τιμή (cr)", rows.map((r) => r.price), "lo")}
+    ${line("xPTS αγωνιστικής", rows.map((r) => r.actual ?? r.x_now), "hi")}
+    ${line("xPTS3 (σταθμ.)", rows.map((r) => r.x_h), "hi")}
+    ${line("Value (xPTS3/cr)", rows.map((r) => r.value), "hi", (v) => v.toFixed(2))}
+    ${line("Τάση τιμής", rows.map((r) => (r.price_trend === "up" ? "$ άνοδος" : r.price_trend === "down" ? "↓$ πτώση" : "σταθερή")), null, (v) => v)}
+    ${sec("Επόμενα 3 παιχνίδια")}
+    ${line("Άθροισμα xPTS", nextSum, "hi")}
+    <tr><td>Αγώνες</td>${det.map((d) => `<td class="ng">${d.next.map((g) => `R${g.round} ${g.home ? "🏠" : "✈️"}${esc(g.opp)} <b>${f1(g.x)}</b>`).join("<br>") || "–"}</td>`).join("")}</tr>
+    ${line("Ματσάρισμα (επόμενος)", det.map((d) => d.next[0]?.pos_dev), "hi", (v) => `${v >= 0 ? "+" : ""}${Math.round(v * 100)}%`)}
+    ${line("Πιθ. νίκης (επόμενος)", det.map((d) => d.next[0]?.win), "hi", pct0)}
+    ${sec("Φόρμα (PIR)")}
+    ${line("Τελευταία 3", det.map((d) => d.form?.last3_pir), "hi")}
+    ${line("Σεζόν", det.map((d) => d.form?.season_pir), "hi")}
+    ${line("Πέρσι", det.map((d) => d.form?.prev_pir), "hi")}
+    ${line("Βάση μοντέλου", det.map((d, i) => d.form?.base ?? rows[i].base), "hi")}
+    ${line("Διαθεσιμότητα", rows.map((r) => (r.avail_game == null ? null : r.avail_game * 100)), "hi", pct0)}
+    ${sec(`Φέτος · μ.ό. ανά αγώνα`)}
+    ${line("Αγώνες", cur.map((s) => s.g), "hi", (v) => v)}
+    ${line("Λεπτά", cur.map((s) => s.min), "hi")}
+    ${line("PIR", cur.map((s) => s.pir), "hi")}
+    ${line("Πόντοι", cur.map((s) => s.pts), "hi")}
+    ${line("Ριμπάουντ", cur.map((s) => s.reb), "hi")}
+    ${line("Ασίστ", cur.map((s) => s.ast), "hi")}
+    ${line("Κλεψίματα", cur.map((s) => s.stl), "hi")}
+    ${line("Κοψίματα", cur.map((s) => s.blk), "hi")}
+    ${line("Λάθη", cur.map((s) => s.tov), "lo")}
+    ${line("2Π%", cur.map((s) => s.fg2), "hi", pct0)}
+    ${line("3Π%", cur.map((s) => s.fg3), "hi", pct0)}
+    ${line("ΒΛ%", cur.map((s) => s.ft), "hi", pct0)}
+    ${sec(`Πέρσι · μ.ό. ανά αγώνα`)}
+    ${line("Αγώνες", prev.map((s) => s.g), "hi", (v) => v)}
+    ${line("Λεπτά", prev.map((s) => s.min), "hi")}
+    ${line("PIR", prev.map((s) => s.pir), "hi")}
+    ${line("Πόντοι", prev.map((s) => s.pts), "hi")}
+    </tbody></table></div></div>`;
+  box.innerHTML = html;
 }
 
 // ---------------------------------------------------------------- player popup
@@ -528,6 +648,8 @@ document.addEventListener("click", (e) => {
   };
   renderPlayers();
   renderTeam(p.my_team, p.best_team);
+  setCmp(CMP.filter((id) => p.players.some((x) => x.person_id === id)));
+  try { const t = localStorage.getItem("tab"); if (t) document.querySelector(`nav [data-t=${t}]`)?.click(); } catch (e) {}
 
   $("#rtable").innerHTML = `<thead><tr><th>#</th><th>Ομάδα</th><th class="num">Net</th><th class="num">Pace</th><th class="num">Έδρα</th><th class="num">Αγώνες</th></tr></thead><tbody>`
     + p.team_ratings.map((t, i) => `<tr><td>${i + 1}</td><td>${esc(t.team)}</td>
