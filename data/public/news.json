@@ -109,6 +109,15 @@
    "fantasy": true
   },
   {
+   "title": "Euroleague: ΜVP της πρώτης αγωνιστικής ο ασταμάτητος Τζόουνς",
+   "url": "https://www.gazzetta.gr/basketball/euroleague/2572305/euroleague-mvp-tis-protis-agonistikis-o-astamatitos-tzooyns",
+   "date": "2026-09-26T14:58:09+02:00",
+   "text": "Ο Κάρλικ Τζόουνς ήταν εντυπωσιακός στη νίκη της Παρτίζαν επί της Αρμάνι και αναδείχθηκε MVP της αγωνιστικής στη Εuroleague.",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false
+  },
+  {
    "title": "Ολυμπιακός: Γιατί έμεινε εκτός ο Μιλουτίνοφ και οι σκέψεις για τελικό",
    "url": "https://www.gazzetta.gr/basketball/super-cup-elladas/2572302/olympiakos-giati-emeine-ektos-o-miloytinof-kai-oi-skepseis-gia",
    "date": "2026-09-26T14:40:43+02:00",
@@ -181,10 +190,10 @@
    "fantasy": false
   },
   {
-   "title": "Το Eurohoops Show LIVE επιστρέφει ανανεωμένο (video)",
+   "title": "Το Eurohoops Show LIVE επέστρεψε ανανεωμένο (video)",
    "url": "https://www.eurohoops.net/el/trademarks-el/2012543/to-eurohoops-show-live-epistrefi-ananeomeno-video/",
    "date": "2026-09-26T11:15:32+00:00",
-   "text": "Της Eurohoops Team / info@eurohoops.net Η σεζόν στην Ευρωλίγκα ξεκίνησε και το Eurohoops Show είναι ξανά εδώ, αυτή τη φορά LIVE και… διαφορετικό. Νίκος Παντελής, Βιργινία Δικαιούλια και Νάσια Ευαγγελάτου δίνουν ραντεβού κάθε Σάββατο στις 14:00, στο κανάλι του Eurohoops Greece. Δείτε το πρώτο Eurohoops Show LIVE Powered by ΔΕΗ Δείτε εδώ τα τελευταία νέα The post Το Eurohoops Show LIVE επιστρέφει ανανεωμένο (video) appeared first on Eurohoops .",
+   "text": "Της Eurohoops Team / info@eurohoops.net Η σεζόν στην Ευρωλίγκα ξεκίνησε και το Eurohoops Show είναι ξανά εδώ, αυτή τη φορά LIVE και… διαφορετικό. Νίκος Παντελής, Βιργινία Δικαιούλια και Νάσια Ευαγγελάτου δίνουν ραντεβού κάθε Σάββατο στις 14:00, στο κανάλι του Eurohoops Greece. Δείτε το πρώτο Eurohoops Show LIVE Powered by ΔΕΗ Δείτε εδώ τα τελευταία νέα The post Το Eurohoops Show LIVE επέστρεψε ανανεωμένο (video) appeared first on Eurohoops .",
    "source": "Eurohoops (GR)",
    "weight": 1,
    "fantasy": false
@@ -433,15 +442,6 @@
    "fantasy": false
   },
   {
-   "title": "Φενέρ: Τι έκαναν τα νέα αποκτήματα στην πρεμιέρα των Τούρκων στη Euroleague",
-   "url": "https://www.gazzetta.gr/basketball/euroleague/2572259/fener-ti-ekanan-ta-nea-apoktimata-stin-premiera-ton-toyrkon-sti",
-   "date": "2026-09-26T09:27:56+02:00",
-   "text": "Δείτε τα πεπραγμένα των παικτών που απέκτησε η Φενέρ το καλοκαίρι στην πρεμιέρα τους κόντρα στη Βίρτους.",
-   "source": "Gazzetta",
-   "weight": 1,
-   "fantasy": false
-  },
-  {
    "title": "Παναθηναϊκός: Αποθέωση για Ουναΐ στο Μαρόκο!",
    "url": "https://www.novasports.gr/sport/podosfairo/event/diethneis-pagkosmio-podosfairo/article/15134949/panathinaikos-apotheosi-gia-ounai-sto-maroko/",
    "date": "2026-09-26T06:46:00+00:00",
@@ -555,15 +555,6 @@
    "date": "2026-09-25T21:25:39.184000+00:00",
    "text": "The livewire playmaker posted an impressive double-double as a fresh-looking home team overran the Italian side in a lopsided contest",
    "source": "EuroLeague (official)",
-   "weight": 1,
-   "fantasy": false
-  },
-  {
-   "title": "EuroLeague: Η βαθμολογία και τα αποτελέσματα της 1ης αγωνιστικής",
-   "url": "https://www.novasports.gr/sport/mpasket/event/euroleague/article/15134571/euroleague-i-vathmologia-kai-ta-apotelesmata-tis-1is-agonistikis/",
-   "date": "2026-09-25T21:25:00+00:00",
-   "text": "Τα αποτελέσματα (()=>{let e=document.querySelector('script[script-id=\"sports-mode\"]'),o=document.querySelectorAll('[id*=\"sports-mode-widget-basketballFixtures-srseason143460-1-srleague111286-true-novasportgr-full-width-fit-content-eng\"]'),t=\"sports-mode-widget-basketballFixtures-srseason143460-1-srleague111286-true-novasportgr-full-width-fit-content-eng\"||'',a=document.currentScript;o.forEach((e,n)=>{a&&a.parentElement&&a.parentElement===e&&(e.id=e.id+\"-\"+n,t=e.id)});let i={containerId:t,widgetId:\"basketballFixtures\",payload:{\"seasonId\":\"sr:season:143460\",\"round\":\"1\",\"roundIdentifier\":\"sr:leag",
-   "source": "Novasports",
    "weight": 1,
    "fantasy": false
   },
@@ -886,258 +877,276 @@
  "digest": {
   "availability": [
    {
-    "player": "NIKOLA MILUTINOV",
+    "player": "NUNN, KENDRICK",
     "status": "out",
-    "note": "Εκτός λόγω τραυματισμού (προφυλάσσεται).",
-    "source": "Gazzetta"
+    "note": "Εκτός λόγω τραυματισμού",
+    "source": "Basketball Sphere – Fantasy"
    },
    {
-    "player": "NIGEL WILLIAMS-GOSS",
+    "player": "FALL, MOUSTAPHA",
     "status": "out",
-    "note": "Τραυματίας στον οπίσθιο μηριαίο, μείνει εκτός για δύο εβδομάδες.",
+    "note": "Εκτός λόγω τραυματισμού",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "HAYES-DAVIS, NIGEL",
+    "status": "out",
+    "note": "Εκτός λόγω τραυματισμού",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "MILUTINOV, NIKOLA",
+    "status": "questionable",
+    "note": "Προφυλάχθηκε στο Super Cup λόγω τραυματισμού, έπαιξε λίγο στην 1η αγωνιστική",
     "source": "Eurohoops (GR)"
    },
    {
-    "player": "KILIAN FISCHER",
+    "player": "JONES, TYRIQUE",
     "status": "out",
-    "note": "Ταλαιπωρείται από προβλήματα (εκτός για ΑΕΚ).",
-    "source": "Novasports"
+    "note": "Τιμωρημένος στις εγχώριες διοργανώσεις",
+    "source": "Eurohoops (GR)"
+   },
+   {
+    "player": "WILLIAMS-GOSS, NIGEL",
+    "status": "out",
+    "note": "Τραυματίστηκε στον οπίσθιο μηριαίο, εκτός για δύο εβδομάδες",
+    "source": "Eurohoops (GR)"
    }
   ],
   "expert": [
    {
-    "player": "CARLIK JONES",
+    "player": "JONES, CARLIK",
     "stance": "pick",
-    "note": "Κορυφαία επιλογή με εκρηκτική πριμειέρα.",
+    "note": "Εξαιρετική εμφάνιση στην πρεμιέρα (36.3 fantasy pts) και ηγέτης της Παρτίζαν",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
-    "player": "BRAXTON KEY",
+    "player": "KEY, BRAXTON",
     "stance": "pick",
-    "note": "Τεράστια αξία για τ% τιμής του.",
+    "note": "Κομβικός στη Φενέρμπαχτσε και πολύτιμη επιλογή στα 8.0 credits",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
-    "player": "TJ SHORTS",
+    "player": "SHORTS, TJ",
     "stance": "pick",
-    "note": "Εξαιρετική απόδοση και ανόδος τιμής.",
+    "note": "Εξαιρετικό ντεμπούτο με 22.0 fantasy pts, ηγετικός ρόλος στη Βαλένθια",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
-    "player": "MOSES WRIGHT",
-    "stance": "pick",
-    "note": "Αναμένεται να ανακάμψει άμεσα.",
-    "source": "EuroLeague Fantasy Tips (official)"
-   },
-   {
-    "player": "RJ COLE",
+    "player": "WRIGHT, MOSES",
     "stance": "avoid",
-    "note": "Δύσκολη πριμειέρα, χαμηλή απόδοση.",
+    "note": "Απογοήτευσε στην πρεμιέρα (9.0 fpts), αν και αναμένεται αντίδραση",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
-    "player": "RASHEED BELLO",
+    "player": "COLE, RJ",
     "stance": "avoid",
-    "note": "Αρνητικ}ό PIR και μείωση τιμής.",
+    "note": "Αρνητικό σκορ (-6 fpts) και πτώση τιμής",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
-    "player": "TYLER DORSEY",
-    "stance": "pick",
-    "note": "Αξιόλογη εμφάνιση με υψηλό fantasy score.",
-    "source": "EuroLeague Fantasy Tips (official)"
-   },
-   {
-    "player": "MARC-OWEN FODZO DADA",
-    "stance": "pick",
-    "note": "Τεράστιο value pick για λίγα credits.",
-    "source": "EuroLeague Fantasy Tips (official)"
-   },
-   {
-    "player": "AZUOLAS TUBELIS",
-    "stance": "pick",
-    "note": "Νταμπλ-νταμπλ και υψηλή απόδοση.",
-    "source": "EuroLeague Fantasy Tips (official)"
-   },
-   {
-    "player": "JOHNATHAN MOTLEY",
+    "player": "BELLO, RASHEED",
     "stance": "avoid",
-    "note": "Αρνητικότατο σουρ και μεγάλη πτώση.",
+    "note": "Κακό ξεκίνημα με -4 fpts και υψηλή τιμή για πρωτοεμφανιζόμενο",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
-    "player": "NIKOLA MILUTINOV",
-    "stance": "avoid",
-    "note": "Αγωνιστηκά περιορισμένος λόγω τραυματισμού.",
-    "source": "EuroLeague Fantasy Tips (official)"
-   },
-   {
-    "player": "JOEL PARRA",
-    "stance": "avoid",
-    "note": "Αστοχία με 0 fantasy points παρά το χρόνο συμμετοχής.",
-    "source": "EuroLeague Fantasy Tips (official)"
-   },
-   {
-    "player": "ELIJAH BRYANT",
+    "player": "DORSEY, TYLER",
     "stance": "pick",
-    "note": "Ηγετική παρουσία και εξαιρετικό match-up.",
+    "note": "31.9 fantasy pts με εξαιρετικά ποσοστά στην πρεμιέρα",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "FODZO DADA, MARC-OWEN",
+    "stance": "pick",
+    "note": "Εξαιρετικό value pick στα 4.8 credits με 18.7 fantasy pts",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "TUBELIS, AZUOLAS",
+    "stance": "pick",
+    "note": "Double-double και 25.3 fantasy pts στα 11.1 credits",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "MOTLEY, JOHNATHAN",
+    "stance": "avoid",
+    "note": "Καταστροφικό -13 fantasy pts στην πρεμιέρα",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "MILUTINOV, NIKOLA",
+    "stance": "avoid",
+    "note": "Περιορισμένος χρόνος λόγω τραυματισμού (3.3 fpts στα 15.3 credits)",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "PARRA, JOEL",
+    "stance": "avoid",
+    "note": "Απογοήτευσε στην πρεμιέρα με 0 fantasy pts παρά τα 27 λεπτά συμμετοχής",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "BRYANT, ELIJAH",
+    "stance": "pick",
+    "note": "Ξεκάθαρος ηγέτης της Χάποελ Τελ Αβίβ με προοπτική για 25+ fpts",
     "source": "Basketball Sphere – Fantasy"
    },
    {
-    "player": "SYLVAIN FRANCISCO",
+    "player": "FRANCISCO, SYLVAIN",
     "stance": "pick",
-    "note": "Αυξημένος χρόνος συμμετοχής λόγω τραυματισμού του Nunn.",
+    "note": "Αυξημένος ρόλος και λεπτά λόγω της απουσίας του Ναν",
     "source": "Basketball Sphere – Fantasy"
    },
    {
-    "player": "DAVID DEJULIUS",
+    "player": "DEJULIUS, DAVID",
     "stance": "pick",
-    "note": "Ιδαίτερα σμαλ ματσαπ με φυσικό πλεονέκτημα.",
+    "note": "Mismatch μεγέθους απέναντι στον Shorts, καλό budget pick",
     "source": "Basketball Sphere – Fantasy"
    },
    {
-    "player": "YAM MADAR",
+    "player": "MADAR, YAM",
     "stance": "pick",
-    "note": "Νέο καλύτερο περιβάλλον και κλικ.",
+    "note": "Αυξημένες αρμοδιότητες και ευνοϊκό ματσάρισμα με τη Βιλερμπάν",
     "source": "Basketball Sphere – Fantasy"
    },
    {
-    "player": "JUAN NUNEZ",
+    "player": "NUNEZ, JUAN",
     "stance": "pick",
-    "note": "Ιδανικός φτηνός ποιντ γκαρντ.",
+    "note": "Εξαιρετικό low-cost punt στα 4.6 credits",
     "source": "Basketball Sphere – Fantasy"
    },
    {
-    "player": "SASHA VEZENKOV",
+    "player": "VEZENKOV, SASHA",
     "stance": "captain",
-    "note": "Ο απόλυτος βασιλιάς του φάντασι.",
+    "note": "Κορυφαία σταθερότητα και ιδανική επιλογή αρχηγού",
     "source": "Basketball Sphere – Fantasy"
    },
    {
-    "player": "GUERSCHON YABUSELE",
+    "player": "YABUSELE, GUERSCHON",
     "stance": "pick",
-    "note": "Αυξημένος ρόλος λόγω απουσιών.",
+    "note": "Τεράστιο usage και λεπτά στις θέσεις 4 και 5 λόγω απουσιών",
     "source": "Basketball Sphere – Fantasy"
    },
    {
-    "player": "EUGENE OMORUYI",
+    "player": "OMORUYI, EUGENE",
     "stance": "pick",
-    "note": "Βασικός φόρωαρδ με καλό πρόγραμμα.",
+    "note": "Βασικός PF και πλεονέκτημα προγράμματος στον Turn 2 της 2ης αγωνιστικής",
     "source": "Basketball Sphere – Fantasy"
    },
    {
-    "player": "LAMAR STEVENS",
+    "player": "STEVENS, LAMAR",
     "stance": "pick",
-    "note": "Λυσιτελής επιλογή με κομμάτια ρόστερ.",
+    "note": "Οικονομική λύση στα 8.0 credits με αναμενόμενα 25 λεπτά συμμετοχής",
     "source": "Basketball Sphere – Fantasy"
    },
    {
-    "player": "STEFAN JOKSIMOVIC",
+    "player": "JOKSIMOVIC, STEFAN",
     "stance": "pick",
-    "note": "Εξαιρετική λύση μινίμυμ κόστους.",
+    "note": "Απόλυτο budget punt στα 4.0 credits χωρίς ρίσκο υποτίμησης",
     "source": "Basketball Sphere – Fantasy"
    },
    {
-    "player": "JONAS VALANCIUNAS",
+    "player": "VALANCIUNAS, JONAS",
     "stance": "pick",
-    "note": "Το απόλυτο αφεντικό στη ραγκέτα.",
+    "note": "Κορυφαία επιλογή στους σέντερ, μηχανή double-double",
     "source": "Basketball Sphere – Fantasy"
    },
    {
-    "player": "VASILIJE MICIC",
+    "player": "MICIC, VASILIJE",
     "stance": "pick",
-    "note": "Εξαιρετική πρεζιμονασιονέλ προετοιμασία.",
+    "note": "Εξαιρετική preseason με 21 PIR, αναγεννημένος",
     "source": "EuroBallin (Substack)"
    },
    {
-    "player": "TRENT FORREST",
+    "player": "FORREST, TRENT",
     "stance": "pick",
-    "note": "Υψηλή απόδοση ανά λεπτό.",
+    "note": "Πολύ αποδοτικός σε FPTS ανά λεπτό στο σύστημα του Γιασικεβίτσιους",
     "source": "EuroBallin (Substack)"
    },
    {
-    "player": "IFFE LUNDBERG",
+    "player": "LUNDBERG, IFFE",
     "stance": "pick",
-    "note": "Σταθερότητα και συμμετοχή.",
+    "note": "Σταθερή συνεισφορά και βολεύει για το πρόγραμμα των επόμενων αγωνιστικών",
     "source": "EuroBallin (Substack)"
    },
    {
-    "player": "MATTEO SPAGNOLO",
+    "player": "SPAGNOLO, MATTEO",
     "stance": "pick",
-    "note": "Φτηνός γκαρντ με πολλά rebounds & assists.",
+    "note": "Εξαιρετική προετοιμασία, ηγετικός ρόλος στη Μπασκόνια στα 6.4 credits",
     "source": "EuroBallin (Substack)"
    },
    {
-    "player": "JORDAN NWORA",
+    "player": "NWORA, JORDAN",
     "stance": "pick",
-    "note": "Εκρηκτικός σκόρερ με μεγάλη αξία.",
+    "note": "Εξαιρετικό σκοράρισμα και ριμπάουντ, υποτιμημένος στα 13 credits",
     "source": "EuroBallin (Substack)"
    },
    {
-    "player": "NIKOLA MIROTIC",
+    "player": "MIROTIC, NIKOLA",
     "stance": "pick",
-    "note": "Από τους πιο fantasy-friendly forward.",
+    "note": "Υψηλό ταβάνι και κερδισμένα φάουλ, πολύ φθηνός στα 11.6 credits",
     "source": "EuroBallin (Substack)"
    },
    {
-    "player": "BONZIE COLSON",
+    "player": "COLSON, BONZIE",
     "stance": "pick",
-    "note": "Εξαιρετική φόρμα στον αγωνιστικό χώρο.",
+    "note": "Βασικός SF με παραγωγική preseason σε πόντους και ριμπάουντ",
     "source": "EuroBallin (Substack)"
    },
    {
-    "player": "DONTA HALL",
+    "player": "HALL, DONTA",
     "stance": "pick",
-    "note": "Τεράστια απόδοση ανά λεπτό.",
+    "note": "Εξαιρετικό efficiency, αποτελεί must επιλογή ειδικά αν λείπει ο Μιλουτίνοφ",
     "source": "EuroBallin (Substack)"
    },
    {
-    "player": "BRUNO FERNANDO",
+    "player": "FERNANDO, BRUNO",
     "stance": "pick",
-    "note": "Κύριος πύργος με μεγάλη χρήση.",
+    "note": "Βασικός σέντερ υπό τον Λάσο με δυνατή παρουσία στη ρακέτα",
     "source": "EuroBallin (Substack)"
    },
    {
-    "player": "NIKOLA TANASKOVIC",
+    "player": "TANASKOVIC, NIKOLA",
     "stance": "pick",
-    "note": "Ιδανικός sleeper με μικρό κόστος.",
+    "note": "Υποτιμημένος sleeper στα 7.8 credits με καλή αποδοτικότητα χρόνου",
     "source": "EuroBallin (Substack)"
    },
    {
-    "player": "AUSTIN WILEY",
+    "player": "WILEY, AUSTIN",
     "stance": "pick",
-    "note": "Κορυφαίος ριμπαουντερ με σταθερό PIR.",
+    "note": "Εξαιρετικός ριμπάουντερ με σταθερό πάτωμα PIR στα 11.0 credits",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
-    "player": "ALLAN DOKOSSI",
+    "player": "DOKOSSI, ALLAN",
     "stance": "pick",
-    "note": "Ενεργειακός φόρωαρδ/σέντερ με μεγάλο PIR.",
+    "note": "Ενέργεια και ριμπάουντ στα 8.0 credits",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
-    "player": "KEVARRIUS HAYES",
+    "player": "HAYES, KEVARRIUS",
     "stance": "pick",
-    "note": "Οικονομικός ριμπαουντέρ και αμυντικός βράχος.",
+    "note": "Οικονομικός σέντερ (7.3 cr) με έφεση στα μπλοκ και τα ριμπάουντ",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
-    "player": "TIMOTHE LUWAWU-CABARROT",
+    "player": "LUWAWU-CABARROT, TIMOTHE",
     "stance": "pick",
-    "note": "Σταθερότατος σκόρερ με εξαιρετική απόδοση.",
+    "note": "Σταθερή παραγωγή και ταιριαστός στο σύστημα του Πέδρο Μαρτίνεθ",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
-    "player": "ELEFTHERIOS MANTZOUKAS",
+    "player": "MANTZOUKAS, ELEFTHERIOS",
     "stance": "pick",
-    "note": "Εκπληξη στην προετοιμασία με φθηνό κόστος.",
+    "note": "Ευκαιρία στα 4.5 credits λόγω των απουσιών στους ψηλούς του Παναθηναϊκού",
     "source": "EuroLeague Fantasy Tips (official)"
    }
   ],
   "round": 1,
-  "summary_el": "Αναλυθηκαν οι κορυφαίες επιλογές και οι απογοητεύσεις της 1ης αγωνιστικής στο EuroLeague Fantasy Challenge.\nΟ Carlik Jones (Παρτιζάν) αναδείχθηκε MVP της πρεμιέρας με 33 PIR και κορυφαία τιμή για τους μάνατζερ.\nΟι Braxton Key (Φενέρ) και TJ Shorts (Βαλένθια) απέδωσαν αμέσως πολύ υψηλά κέδη και αύξησαν την αξία τους.\nΑπογοήτευσαν οι Moses Wright, Johnathan Motley και Joel Parra, που σμέιρναν τις αναμενόμενες τους τιμές.\nΣπουδαίες επιλογές από την αγορά αποτελούν οι Azuolas Tubelis και Marc-Owen Fodzo Dada.\nΠροβλήματα τραυματισμών και αποκλεισμοί ξένων (μεταξύ άλλων Milutinov, Williams-Goss) απαιτούν προσοχή για τις επόμενες αγωνιστικές.",
-  "_model": "gemini-3.5-flash-lite"
+  "summary_el": "• Ο Κάρλικ Τζόουνς αναδείχθηκε MVP της 1ης αγωνιστικής της EuroLeague με εντυπωσιακή εμφάνιση (33 PIR, 36.3 fantasy points).\n• Ο Νάιτζελ Ουίλιαμς-Γκος υπέστη τραυματισμό στον οπίσθιο μηριαίο και τίθεται εκτός δράσης για δύο εβδομάδες.\n• Ο Νίκολα Μιλουτίνοφ αντιμετωπίζει πρόβλημα τραυματισμού, είχε περιορισμένο χρόνο στην πρεμιέρα και προφυλάχθηκε στο Super Cup.\n• Στον Παναθηναϊκό παραμένουν εκτός οι Κέντρικ Ναν, Μουσταφά Φαλ και Νάιτζελ Χέιζ-Ντέιβις, εκτοξεύοντας τον χρόνο συμμετοχής των Σιλβέν Φρανσίσκο και Γκερσόν Γιαμπουσέλε.\n• Θετικότατο ξεκίνημα για value picks όπως οι Μπράξτον Κι, Αζουόλας Τουμπέλις και Μαρκ-Όουεν Φοντζό Νταντά.\n• Μεγάλες απογοητεύσεις στην πρεμιέρα αποτέλεσαν οι Τζόναθαν Μότλεϊ (-13 fpts), Αρ Τζέι Κόουλ (-6 fpts) και Τζόελ Πάρα (0 fpts).",
+  "_model": "gemini-3.8-flash"
  },
- "digest_at": "2026-09-26T11:35:43.790873+00:00",
+ "digest_at": "2026-09-26T12:10:20.819492+00:00",
  "failed": []
 }
