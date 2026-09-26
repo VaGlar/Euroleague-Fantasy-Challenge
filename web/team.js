@@ -215,11 +215,11 @@
     const by = (role) => rows.filter((r) => (t.roles || {})[r.id] === role || (role === "coach" && r.position === "Head Coach"));
     const five = by("5άδα");
     const line = (pos) => five.filter((r) => r.position === pos).map((r) => chipHtml(r, t)).join("");
-    return `<div class="court"><div class="crow">${line("Center")}</div><div class="crow">${line("Forward")}</div><div class="crow">${line("Guard")}</div></div>
+    return `<div class="tm-floor"><div class="court"><div class="crow">${line("Center")}</div><div class="crow">${line("Forward")}</div><div class="crow">${line("Guard")}</div></div>
       <div class="lanes"><div class="pair">
         <div class="lane"><h3>6ος · 100%</h3><div class="crow">${by("6ος").map((r) => chipHtml(r, t)).join("")}</div></div>
         <div class="lane"><h3>Coach</h3><div class="crow">${by("coach").map((r) => chipHtml(r, t)).join("")}</div></div></div>
-        <div class="lane bench"><h3>Πάγκος · 50%</h3><div class="crow">${by("πάγκος").sort((a, b) => (b.x_now ?? 0) - (a.x_now ?? 0)).map((r) => chipHtml(r, t)).join("")}</div></div></div>`;
+        <div class="lane bench"><h3>Πάγκος · 50%</h3><div class="crow">${by("πάγκος").sort((a, b) => (b.x_now ?? 0) - (a.x_now ?? 0)).map((r) => chipHtml(r, t)).join("")}</div></div></div></div>`;
   }
 
   // ------------------------------------------------------------ main screen
@@ -261,7 +261,7 @@
         <p class="tm-hint">Κάνε τις αλλαγές στο παιχνίδι και πάτα ✓ — η ομάδα σου εδώ ενημερώνεται μόνη της.
         ${pl.inRound ? "Μέσα στην αγωνιστική: όποιος έπαιξε μπορεί μόνο να βγει στον πάγκο· το x2 μόνο σε παίκτη που δεν έχει παίξει." : ""}</p></div>
       ${nextTrades}
-      <div class="card"><h2>Η πεντάδα σου <small class="muted">σύρε έναν παίκτη πάνω σε άλλον για αλλαγή θέσης</small></h2>
+      <div class="card tm-courtcard"><h2>Η πεντάδα σου <small class="muted">σύρε έναν παίκτη πάνω σε άλλον για αλλαγή θέσης</small></h2>
         ${courtHtml(t, rows)}<p class="tm-hint">Πάτα έναν παίκτη για αρχηγό, αντικατάσταση ή στατιστικά.</p></div>
       ${bestCard(best)}`;
   }
@@ -432,14 +432,14 @@
     const had = !!load();
     return `<header class="tm-top"><div><h2 class="tm-h">${had ? "Αλλαγή ομάδας" : "Φτιάξε την ομάδα σου"}</h2>
         <div class="muted">Πάτα μια κενή θέση και διάλεξε παίκτη · ${ps.length}/11</div></div></header>
-      <div class="card"><div class="court"><div class="crow">${slots("Center")}</div></div>
+      <div class="card tm-courtcard"><div class="tm-floor"><div class="court"><div class="crow">${slots("Center")}</div></div>
         <div class="lanes">
           <div class="lane"><h3>Forwards · ${have("Forward").length}/4</h3><div class="crow">${slots("Forward")}</div></div>
           <div class="lane"><h3>Guards · ${have("Guard").length}/4</h3><div class="crow">${slots("Guard")}</div></div>
-          <div class="lane"><h3>Coach · ${have("Head Coach").length}/1</h3><div class="crow">${slots("Head Coach")}</div></div></div>
+          <div class="lane"><h3>Coach · ${have("Head Coach").length}/1</h3><div class="crow">${slots("Head Coach")}</div></div></div></div>
         <div class="tm-money"><span>Κόστος ομάδας <b>${f1(spent)}</b> cr</span><span>Υπόλοιπο <b>${f1(Math.max(0, 100 - spent))}</b> cr</span></div>
         <button class="tm-primary" id="tmFinish" ${full ? "" : "disabled"}>${full ? "Αποθήκευση ➜" : `Λείπουν ${11 - ps.length}`}</button>
-        ${had ? '<button class="linkbtn" id="tmCancel" style="width:100%;margin-top:6px">Άκυρο</button>' : ""}
+        ${had ? '<button class="linkbtn" id="tmCancel" style="display:block;margin:6px auto 0">Άκυρο</button>' : ""}
         <p class="tm-hint">Οι τιμές συμπληρώνονται με τις σημερινές· αν διαφέρουν στο παιχνίδι σου, τις διορθώνεις μετά από την καρτέλα του παίκτη. Το υπόλοιπο το διορθώνεις από το ⋯.</p></div>`;
   }
   function pickSheet(pos, best) {
@@ -503,6 +503,10 @@
       if (cancel) cancel.onclick = () => { setup = null; mode = null; render(best); };
       return;
     }
+    if (!t.roles || Object.keys(t.roles).length !== t.players.length) {   // e.g. an old backup link: start from the proposal
+      const res = ELFOPT.lineup(optRows(rowsOf(t), t, false));
+      if (res) { t.roles = Object.fromEntries(res.team.map((p) => [p.id, p.role])); t.captain = res.team.find((p) => p.captain)?.id ?? null; t.confirmed = false; save(t); }
+    }
     const pl = mainView(t, best);
     $("#team").innerHTML = pl;
     const p = plan(t);   // cached trades: cheap
@@ -554,6 +558,22 @@
   .tm-act > span { width: 24px; text-align: center; font-size: 17px; }
   .tm-act small { display: block; color: var(--text-muted); font-size: 12px; }
   .tm-act:disabled { opacity: .45; cursor: default; }
+  /* the whole squad stands on the court: the five in the half with the basket, 6th/coach/bench past the half-court line */
+  .tm-floor { position: relative; background: var(--court); border: 2px solid var(--court-line); border-radius: 12px; overflow: hidden; padding-bottom: 8px; }
+  .tm-floor .court { background: transparent; border: 0; border-bottom: 2px solid var(--court-line); border-radius: 0; overflow: visible; }
+  .tm-floor .court::before { top: 0; }
+  .tm-floor .lanes { position: relative; margin-top: 0; padding: 32px 8px 0; }
+  .tm-floor .lanes::before { content: ""; position: absolute; left: 50%; top: -30px; width: 58px; height: 58px; transform: translateX(-50%);
+    border: 2px solid var(--court-line); border-radius: 50%; background: var(--court-key); clip-path: inset(30px 0 0 0); }
+  .tm-floor .lanes > * { position: relative; z-index: 1; }
+  .tm-floor .lane h3 { color: var(--text-primary); opacity: .75; }
+  /* phones: the court runs edge to edge */
+  @media (max-width: 560px) {
+    .tm-courtcard { margin-left: -16px; margin-right: -16px; border-radius: 0; border-left: 0; border-right: 0; padding-left: 0; padding-right: 0; }
+    .tm-courtcard > h2, .tm-courtcard > .tm-hint, .tm-courtcard > .tm-money, .tm-courtcard > button, .tm-courtcard > p { margin-left: 14px; margin-right: 14px; }
+    .tm-courtcard > .tm-primary { width: calc(100% - 28px); }
+    .tm-courtcard .tm-floor { border-radius: 0; border-left: 0; border-right: 0; }
+  }
   .sheet #tmQ { position: sticky; top: -14px; z-index: 1; box-shadow: 0 6px 8px -6px rgba(0,0,0,.25); }
   .tm-input { width: 100%; font: inherit; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--border);
     background: var(--surface-1); color: var(--text-primary); margin: 10px 0; }
