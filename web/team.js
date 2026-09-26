@@ -1,4 +1,7 @@
-// «Η ομάδα μου» for the public edition (HoopsLab).
+// «Η ομάδα μου» for both editions.
+//   public (HoopsLab): the team is entered by hand and lives on the device
+//   personal: the team as it is in the game (P.my_team); trades come from the pipeline,
+//     lineup and captain are applied with /lineup, so the screen is read-only
 //   • setup on an empty court: tap a slot, pick a player of that position
 //   • «Τι κάνω τώρα»: the moves between the saved team and the proposal (trades, lineup,
 //     captain), each confirmed with ✓ once done in the game
@@ -17,7 +20,8 @@
 
   // ------------------------------------------------------------ storage
   const load = () => { try { return JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) { return null; } };
-  const save = (t) => { try { t.updated = new Date().toISOString(); localStorage.setItem(KEY, JSON.stringify(t)); } catch (e) {} };
+  const GAME = () => P.edition !== "public";
+  const save = (t) => { if (t.game) return; try { t.updated = new Date().toISOString(); localStorage.setItem(KEY, JSON.stringify(t)); } catch (e) {} };
   function encode(t) {
     const j = JSON.stringify({ p: t.players.map((x) => [x.id, x.price]), b: t.bank, r: t.roles || null, c: t.captain ?? null, u: t.used || null });
     return btoa(unescape(encodeURIComponent(j))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
@@ -32,6 +36,20 @@
     try { save(decode(m[1])); toastSoon("Η ομάδα σου επανήλθε από τον σύνδεσμο"); }
     catch (e) { toastSoon("Ο σύνδεσμος ομάδας δεν είναι έγκυρος"); }
     history.replaceState(null, "", location.pathname + location.search);
+  }
+
+  // the personal team, as read from the game at the last update
+  function gameTeam() {
+    const my = P.my_team;
+    if (!my || !(my.players || []).length) return null;
+    const players = my.players.filter((r) => r.fantasy_id != null).map((r) => ({ id: Number(r.fantasy_id), price: r.price }));
+    const real = (my.actual_lineup || []).filter((r) => r.role);
+    const src = real.length === players.length ? real.map((r) => ({ id: Number(r.fantasy_id), role: r.role, captain: r.captain }))
+      : (my.lineup || []).map((p) => ({ id: Number(p.id), role: p.role, captain: p.captain }));
+    const roles = Object.fromEntries(src.map((x) => [x.id, x.role]));
+    for (const x of players) if (!roles[x.id] && row(x.id)?.position === "Head Coach") roles[x.id] = "coach";
+    return { game: true, fromGame: real.length === players.length, name: my.name, players, bank: Number(my.bank) || 0,
+      roles, captain: src.find((x) => x.captain)?.id ?? null, confirmed: true };
   }
 
   // ------------------------------------------------------------ helpers
@@ -70,6 +88,13 @@
 
   // ------------------------------------------------------------ the plan: target and the steps to it
   function tradesFor(t, rows) {
+    if (t.game) {
+      const my = P.my_team || {};
+      const pairs = (my.transfers || []).filter((m) => m.out_id != null && m.in_id != null)
+        .map((m) => ({ out: { id: Number(m.out_id), price: m.price_out }, in: { id: Number(m.in_id), price: m.price_in } }))
+        .sort((a, b) => (a.in.price - a.out.price) - (b.in.price - b.out.price));
+      return { ti: { round: my.trade_round ?? P.round, max_trades: my.max_trades ?? 4 }, trs: { pairs, gain: my.transfer_gain ?? 0 } };
+    }
     const ti = P.trade_info || { round: P.round, max_trades: 4, min_gain: 2 };
     const left = Math.max(0, ti.max_trades - usedTrades(t, ti));
     const k = t.players.map((x) => `${x.id}:${x.price}`).join(",") + "|" + t.bank + "|" + left + "|" + P.generated;
@@ -148,7 +173,7 @@
       const owned = t.players.some((x) => x.id === s.in.id);
       const waits = !owned || pendingTrades && !t.players.some((x) => x.id === s.out.id);
       items.push({ kind: "🔄", html: `${s.role === "5άδα" ? "Στην πεντάδα" : "Έκτος"}: <b>${esc(sur(s.in.name))}</b> <span class="muted">αντί ${esc(sur(s.out.name))}</span>`,
-        why: waits ? "μετά τη μεταγραφή" : `σύρε τον στο γήπεδο ή πάτα ✓${s.in.turn ? " · T" + s.in.turn : ""}`, wait: waits,
+        why: waits ? "μετά τη μεταγραφή" : t.game ? `με /lineup${s.in.turn ? " · T" + s.in.turn : ""}` : `σύρε τον στο γήπεδο ή πάτα ✓${s.in.turn ? " · T" + s.in.turn : ""}`, wait: waits,
         run: () => swap(t, s.in.id, s.out.id, true) });
     }
     if (targetCap != null && t.captain !== targetCap) {
@@ -158,7 +183,7 @@
         why: ready ? `xPTS ${f1(inRound && played(c) ? c.actual : c.x_now)} · διπλοί πόντοι` : "μετά τη μεταγραφή και την πεντάδα", wait: !ready,
         run: () => { t.captain = targetCap; save(t); toast(`Αρχηγός: ${sur(c.name)}`); } });
     }
-    return { rows, items, turnPlan, trs, ti, tradesNow, inRound, aRows };
+    return { rows, items, turnPlan, trs, ti, tradesNow, inRound, aRows, target, targetCap };
   }
 
   // ------------------------------------------------------------ actions on the saved team
@@ -211,15 +236,16 @@
       <div class="cp${isPlayed ? " done" : ""}">${f1(isPlayed ? r.actual : r.x_now)}</div>
       <div class="cs">${r.opp ? `${r.home ? "🏠" : "✈️"} ${esc(r.opp)}` : ""}${r.price != null ? ` · ${f1(r.price)}` : ""}</div></div>`;
   }
-  function courtHtml(t, rows) {
+  function courtHtml(t, rows, pl) {
+    const moved = (r) => pl && !pl.tradesNow && pl.target[r.id] && (t.roles || {})[r.id] !== pl.target[r.id] ? "chg" : "";
     const by = (role) => rows.filter((r) => (t.roles || {})[r.id] === role || (role === "coach" && r.position === "Head Coach"));
     const five = by("5άδα");
-    const line = (pos) => five.filter((r) => r.position === pos).map((r) => chipHtml(r, t)).join("");
+    const line = (pos) => five.filter((r) => r.position === pos).map((r) => chipHtml(r, t, moved(r))).join("");
     return `<div class="tm-floor"><div class="court"><div class="crow">${line("Center")}</div><div class="crow">${line("Forward")}</div><div class="crow">${line("Guard")}</div></div>
       <div class="lanes"><div class="pair">
-        <div class="lane"><h3>6ος · 100%</h3><div class="crow">${by("6ος").map((r) => chipHtml(r, t)).join("")}</div></div>
-        <div class="lane"><h3>Coach</h3><div class="crow">${by("coach").map((r) => chipHtml(r, t)).join("")}</div></div></div>
-        <div class="lane bench"><h3>Πάγκος · 50%</h3><div class="crow">${by("πάγκος").sort((a, b) => (b.x_now ?? 0) - (a.x_now ?? 0)).map((r) => chipHtml(r, t)).join("")}</div></div></div></div>`;
+        <div class="lane"><h3>6ος · 100%</h3><div class="crow">${by("6ος").map((r) => chipHtml(r, t, moved(r))).join("")}</div></div>
+        <div class="lane"><h3>Coach</h3><div class="crow">${by("coach").map((r) => chipHtml(r, t, moved(r))).join("")}</div></div></div>
+        <div class="lane bench"><h3>Πάγκος · 50%</h3><div class="crow">${by("πάγκος").sort((a, b) => (b.x_now ?? 0) - (a.x_now ?? 0)).map((r) => chipHtml(r, t, moved(r))).join("")}</div></div></div></div>`;
   }
 
   // ------------------------------------------------------------ main screen
@@ -241,7 +267,7 @@
         <button class="tm-done" id="tmConfirm">✓ Είναι ίδια</button></li>` : "";
     const list = items.map((i, n) => `<li class="tm-item"><span class="tm-kind" aria-hidden="true">${i.kind}</span>
         <span class="tm-what">${i.html}<span class="tm-why">${i.why}</span></span>
-        <button class="tm-done" data-i="${n}" ${i.wait ? "disabled" : ""}>✓ Το έκανα</button></li>`).join("");
+        ${t.game ? "" : `<button class="tm-done" data-i="${n}" ${i.wait ? "disabled" : ""}>✓ Το έκανα</button>`}</li>`).join("");
     const turnPlan = pl.turnPlan.map((x) => { const s = pl.aRows.find((r) => r.id === x.start.id), b = pl.aRows.find((r) => r.id === x.bench.id);
       return `<li>🕐 <b>Πριν το T${x.bench.turn}</b>: αν ο ${esc(sur(s.name))} φέρει κάτω από ${Math.round(x.bench.x_now)}, βάλε τον ${esc(sur(b.name))}.</li>`; }).join("");
     const nextTrades = !pl.tradesNow && pl.trs.pairs.length ? `<div class="card"><h2>Μεταγραφές για την αγωνιστική ${pl.ti.round}
@@ -249,20 +275,24 @@
         <ul class="tm-list">${pl.trs.pairs.map((pr, n) => { const o = rows.find((r) => r.id === pr.out.id), nn = row(pr.in.id);
           return `<li class="tm-item"><span class="tm-kind">🔁</span><span class="tm-what"><b>${esc(sur(o.name))}</b> ➜ <b>${esc(sur(nn.name))}</b>
             <span class="tm-why">${esc(nn.team)} · ${f1(pr.out.price)} → ${f1(pr.in.price)} cr · +${f1((nn.x_h ?? 0) - (o.x_h ?? 0))} xPTS3</span></span>
-            <button class="tm-done" data-n="${n}">✓ Το έκανα</button></li>`; }).join("")}</ul></div>` : "";
+            ${t.game ? "" : `<button class="tm-done" data-n="${n}">✓ Το έκανα</button>`}</li>`; }).join("")}</ul></div>` : "";
     const done = !items.length && t.confirmed;
-    return `<header class="tm-top"><div><h2 class="tm-h">Η ομάδα μου</h2>
+    const upd = P.generated ? new Date(P.generated).toLocaleString("el-GR", { weekday: "short", hour: "2-digit", minute: "2-digit" }) : "";
+    const hint = t.game
+      ? `Πεντάδα και αρχηγός εφαρμόζονται με <b>/lineup</b> στο Telegram· τις μεταγραφές τις κάνεις στο παιχνίδι. Η ομάδα διαβάστηκε από το παιχνίδι ${esc(upd)}.`
+      : "Κάνε τις αλλαγές στο παιχνίδι και πάτα ✓ — η ομάδα σου εδώ ενημερώνεται μόνη της.";
+    return `<header class="tm-top"><div><h2 class="tm-h">${t.game ? esc(t.name || "Η ομάδα μου") : "Η ομάδα μου"}</h2>
         <div class="muted">Υπόλοιπο <b>${f1(t.bank)} cr</b> · αναμενόμενοι πόντοι <b>${f1(total)}</b></div>
         <div class="tm-dead">${head}</div></div>
-        <div class="tm-morewrap"><button class="tm-more" id="tmMore" aria-label="Περισσότερα">⋯</button><div id="tmMenu"></div></div></header>
+        ${t.game ? "" : `<div class="tm-morewrap"><button class="tm-more" id="tmMore" aria-label="Περισσότερα">⋯</button><div id="tmMenu"></div></div>`}</header>
       <div class="card"><h2>Τι κάνω τώρα <small class="muted">${items.length ? `${items.length} ${items.length === 1 ? "βήμα" : "βήματα"}` : ""}</small></h2>
         ${done ? `<div class="tm-ready">✅ Έτοιμος για την αγωνιστική</div>` : `<ul class="tm-list">${confirm}${list}</ul>`}
         ${turnPlan ? `<ul class="plan">${turnPlan}</ul>` : ""}
-        <p class="tm-hint">Κάνε τις αλλαγές στο παιχνίδι και πάτα ✓ — η ομάδα σου εδώ ενημερώνεται μόνη της.
+        <p class="tm-hint">${hint}
         ${pl.inRound ? "Μέσα στην αγωνιστική: όποιος έπαιξε μπορεί μόνο να βγει στον πάγκο· το x2 μόνο σε παίκτη που δεν έχει παίξει." : ""}</p></div>
       ${nextTrades}
-      <div class="card tm-courtcard"><h2>Η πεντάδα σου <small class="muted">σύρε έναν παίκτη πάνω σε άλλον για αλλαγή θέσης</small></h2>
-        ${courtHtml(t, rows)}<p class="tm-hint">Πάτα έναν παίκτη για αρχηγό, αντικατάσταση ή στατιστικά.</p></div>
+      <div class="card tm-courtcard"><h2>${t.game ? (t.fromGame ? "Στο παιχνίδι τώρα" : "Η πρόταση") : "Η πεντάδα σου"} <small class="muted">${t.game ? (t.fromGame ? "διακεκομμένο = αλλάζει με την πρόταση" : "δεν διαβάστηκε η πεντάδα του παιχνιδιού") : "σύρε έναν παίκτη πάνω σε άλλον για αλλαγή θέσης"}</small></h2>
+        ${courtHtml(t, rows, t.game ? pl : null)}<p class="tm-hint">${t.game ? "Πάτα έναν παίκτη για στατιστικά και επόμενα παιχνίδια." : "Πάτα έναν παίκτη για αρχηγό, αντικατάσταση ή στατιστικά."}</p></div>
       ${bestCard(best)}`;
   }
 
@@ -488,6 +518,14 @@
   }
   function render(best) {
     best = best === undefined ? P.best_team : best;
+    if (GAME()) {
+      const g = gameTeam();
+      if (!g) { $("#team").innerHTML = `<div class="card warn"><h2>Η ομάδα δεν είναι διαθέσιμη</h2>
+        <p>Χρειάζεται έγκυρο <code>FANTASY_TOKEN</code> στα GitHub Secrets.</p></div>${bestCard(best)}`; return; }
+      $("#team").innerHTML = mainView(g, best);
+      document.querySelectorAll("#team .chip[data-fid]").forEach((el) => el.onclick = () => { const r = row(Number(el.dataset.fid)); if (r) openPlayer(r.person_id); });
+      return;
+    }
     const t = load();
     if (mode === "setup" || !t) {
       if (!setup) setup = { players: [] };
@@ -609,6 +647,6 @@
   @media (prefers-reduced-motion: reduce) { #team *, .tm-toast { transition: none !important; animation: none !important; } }`;
   document.head.appendChild(css);
 
-  importFromHash();
+  if (typeof P === "undefined" || !GAME()) importFromHash();
   window.TEAM = { render, encode, decode, KEY };
 })();

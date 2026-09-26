@@ -396,16 +396,6 @@ function renderPlayers() {
   $("#fsort").value = sortKey;
 }
 
-const ROLE_ORDER = { "5άδα": 0, "6ος": 1, "πάγκος": 2, "coach": 3 };
-function squadTable(rows) {
-  return `<div class="tablewrap"><table><thead><tr><th>Ρόλος</th><th>Παίκτης</th><th>Αντ.</th>
-    <th class="num">xPTS</th><th class="num">xPTS3</th><th class="num">Τιμή</th></tr></thead><tbody>
-    ${rows.map((r) => `<tr><td>${esc(r.role || "")}${r.captain ? " ★" : ""}</td>
-      <td>${esc(nm(r.name))}${inj(r)}${dol(r)}<br><span class="muted">${esc(r.team)} · ${esc(r.position || "")}${r.turn ? ` · <b>T${r.turn}</b>` : ""}</span></td>
-      <td>${r.home ? "🏠" : "✈️"} ${esc(r.opp || "")}</td>
-      <td class="num">${r.actual != null ? `<b>${f1(r.actual)}</b>` : f1(r.x_now)}</td><td class="num">${f1(r.x_h)}</td><td class="num">${f1(r.price)}</td></tr>`).join("")}
-    </tbody></table></div>`;
-}
 const LET = { Guard: "G", Forward: "F", Center: "C", "Head Coach": "HC" };
 const surname = (n) => nm(n).replace(/^\S\. /, "");
 function chip(p, changed) {
@@ -431,59 +421,8 @@ function courtView(list, ref) {
     <div class="lanes"><div class="pair">${lane("six", "6ος · 100%", by("6ος"))}${lane("coach", "Coach", by("coach"))}</div>
       ${lane("bench", "Πάγκος · 50%", by("πάγκος").sort((a, b) => (b.x_now ?? 0) - (a.x_now ?? 0)))}</div>`;
 }
-let teamView = "plan";
-try { teamView = localStorage.getItem("teamView") || "plan"; } catch (e) {}
-function renderTeam(my, best) {
-  if (P.edition === "public" && window.TEAM) return TEAM.render(best);   // web/team.js
-  let html = "";
-  if (!my) {
-    html += `<div class="card warn"><h2>Η ομάδα δεν είναι διαθέσιμη</h2>
-      <p>Χρειάζεται έγκυρο <code>FANTASY_TOKEN</code> στα GitHub Secrets.</p></div>`;
-  } else {
-    const info = Object.fromEntries(my.players.map((r) => [r.fantasy_id, r]));
-    const plan = (my.lineup || []).map((p) => ({ ...(info[p.id] || {}), ...p, id: p.id,
-      actual: info[p.id]?.actual ?? null }));
-    const game = (my.actual_lineup || []).filter((r) => r.role).map((r) => ({ ...(info[r.fantasy_id] || {}),
-      id: r.fantasy_id, role: r.role, captain: r.captain, turn: r.turn ?? info[r.fantasy_id]?.turn,
-      actual: r.played ? r.pts : null }));
-    const hasGame = game.length === 11;
-    if (!hasGame) teamView = "plan";
-    const cur = teamView === "game" ? game : plan;
-    const other = Object.fromEntries((teamView === "game" ? plan : game).map((p) => [p.id, p.role]));
-    const diff = hasGame && plan.some((p) => other[p.id] !== undefined && other[p.id] !== p.role);
-    const tot = cur.reduce((s, p) => s + (p.role === "coach" ? 0 : (p.actual ?? p.x_now ?? 0)
-      * (p.role === "πάγκος" ? 0.5 : 1) * (p.captain ? 2 : 1)), 0)
-      + (cur.find((p) => p.role === "coach")?.x_now ?? 0);
-    const planLines = (my.lineup_plan || []).map((pl) => `<li>🕐 <b>Πριν το T${pl.bench_turn}</b>: αν ο ${esc(surname(pl.start))}
-      φέρει κάτω από ${Math.round(pl.bench_x)}, μπαίνει ο ${esc(surname(pl.bench))}.</li>`).join("");
-    const tr = (my.transfers || []).map((m) => `<tr><td>${esc(m.out)}</td><td>➜</td><td>${esc(m.in)}</td>
-      <td class="num">${m.price_out}→${m.price_in}</td></tr>`).join("");
-    const lim = (my.max_trades ?? 4) > 4 ? "απεριόριστες αλλαγές" : "έως 4 αλλαγές";
-    html += `<div class="card"><h2>${esc(my.name || "Η ομάδα μου")} · Υπόλοιπο ${f1(my.bank)} cr</h2>
-      ${hasGame ? `<div class="seg"><button data-v="plan" class="${teamView === "plan" ? "on" : ""}">Πρόταση</button><button data-v="game" class="${teamView === "game" ? "on" : ""}">Στο παιχνίδι</button></div>` : ""}
-      ${courtView(cur, hasGame ? other : null)}
-      <p class="muted" style="margin-bottom:0">Σύνολο ${teamView === "game" ? "(πραγματικοί + αναμενόμενοι)" : "αναμενόμενο"}: <b>${f1(tot)}</b>
-      · ✓ = έχει παίξει (πραγματικοί πόντοι)${hasGame ? " · διακεκομμένο πλαίσιο = διαφέρει από " + (teamView === "game" ? "την πρόταση" : "το παιχνίδι") : ""}</p>
-      ${diff && teamView === "plan" ? `<p class="warn" style="padding-left:8px">Η πεντάδα στο παιχνίδι διαφέρει — πάτα «👥 Πρόταση πεντάδας» στο Telegram ή στείλε /lineup.</p>` : ""}
-      ${planLines ? `<ul class="plan">${planLines}</ul>` : ""}
-      <details style="margin-top:10px"><summary class="muted">Πίνακας με xPTS3 και τιμές</summary>${squadTable(
-        [...cur].sort((a, b) => (ROLE_ORDER[a.role] ?? 9) - (ROLE_ORDER[b.role] ?? 9) || (b.x_now ?? 0) - (a.x_now ?? 0)))}</details></div>
-      <div class="card"><h2>Προτεινόμενες αλλαγές${my.trade_round && my.trade_round !== P.round ? ` για την αγωνιστική ${my.trade_round}` : ""} <span class="muted">(${lim})</span></h2>
-      ${tr ? `<p class="up">+${f1(my.transfer_gain)} σταθμισμένα xPTS · υπόλοιπο μετά: ${f1(my.bank_after)} cr</p>
-        <div class="tablewrap"><table>${tr}</table></div>` : "<p>Καμία αλλαγή δεν αξίζει.</p>"}</div>`;
-  }
-  if (best) {
-    html += `<div class="card"><h2>Βέλτιστη ομάδα από το μηδέν · ${f1(best.cost)} cr</h2>
-      <p class="muted">Με απεριόριστες αλλαγές (π.χ. μετά τις αγωνιστικές 6, 13, 18…). Κανόνες: 4G/4F/2C/coach, πεντάδα με ≥1 από κάθε θέση, πάγκος 50%, αρχηγός ×2.</p>
-      ${courtView(best.team.map((p) => ({ ...p, actual: null })), null)}</div>`;
-  }
-  $("#team").innerHTML = html;
-  $("#team").querySelectorAll(".seg button").forEach((b) => b.onclick = () => {
-    teamView = b.dataset.v;
-    try { localStorage.setItem("teamView", teamView); } catch (e) {}
-    renderTeam(my, best);
-  });
-}
+// «Η ομάδα μου»: web/team.js draws it for both editions
+function renderTeam(my, best) { if (window.TEAM) TEAM.render(best); }
 
 // ---------------------------------------------------------------- teams
 let teamsView = "power";
@@ -942,6 +881,6 @@ function renderModel(mp, trk) {
 </script>
 <script src="opt.js"></script>
 <script src="team.js"></script>
-<script>if (P && P.edition === "public") renderTeam(null, P.best_team);</script>
+<script>if (P) renderTeam(P.my_team, P.best_team);</script>
 </body>
 </html>
