@@ -779,7 +779,12 @@ def build(offline: bool = False) -> dict:
     if fs.get("team_error"):
         health.append(f"fantasy {fs['team_error']}")
     elif fs.get("ok") and not fs.get("my_teams"):
-        health.append("fantasy: δεν βρέθηκε ομάδα Classic στον λογαριασμό")
+        same = os.environ.get("FANTASY_DATA_TOKEN", "").strip() \
+            and os.environ.get("FANTASY_DATA_TOKEN", "").strip() == os.environ.get("FANTASY_TOKEN", "").strip()
+        health.append("fantasy: το FANTASY_TOKEN και το FANTASY_DATA_TOKEN είναι ίδια — στο FANTASY_TOKEN "
+                      "βάλε το token του προσωπικού λογαριασμού (με την ομάδα)" if same else
+                      "fantasy: το FANTASY_TOKEN δεν βρίσκει ομάδα Classic — είτε ανήκει σε λογαριασμό χωρίς "
+                      "ομάδα είτε ακυρώθηκε με logout· πάρε ξανά το token του προσωπικού λογαριασμού")
     if os.environ.get("CI") and not os.environ.get("GEMINI_API_KEY"):
         health.append("GEMINI_API_KEY κενό — χωρίς σύνοψη νέων")
     for name, is_data in (("FANTASY_TOKEN", False), ("FANTASY_DATA_TOKEN", True)):
