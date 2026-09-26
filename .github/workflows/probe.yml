@@ -8,6 +8,10 @@ on:
       team_id:
         description: "fantasy team id (from the site's URL)"
         required: true
+      other_id:
+        description: "a second team id (optional)"
+        required: false
+        default: ""
 
 jobs:
   probe:
@@ -23,6 +27,7 @@ jobs:
         env:
           FANTASY_DATA_TOKEN: ${{ secrets.FANTASY_DATA_TOKEN }}
           TEAM_ID: ${{ inputs.team_id }}
+          OTHER_ID: ${{ inputs.other_id }}
         run: |
           python - <<'PY'
           import json, os, requests
@@ -38,7 +43,9 @@ jobs:
               if isinstance(o, list):
                   return [shape(o[0], d + 1), f"×{len(o)}"] if o else []
               return type(o).__name__
-          for path in (f"/fantasy-teams/{tid}/matchdays/{md - 1}/roster", f"/fantasy-teams/{tid}/matchdays/{md}/roster"):
+          other = int(os.environ.get("OTHER_ID") or 0)
+          paths = [f"/fantasy-teams/{t}/matchdays/{m}" for t in (tid, other) if t for m in (md - 1, md)]
+          for path in paths:
               r = requests.get(API + path, headers=h, timeout=30)
               print("==", path, r.status_code)
               try:
