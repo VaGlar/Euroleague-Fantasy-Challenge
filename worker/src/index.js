@@ -6,6 +6,7 @@
 //
 // One hourly cron (xx:05 UTC); the handler works in Athens time (DST-proof):
 //   07:05  every day -> data update (both editions)
+//   09:05  every day -> yesterday's Web Analytics report
 //   10:05  game day -> the day's report on Telegram (from the 07:05 data)
 //   first tip-off - 2h -> pre-deadline check (lineup differs / trades pending)
 //   ~2.5h after the day's last tip-off -> update with the results
@@ -142,6 +143,7 @@ async function hourly(env) {
     }
   };
   if (now.hour === 7) await update("07:00");
+  if (now.hour === 9 && canDispatch) await dispatch(env, "analytics.yml", {});
 
   const rep = await loadReport(env);
   if (now.hour === 10 && (rep.messages || []).some((m) => m.date === now.date)) {
