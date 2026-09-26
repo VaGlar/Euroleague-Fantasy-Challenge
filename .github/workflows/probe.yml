@@ -38,7 +38,7 @@ jobs:
               if isinstance(o, list):
                   return [shape(o[0], d + 1), f"×{len(o)}"] if o else []
               return type(o).__name__
-          for path in (f"/fantasy-teams/{tid}", f"/fantasy-teams/{tid}/matchdays/{md}/roster"):
+          for path in (f"/fantasy-teams/{tid}/matchdays/{md - 1}/roster", f"/fantasy-teams/{tid}/matchdays/{md}/roster"):
               r = requests.get(API + path, headers=h, timeout=30)
               print("==", path, r.status_code)
               try:
