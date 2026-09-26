@@ -434,7 +434,7 @@
       <button id="mBank">💰 Διόρθωση υπολοίπου</button>
       ${usedTrades(t, P.trade_info || {}) ? `<button id="mUsed">🔁 Μηδένισε τις μεταγραφές που έκανες (${usedTrades(t, P.trade_info || {})})</button>` : ""}
       <button id="mInstall">📱 Βάλ' το στην οθόνη σου</button>
-      <a class="tm-menulink" href="mailto:euroleaguefantasy26@gmail.com?subject=HoopsLab%20beta">✉️ Στείλε μας ιδέα ή πρόβλημα</a>
+      <button id="mMail">✉️ Ιδέα ή πρόβλημα; Αντιγραφή του email μας</button>
       <button id="mDel" class="tm-danger">🗑 Διαγραφή ομάδας</button></div>`;
     $("#mBackup").onclick = async () => {
       host.innerHTML = "";
@@ -455,6 +455,8 @@
         t.bank = v; save(t); closePlayer(); render(best); };
     };
     if ($("#mUsed")) $("#mUsed").onclick = () => { host.innerHTML = ""; t.used = null; save(t); render(best); toast("Μηδενίστηκαν"); };
+    $("#mMail").onclick = async () => { host.innerHTML = "";
+      toast(await copyText(FEEDBACK_MAIL) ? `Αντιγράφηκε: ${FEEDBACK_MAIL}` : FEEDBACK_MAIL); };
     $("#mInstall").onclick = () => { host.innerHTML = ""; installGuide(true); };
     $("#mDel").onclick = () => {
       host.innerHTML = "";

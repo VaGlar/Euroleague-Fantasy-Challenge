@@ -154,6 +154,8 @@ details.fbox > summary::-webkit-details-marker { display: none; }
 footer.fb { max-width: 1100px; margin: 0 auto; padding: 4px 16px calc(28px + env(safe-area-inset-bottom)); text-align: center;
   color: var(--text-secondary); font-size: 13px; }
 footer.fb a { color: var(--series-1); font-weight: 600; white-space: nowrap; }
+footer.fb .fbcopy { margin-left: 6px; font: inherit; font-size: 12px; padding: 4px 10px; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--border); background: var(--surface-1); color: var(--text-primary); }
 /* iOS zooms into inputs under 16px on focus */
 @media (max-width: 700px) { input, select, textarea { font-size: 16px; } }
 /* on-screen keyboard open (iPhone): the sheet fills the visible area above it */
@@ -278,7 +280,8 @@ ul.news li { padding: 8px 0; border-bottom: 1px solid var(--border); }
   <section id="model"></section>
 </main>
 <footer id="feedback" class="fb" hidden>💬 Ιδέες, προβλήματα ή ό,τι σκέψη έχεις; Γράψε μας στο
-  <a href="mailto:euroleaguefantasy26@gmail.com?subject=HoopsLab%20beta">euroleaguefantasy26@gmail.com</a></footer>
+  <a href="mailto:euroleaguefantasy26@gmail.com?subject=HoopsLab%20beta">euroleaguefantasy26@gmail.com</a>
+  <button class="fbcopy" type="button" onclick="copyMail(this)">📋 Αντιγραφή</button></footer>
 <div class="cmpbar" id="cmpbar"><span id="cmptxt"></span>
   <button class="go" type="button" onclick="document.querySelector('nav [data-t=compare]').click()">Σύγκριση →</button>
   <button class="clr" type="button" onclick="setCmp([])">✕</button></div>
@@ -752,6 +755,23 @@ function searchToTop(el) {
     window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - head - 8, behavior: "smooth" });
   };
   setTimeout(go, 300);        // after the keyboard has opened
+}
+// the feedback address: copy it (mailto does nothing on phones without a mail app)
+const FEEDBACK_MAIL = "euroleaguefantasy26@gmail.com";
+async function copyText(text) {
+  try { await navigator.clipboard.writeText(text); return true; } catch (e) {}
+  const ta = document.createElement("textarea");       // older iOS / no clipboard permission
+  ta.value = text; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.opacity = "0";
+  document.body.appendChild(ta); ta.select(); ta.setSelectionRange(0, text.length);
+  let ok = false; try { ok = document.execCommand("copy"); } catch (e) {}
+  ta.remove(); return ok;
+}
+async function copyMail(btn) {
+  const ok = await copyText(FEEDBACK_MAIL);
+  const old = btn.textContent;
+  btn.textContent = ok ? "✓ Αντιγράφηκε" : "Πάτα παρατεταμένα το email";
+  setTimeout(() => (btn.textContent = old), 2000);
+  return ok;
 }
 function closePlayer() { $("#modal").classList.remove("on"); document.body.classList.remove("noscroll"); }
 $("#modal").addEventListener("click", (e) => { if (e.target.id === "modal") closePlayer(); });
