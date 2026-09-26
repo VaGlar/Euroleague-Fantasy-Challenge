@@ -151,6 +151,11 @@ details.fbox > summary::-webkit-details-marker { display: none; }
   overflow-y: auto; border-radius: 16px 16px 0 0; padding: 14px 16px calc(20px + env(safe-area-inset-bottom));
   box-shadow: 0 -4px 20px rgba(0,0,0,.25); }
 @media (min-width: 700px) { .modal { align-items: center; } .sheet { border-radius: 16px; } }
+/* iOS zooms into inputs under 16px on focus */
+@media (max-width: 700px) { input, select, textarea { font-size: 16px; } }
+/* on-screen keyboard open (iPhone): the sheet fills the visible area above it */
+.modal.kb { align-items: flex-start; }
+.modal.kb .sheet { height: 100%; max-height: none; border-radius: 0; padding-bottom: 12px; }
 .sheet .sh { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
 .sheet h2 { margin: 0; font-size: 20px; }
 .sheet .x { border: 0; background: var(--surface-1); color: var(--text-primary); font-size: 20px; width: 36px; height: 36px;
@@ -784,6 +789,26 @@ async function openPlayer(pid) {
   document.body.classList.add("noscroll");
   $("#sheet").scrollTop = 0;
 }
+// iOS keeps fixed elements on the layout viewport, so the keyboard covers a bottom sheet:
+// pin the modal to the visible part of the screen instead.
+function fitViewport() {
+  const vv = window.visualViewport, m = $("#modal");
+  if (!vv || !m) return;
+  const kb = vv.height < window.innerHeight * 0.8;
+  m.classList.toggle("kb", kb);
+  m.style.top = kb ? vv.offsetTop + "px" : "";
+  m.style.height = kb ? vv.height + "px" : "";
+  m.style.bottom = kb ? "auto" : "";
+}
+if (window.visualViewport) ["resize", "scroll"].forEach((e) => window.visualViewport.addEventListener(e, fitViewport));
+// typing in the players' search: bring the box to the top so the live results show above the keyboard
+function searchToTop(el) {
+  const go = () => {
+    const head = document.querySelector("header")?.offsetHeight || 0;
+    window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - head - 8, behavior: "smooth" });
+  };
+  setTimeout(go, 300);        // after the keyboard has opened
+}
 function closePlayer() { $("#modal").classList.remove("on"); document.body.classList.remove("noscroll"); }
 $("#modal").addEventListener("click", (e) => { if (e.target.id === "modal") closePlayer(); });
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") closePlayer(); });
@@ -890,6 +915,7 @@ function renderModel(mp, trk) {
   p.turns.forEach((t) => $("#fturn").insertAdjacentHTML("beforeend", `<option value="${t.turn}">Turn ${t.turn} (${t.date})</option>`));
   loadFilters();
   FILTERS.forEach((id) => $("#" + id).addEventListener("input", renderPlayers));
+  $("#fsearch").addEventListener("focus", (e) => searchToTop(e.target));
   $("#fsort").addEventListener("input", () => { sortKey = $("#fsort").value; sortDir = -1; renderPlayers(); });
   $("#freset").onclick = () => {
     FILTERS.forEach((id) => { const el = $("#" + id); if (el.type === "checkbox") el.checked = false; else el.value = ""; });

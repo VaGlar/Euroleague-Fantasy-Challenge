@@ -554,6 +554,7 @@
   .tm-act > span { width: 24px; text-align: center; font-size: 17px; }
   .tm-act small { display: block; color: var(--text-muted); font-size: 12px; }
   .tm-act:disabled { opacity: .45; cursor: default; }
+  .sheet #tmQ { position: sticky; top: -14px; z-index: 1; box-shadow: 0 6px 8px -6px rgba(0,0,0,.25); }
   .tm-input { width: 100%; font: inherit; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--border);
     background: var(--surface-1); color: var(--text-primary); margin: 10px 0; }
   .tm-pick { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; align-items: center; width: 100%; text-align: left;
