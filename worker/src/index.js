@@ -1,14 +1,15 @@
-// Cloudflare Worker: 11:00 (Athens) game-day notifications + Telegram bot commands.
+// Cloudflare Worker: schedule (07:00 update, 10:00 report, pre-deadline check, post-game update) + Telegram bot.
 //
 // Secrets (wrangler secret put): TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, WEBHOOK_SECRET,
 //   GH_DISPATCH_TOKEN (optional: fine-grained PAT, Actions read/write on this repo only)
 // Vars: DATA_URL (base URL of data/public), DASHBOARD_URL, GH_REPO, GH_REF
 //
 // One hourly cron (xx:05 UTC); the handler works in Athens time (DST-proof):
-//   10:05  game day -> start a fresh update that sends the report when done (~10:10)
-//   11:05  fallback: send the report from the last data if the 10:05 one did not go out
-//   first tip-off - 2h  -> pre-deadline check (lineup differs / trades pending)
-// GitHub's own schedule runs hours late, so the timing lives here.
+//   07:05  every day -> data update (both editions)
+//   10:05  game day -> the day's report on Telegram (from the 07:05 data)
+//   first tip-off - 2h -> pre-deadline check (lineup differs / trades pending)
+//   ~2.5h after the day's last tip-off -> update with the results
+// GitHub's own schedule runs hours late, so all timing lives here.
 
 const TZ = "Europe/Athens";
 
@@ -20,6 +21,20 @@ function athensNow() {
   );
   return { date: `${parts.year}-${parts.month}-${parts.day}`, hour: Number(parts.hour) % 24 };
 }
+
+// Athens wall-clock time as a comparable number (ms), from the current time or a
+// "YYYY-MM-DD" + "HH:MM" pair; only differences between such values are used.
+function athensClock(date, hm) {
+  if (date) {
+    const [y, m, d] = date.split("-").map(Number), [H, M] = hm.split(":").map(Number);
+    return Date.UTC(y, m - 1, d, H, M);
+  }
+  const p = Object.fromEntries(new Intl.DateTimeFormat("en-CA", {
+    timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false,
+  }).formatToParts(new Date()).map((x) => [x.type, x.value]));
+  return Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour % 24, +p.minute);
+}
+const RESULTS_DELAY_MIN = 150;   // last tip-off + 2h30 ≈ games over and box scores in
 
 const LINEUP_BUTTON = [[{ text: "👥 Πρόταση πεντάδας (/lineup)", callback_data: "lu:preview" }]];
 
@@ -118,37 +133,37 @@ async function startLineupPreview(env, chat) {
 // Hourly: decide what (if anything) this hour is for. See the header comment.
 async function hourly(env) {
   const now = athensNow();
-  const rep = await loadReport(env);
-  const gameDay = (rep.messages || []).some((m) => m.date === now.date);
-  if (!gameDay) return;
   const canDispatch = Boolean(env.GH_DISPATCH_TOKEN);
-
-  if (now.hour === 10 && canDispatch) {
-    const r = await dispatch(env, "update.yml", { report: "true" });
+  const update = async (why) => {
+    if (!canDispatch) return;
+    const r = await dispatch(env, "update.yml", {});
     if (r.status !== 204) {
-      await send(env, env.TELEGRAM_CHAT_ID,
-        `⚠️ Το πρωινό update δεν ξεκίνησε (GitHub ${r.status}) — στις 11:00 έρχεται το report με τα τελευταία δεδομένα.`);
+      await send(env, env.TELEGRAM_CHAT_ID, `⚠️ Το update (${why}) δεν ξεκίνησε: GitHub ${r.status} — έλεγξε το GH_DISPATCH_TOKEN.`);
     }
+  };
+  if (now.hour === 7) await update("07:00");
+
+  const rep = await loadReport(env);
+  if (now.hour === 10 && (rep.messages || []).some((m) => m.date === now.date)) {
+    const text = await gameDayMessage(env, now.date);
+    if (text) await send(env, env.TELEGRAM_CHAT_ID, text, LINEUP_BUTTON);
   }
-  if (now.hour === 11) {
-    let sent = null;
-    try { sent = await getJson(env, "sent.json"); } catch (e) { /* first run: no file yet */ }
-    if (!sent || sent.date !== now.date) {
-      const text = await gameDayMessage(env, now.date);
-      if (text) {
-        await send(env, env.TELEGRAM_CHAT_ID,
-          text + "\n\n<i>(από τα τελευταία δεδομένα — το πρωινό update δεν ολοκληρώθηκε)</i>",
-          LINEUP_BUTTON);
-      }
-    }
+
+  const pred = await getJson(env, "predictions.json");
+  const turns = pred.turns || [];
+  const today = turns.find((t) => t.date === now.date);
+  if (canDispatch && today) {
+    const tipHour = Number(String(today.first_tip).split(":")[0]);
+    if (now.hour === tipHour - 2) await dispatch(env, "lineup.yml", { mode: "check", nonce: "" });
   }
-  if (canDispatch) {
-    const pred = await getJson(env, "predictions.json");
-    const tu = (pred.turns || []).find((t) => t.date === now.date);
-    const tipHour = tu ? Number(String(tu.first_tip).split(":")[0]) : NaN;
-    if (now.hour === tipHour - 2) {
-      await dispatch(env, "lineup.yml", { mode: "check", nonce: "" });
-    }
+  // results: one run in the hour after (last tip-off of a game day + RESULTS_DELAY_MIN)
+  const nowC = athensClock();
+  for (const t of turns) {
+    const tips = (t.games || []).map((g) => String(g).split(" ").pop()).filter((x) => /^\d{1,2}:\d{2}$/.test(x));
+    if (!tips.length) continue;
+    const last = Math.max(...tips.map((hm) => athensClock(t.date, hm)));
+    const since = (nowC - last) / 60000 - RESULTS_DELAY_MIN;
+    if (since >= 0 && since < 60) { await update("μετά τους αγώνες"); break; }
   }
 }
 
@@ -158,7 +173,7 @@ export default {
       await hourly(env);
     } catch (e) {
       const h = athensNow().hour;
-      if (h === 10 || h === 11) await send(env, env.TELEGRAM_CHAT_ID, `⚠️ Αποτυχία report: ${e.message}`);
+      if (h === 7 || h === 10) await send(env, env.TELEGRAM_CHAT_ID, `⚠️ Πρόβλημα στο πρόγραμμα του bot: ${e.message}`);
     }
   },
 

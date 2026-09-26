@@ -201,7 +201,7 @@
         Κάνε τις αλλαγές στο παιχνίδι και μετά <button id="tapplied" class="linkbtn">✓ Τις έκανα</button></p>` : ""}
       ${planLines ? `<ul class="plan">${planLines}</ul>` : ""}
       ${inRound ? '<p class="muted">Μέσα στην αγωνιστική: όποιος έπαιξε μπορεί μόνο να βγει στον πάγκο· το x2 μόνο σε παίκτη που δεν έχει παίξει.</p>' : ""}
-      ${standalone ? "" : '<p class="muted">📱 Για να μη χαθεί η ομάδα: Share → «Προσθήκη στην αρχική οθόνη», ή κράτα τον σύνδεσμο αντιγράφου ασφαλείας.</p>'}</div>
+      ${standalone ? "" : '<p class="muted">📱 Για να μη χαθεί η ομάδα, βάλε την εφαρμογή στην οθόνη σου (<button class="linkbtn" style="padding:0" onclick="installGuide(true)">οδηγίες</button>) ή κράτα τον σύνδεσμο αντιγράφου ασφαλείας.</p>'}</div>
       <div class="card"><h2>Προτεινόμενες αλλαγές για την αγωνιστική ${ti.round} <span class="muted">(${lim})</span></h2>${trHtml}
         <p class="muted">Κάνε τις μεταγραφές στο παιχνίδι και πάτα «✓» για να ενημερωθεί η ομάδα σου εδώ.</p></div>`;
     return { html, planList, trs };

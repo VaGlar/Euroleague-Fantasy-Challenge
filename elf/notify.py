@@ -1,8 +1,9 @@
 """Telegram delivery from GitHub Actions.
 
-python -m elf.notify report   -> today's game-day report (right after a fresh update),
-                                 with a /lineup button; marks it sent in sent.json so the
-                                 bot's 11:00 fallback does not send it twice
+python -m elf.notify report   -> today's game-day report, with a /lineup button
+python -m elf.notify health   -> the run's problems (Gemini down, a source failing, token...)
+                                 to the owner on Telegram, only when they change; the public
+                                 edition never shows them
 """
 from __future__ import annotations
 
@@ -68,6 +69,30 @@ def report() -> bool:
     return True
 
 
+def health() -> str | None:
+    """Tell the owner about new problems (and when they clear). Returns what was sent."""
+    pred = json.loads((PUBLIC / "predictions.json").read_text())
+    now = sorted(set(pred.get("health") or []))
+    path = PUBLIC / "health_last.json"
+    before = sorted(set(json.loads(path.read_text()))) if path.exists() else []
+    path.write_text(json.dumps(now, ensure_ascii=False))
+    if now == before:
+        return None
+    new = [h for h in now if h not in before]
+    if now:
+        text = "⚠️ <b>Προβλήματα στο update</b> (δεν φαίνονται στη δημόσια έκδοση):\n" + \
+            "\n".join(f"• {h}" for h in now)
+        if not new:
+            text = "✅ Λύθηκαν κάποια προβλήματα. Απομένουν:\n" + "\n".join(f"• {h}" for h in now)
+    else:
+        text = "✅ Όλα λειτουργούν ξανά κανονικά."
+    send(text)
+    return text
+
+
 if __name__ == "__main__":
-    if (sys.argv[1:] or ["report"])[0] == "report":
+    cmd = (sys.argv[1:] or ["report"])[0]
+    if cmd == "report":
         report()
+    elif cmd == "health":
+        health()

@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-title" content="ELF">
 <meta name="theme-color" content="#1a1a19">
 <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon.svg">
+<link rel="apple-touch-icon" href="icon-180.png">
 <title>ELF Dashboard</title>
 <style>
 :root {
@@ -172,6 +172,12 @@ details.fbox > summary::-webkit-details-marker { display: none; }
 .game .gv small { display: block; font-size: 11px; color: var(--text-muted); }
 .W { color: var(--good); font-weight: 700; } .L { color: var(--critical); font-weight: 700; }
 body.noscroll { overflow: hidden; }
+.steps { counter-reset: st; list-style: none; padding: 0; margin: 10px 0; }
+.steps li { counter-increment: st; display: flex; gap: 10px; align-items: flex-start; padding: 8px 0;
+  border-bottom: 1px solid var(--border); font-size: 15px; }
+.steps li::before { content: counter(st); flex: none; width: 24px; height: 24px; border-radius: 50%;
+  background: var(--accent); color: #fff; font-weight: 700; font-size: 13px; text-align: center; line-height: 24px; }
+.shareic { display: inline-block; width: 18px; height: 18px; vertical-align: -3px; }
 
 /* ---- teams */
 .tk { width: 100%; border-collapse: separate; border-spacing: 3px; table-layout: fixed; }
@@ -667,6 +673,46 @@ async function renderCompare() {
   box.innerHTML = html;
 }
 
+// ---------------------------------------------------------------- install guide
+const SHARE_ICON = `<svg class="shareic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 8l5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>`;
+function installGuide(force) {
+  const ua = navigator.userAgent;
+  const ios = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const android = /Android/.test(ua);
+  const standalone = navigator.standalone || matchMedia("(display-mode: standalone)").matches;
+  if (!force) {
+    if (standalone || !(ios || android)) return;
+    try {
+      const d = JSON.parse(localStorage.getItem("a2hs") || "null");
+      if (d && (d.never || Date.now() - d.at < 3 * 864e5)) return;
+    } catch (e) {}
+  }
+  const safari = ios && !/CriOS|FxiOS|EdgiOS/.test(ua);
+  const steps = ios ? [
+      safari ? `Πάτα το κουμπί <b>Κοινοποίηση</b> ${SHARE_ICON} στη μπάρα του Safari (κάτω στο iPhone).`
+             : `Πάτα το κουμπί <b>Κοινοποίηση</b> ${SHARE_ICON} του browser (αν δεν το βρίσκεις, άνοιξε τη σελίδα στο <b>Safari</b>).`,
+      `Κύλησε προς τα κάτω και πάτα <b>«Προσθήκη στην οθόνη Αφετηρίας»</b>.`,
+      `Πάτα <b>«Προσθήκη»</b> πάνω δεξιά.`,
+      `Άνοιγε την εφαρμογή από το εικονίδιο 🏀 στην οθόνη σου.`]
+    : [`Πάτα το μενού <b>⋮</b> πάνω δεξιά στον browser.`,
+      `Πάτα <b>«Εγκατάσταση εφαρμογής»</b> ή <b>«Προσθήκη στην αρχική οθόνη»</b>.`,
+      `Επιβεβαίωσε με <b>«Εγκατάσταση»</b> / <b>«Προσθήκη»</b>.`,
+      `Άνοιγε την εφαρμογή από το εικονίδιο 🏀 στην οθόνη σου.`];
+  $("#sheet").innerHTML = `<div class="sh"><div><h2>📱 Βάλ' το στην οθόνη σου</h2>
+      <div class="muted">Ανοίγει σαν εφαρμογή, σε πλήρη οθόνη — και η ομάδα σου δεν χάνεται.</div></div>
+      <button class="x" aria-label="Κλείσιμο" onclick="dismissGuide(false)">×</button></div>
+    <ol class="steps">${steps.map((x) => `<li><span>${x}</span></li>`).join("")}</ol>
+    ${ios ? `<p class="muted">Γιατί; Στο iPhone, αν η σελίδα δεν είναι στην οθόνη Αφετηρίας, το Safari σβήνει την αποθηκευμένη ομάδα σου μετά από 7 μέρες χωρίς χρήση.</p>` : ""}
+    <div class="filters" style="margin-top:12px"><button class="seg" style="padding:8px 14px" onclick="dismissGuide(false)">Κατάλαβα</button>
+      <button class="linkbtn" onclick="dismissGuide(true)">Να μην ξαναεμφανιστεί</button></div>`;
+  $("#modal").classList.add("on");
+  document.body.classList.add("noscroll");
+}
+function dismissGuide(never) {
+  try { localStorage.setItem("a2hs", JSON.stringify({ at: Date.now(), never })); } catch (e) {}
+  closePlayer();
+}
+
 // ---------------------------------------------------------------- player popup
 const byFid = (fid) => P && fid != null ? P.players.find((x) => x.fantasy_id === fid || x.fantasy_id === Number(fid)) : null;
 let DET = null;
@@ -853,6 +899,7 @@ function renderModel(mp, trk) {
   renderTeam(p.my_team, p.best_team);
   setCmp(CMP.filter((id) => p.players.some((x) => x.person_id === id)));
   try { const t = localStorage.getItem("tab"); if (t) document.querySelector(`nav [data-t=${t}]`)?.click(); } catch (e) {}
+  setTimeout(() => installGuide(false), 800);
 
   renderTeams();
 

@@ -1,6 +1,7 @@
 """Public edition: a sanitized copy of the shared outputs, with nothing personal in it.
 
-python -m elf.publish <out_dir>   -> writes <out_dir>/data/*.json for the public site
+python -m elf.publish <out_dir>   -> the public site in <out_dir>: the web app (renamed to
+                                     the product name) + data/*.json
 
 One engine run feeds both editions. The personal edition deploys data/public as is;
 the public one gets only what is listed in PUBLIC_FILES, stripped of personal fields
@@ -10,10 +11,13 @@ so a new personal file cannot leak by accident.
 from __future__ import annotations
 
 import json
+import shutil
 import sys
 from pathlib import Path
 
-from .config import PUBLIC
+from .config import PUBLIC, ROOT
+
+PRODUCT = "HoopsLab"
 
 # file -> function returning the sanitized content (None = copy unchanged)
 PUBLIC_FILES = {
@@ -47,5 +51,25 @@ def bundle(out: Path, src: Path | None = None) -> list[str]:
     return written
 
 
+def site(out: Path, src: Path | None = None) -> list[str]:
+    """Web app with the product's name (no EuroLeague branding) + the sanitized data."""
+    out = Path(out)
+    shutil.copytree(ROOT / "web", out, dirs_exist_ok=True)
+    index = out / "index.html"
+    html = index.read_text()
+    for old, new in (('<meta name="apple-mobile-web-app-title" content="ELF">',
+                      f'<meta name="apple-mobile-web-app-title" content="{PRODUCT}">'),
+                     ("<title>ELF Dashboard</title>", f"<title>{PRODUCT}</title>"),
+                     ("<h1>🏀 EuroLeague Fantasy — ", f'<h1>🏀 {PRODUCT} <small class="muted">beta</small> — ')):
+        if old not in html:
+            raise RuntimeError(f"publish: δεν βρέθηκε στο index.html: {old}")
+        html = html.replace(old, new)
+    index.write_text(html)
+    manifest = json.loads((out / "manifest.json").read_text())
+    manifest.update(name=PRODUCT, short_name=PRODUCT)
+    (out / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=1))
+    return bundle(out, src)
+
+
 if __name__ == "__main__":
-    print(bundle(Path(sys.argv[1] if len(sys.argv) > 1 else "site_public")))
+    print(site(Path(sys.argv[1] if len(sys.argv) > 1 else "site_public")))

@@ -179,3 +179,14 @@ def test_public_edition_has_nothing_personal(pipeline, tmp_path):
     assert "⚠️" not in text, "λειτουργικές σημειώσεις (token κ.λπ.) δεν πάνε στο κοινό"
     if "tracking.json" in files:
         assert json.loads(files["tracking.json"])["lineups"] == []
+
+
+def test_public_site_is_renamed(pipeline, tmp_path):
+    from elf import publish
+    publish.site(tmp_path, src=run.PUBLIC)
+    html = (tmp_path / "index.html").read_text()
+    assert "<title>HoopsLab</title>" in html and 'content="HoopsLab"' in html
+    assert "EuroLeague Fantasy —" not in html
+    assert json.loads((tmp_path / "manifest.json").read_text())["name"] == "HoopsLab"
+    assert (tmp_path / "data" / "predictions.json").exists() and (tmp_path / "opt.js").exists()
+    assert "EuroLeague Fantasy —" in (publish.ROOT / "web" / "index.html").read_text(), "το προσωπικό μένει ίδιο"

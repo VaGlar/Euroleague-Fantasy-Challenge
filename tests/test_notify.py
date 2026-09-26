@@ -81,3 +81,16 @@ def test_check_reminds_about_pending_trades(monkeypatch, public, sent):
     (text, buttons), = said
     assert "P4 (X) ➜ NEW (Y)" in text and "GONE" not in text, "μόνο όσες δεν έγιναν"
     assert buttons is None
+
+
+def test_health_alerts_only_on_change(public, sent):
+    def run(health):
+        (public / "predictions.json").write_text(json.dumps({"health": health}))
+        sent.clear()
+        notify.health()
+        return sent[0][0] if sent else None
+    assert run([]) is None                                        # nothing wrong, nothing sent
+    msg = run(["Gemini: HTTPError"])
+    assert "Gemini: HTTPError" in msg and "δημόσια" in msg
+    assert run(["Gemini: HTTPError"]) is None, "ίδιο πρόβλημα — όχι ξανά μήνυμα"
+    assert "Όλα λειτουργούν" in run([])

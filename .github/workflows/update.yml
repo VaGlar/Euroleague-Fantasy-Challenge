@@ -1,12 +1,8 @@
 name: Update data & dashboard
 
 on:
-  schedule:
-    # UTC. Morning runs land before the 11:00 Athens notification even when
-    # GitHub's scheduler is late; the night run picks up finished games.
-    - cron: "15 4 * * *"
-    - cron: "30 7 * * *"
-    - cron: "30 22 * * *"
+  # Timing lives in the Telegram bot's Cloudflare cron (GitHub's schedule runs hours
+  # late): 07:00 Athens every day + ~2.5h after the last game of each game day.
   workflow_dispatch:
     inputs:
       backtest:
@@ -59,6 +55,14 @@ jobs:
           PUBLIC_URL: ${{ vars.PUBLIC_URL }}
         run: python -m elf.run
 
+      - name: Problems to the owner (Telegram)
+        if: ${{ always() }}
+        continue-on-error: true
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python -m elf.notify health
+
       - name: Send today's report
         if: ${{ inputs.report }}
         env:
@@ -104,11 +108,21 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           PROJECT: ${{ vars.PUBLIC_PROJECT }}
         run: |
-          mkdir -p site_public
-          cp -r web/* site_public/
+          PROJECT=$(echo "$PROJECT" | tr '[:upper:]' '[:lower:]')   # Pages names are lower-case
           python -m elf.publish site_public
           npx --yes wrangler@3 pages project create "$PROJECT" --production-branch main || true
           npx --yes wrangler@3 pages deploy site_public --project-name "$PROJECT" --branch main --commit-dirty=true
+
+      - name: Run failed (Telegram)
+        if: ${{ failure() && !inputs.notify }}
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          curl -sS "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "text=❌ Το αυτόματο update απέτυχε — η δημόσια έκδοση δεν ενημερώθηκε: ${RUN_URL}" > /dev/null
 
       - name: Notify Telegram
         if: ${{ always() && inputs.notify }}
