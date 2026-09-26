@@ -782,10 +782,13 @@ def build(offline: bool = False) -> dict:
         health.append("fantasy: δεν βρέθηκε ομάδα Classic στον λογαριασμό")
     if os.environ.get("CI") and not os.environ.get("GEMINI_API_KEY"):
         health.append("GEMINI_API_KEY κενό — χωρίς σύνοψη νέων")
-    tok = fantasy.token_expiry()
-    if tok["days_left"] is not None and tok["days_left"] < 3:
-        health.insert(0, "🔑 Το FANTASY_TOKEN λήγει σε "
-                      f"{max(tok['days_left'], 0):.1f} μέρες — ανανέωσέ το")
+    for name, is_data in (("FANTASY_TOKEN", False), ("FANTASY_DATA_TOKEN", True)):
+        if is_data and not os.environ.get(name):
+            continue
+        tok = fantasy.token_expiry(data=is_data)
+        if tok["days_left"] is not None and tok["days_left"] < 3:
+            health.insert(0, f"🔑 Το {name} λήγει σε "
+                          f"{max(tok['days_left'], 0):.1f} μέρες — ανανέωσέ το")
     if my is None:
         my = manual_team(table)
 

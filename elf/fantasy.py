@@ -22,18 +22,25 @@ class TokenError(RuntimeError):
     """Token missing or rejected: the bot tells the user to refresh it."""
 
 
-def _token() -> str | None:
+def _token(data: bool = False) -> str | None:
+    """Personal token (my team, /lineup). With data=True: the dedicated data account's
+    token (FANTASY_DATA_TOKEN) used for market-wide reads like prices, falling back to
+    the personal one while the data account is not set up."""
+    if data:
+        tok = os.environ.get("FANTASY_DATA_TOKEN", "").strip()
+        if tok:
+            return tok
     return os.environ.get("FANTASY_TOKEN", "").strip() or None
 
 
-def token_expiry() -> dict:
+def token_expiry(data: bool = False) -> dict:
     """Decode the token's expiry if it is a JWT (no signature check, read-only).
 
     Returns {"kind": "jwt"|"opaque"|"missing", "days_left": float|None}.
     Opaque (e.g. Laravel Sanctum) tokens carry no expiry: we only learn it
     from a 401, which the pipeline reports.
     """
-    tok = _token()
+    tok = _token(data)
     if not tok:
         return {"kind": "missing", "days_left": None}
     parts = tok.split(".")
@@ -48,10 +55,10 @@ def token_expiry() -> dict:
     return {"kind": "jwt", "days_left": days}
 
 
-def get(path: str, params: dict | None = None, auth: bool = True):
+def get(path: str, params: dict | None = None, auth: bool = True, data: bool = False):
     headers = {"Accept": "application/json", "User-Agent": "elf-fantasy-helper/1.0"}
     if auth:
-        tok = _token()
+        tok = _token(data)
         if not tok:
             raise TokenError("FANTASY_TOKEN is not set")
         headers["Authorization"] = f"Bearer {tok}"
@@ -73,7 +80,8 @@ def players(players_list_id: int, matchday_id: int) -> list[dict]:
     out, page = [], 1
     while True:
         data = get(f"/players-lists/{players_list_id}/matchdays/{matchday_id}/players",
-                   {"per_page": 200, "page": page, "sort_by": "quotation", "sort_order": "desc"})
+                   {"per_page": 200, "page": page, "sort_by": "quotation", "sort_order": "desc"},
+                   data=True)
         rows = data if isinstance(data, list) else data.get("players") or data.get("data") or []
         out += rows
         if len(rows) < 200:

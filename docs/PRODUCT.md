@@ -124,8 +124,9 @@ Gemini). Οι προβλέψεις είναι ίδιες, άρα η δημόσι
 - [ ] Προσωπικό dashboard πίσω από **Cloudflare Access** (δωρεάν έως 50 χρήστες· πρόσβαση μόνο με το email του διαχειριστή).
 - [ ] **2FA** σε GitHub, Cloudflare, Patreon, Google (Gemini).
 - [ ] Tokens με **ελάχιστα δικαιώματα και ημερομηνία λήξης** (GitHub fine-grained, Cloudflare
-      scoped). Οι τιμές διαβάζονται με το token του **ειδικού λογαριασμού** (`FANTASY_TOKEN`)· το
-      προσωπικό token μόνο για την προσωπική έκδοση (`/lineup`, ανάγνωση ομάδας).
+      scoped). Οι τιμές διαβάζονται με το token του **ειδικού λογαριασμού** (secret `FANTASY_DATA_TOKEN`)· το
+      προσωπικό token (`FANTASY_TOKEN`) μόνο για την προσωπική έκδοση (`/lineup`, ανάγνωση ομάδας).
+      Χωρίς `FANTASY_DATA_TOKEN` οι τιμές διαβάζονται προσωρινά με το προσωπικό.
 - [ ] **Προστασία του `main`**: αλλαγές μόνο μέσω pull request με επιτυχή tests.
 - [ ] **Secret scanning**, **Dependabot**, GitHub Actions κλειδωμένα σε συγκεκριμένη έκδοση (SHA).
 - [x] Λευκή λίστα δημοσίευσης + test διαρροής (`elf/publish.py`).

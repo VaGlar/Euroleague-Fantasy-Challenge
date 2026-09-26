@@ -214,3 +214,26 @@ def test_turn2_message_follows_the_game_rules():
     assert all(f"P{i} " in swap.split("βγαίνει")[1] for i in (2, 6, 9))    # T1 flops out
     assert "P7 " not in swap, "όποιος έπαιξε από τον πάγκο μένει εκεί"
     assert "👉" not in text, "ο αρχηγός έφερε 30: μένει"
+
+
+def test_data_token_used_for_market_reads_only(monkeypatch):
+    monkeypatch.setenv("FANTASY_TOKEN", "personal")
+    monkeypatch.delenv("FANTASY_DATA_TOKEN", raising=False)
+    assert fantasy._token() == "personal" and fantasy._token(data=True) == "personal"  # fallback
+    monkeypatch.setenv("FANTASY_DATA_TOKEN", "data-account")
+    assert fantasy._token() == "personal", "η ομάδα μου / το /lineup μένουν στον προσωπικό λογαριασμό"
+    assert fantasy._token(data=True) == "data-account"
+    seen = {}
+
+    class R:
+        status_code = 200
+
+        def raise_for_status(self):
+            pass
+
+        def json(self):
+            return {"data": []}
+    monkeypatch.setattr(fantasy.requests, "get",
+                        lambda url, params=None, headers=None, timeout=None: seen.update(h=headers) or R())
+    fantasy.players(1, 2)
+    assert seen["h"]["Authorization"] == "Bearer data-account"
