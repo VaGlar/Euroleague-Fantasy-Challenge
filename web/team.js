@@ -434,6 +434,7 @@
       <button id="mBank">💰 Διόρθωση υπολοίπου</button>
       ${usedTrades(t, P.trade_info || {}) ? `<button id="mUsed">🔁 Μηδένισε τις μεταγραφές που έκανες (${usedTrades(t, P.trade_info || {})})</button>` : ""}
       <button id="mInstall">📱 Βάλ' το στην οθόνη σου</button>
+      <a class="tm-menulink" href="mailto:euroleaguefantasy26@gmail.com?subject=HoopsLab%20beta">✉️ Στείλε μας ιδέα ή πρόβλημα</a>
       <button id="mDel" class="tm-danger">🗑 Διαγραφή ομάδας</button></div>`;
     $("#mBackup").onclick = async () => {
       host.innerHTML = "";
@@ -591,9 +592,10 @@
     width: 38px; height: 38px; font-size: 18px; cursor: pointer; }
   .tm-menu { position: absolute; right: 0; top: 44px; z-index: 5; background: var(--surface-1); border: 1px solid var(--border);
     border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,.15); min-width: 230px; overflow: hidden; }
-  .tm-menu button { display: block; width: 100%; text-align: left; border: 0; background: none; color: var(--text-primary);
+  .tm-menu button, .tm-menu a { box-sizing: border-box; text-decoration: none; }
+  .tm-menu button, .tm-menu a { display: block; width: 100%; text-align: left; border: 0; background: none; color: var(--text-primary);
     font: inherit; padding: 12px 14px; cursor: pointer; }
-  .tm-menu button + button { border-top: 1px solid var(--border); }
+  .tm-menu button + button, .tm-menu button + a, .tm-menu a + button { border-top: 1px solid var(--border); }
   .tm-danger { color: var(--critical) !important; }
   .tm-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
   .tm-item { display: grid; grid-template-columns: 30px 1fr auto; gap: 10px; align-items: center; border: 1px solid var(--border);

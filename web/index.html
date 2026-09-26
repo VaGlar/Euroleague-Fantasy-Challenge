@@ -151,6 +151,9 @@ details.fbox > summary::-webkit-details-marker { display: none; }
   overflow-y: auto; border-radius: 16px 16px 0 0; padding: 14px 16px calc(20px + env(safe-area-inset-bottom));
   box-shadow: 0 -4px 20px rgba(0,0,0,.25); }
 @media (min-width: 700px) { .modal { align-items: center; } .sheet { border-radius: 16px; } }
+footer.fb { max-width: 1100px; margin: 0 auto; padding: 4px 16px calc(28px + env(safe-area-inset-bottom)); text-align: center;
+  color: var(--text-secondary); font-size: 13px; }
+footer.fb a { color: var(--series-1); font-weight: 600; white-space: nowrap; }
 /* iOS zooms into inputs under 16px on focus */
 @media (max-width: 700px) { input, select, textarea { font-size: 16px; } }
 /* on-screen keyboard open (iPhone): the sheet fills the visible area above it */
@@ -274,6 +277,8 @@ ul.news li { padding: 8px 0; border-bottom: 1px solid var(--border); }
   <section id="compare"></section>
   <section id="model"></section>
 </main>
+<footer id="feedback" class="fb" hidden>💬 Ιδέες, προβλήματα ή ό,τι σκέψη έχεις; Γράψε μας στο
+  <a href="mailto:euroleaguefantasy26@gmail.com?subject=HoopsLab%20beta">euroleaguefantasy26@gmail.com</a></footer>
 <div class="cmpbar" id="cmpbar"><span id="cmptxt"></span>
   <button class="go" type="button" onclick="document.querySelector('nav [data-t=compare]').click()">Σύγκριση →</button>
   <button class="clr" type="button" onclick="setCmp([])">✕</button></div>
@@ -861,6 +866,7 @@ function renderModel(mp, trk) {
     sortKey = "x_now"; sortDir = -1; renderPlayers();
   };
   renderPlayers();
+  $("#feedback").hidden = p.edition !== "public";   // the product's feedback address
   renderTeam(p.my_team, p.best_team);
   setCmp(CMP.filter((id) => p.players.some((x) => x.person_id === id)));
   try { const t = localStorage.getItem("tab"); if (t) document.querySelector(`nav [data-t=${t}]`)?.click(); } catch (e) {}
