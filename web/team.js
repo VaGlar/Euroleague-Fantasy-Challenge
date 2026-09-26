@@ -169,12 +169,28 @@
     }
     const pendingTrades = items.length > 0;
     const steps = pendingTrades ? swapSteps(after.roles || {}, target, aRows, inRound) : swapSteps(t.roles || {}, target, rows, inRound);
-    for (const s of steps) {
-      const owned = t.players.some((x) => x.id === s.in.id);
-      const waits = !owned || pendingTrades && !t.players.some((x) => x.id === s.out.id);
-      items.push({ kind: "🔄", html: `${s.role === "5άδα" ? "Στην πεντάδα" : "Έκτος"}: <b>${esc(sur(s.in.name))}</b> <span class="muted">αντί ${esc(sur(s.out.name))}</span>`,
-        why: waits ? "μετά τη μεταγραφή" : t.game ? `με /lineup${s.in.turn ? " · T" + s.in.turn : ""}` : `σύρε τον στο γήπεδο ή πάτα ✓${s.in.turn ? " · T" + s.in.turn : ""}`, wait: waits,
-        run: () => swap(t, s.in.id, s.out.id, true) });
+    // swaps that share a player are one move (a rotation of 3+ players reads as one line)
+    const groups = [];
+    for (const st of steps) {
+      const g = groups.find((x) => x.some((y) => [y.in.id, y.out.id].some((id) => id === st.in.id || id === st.out.id)));
+      if (g) g.push(st); else groups.push([st]);
+    }
+    const roles0 = { ...((pendingTrades ? after.roles : t.roles) || {}) };
+    const ROLE_NAME = { "5άδα": "πεντάδα", "6ος": "6ος", "πάγκος": "πάγκος" }, ORDER = { "5άδα": 0, "6ος": 1, "πάγκος": 2 };
+    for (const g of groups) {
+      const waits = g.some((st) => !t.players.some((x) => x.id === st.in.id) || pendingTrades && !t.players.some((x) => x.id === st.out.id));
+      const fin = { ...roles0 };
+      for (const st of g) [fin[st.in.id], fin[st.out.id]] = [fin[st.out.id], fin[st.in.id]];
+      const moved = [...new Set(g.flatMap((st) => [st.in, st.out]))].filter((r) => fin[r.id] !== roles0[r.id])
+        .sort((x, y) => ORDER[fin[x.id]] - ORDER[fin[y.id]]);
+      Object.assign(roles0, fin);
+      const first = g[0], turn = first.in.turn ? " · T" + first.in.turn : "";
+      const html = g.length === 1
+        ? `${first.role === "5άδα" ? "Στην πεντάδα" : "Έκτος"}: <b>${esc(sur(first.in.name))}</b> <span class="muted">αντί ${esc(sur(first.out.name))}</span>`
+        : `Αλλαγή θέσεων: ${moved.map((r) => `<b>${esc(sur(r.name))}</b> <span class="muted">→ ${ROLE_NAME[fin[r.id]]}</span>`).join(" · ")}`;
+      items.push({ kind: "🔄", html,
+        why: waits ? "μετά τη μεταγραφή" : t.game ? `με /lineup${turn}` : `σύρε ${g.length === 1 ? "τον" : "τους"} στο γήπεδο ή πάτα ✓${turn}`, wait: waits,
+        run: () => { for (const st of g) if (!swap(t, st.in.id, st.out.id, true)) break; } });
     }
     if (targetCap != null && t.captain !== targetCap) {
       const c = aRows.find((r) => r.id === targetCap);
