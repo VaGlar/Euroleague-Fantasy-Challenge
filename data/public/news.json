@@ -1,6 +1,15 @@
 {
  "articles": [
   {
+   "title": "EuroLeague Fantasy winners and losers, Round 1: Friday",
+   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/fantasy-winners-and-losers-round-1-friday-el2627/",
+   "date": "2026-09-25T23:56:24.668000+00:00",
+   "text": "- [Thursday's Fantasy Challenge winners and losers] Only three games were played on Friday, but for [EuroLeague Fantasy Challenge] managers, there was still plenty to watch. The best was saved for last, at least for some. Here are my Fantasy Challenge winners and losers from Night 2 of Round 1. ### Fantasy winners ##### Carlik Jones, Partizan Mozzart Bet Belgrade Hats off to the 27.5% of you who had [Carlik Jones] on your fantasy team. The Partizan star went for 36.3 fantasy points on a 20-point, 10-assist night, boosting his price from 13.6 to 14.5 credits. He could be this season's must-have fantasy player. ##### Braxton Key, Fenerbahce Tarfin Istanbul The 16.4% of managers who had [Braxton Key] knew what they were doing: 24.2 fantasy points. His 8.0-credit price already looks like a steal given his importance to Fenerbahce, and despite the +0.6 rise, Key looks like a lock in coach Sarunas Jasikevicius's rotation. ##### TJ Shorts, Valencia Basket For those who had faith in [TJ Shorts] at a new team, well done. Only 11.7% of managers had him, which surprised me given how good he was in fantasy at Paris Basketball in 2024-25. He finished his Valencia debut with 22.0 fantasy points, looking like that version again. His price already jumped to from 14.9 to 15.1 credits, and expect that number to keep climbing. ### Fantasy losers ##### Moses Wright, Armani Olimpia Milan This is the pick that hurt the most people. Nearly one in five managers (19.3%) had [Moses Wright], and 9.0 fantasy points fell well short after his form in the Italian Super Cup. At 14.0 credits, he was already an expensive bet, and Friday cost him another -0.3, dropping him to 13.7. Still, I'd expect him to bounce back in Tuesday's Italian derby. ##### RJ Cole, Armani Olimpia Milan [RJ Cole]'s competition debut at Partizan Mozzart Bet Belgrade was a night to forget: -6 fantasy points, and his price dropped from 8.5 to 7.9 credits. Only 0.3% of managers owned him, but spare a thought for them. I wouldn't read too much into one rough night on the road for a rookie. It's only up from here. ##### Rasheed Bello, Virtus Bologna Another newcomer with a tricky start. Just 0.2% of managers had [Rasheed Bello], and he finished with -4 fantasy points as his price fell from 11.0 to 10.4 credits. That was already steep for a newcomer, so it's worth watching whether managers hold out for a bounce-back or jump ship.",
+   "source": "EuroLeague Fantasy Tips (official)",
+   "weight": 2,
+   "fantasy": true
+  },
+  {
    "title": "EuroLeague Fantasy winners and losers, Round 1: Thursday",
    "url": "https://www.euroleaguebasketball.net/en/euroleague/news/fantasy-winners-and-losers-round-1-thursday-el2627/",
    "date": "2026-09-24T23:29:13.909000+00:00",
@@ -174,7 +183,7 @@
   {
    "title": "Ευρωλίγκα αποτελέσματα & βαθμολογία: Η Παρτιζάν την πιο ευρεία νίκη μετά τους “αιώνιους” και τον MVP",
    "url": "https://www.eurohoops.net/el/euroleague-el-2/2012355/evroligka-apotelesmata-vathmologia-i-partizan-tin-pio-evria-niki-meta-apo-eonious-ke-ton-mvp/",
-   "date": "2026-09-25T21:16:34+00:00",
+   "date": "2026-09-25T21:15:34+00:00",
    "text": "Του Γιάννη Ράμμα/ irammas@eurohoops.net Η πρώτη αγωνιστική ολοκληρώθηκε με το “διπλό” (x4) της Βαλένθια επί της Μπεσίκτας και τους “άσσους” (x6) της Φενέρμπαχτσε και της Παρτιζάν επί της Βίρτους Μπολόνια και της Αρμάνι Μιλάνο αντιστοίχως. Ο Κάρλικ Τζόουνς της σερβικής ομάδας ήταν ασταμάτητος στη Beogradska Arena στο Βελιγράδι με 20 πόντους με 2/5 δίποντα, 4/6 τρίποντα και 4/4 ελεύθερες βολές, 4 ριμπάουντ, 10 ασίστ και 1-5 φάουλ κατά-υπέρ σε 26:52 και το σύνολο των 33 μονάδων στο σύστημα ατομικής αξιολόγησης (PIR) του χάρισε τον τίτλο του MVP της Αγωνιστικής . Είχε από τους πρώτους μήνες του 20",
    "source": "Eurohoops (GR)",
    "weight": 1,
@@ -852,394 +861,232 @@
    {
     "player": "NUNN, KENDRICK",
     "status": "out",
-    "note": "Ρήξη έσω μηνίσκου στο δεξί γόνατο",
-    "source": "Eurohoops (GR)"
+    "note": "Εκτός λόγω τραυματισμού.",
+    "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "FALL, MOUSTAPHA",
     "status": "out",
-    "note": "Εκτός λόγω τραυματισμού",
+    "note": "Εκτός δράσης λόγω τραυματισμού.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "HAYES-DAVIS, NIGEL",
     "status": "out",
-    "note": "Εκτός λόγω τραυματισμού",
+    "note": "Τραυματίας, εκτός πλάνων.",
     "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "MILUTINOV, NIKOLA",
+    "status": "questionable",
+    "note": "Υπήρχαν ανησυχίες τραυματισμού, έπαιξε λίγο.",
+    "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "WILLIAMS-GOSS, NIGEL",
     "status": "out",
-    "note": "Μυϊκός τραυματισμός στον οπίσθιο μηριαίο, εκτός για δύο εβδομάδες",
-    "source": "EuroLeague (official)"
+    "note": "Τραυματισμός στον οπίσθιο μηριαίο, μένει εκτός για περίπου δύο εβδομάδες.",
+    "source": "Eurohoops (GR)"
    },
    {
     "player": "NEBO, JOSH",
     "status": "out",
-    "note": "Τραυματισμός στη δεξιά γάμπα, εκτός για 2-3 εβδομάδες",
+    "note": "Τραυματισμός στη δεξιά γάμπα, χάνει τις πρώτες εβδομάδες.",
     "source": "Eurohoops (GR)"
-   },
-   {
-    "player": "LARKIN, SHANE",
-    "status": "questionable",
-    "note": "Απόφαση της τελευταίας στιγμής (game-time decision)",
-    "source": "Eurohoops"
-   },
-   {
-    "player": "BINGHAM, MARCUS",
-    "status": "questionable",
-    "note": "Απόφαση της τελευταίας στιγμής (game-time decision)",
-    "source": "Eurohoops"
-   },
-   {
-    "player": "MILUTINOV, NIKOLA",
-    "status": "available",
-    "note": "Αγωνίστηκε 9 λεπτά στην πρεμιέρα παρά τις ενοχλήσεις",
-    "source": "EuroLeague Fantasy Tips (official)"
    }
   ],
   "expert": [
    {
     "player": "BRYANT, ELIJAH",
     "stance": "pick",
-    "note": "Κορυφαία επιλογή στα γκαρντ με υψηλό ταβάνι",
+    "note": "Βασικός σταρ με ευνοϊκό matchup.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "FRANCISCO, SYLVAIN",
     "stance": "pick",
-    "note": "Αυξημένος ρόλος και λεπτά λόγω της απουσίας του Nunn",
+    "note": "Αναμένεται να πάρει χρόνο και ρόλο λόγω απουσιών.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "JONES, CARLIK",
     "stance": "pick",
-    "note": "Κεντρικός δημιουργός της Παρτίζαν με υψηλό usage",
+    "note": "Κεντρικός πυλώνας της επίθεσης.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "DEJULIUS, DAVID",
     "stance": "pick",
-    "note": "Αξιόλογη οικονομική λύση στα γκαρντ",
+    "note": "Ποιοτική επιλογή από την περιφέρεια.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "MADAR, YAM",
     "stance": "pick",
-    "note": "Ευνοϊκό ματσάρισμα και αυξημένες ευθύνες",
+    "note": "Αυξημένος ρόλος και καλό matchup.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "NUNEZ, JUAN",
     "stance": "pick",
-    "note": "Εξαιρετικά φθηνή επιλογή για απελευθέρωση budget",
+    "note": "Φθηνή επιλογή για εξοικονόμησηcredits.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "VEZENKOV, SASHA",
     "stance": "captain",
-    "note": "Κορυφαία σταθερότητα και ιδανική επιλογή αρχηγού",
+    "note": "Ο βασικός βασιλιάς του Fantasy και κορυφαία επιλογή για αρχηγός.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "YABUSELE, GUERSCHON",
     "stance": "pick",
-    "note": "Αυξημένος χρόνος στις θέσεις 4 και 5 λόγω απουσιών",
+    "note": "Αυξημένος χρόνος και ρόλος λόγω απουσιών.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "OMORUYI, EUGENE",
     "stance": "pick",
-    "note": "Βασικός φόργουορντ της Μπεσίκτας με ευνοϊκό πρόγραμμα",
+    "note": "Βασικός πάουερ φόργουορντ με καλό πρόγραμμα.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "STEVENS, LAMAR",
     "stance": "pick",
-    "note": "Οικονομικός φόργουορντ με αναμενόμενα 25 λεπτά συμμετοχής",
+    "note": "Οικονομική λύτρωση με πολλές προσδοκίες.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "PARRA, JOEL",
     "stance": "pick",
-    "note": "Υποτιμημένος με μεγάλο ρόλο στην επίθεση της Μπαρτσελόνα",
+    "note": "Εξαιρετικό value for money.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "JOKSIMOVIC, STEFAN",
     "stance": "pick",
-    "note": "Επιλογή ελάχιστης τιμής χωρίς ρίσκο απώλειας αξίας",
+    "note": "Εναλλακτική επιλογή χαμηλού κόστους.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "VALANCIUNAS, JONAS",
     "stance": "pick",
-    "note": "Κορυφαία επιλογή στους σέντερ με δυναμική double-double",
+    "note": "Κορυφαία επιλογή στη θέση του σέντερ.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "SHORTS, TJ",
     "stance": "pick",
-    "note": "Απόλυτος ηγέτης στην επίθεση της Βαλένθια",
-    "source": "EuroBallin (Substack)"
-   },
-   {
-    "player": "JONES, CARLIK",
-    "stance": "pick",
-    "note": "Βασικός πόιντ γκαρντ και εκτελεστής της Παρτίζαν",
+    "note": "Κορυφαίος γκαρντ με ηγετικό ρόλο.",
     "source": "EuroBallin (Substack)"
    },
    {
     "player": "MICIC, VASILIJE",
     "stance": "pick",
-    "note": "Εξαιρετική προετοιμασία με μέσο όρο 21 PIR",
+    "note": "Πολύ καλή προετοιμασία και υψηλή αυτοπεποίθηση.",
     "source": "EuroBallin (Substack)"
    },
    {
     "player": "FORREST, TRENT",
     "stance": "pick",
-    "note": "Εξαιρετική αποδοτικότητα ανά λεπτό συμμετοχής",
+    "note": "Εξαιρερετική αποτελεσματικότητα ανά λεπτό.",
     "source": "EuroBallin (Substack)"
    },
    {
     "player": "LUNDBERG, IFFE",
     "stance": "pick",
-    "note": "Σταθερή απόδοση και ευνοϊκό πρόγραμμα Round 2 Turn 2",
+    "note": "Σταθερός combo guard.",
     "source": "EuroBallin (Substack)"
    },
    {
     "player": "SPAGNOLO, MATTEO",
     "stance": "pick",
-    "note": "Εξαιρετική προετοιμασία και ηγετικός ρόλος στη Μπασκόνια",
-    "source": "EuroBallin (Substack)"
-   },
-   {
-    "player": "SAINT-SUPERY, MARIO",
-    "stance": "pick",
-    "note": "Αξιόλογη οικονομική επιλογή στα γκαρντ",
-    "source": "EuroBallin (Substack)"
-   },
-   {
-    "player": "FELIZ, ANDRES",
-    "stance": "pick",
-    "note": "Ενδιαφέρουσα φθηνή λύση στα γκαρντ",
-    "source": "EuroBallin (Substack)"
-   },
-   {
-    "player": "BOLMARO, LEANDRO",
-    "stance": "pick",
-    "note": "Αξιόλογος γκαρντ με σταθερό ρόλο",
-    "source": "EuroBallin (Substack)"
-   },
-   {
-    "player": "WATERS, TREMONT",
-    "stance": "pick",
-    "note": "Επιλογή γκαρντ με επιθετικό ταλέντο",
-    "source": "EuroBallin (Substack)"
-   },
-   {
-    "player": "STRAZEL, MATTHEW",
-    "stance": "pick",
-    "note": "Ενδιαφέρουσα επιλογή για την περιφέρεια",
-    "source": "EuroBallin (Substack)"
-   },
-   {
-    "player": "HORTON TUCKER, TALEN",
-    "stance": "pick",
-    "note": "Ποιοτική προσθήκη με υψηλό επιθετικό usage",
+    "note": "Εξαιρετικός χαμηλόμισθος παίκτης.",
     "source": "EuroBallin (Substack)"
    },
    {
     "player": "NWORA, JORDAN",
     "stance": "pick",
-    "note": "Σε εξαιρετική κατάσταση στο σκοράρισμα και ριμπάουντ",
+    "note": "Εξαιρετική φόρμα και υψηλή επιθετική παραγωγικότητα.",
     "source": "EuroBallin (Substack)"
    },
    {
     "player": "MIROTIC, NIKOLA",
     "stance": "pick",
-    "note": "Υποτιμημένος για την κλάση του με υψηλό ταβάνι",
+    "note": "Παίκτης με τεράστιο ταβάνι στο Fantasy.",
     "source": "EuroBallin (Substack)"
    },
    {
     "player": "COLSON, BONZIE",
     "stance": "pick",
-    "note": "Βασικός σμολ φόργουορντ με πολύ καλή προετοιμασία",
-    "source": "EuroBallin (Substack)"
-   },
-   {
-    "player": "OMORUYI, EUGENE",
-    "stance": "pick",
-    "note": "Βασικός πάουερ φόργουορντ στη Μπεσίκτας",
+    "note": "Κύριος SF με εξαιρετική προετοιμασία.",
     "source": "EuroBallin (Substack)"
    },
    {
     "player": "KEY, BRAXTON",
     "stance": "pick",
-    "note": "Εντυπωσιακός στο Super Cup, αυξημένος ρόλος",
-    "source": "EuroBallin (Substack)"
-   },
-   {
-    "player": "PARRA, JOEL",
-    "stance": "pick",
-    "note": "Η καλύτερη value επιλογή στους φόργουορντ",
-    "source": "EuroBallin (Substack)"
-   },
-   {
-    "player": "TUBELIS, AZUOLAS",
-    "stance": "pick",
-    "note": "Αξιόπιστη επιλογή στη frontline της Ζάλγκιρις",
-    "source": "EuroBallin (Substack)"
-   },
-   {
-    "player": "EDWARDS, KESSLER",
-    "stance": "pick",
-    "note": "Ενδιαφέρουσα επιλογή στους φόργουορντ",
-    "source": "EuroBallin (Substack)"
-   },
-   {
-    "player": "NORRIS, MILES",
-    "stance": "pick",
-    "note": "Αξιόλογη λύση στη θέση 4 για την Μπάγερν",
-    "source": "EuroBallin (Substack)"
-   },
-   {
-    "player": "STEVENS, LAMAR",
-    "stance": "pick",
-    "note": "Οικονομική λύση με καλό χρόνο συμμετοχής",
-    "source": "EuroBallin (Substack)"
-   },
-   {
-    "player": "WARD, TYSON",
-    "stance": "pick",
-    "note": "Χρήσιμη επιλογή μεσαίου κόστους",
-    "source": "EuroBallin (Substack)"
-   },
-   {
-    "player": "MITOGLOU, KONSTANTINOS",
-    "stance": "pick",
-    "note": "Φθηνή λύση με αυξημένο ρόλο στη frontline",
+    "note": "Πολύπλευρη προσφορά και εξαιρετική φόρμα.",
     "source": "EuroBallin (Substack)"
    },
    {
     "player": "WRIGHT, MOSES",
     "stance": "pick",
-    "note": "Κυρίαρχος σέντερ και βασικός πυλώνας της Μιλάνο",
+    "note": "Κορυφαίος κυρίαρχος σέντερ.",
     "source": "EuroBallin (Substack)"
    },
    {
     "player": "HALL, DONTA",
     "stance": "pick",
-    "note": "Εξαιρετική αποδοτικότητα σε λίγα λεπτά συμμετοχής",
+    "note": "Τρομερή αποτελεσματικότητα.",
     "source": "EuroBallin (Substack)"
    },
    {
     "player": "FERNANDO, BRUNO",
     "stance": "pick",
-    "note": "Βασικός σέντερ με δυναμική στα ριμπάουντ",
+    "note": "Δυνατός σέντερ με ρόλο.",
     "source": "EuroBallin (Substack)"
    },
    {
     "player": "TANASKOVIC, NIKOLA",
     "stance": "pick",
-    "note": "Μεγάλο sleeper σε πολύ προσιτή τιμή",
+    "note": "Value pick από το EuroCup.",
     "source": "EuroBallin (Substack)"
    },
    {
-    "player": "VALANCIUNAS, JONAS",
+    "player": "AUSTIN WILEY",
     "stance": "pick",
-    "note": "Κύρια επιθετική απειλή και μηχανή double-double",
-    "source": "EuroLeague Fantasy Tips (official)"
-   },
-   {
-    "player": "WRIGHT, MOSES",
-    "stance": "pick",
-    "note": "Πρωταγωνιστικός ρόλος στη Μιλάνο με σκορ και ριμπάουντ",
-    "source": "EuroLeague Fantasy Tips (official)"
-   },
-   {
-    "player": "WILEY, AUSTIN",
-    "stance": "pick",
-    "note": "Προσιτός σέντερ με εξαιρετικό ranking στα ριμπάουντ",
+    "note": "Προσιτή και σταθερή λύση στους σέντερ.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "DOKOSSI, ALLAN",
     "stance": "pick",
-    "note": "Ενεργητικός ψηλός με γεμάτη στατιστική",
+    "note": "Γεμίζει τη στατιστική και δίνει ενέργεια.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "HAYES, KEVARRIUS",
     "stance": "pick",
-    "note": "Έμπειρος μπλοκέρ και ριμπάουντερ σε χαμηλή τιμή",
-    "source": "EuroLeague Fantasy Tips (official)"
-   },
-   {
-    "player": "NWORA, JORDAN",
-    "stance": "pick",
-    "note": "Υψηλό τέμπο και υποψήφιος MVP αγωνιστικών",
+    "note": "Οικονομικός μπλοκέρ και ριμπάουντερ.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "LUWAWU-CABARROT, TIMOTHE",
     "stance": "pick",
-    "note": "Σταθερότητα και ιδανική προσαρμογή στο σύστημα της Ρεάλ",
-    "source": "EuroLeague Fantasy Tips (official)"
-   },
-   {
-    "player": "PARRA, JOEL",
-    "stance": "pick",
-    "note": "Εξαιρετική προετοιμασία και προσιτή τιμή",
+    "note": "Σταθερός και αποδοτικός παίκτης.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "MANTZOUKAS, ELEFTHERIOS",
     "stance": "pick",
-    "note": "Αυξημένες ευκαιρίες και αξία λόγω απουσιών",
-    "source": "EuroLeague Fantasy Tips (official)"
-   },
-   {
-    "player": "JOKSIMOVIC, STEFAN",
-    "stance": "pick",
-    "note": "Ταλέντο στην ελάχιστη τιμή με άμεσο χρόνο συμμετοχής",
-    "source": "EuroLeague Fantasy Tips (official)"
-   },
-   {
-    "player": "SHORTS, TJ",
-    "stance": "pick",
-    "note": "Ηγέτης ομάδας σε σύστημα που του ταιριάζει απόλυτα",
-    "source": "EuroLeague Fantasy Tips (official)"
-   },
-   {
-    "player": "FRANCISCO, SYLVAIN",
-    "stance": "pick",
-    "note": "Ευνοϊκό εντός έδρας πρόγραμμα και αυξημένος ρόλος",
-    "source": "EuroLeague Fantasy Tips (official)"
-   },
-   {
-    "player": "WILLIAMS-GOSS, NIGEL",
-    "stance": "pick",
-    "note": "Αυξημένες επιθετικές πρωτοβουλίες στη Ζάλγκιρις",
-    "source": "EuroLeague Fantasy Tips (official)"
-   },
-   {
-    "player": "SPAGNOLO, MATTEO",
-    "stance": "pick",
-    "note": "Υψηλό upside σε εξαιρετική τιμή 6.4 credits",
-    "source": "EuroLeague Fantasy Tips (official)"
-   },
-   {
-    "player": "SAINT-SUPERY, MARIO",
-    "stance": "pick",
-    "note": "Μεγάλη ευκαιρία κάτω από τα 5 credits",
+    "note": "Ευκαιρία σε χαμηλή τιμή λόγω απουσιών.",
     "source": "EuroLeague Fantasy Tips (official)"
    }
   ],
   "round": 1,
-  "summary_el": "• Ο Τι Τζέι Σορτς (Βαλένθια) και ο Κάρλικ Τζόουνς (Παρτίζαν) κυριάρχησαν στην πρεμιέρα με ηγετικές εμφανίσεις και υψηλότατο PIR, επιβεβαιώνοντας τον ρόλο τους ως κορυφαία fantasy assets.\n• Ο Σάσα Βεζένκοφ (Ολυμπιακός) παραμένει η ασφαλέστερη επιλογή αρχηγού στην πρεμιέρα χάρη στη σταθερότητα και το κορυφαίο fantasy floor του.\n• Σημαντικές απουσίες προέκυψαν στον Παναθηναϊκό, καθώς οι Κέντρικ Ναν, Μουσταφά Φαλ και Νάιτζελ Χέιζ-Ντέιβις είναι εκτός δράσης, ανοίγοντας χώρο και χρόνο για τους Σιλβέν Φρανσίσκο, Γκερσόν Γιαμπουσέλε και Λευτέρη Μαντζούκα.\n• Πλήγμα στη Ζάλγκιρις με τον Νάιτζελ Γουίλιαμς-Γκος να υφίσταται θλάση στον οπίσθιο μηριαίο και να τίθεται εκτός για περίπου δύο εβδομάδες.\n• Η Μπαρτσελόνα χάνει τον Τζος Νίμπο για 2-3 εβδομάδες λόγω τραυματισμού στη δεξιά γάμπα, γεγονός που ανακατεύει το rotation των ψηλών της.\n• Σέιν Λάρκιν και Μάρκους Μπίνγκχαμ χαρακτηρίστηκαν game-time decisions για την πρεμιέρα, απαιτώντας προσοχή πριν το deadline.\n• Οικονομικές επιλογές όπως οι Τζοέλ Πάρα, Ματέο Σπανιόλο, Στέφαν Γιοκσίμοβιτς και Μάριο Σεν-Σουπερί αποτέλεσαν τις βασικές value προτάσεις των αναλυτών για αύξηση budget.",
-  "_model": "gemini-3.8-flash"
+  "summary_el": "• Η πρώτη αγωνιστική της EuroLeague ολοκληρώθηκε με εντυπωσιακές ατομικές εμφανίσεις και αρκετές εκπλήξεις.\n• Ο Κάρλικ Τζόουνς ξεχώρισε στην άνετη νίκη της Παρτίζαν επί της Αρμάνι Μιλάνο.\n• Ο Τι Τζέι Σορτς πραγματοποίησε ονειρικό ντεμπούτο οδηγώντας τη Βαλένθια σε δραματική νίκη επί της Μπεσίκτας.\n• Σημαντικά αγωνιστικά προβλήματα προέκυψαν με τους τραυματισμούς των Νάιτζελ Γουίλιαμς-Γκος και Τζος Νίμπο.\n• Οι τραυματισμοί βασικών παικτών όπως ο Κέντρικ Ναν και ο Μουστάφα Φαλ επηρεάζουν τις επιλογές των μανατζερ.\n• Η σωστή διαχείριση των credits και η εύρεση φθηνών value picks αποτελούν κλειδί για το ξεκίνημα του παιχνιδιού.",
+  "_model": "gemini-3.5-flash-lite"
  },
- "digest_at": "2026-09-25T22:11:11.934518+00:00",
+ "digest_at": "2026-09-26T00:46:17.857310+00:00",
  "failed": []
 }
