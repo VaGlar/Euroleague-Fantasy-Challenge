@@ -823,6 +823,11 @@ def build(offline: bool = False) -> dict:
         "team_form": team_form(CURRENT_SEASON),
         "clubs": dict(zip(clubs["code"], clubs["name"])),
         "my_team": my, "best_team": best, "health": health, "fantasy_ok": fs.get("ok", False),
+        # trade rules for this moment (the public edition optimizes in the browser)
+        "trade_info": {"round": trade_rnd,
+                       "max_trades": 11 if trade_rnd == 1 or (trade_rnd - 1) in UNLIMITED_AFTER else 4,
+                       "min_gain": round(MIN_GAIN_PER_TRADE * sum(horizon_weights(trade_rnd))
+                                         / sum(HORIZON_WEIGHTS), 3)},
         "price_model": price_info,
     })
     msgs = messages(rnd, trn, table, my, dig, health)

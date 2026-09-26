@@ -17,7 +17,8 @@ from .config import PUBLIC
 
 # file -> function returning the sanitized content (None = copy unchanged)
 PUBLIC_FILES = {
-    "predictions.json": lambda d: {**d, "my_team": None, "health": [], "price_model": None},
+    "predictions.json": lambda d: {**d, "my_team": None, "health": [], "price_model": None,
+                                   "edition": "public"},
     "report_public.json": None,     # published as report.json
     "players.json": None,
     "news.json": None,

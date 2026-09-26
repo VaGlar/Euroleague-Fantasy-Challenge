@@ -423,6 +423,7 @@ function courtView(list, ref) {
 let teamView = "plan";
 try { teamView = localStorage.getItem("teamView") || "plan"; } catch (e) {}
 function renderTeam(my, best) {
+  if (P.edition === "public" && window.TEAM) return TEAM.render(best);   // web/team.js
   let html = "";
   if (!my) {
     html += `<div class="card warn"><h2>Η ομάδα δεν είναι διαθέσιμη</h2>
@@ -772,8 +773,9 @@ function renderModel(mp, trk) {
   }
   html += `<p class="muted">«Χωρίς μοντέλο» = απλώς ο μέσος όρος PIR του παίκτη (φέτος, αλλιώς πέρσι). Αν το μοντέλο δεν τον κερδίζει σταθερά, κάτι πάει στραβά.
     Μία αγωνιστική δεν λέει τίποτα· κρίνεται σε 5–10.</p></div>`;
-  // 2. my lineup
+  // 2. my lineup (personal edition only)
   const lu = trk?.lineups || [];
+  if (P.edition !== "public") {
   html += `<div class="card"><h2>Η πεντάδα σου vs η πρόταση</h2>`;
   if (lu.length) {
     const s = lu.reduce((a, r) => a + r.diff, 0);
@@ -786,6 +788,7 @@ function renderModel(mp, trk) {
     html += `<p class="muted">Εμφανίζεται μόλις ολοκληρωθεί μια αγωνιστική για την οποία κρατήθηκε η πρόταση πριν ξεκινήσει.</p>`;
   }
   html += `</div>`;
+  }
   // 3. fantasy columns
   const ex = trk?.experts || [];
   html += `<div class="card"><h2>Στήλες ειδικών</h2>`;
@@ -864,5 +867,8 @@ function renderModel(mp, trk) {
   renderModel(mp, trk);
 })();
 </script>
+<script src="opt.js"></script>
+<script src="team.js"></script>
+<script>if (P && P.edition === "public") renderTeam(null, P.best_team);</script>
 </body>
 </html>

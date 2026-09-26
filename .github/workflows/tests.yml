@@ -22,6 +22,8 @@ jobs:
       - name: JavaScript syntax (bot, feed proxy, dashboard)
         run: |
           node --check worker/src/index.js
+          node --check web/opt.js
+          node --check web/team.js
           node --input-type=module --check < functions/feed.js
           python - <<'PY'
           import re, pathlib
