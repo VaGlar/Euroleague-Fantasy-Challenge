@@ -566,8 +566,8 @@ async function renderCompare() {
       ${rows.length ? `<p>Επιλεγμένος: <b>${esc(nm(rows[0].name))}</b></p>` : ""}</div>`;
     return;
   }
-  if (!DET) DET = (await get("players.json")) || {};
-  const det = rows.map((r) => DET[r.person_id] || { stats: [], last: [], next: [] });
+  const all = await details();
+  const det = rows.map((r) => all[r.person_id] || { stats: [], last: [], next: [] });
   const cur = det.map((d) => d.stats.find((s) => s.season === P.season) || {});
   const prev = det.map((d) => d.stats.find((s) => s.season === (P.season || 0) - 1) || {});
   // one metric row: values per player, "hi"/"lo" = which is better (highlighted), fmt for display
@@ -672,13 +672,24 @@ function dismissGuide(never) {
 // ---------------------------------------------------------------- player popup
 const byFid = (fid) => P && fid != null ? P.players.find((x) => x.fantasy_id === fid || x.fantasy_id === Number(fid)) : null;
 let DET = null;
+// players.json (stats, last and next games). A failed load isn't kept: the next popup tries again.
+async function details() {
+  if (!DET) { const d = await get("players.json"); if (d) DET = d; }
+  return DET || {};
+}
+// back to the app after a while (it can stay in memory for days): reload for the latest data
+const LOADED_AT = Date.now();
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible" && Date.now() - LOADED_AT > 30 * 60 * 1000) location.reload();
+});
 const seasonLbl = (s) => `${s}-${String((s + 1) % 100).padStart(2, "0")}`;
 const pct = (x) => (x == null ? "–" : `${Math.round(x)}%`);
 async function openPlayer(pid) {
   const r = P.players.find((x) => x.person_id === pid);
   if (!r) return;
-  if (!DET) DET = (await get("players.json")) || {};
-  const d = DET[pid] || { stats: [], last: [], next: [] };
+  const all = await details();
+  const missing = !DET;          // the details didn't load (network)
+  const d = all[pid] || { stats: [], last: [], next: [] };
   const f = d.form || {};
   const coach = r.position === "Head Coach";
   // this round's game already played -> analyse the next one
@@ -724,7 +735,7 @@ async function openPlayer(pid) {
       <div>R${g.round} · ${g.home ? "🏠" : "✈️"} <b>${esc(g.opp)}</b></div>
       <div class="gv"><b>${f1(g.x)}</b><small>xPTS</small></div>
       <div class="gs">${esc(g.date || "")} · ${g.win}% πιθανότητα νίκης</div></div>`).join("")}</div>`
-    : `<p class="muted">Δεν υπάρχουν προγραμματισμένοι αγώνες στα δεδομένα.</p>`;
+    : `<p class="muted">${missing ? "Δεν φορτώθηκαν τα στοιχεία — έλεγξε τη σύνδεση και άνοιξε ξανά τον παίκτη." : "Δεν υπάρχουν προγραμματισμένοι αγώνες στα δεδομένα."}</p>`;
   $("#sheet").innerHTML = `<div class="sh"><div><h2>${esc(nm(r.name))}${inj(r)}${exb(r)}${dol(r)}</h2>
       <div class="muted">${esc(r.team)} · ${esc(r.position || "")}${r.price != null ? ` · <b>${f1(r.price)} cr</b>` : ""}${turn ? ` · Turn ${turn.turn} (${esc(turn.date.slice(8))}/${esc(turn.date.slice(5, 7))})` : ""}</div></div>
       <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
