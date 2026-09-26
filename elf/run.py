@@ -820,6 +820,10 @@ def build(offline: bool = False) -> dict:
     msgs = messages(rnd, trn, table, my, dig, health)
     _write("report.json", {"generated": datetime.now(timezone.utc).isoformat(),
                            "round": rnd, "messages": msgs})
+    # the public edition's report: same analysis, no personal team, no operational notes
+    _write("report_public.json", {
+        "generated": datetime.now(timezone.utc).isoformat(), "round": rnd,
+        "messages": messages(rnd, trn, table, None, dig, [], dash=os.environ.get("PUBLIC_URL", ""))})
     return {"round": rnd, "messages": msgs}
 
 
@@ -890,8 +894,8 @@ def turn_check(tu: dict, table: pd.DataFrame, my: dict | None) -> list[str]:
     return lines
 
 
-def messages(rnd, trn, table, my, dig, health) -> list[dict]:
-    dash = os.environ.get("DASHBOARD_URL", "")
+def messages(rnd, trn, table, my, dig, health, dash: str | None = None) -> list[dict]:
+    dash = os.environ.get("DASHBOARD_URL", "") if dash is None else dash
     t_all = table.dropna(subset=["x_now"])
     coaches = t_all[t_all["position"] == "Head Coach"]
     t = t_all[t_all["position"] != "Head Coach"]

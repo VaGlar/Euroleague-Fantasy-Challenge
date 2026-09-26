@@ -160,3 +160,22 @@ def test_tracking_written(pipeline):
     assert {"rounds", "total", "experts", "lineups"} <= set(tr)
     log = pd.read_csv(pub / "pred_log.csv", dtype={"person_id": str})
     assert len(log) and log["x_pred"].notna().all(), "προβλέψεις για αγώνες που δεν έχουν αρχίσει"
+
+
+def test_public_edition_has_nothing_personal(pipeline, tmp_path):
+    from elf import publish
+    pub = run.PUBLIC
+    assert json.loads((pub / "predictions.json").read_text())["my_team"]["name"] == "TEST"  # personal has it
+    written = publish.bundle(tmp_path, src=pub)
+    files = {p.name: p.read_text() for p in (tmp_path / "data").iterdir()}
+    assert set(files) == set(written)
+    assert not {"lineup_log.json", "sent.json", "roster_shape.json", "report_public.json"} & set(files)
+    pred = json.loads(files["predictions.json"])
+    assert pred["my_team"] is None and pred["health"] == []
+    assert all('"TEST"' not in txt for txt in files.values()), "το όνομα της ομάδας διέρρευσε"
+    report = json.loads(files["report.json"])
+    text = "\n".join(m["text"] for m in report["messages"])
+    assert report["messages"] and "Προτεινόμενη πεντάδα" not in text and "Προτεινόμενες αλλαγές" not in text
+    assert "⚠️" not in text, "λειτουργικές σημειώσεις (token κ.λπ.) δεν πάνε στο κοινό"
+    if "tracking.json" in files:
+        assert json.loads(files["tracking.json"])["lineups"] == []

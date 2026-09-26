@@ -55,6 +55,7 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
           DASHBOARD_URL: ${{ vars.DASHBOARD_URL || 'https://elf-dashboard.pages.dev' }}
+          PUBLIC_URL: ${{ vars.PUBLIC_URL }}
         run: python -m elf.run
 
       - name: Send today's report
@@ -92,6 +93,21 @@ jobs:
         run: |
           npx --yes wrangler@3 pages project create elf-dashboard --production-branch main || true
           npx --yes wrangler@3 pages deploy site --project-name elf-dashboard --branch main --commit-dirty=true
+
+      # Public edition: same run, sanitized data (elf/publish.py). Off until the repo
+      # variable PUBLIC_PROJECT (Cloudflare Pages project name) is set.
+      - name: Deploy public edition
+        if: ${{ vars.PUBLIC_PROJECT != '' }}
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          PROJECT: ${{ vars.PUBLIC_PROJECT }}
+        run: |
+          mkdir -p site_public
+          cp -r web/* site_public/
+          python -m elf.publish site_public
+          npx --yes wrangler@3 pages project create "$PROJECT" --production-branch main || true
+          npx --yes wrangler@3 pages deploy site_public --project-name "$PROJECT" --branch main --commit-dirty=true
 
       - name: Notify Telegram
         if: ${{ always() && inputs.notify }}
