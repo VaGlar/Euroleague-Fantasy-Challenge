@@ -30,6 +30,19 @@
     const j = JSON.parse(decodeURIComponent(escape(atob(code.replace(/-/g, "+").replace(/_/g, "/")))));
     return { players: j.p.map(([id, price]) => ({ id, price })), bank: j.b, roles: j.r, captain: j.c, used: j.u || null, confirmed: true };
   }
+  // paste a backup link (the app on the home screen keeps its own storage, apart from the browser)
+  function restoreSheet(done) {
+    sheet(`<div class="sh"><div><h2>Επαναφορά ομάδας</h2><div class="muted">Επικόλλησε τον σύνδεσμο αντιγράφου (⋯ → Αντίγραφο ασφαλείας)</div></div>
+        <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
+      <textarea id="tmLink" class="tm-input" rows="3" placeholder="https://…#t=…" autocomplete="off"></textarea>
+      <button class="tm-primary" id="tmLinkOk">Επαναφορά</button>`);
+    $("#tmLinkOk").onclick = () => {
+      const m = String($("#tmLink").value).match(/[#&]t=([A-Za-z0-9_-]+)/);
+      try { if (!m) throw new Error(); const t = decode(m[1]); if (!t.players || t.players.length !== 11) throw new Error();
+        save(t); closePlayer(); setup = null; mode = null; done(); toast("Η ομάδα σου επανήλθε"); }
+      catch (e) { toast("Ο σύνδεσμος δεν είναι έγκυρος — αντίγραψέ τον ολόκληρο"); }
+    };
+  }
   function importFromHash() {
     const m = location.hash.match(/[#&]t=([A-Za-z0-9_-]+)/);
     if (!m) return;
@@ -489,7 +502,8 @@
         <div class="tm-money"><span>Κόστος ομάδας <b>${f1(spent)}</b> cr</span><span>Υπόλοιπο <b>${f1(Math.max(0, 100 - spent))}</b> cr</span></div>
         <button class="tm-primary" id="tmFinish" ${full ? "" : "disabled"}>${full ? "Αποθήκευση ➜" : `Λείπουν ${11 - ps.length}`}</button>
         ${had ? '<button class="linkbtn" id="tmCancel" style="display:block;margin:6px auto 0">Άκυρο</button>' : ""}
-        <p class="tm-hint">Οι τιμές συμπληρώνονται με τις σημερινές· αν διαφέρουν στο παιχνίδι σου, τις διορθώνεις μετά από την καρτέλα του παίκτη. Το υπόλοιπο το διορθώνεις από το ⋯.</p></div>`;
+        <p class="tm-hint">Οι τιμές συμπληρώνονται με τις σημερινές· αν διαφέρουν στο παιχνίδι σου, τις διορθώνεις μετά από την καρτέλα του παίκτη. Το υπόλοιπο το διορθώνεις από το ⋯.</p>
+        ${had ? "" : '<button class="linkbtn" id="tmRestore" style="display:block;margin:8px auto 0">📥 Έχεις σύνδεσμο αντιγράφου; Επικόλλησέ τον</button>'}</div>`;
   }
   function pickSheet(pos, best) {
     const have = new Set(setup.players.map((x) => x.id));
@@ -556,6 +570,8 @@
       });
       const fin = document.getElementById("tmFinish");
       if (fin) fin.onclick = () => { finishSetup(); render(best); window.scrollTo({ top: 0 }); toast("Η ομάδα αποθηκεύτηκε"); };
+      const rest = document.getElementById("tmRestore");
+      if (rest) rest.onclick = () => restoreSheet(() => render(best));
       const cancel = document.getElementById("tmCancel");
       if (cancel) cancel.onclick = () => { setup = null; mode = null; render(best); };
       return;

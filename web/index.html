@@ -151,6 +151,7 @@ details.fbox > summary::-webkit-details-marker { display: none; }
   overflow-y: auto; border-radius: 16px 16px 0 0; padding: 14px 16px calc(20px + env(safe-area-inset-bottom));
   box-shadow: 0 -4px 20px rgba(0,0,0,.25); }
 @media (min-width: 700px) { .modal { align-items: center; } .sheet { border-radius: 16px; } }
+#sheet .note { background: color-mix(in srgb, var(--accent) 12%, transparent); border-radius: 10px; padding: 10px 12px; font-size: 14px; }
 footer.fb { max-width: 1100px; margin: 0 auto; padding: 4px 16px calc(28px + env(safe-area-inset-bottom)); text-align: center;
   color: var(--text-secondary); font-size: 13px; }
 footer.fb a { color: var(--series-1); font-weight: 600; white-space: nowrap; }
@@ -654,6 +655,9 @@ function installGuide(force) {
       <div class="muted">Ανοίγει σαν εφαρμογή, σε πλήρη οθόνη — και η ομάδα σου δεν χάνεται.</div></div>
       <button class="x" aria-label="Κλείσιμο" onclick="dismissGuide(false)">×</button></div>
     <ol class="steps">${steps.map((x) => `<li><span>${x}</span></li>`).join("")}</ol>
+    ${P && P.edition === "public" ? `<p class="note">⚠️ <b>Στήσε την ομάδα σου μέσα από την εφαρμογή</b>, αφού την ανοίξεις από το εικονίδιο. Η εφαρμογή κρατά τα δικά της δεδομένα,
+      χωριστά από τον browser· αν έχεις ήδη στήσει ομάδα εδώ, πάρε πρώτα <b>⋯ → Αντίγραφο ασφαλείας</b> και επικόλλησέ το στην εφαρμογή
+      («📥 Έχεις σύνδεσμο αντιγράφου;»).</p>` : ""}
     ${ios ? `<p class="muted">Γιατί; Στο iPhone, αν η σελίδα δεν είναι στην οθόνη Αφετηρίας, το Safari σβήνει την αποθηκευμένη ομάδα σου μετά από 7 μέρες χωρίς χρήση.</p>` : ""}
     <div class="filters" style="margin-top:12px"><button class="seg" style="padding:8px 14px" onclick="dismissGuide(false)">Κατάλαβα</button>
       <button class="linkbtn" onclick="dismissGuide(true)">Να μην ξαναεμφανιστεί</button></div>`;
