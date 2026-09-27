@@ -51,7 +51,7 @@ def fetch(day: date) -> dict:
     host = urlparse(os.environ.get("PUBLIC_URL") or "").netloc
     if not host and os.environ.get("PUBLIC_PROJECT"):
         host = os.environ["PUBLIC_PROJECT"].lower() + ".pages.dev"
-    variables = {"acc": acc, "since": (day - timedelta(days=13)).isoformat(), "until": day.isoformat(),
+    variables = {"acc": acc, "since": (day - timedelta(days=13)).isoformat(), "until": (day + timedelta(days=1)).isoformat(),
                  "day": day.isoformat(), "host": host}
     r = requests.post(API, json={"query": QUERY, "variables": variables},
                       headers={"Authorization": f"Bearer {tok}"}, timeout=30)
@@ -75,22 +75,24 @@ def message(data: dict, day: date) -> str:
     per: dict[str, dict] = {}
     for g in data.get("days") or []:
         dm = g["dimensions"]
-        s = per.setdefault(dm["requestHost"], {"y": [0, 0], "w": [0, 0], "pw": [0, 0]})
+        s = per.setdefault(dm["requestHost"], {"t": [0, 0], "y": [0, 0], "w": [0, 0], "pw": [0, 0]})
         age = (day - date.fromisoformat(dm["date"])).days
         v, pv = g["sum"]["visits"], g["count"]
-        for key, hit in (("y", age == 0), ("w", age < 7), ("pw", 7 <= age < 14)):
+        for key, hit in (("t", age == -1), ("y", age == 0), ("w", 0 <= age < 7), ("pw", 7 <= age < 14)):
             if hit:
                 s[key][0] += v
                 s[key][1] += pv
     lines = [f"📈 <b>Analytics — {DAYS[day.weekday()]} {day.day}/{day.month}</b>"]
     if not per:
-        lines.append("Καμία επίσκεψη τις τελευταίες 14 μέρες (είναι ενεργό το Web Analytics στα Pages;).")
+        lines.append("Καμία επίσκεψη τις τελευταίες 14 μέρες. Αν ξέρεις ότι μπήκε κόσμος: είναι ενεργό το Web Analytics "
+                     "στο Pages project, και το token έχει «Account Analytics: Read» στον σωστό λογαριασμό;")
         return "\n".join(lines)
     for h in sorted(per, key=lambda h: (h != host, -per[h]["w"][0])):
         s = per[h]
         name = "HoopsLab" if h == host else h.split(".")[0]
         lines.append(f"\n<b>{escape(name)}</b> <i>{escape(h)}</i>\n"
                      f"χθες: <b>{s['y'][0]}</b> επισκέψεις · {s['y'][1]} προβολές\n"
+                     f"σήμερα ως τώρα: <b>{s['t'][0]}</b> επισκέψεις · {s['t'][1]} προβολές\n"
                      f"7 μέρες: <b>{s['w'][0]}</b> επισκέψεις{_pct(s['w'][0], s['pw'][0])} · {s['w'][1]} προβολές")
     if host and host in per:
         def top(key: str, dim: str, blank: str) -> str:

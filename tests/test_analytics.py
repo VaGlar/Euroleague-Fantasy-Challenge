@@ -17,7 +17,8 @@ DATA = {
     "days": [grp("2026-10-01", "hoopslab-beta.pages.dev", 120, 300),
              grp("2026-09-28", "hoopslab-beta.pages.dev", 80, 150),
              grp("2026-09-20", "hoopslab-beta.pages.dev", 100, 200),     # the week before
-             grp("2026-10-01", "elf-dashboard.pages.dev", 3, 9)],
+             grp("2026-10-01", "elf-dashboard.pages.dev", 3, 9),
+             grp("2026-10-02", "hoopslab-beta.pages.dev", 4, 6)],                # today so far
     "countries": [{"sum": {"visits": 100}, "dimensions": {"countryName": "GR"}},
                   {"sum": {"visits": 20}, "dimensions": {"countryName": "CY"}}],
     "devices": [{"sum": {"visits": 90}, "dimensions": {"deviceType": "mobile"}}],
@@ -30,6 +31,7 @@ def test_message_per_site_week_trend_and_sources():
     text = analytics.message(DATA, DAY)
     assert text.index("HoopsLab") < text.index("elf-dashboard")          # the product first
     assert "χθες: <b>120</b> επισκέψεις · 300 προβολές" in text
+    assert "σήμερα ως τώρα: <b>4</b> επισκέψεις" in text
     assert "7 μέρες: <b>200</b> επισκέψεις (▲100%)" in text               # 200 vs 100 the week before
     assert "GR 100 · CY 20" in text and "mobile 90" in text
     assert "απευθείας 70 · instagram.com 50" in text
@@ -69,7 +71,7 @@ def test_fetch_sends_query_and_raises_on_graphql_error(monkeypatch):
         {"data": {"viewer": {"accounts": [{"days": []}]}}}))
     out = analytics.fetch(DAY)
     assert out["host"] == "hoopslab-beta.pages.dev"
-    assert calls[0]["variables" if "variables" in calls[0] else "json"]["variables"]["since"] == "2026-09-18"
+    assert calls[0]["variables" if "variables" in calls[0] else "json"]["variables"]["since"] == "2026-09-18" and calls[0]["json"]["variables"]["until"] == "2026-10-02"
     monkeypatch.setattr(analytics.requests, "post", lambda url, **kw: R({"errors": [{"message": "not authorized"}]}))
     with pytest.raises(RuntimeError, match="not authorized"):
         analytics.fetch(DAY)
