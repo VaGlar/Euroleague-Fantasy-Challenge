@@ -1,0 +1,151 @@
+{
+ "2024": {
+  "n": 7175,
+  "rounds": 34,
+  "form": {
+   "w_last3": 0.09,
+   "w_season": 0.45,
+   "w_prev": 0.45
+  },
+  "form_mae": 5.173,
+  "coef": {
+   "calib": -0.037,
+   "pos": 0.106,
+   "pace": 0.898,
+   "margin": 0.042,
+   "blowout": 0.039,
+   "home": 0.028
+  },
+  "ctx_mae_insample": 5.148,
+  "season_avg_mae": 5.234
+ },
+ "2025": {
+  "n": 8871,
+  "rounds": 38,
+  "form": {
+   "w_last3": 0.11,
+   "w_season": 0.37,
+   "w_prev": 0.53
+  },
+  "form_mae": 5.366,
+  "coef": {
+   "calib": -0.025,
+   "pos": 0.487,
+   "pace": 0.502,
+   "margin": -0.003,
+   "blowout": -0.037,
+   "home": 0.045
+  },
+  "ctx_mae_insample": 5.325,
+  "season_avg_mae": 5.433
+ },
+ "thirds_2025": [
+  {
+   "rounds": "1-13",
+   "n": 2975,
+   "form": {
+    "w_last3": 0.07,
+    "w_season": 0.37,
+    "w_prev": 0.56
+   },
+   "coef": {
+    "calib": -0.048,
+    "pos": 0.284,
+    "pace": -0.197,
+    "margin": -0.008,
+    "blowout": -0.052,
+    "home": 0.071
+   }
+  },
+  {
+   "rounds": "14-26",
+   "n": 3077,
+   "form": {
+    "w_last3": 0.07,
+    "w_season": 0.37,
+    "w_prev": 0.56
+   },
+   "coef": {
+    "calib": 0.002,
+    "pos": 0.597,
+    "pace": 0.097,
+    "margin": 0.023,
+    "blowout": -0.053,
+    "home": 0.015
+   }
+  },
+  {
+   "rounds": "27-38",
+   "n": 2819,
+   "form": {
+    "w_last3": 0.18,
+    "w_season": 0.64,
+    "w_prev": 0.18
+   },
+   "coef": {
+    "calib": -0.008,
+    "pos": 0.602,
+    "pace": 0.642,
+    "margin": -0.041,
+    "blowout": -0.038,
+    "home": 0.054
+   }
+  }
+ ],
+ "oos_2025_second_half": {
+  "fit_2025_first_half": {
+   "mae": 5.262,
+   "spearman": 0.543,
+   "top20_hit": 0.308,
+   "n": 4243,
+   "coef": {
+    "calib": -0.034,
+    "pos": 0.345,
+    "pace": -0.056,
+    "margin": 0.017,
+    "blowout": -0.037,
+    "home": 0.043
+   }
+  },
+  "fit_2024_only": {
+   "mae": 5.286,
+   "spearman": 0.542,
+   "top20_hit": 0.297,
+   "n": 4243,
+   "coef": {
+    "calib": -0.037,
+    "pos": 0.106,
+    "pace": 0.898,
+    "margin": 0.042,
+    "blowout": 0.039,
+    "home": 0.028
+   }
+  },
+  "fit_2024_plus_2025_first_half": {
+   "mae": 5.274,
+   "spearman": 0.543,
+   "top20_hit": 0.303,
+   "n": 4243,
+   "coef": {
+    "calib": -0.04,
+    "pos": 0.242,
+    "pace": 0.391,
+    "margin": 0.031,
+    "blowout": 0.019,
+    "home": 0.034
+   }
+  },
+  "form_blend_only": {
+   "mae": 5.295,
+   "spearman": 0.54,
+   "top20_hit": 0.3,
+   "n": 4243
+  },
+  "all_2025_with_2024_fit": {
+   "mae": 5.347,
+   "spearman": 0.539,
+   "top20_hit": 0.295,
+   "n": 8871
+  }
+ }
+}

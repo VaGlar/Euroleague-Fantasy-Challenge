@@ -1,0 +1,84 @@
+{
+ "n_train": 11569,
+ "n_test": 4477,
+ "current_model": {
+  "mae": 5.295,
+  "spearman": 0.541,
+  "top20_hit": 0.3,
+  "n": 4477
+ },
+ "form_only": {
+  "mae": 5.313,
+  "spearman": 0.539,
+  "top20_hit": 0.3,
+  "n": 4477
+ },
+ "gbm_same_features": {
+  "mae": 5.294,
+  "spearman": 0.536,
+  "top20_hit": 0.305,
+  "n": 4477
+ },
+ "gbm_plus_minutes": {
+  "mae": 5.214,
+  "spearman": 0.544,
+  "top20_hit": 0.313,
+  "n": 4477
+ },
+ "linear_plus_minutes": {
+  "mae": 5.316,
+  "spearman": 0.548,
+  "top20_hit": 0.292,
+  "n": 4477
+ },
+ "gbm_plus_minutes_seed_spread": [
+  5.22,
+  5.213
+ ],
+ "loss_and_calibration": {
+  "current_model": {
+   "mae": 5.295,
+   "spearman": 0.541,
+   "top20_hit": 0.3,
+   "n": 4477,
+   "mean_pred": 7.7,
+   "mean_actual": 7.92,
+   "rmse": 6.965,
+   "top20_pred": 17.23,
+   "top20_actual": 16.04
+  },
+  "gbm_minutes_squared_loss": {
+   "mae": 5.342,
+   "spearman": 0.541,
+   "top20_hit": 0.297,
+   "n": 4477,
+   "mean_pred": 8.03,
+   "mean_actual": 7.92,
+   "rmse": 6.976,
+   "top20_pred": 16.81,
+   "top20_actual": 15.92
+  },
+  "gbm_minutes_absolute_loss": {
+   "mae": 5.214,
+   "spearman": 0.544,
+   "top20_hit": 0.313,
+   "n": 4477,
+   "mean_pred": 7.33,
+   "mean_actual": 7.92,
+   "rmse": 6.993,
+   "top20_pred": 16.83,
+   "top20_actual": 16.12
+  },
+  "linear_minutes": {
+   "mae": 5.316,
+   "spearman": 0.548,
+   "top20_hit": 0.292,
+   "n": 4477,
+   "mean_pred": 8.17,
+   "mean_actual": 7.92,
+   "rmse": 6.931,
+   "top20_pred": 16.24,
+   "top20_actual": 15.82
+  }
+ }
+}

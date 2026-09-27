@@ -1,0 +1,2 @@
+# Only for research/ experiments (not needed by the pipeline)
+scikit-learn>=1.4
