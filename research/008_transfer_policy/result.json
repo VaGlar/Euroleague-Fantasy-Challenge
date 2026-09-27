@@ -1,0 +1,116 @@
+{
+ "2025": {
+  "rounds": "3-38",
+  "current (1/.6/.35, gain 2, 4 trades)": {
+   "total": 5302.5,
+   "trades_used": 65,
+   "vs_current": 0.0,
+   "vs_current_se": 0.0
+  },
+  "myopic: next round only": {
+   "total": 5337.2,
+   "trades_used": 59,
+   "vs_current": 35.1,
+   "vs_current_se": 87.3
+  },
+  "flat: 3 rounds equal": {
+   "total": 5137.0,
+   "trades_used": 72,
+   "vs_current": -165.3,
+   "vs_current_se": 118.8
+  },
+  "longer: 1/.8/.6": {
+   "total": 5124.6,
+   "trades_used": 67,
+   "vs_current": -177.9,
+   "vs_current_se": 96.4
+  },
+  "min gain 0": {
+   "total": 5361.8,
+   "trades_used": 81,
+   "vs_current": 59.1,
+   "vs_current_se": 84.5
+  },
+  "min gain 4": {
+   "total": 5234.4,
+   "trades_used": 39,
+   "vs_current": -67.7,
+   "vs_current_se": 95.2
+  },
+  "min gain 6": {
+   "total": 4964.0,
+   "trades_used": 27,
+   "vs_current": -337.8,
+   "vs_current_se": 151.0
+  },
+  "at most 2 trades": {
+   "total": 4989.5,
+   "trades_used": 45,
+   "vs_current": -312.6,
+   "vs_current_se": 103.9
+  },
+  "no trades (windows only)": {
+   "total": 4812.9,
+   "trades_used": 0,
+   "vs_current": -489.4,
+   "vs_current_se": 181.9
+  }
+ },
+ "2024": {
+  "rounds": "3-34",
+  "current (1/.6/.35, gain 2, 4 trades)": {
+   "total": 4698.6,
+   "trades_used": 51,
+   "vs_current": 0.0,
+   "vs_current_se": 0.0
+  },
+  "myopic: next round only": {
+   "total": 4706.4,
+   "trades_used": 59,
+   "vs_current": 7.5,
+   "vs_current_se": 166.9
+  },
+  "flat: 3 rounds equal": {
+   "total": 4425.2,
+   "trades_used": 72,
+   "vs_current": -273.6,
+   "vs_current_se": 139.1
+  },
+  "longer: 1/.8/.6": {
+   "total": 4537.0,
+   "trades_used": 71,
+   "vs_current": -161.6,
+   "vs_current_se": 118.2
+  },
+  "min gain 0": {
+   "total": 4660.3,
+   "trades_used": 93,
+   "vs_current": -38.4,
+   "vs_current_se": 117.8
+  },
+  "min gain 4": {
+   "total": 4626.5,
+   "trades_used": 40,
+   "vs_current": -72.3,
+   "vs_current_se": 183.2
+  },
+  "min gain 6": {
+   "total": 4370.4,
+   "trades_used": 16,
+   "vs_current": -328.6,
+   "vs_current_se": 189.1
+  },
+  "at most 2 trades": {
+   "total": 4431.1,
+   "trades_used": 40,
+   "vs_current": -267.7,
+   "vs_current_se": 145.5
+  },
+  "no trades (windows only)": {
+   "total": 4109.1,
+   "trades_used": 0,
+   "vs_current": -589.8,
+   "vs_current_se": 205.4
+  }
+ }
+}
