@@ -16,7 +16,7 @@ import numpy as np
 import pandas as pd
 import yaml
 
-from . import el_api, fantasy, history, model, news, optimize, prices, tracking
+from . import archive, el_api, fantasy, history, model, news, optimize, prices, tracking
 from .config import BUDGET, COACH_POINTS, CURRENT_SEASON, PUBLIC, ROOT, TIMEZONE, WIN_BONUS
 
 ATH = ZoneInfo(TIMEZONE)
@@ -629,6 +629,12 @@ def build(offline: bool = False) -> dict:
     ctx["xpir"] = ctx["xpir"] * ctx["avail"]
     _write("news.json", {"articles": arts[:120], "digest": dig, "digest_at": dig_at,
                          "failed": failed})
+    try:  # keep every article for the season (the feeds forget after a few days)
+        archive.add_articles(arts)
+        if dig_at:
+            archive.add_digest(dig)
+    except Exception as e:  # noqa: BLE001 - the archive never stops the update
+        health.append(f"αρχείο άρθρων: {type(e).__name__}: {e}")
 
     # --- per-player tables (coaches ride along with position "Head Coach")
     if not pr["coaches"].empty:

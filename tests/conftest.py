@@ -40,12 +40,17 @@ def use_public(mp, pub: Path) -> Path:
     for name, mod in list(sys.modules.items()):
         if (name == "elf" or name.startswith("elf.")) and hasattr(mod, "PUBLIC"):
             mp.setattr(mod, "PUBLIC", pub)
+    import elf.archive
+    mp.setattr(elf.archive, "ARCHIVE", pub.parent / "archive")   # the private article archive too
     return pub
 
 
 @pytest.fixture(autouse=True)
-def no_network(monkeypatch):
+def no_network(monkeypatch, tmp_path_factory):
     block_network(monkeypatch)
+    # never write to the real article archive
+    import elf.archive
+    monkeypatch.setattr(elf.archive, "ARCHIVE", tmp_path_factory.mktemp("archive"))
 
 
 @pytest.fixture
