@@ -145,3 +145,54 @@ def squad_points(rnd: pd.DataFrame, pred: pd.Series) -> float:
         a = float(rnd.at[q["id"], "fpts"])
         tot += a * (0.5 if q["role"] == "πάγκος" else 1.0) * (2.0 if q["captain"] else 1.0)
     return tot
+
+
+def build_horizon(season: int, p: dict, horizon: int = 3) -> pd.DataFrame:
+    """For every decision round r: predictions for rounds r .. r+horizon-1, all made with
+    only what was known before round r (form, team ratings, defences), plus the fantasy
+    points really scored in round r. One row per (r, player, game round)."""
+    p = copy.deepcopy(p)
+    games = history.load("games", season)
+    players = history.load("players", season)
+    teams = history.load("teams", season)
+    prev_players, prev_teams = history.load("players", season - 1), history.load("teams", season - 1)
+    pos_map = bt.pos_map_for(season)
+    price = estimated_prices(season, pos_map)
+    rs = games[(games["phase"] == "RS")].copy()
+    rs["utc"] = pd.to_datetime(rs["utc"])
+    games["utc"] = pd.to_datetime(games["utc"])
+    won = {}
+    for g in rs[rs["played"]].itertuples():
+        won[(g.gamecode, g.home)] = g.home_score > g.away_score
+        won[(g.gamecode, g.away)] = g.away_score > g.home_score
+    codes = sorted(set(rs["home"]) | set(rs["away"]))
+    last = int(rs["round"].max())
+    out = []
+    for r in sorted(rs.loc[rs["played"], "round"].unique()):
+        if r < MIN_ROUND:
+            continue
+        fx_now = rs[rs["round"] == r]
+        before = set(games.loc[games["played"] & (games["utc"] < fx_now["utc"].min()), "gamecode"])
+        cp = players[players["gamecode"].isin(before)].sort_values("gamecode")
+        ct = teams[teams["gamecode"].isin(before)]
+        ratings = model.team_ratings(ct, prev_teams, codes, p)
+        pdev = model.position_allowed(cp, prev_players, pos_map, p)
+        base = model.player_base(cp, prev_players, p)
+        roster = cp.groupby("person_id")["team"].last().reset_index()
+        roster = roster.assign(position=roster["person_id"].map(pos_map)).dropna(subset=["position"])
+        fx = rs[rs["round"].between(r, min(r + horizon - 1, last))]
+        ctx = model.context_rows(fx, roster, ratings, pdev)
+        ctx = ctx.merge(base[["last3_pir", "season_pir", "prev_pir", "games"]], left_on="person_id",
+                        right_index=True, how="left")
+        for c in ["last3_pir", "season_pir", "prev_pir", "games", "pos_dev", "pace_dev", "margin"]:
+            ctx[c] = pd.to_numeric(ctx[c], errors="coerce")
+        ctx["pred"] = predict(ctx, p)
+        act = players[players["gamecode"].isin(fx_now["gamecode"])][["gamecode", "person_id", "team", "pir"]]
+        ctx = ctx.merge(act, on=["gamecode", "person_id", "team"], how="left")
+        ctx["won"] = [won.get((g, t), False) for g, t in zip(ctx["gamecode"], ctx["team"])]
+        ctx["fpts"] = ctx["pir"].fillna(0.0) * np.where(ctx["won"], 1.1, 1.0)
+        ctx["dec_round"] = r
+        ctx["price"] = ctx["person_id"].map(price)
+        out.append(ctx.dropna(subset=["price"])[["dec_round", "round", "person_id", "team", "position",
+                                                 "price", "pred", "fpts"]])
+    return pd.concat(out, ignore_index=True)
