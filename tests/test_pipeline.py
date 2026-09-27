@@ -94,6 +94,8 @@ def test_transfers_are_legal(pipeline):
     my = pipeline["pred"]["my_team"]
     assert len(my["transfers"]) <= my["max_trades"]
     assert my["bank_after"] >= -1e-6
+    # preferences go to the dashboard as ids (its own re-plan honours them); never to the public edition
+    assert set(my["prefs"]) == {"keep", "avoid"} and all(isinstance(i, int) for i in my["prefs"]["keep"])
 
 
 def test_best_squad_is_legal(pipeline):

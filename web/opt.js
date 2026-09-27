@@ -148,13 +148,15 @@
   // Best set of at most maxTrades same-position swaps (beam search).
   // A set of k trades is kept only if it adds >= minGain per trade over the current
   // squad, and each extra trade adds >= minGain (as optimize.transfers).
+  // keep: ids never sold; avoid: ids never bought.
   function transfers(squad, pool, bank, { maxTrades = 4, minGain = 2.0, beam = 24, perPos = 16,
-    value = "x_h", now = "x_now" } = {}) {
+    value = "x_h", now = "x_now", keep = [], avoid = [] } = {}) {
+    const kept = new Set(keep), avoided = new Set(avoid);
     const budget = squad.reduce((a, p) => a + num(p.price), 0) + bank;
     const owned = new Set(squad.map((p) => p.id));
     const cand = {};
     for (const pos of Object.keys(SQUAD)) {
-      cand[pos] = pool.filter((p) => p.position === pos && !owned.has(p.id) && p.price != null)
+      cand[pos] = pool.filter((p) => p.position === pos && !owned.has(p.id) && !avoided.has(p.id) && p.price != null)
         .sort((a, b) => num(b[value]) - num(a[value])).slice(0, perPos);
     }
     const baseVal = squadValue(squad, value, now);
@@ -165,7 +167,7 @@
       for (const st of frontier) {
         const ids = new Set(st.squad.map((p) => p.id));
         st.squad.forEach((out, oi) => {
-          if (!owned.has(out.id)) return;            // never swap a player bought in this set
+          if (!owned.has(out.id) || kept.has(out.id)) return;   // never swap a player bought in this set, or a kept one
           for (const inn of cand[out.position]) {
             if (ids.has(inn.id)) continue;
             const cost = st.cost - num(out.price) + num(inn.price);

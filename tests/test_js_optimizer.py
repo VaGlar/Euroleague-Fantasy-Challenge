@@ -109,3 +109,20 @@ def test_transfers_close_to_python_and_legal():
         counts = {pos: sum(q["position"] == pos for q in j["squad"]) for pos in optimize.SQUAD}
         assert counts == optimize.SQUAD and j["n"] <= c["maxTrades"]
         assert j["gain"] >= 0.95 * (p["gain"] or 0) - 0.5, (j["gain"], p["gain"])
+
+
+def test_transfers_keep_never_sells_kept_players():
+    rnd = random.Random(5)
+    cases, pys = [], []
+    for i in range(8):
+        pool = rand_squad(rnd, 1000) + rand_squad(rnd, 2000) + rand_squad(rnd, 3000)
+        sq = rand_squad(rnd, 1)
+        # keep the two weakest court players: the ones a plain run would sell first
+        keep = [q["id"] for q in sorted((q for q in sq if q["position"] != "Head Coach"), key=lambda q: q["x_h"])[:2]]
+        cases.append({"kind": "transfers", "squad": sq, "pool": pool, "bank": 3.0, "maxTrades": 4,
+                      "minGain": 2.0, "keep": keep})
+        pys.append(optimize.transfers(sq, pool, 3.0, max_trades=4, min_gain_per_trade=2.0, keep=set(keep)))
+    for c, p, j in zip(cases, pys, js(cases)):
+        ids = {q["id"] for q in j["squad"]}
+        assert set(c["keep"]) <= ids
+        assert j["gain"] >= 0.95 * (p["gain"] or 0) - 0.5, (j["gain"], p["gain"])

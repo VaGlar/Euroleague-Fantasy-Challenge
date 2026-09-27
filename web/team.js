@@ -100,27 +100,45 @@
   function sheet(html) { $("#sheet").innerHTML = html; $("#modal").classList.add("on"); document.body.classList.add("noscroll"); $("#sheet").scrollTop = 0; }
 
   // ------------------------------------------------------------ the plan: target and the steps to it
+  // players the user doesn't want to sell for the round the trades are for
+  const KEEP = "tm_keep";
+  function kept(ti) {
+    try { const k = JSON.parse(localStorage.getItem(KEEP) || "null"); return k && k.round === ti.round ? k.ids : []; } catch (e) { return []; }
+  }
+  function setKept(ti, ids) { try { localStorage.setItem(KEEP, JSON.stringify({ round: ti.round, ids })); } catch (e) {} }
+  const tradeInfo = (t) => t.game ? { round: P.my_team?.trade_round ?? P.round, max_trades: P.my_team?.max_trades ?? 4,
+    min_gain: P.trade_info?.min_gain ?? 2 } : (P.trade_info || { round: P.round, max_trades: 4, min_gain: 2 });
+  const poolRows = (avoid = []) => P.players.filter((p) => p.fantasy_id != null && p.price != null && !avoid.includes(Number(p.fantasy_id)))
+    .map((p) => ({ id: Number(p.fantasy_id), position: p.position, price: p.price, x_h: p.x_h ?? 0, x_now: p.x_now ?? 0 }));
   function tradesFor(t, rows) {
     if (t.game) {
-      const my = P.my_team || {};
+      const my = P.my_team || {}, ti = tradeInfo(t), keep = kept(ti);
+      if (keep.length) {   // re-plan in the browser (same optimizer, checked against Python) without selling them
+        const prefs = my.prefs || { keep: [], avoid: [] };
+        const k = "g|" + keep.join(",") + "|" + P.generated;
+        if (cache.key !== k) {
+          cache = { key: k, trs: ELFOPT.transfers(optRows(rows, t, false), poolRows(prefs.avoid), Number(t.bank) || 0,
+            { maxTrades: ti.max_trades, minGain: ti.min_gain, keep: [...keep, ...prefs.keep] }) };
+          cache.trs.pairs.sort((a, b) => (a.in.price - a.out.price) - (b.in.price - b.out.price));
+        }
+        return { ti, trs: cache.trs, keep };
+      }
       const pairs = (my.transfers || []).filter((m) => m.out_id != null && m.in_id != null)
         .map((m) => ({ out: { id: Number(m.out_id), price: m.price_out }, in: { id: Number(m.in_id), price: m.price_in } }))
         .sort((a, b) => (a.in.price - a.out.price) - (b.in.price - b.out.price));
-      return { ti: { round: my.trade_round ?? P.round, max_trades: my.max_trades ?? 4 }, trs: { pairs, gain: my.transfer_gain ?? 0 } };
+      return { ti, trs: { pairs, gain: my.transfer_gain ?? 0 }, keep };
     }
-    const ti = P.trade_info || { round: P.round, max_trades: 4, min_gain: 2 };
+    const ti = tradeInfo(t), keep = kept(ti);
     const left = Math.max(0, ti.max_trades - usedTrades(t, ti));
-    const k = t.players.map((x) => `${x.id}:${x.price}`).join(",") + "|" + t.bank + "|" + left + "|" + P.generated;
+    const k = t.players.map((x) => `${x.id}:${x.price}`).join(",") + "|" + t.bank + "|" + left + "|" + keep.join(",") + "|" + P.generated;
     if (cache.key !== k && !left) cache = { key: k, trs: { pairs: [], gain: 0 } };
     if (cache.key !== k) {
-      const pool = P.players.filter((p) => p.fantasy_id != null && p.price != null)
-        .map((p) => ({ id: p.fantasy_id, position: p.position, price: p.price, x_h: p.x_h ?? 0, x_now: p.x_now ?? 0 }));
-      cache = { key: k, trs: ELFOPT.transfers(optRows(rows, t, false), pool, Number(t.bank) || 0,
-        { maxTrades: left, minGain: ti.min_gain }) };
+      cache = { key: k, trs: ELFOPT.transfers(optRows(rows, t, false), poolRows(), Number(t.bank) || 0,
+        { maxTrades: left, minGain: ti.min_gain, keep }) };
       // money-freeing trades first, so the bank never goes negative while making them
       cache.trs.pairs.sort((a, b) => (a.in.price - a.out.price) - (b.in.price - b.out.price));
     }
-    return { ti, trs: cache.trs, left };
+    return { ti, trs: cache.trs, left, keep };
   }
   // trades already made for the round the proposal is for (so a done trade isn't re-proposed)
   const usedTrades = (t, ti) => (t.used && t.used.round === ti.round ? t.used.n : 0);
@@ -158,7 +176,7 @@
   function plan(t) {
     const rows = rowsOf(t);
     const inRound = started();
-    const { ti, trs } = tradesFor(t, rows);
+    const { ti, trs, keep } = tradesFor(t, rows);
     const tradesNow = !inRound && ti.round === P.round;          // trades are for this round
     const pairs = trs.pairs;
     // squad after this round's trades (incoming players inherit the outgoing one's role)
@@ -178,6 +196,7 @@
       const o = rows.find((r) => r.id === pr.out.id), n = row(pr.in.id);
       items.push({ kind: "🔁", html: `Μεταγραφή: <b>${esc(sur(o.name))}</b> ➜ <b>${esc(sur(n.name))}</b>`,
         why: `${esc(n.team)}${n.turn ? " · T" + n.turn : ""} · ${f1(pr.out.price)} → ${f1(pr.in.price)} cr · +${f1((n.x_h ?? 0) - (o.x_h ?? 0))} xPTS3`,
+        keep: o,
         run: () => { applyTrade(t, pr.out.id, pr.in.id, pr.in.price); save(t); toast(`${sur(o.name)} ➜ ${sur(n.name)} · υπόλοιπο ${f1(t.bank)} cr`); } });
     }
     const pendingTrades = items.length > 0;
@@ -212,7 +231,7 @@
         why: ready ? `xPTS ${f1(inRound && played(c) ? c.actual : c.x_now)} · διπλοί πόντοι` : "μετά τη μεταγραφή και την πεντάδα", wait: !ready,
         run: () => { t.captain = targetCap; save(t); toast(`Αρχηγός: ${sur(c.name)}`); } });
     }
-    return { rows, items, turnPlan, trs, ti, tradesNow, inRound, aRows, target, targetCap };
+    return { rows, items, turnPlan, trs, ti, tradesNow, inRound, aRows, target, targetCap, keep: keep || [] };
   }
 
   // ------------------------------------------------------------ actions on the saved team
@@ -294,8 +313,11 @@
     const confirm = !t.confirmed ? `<li class="tm-item"><span class="tm-kind">👀</span><span class="tm-what"><b>Έλεγξε την πεντάδα σου</b>
         <span class="tm-why">Βάλαμε ρόλους με βάση την πρόταση. Αν στο παιχνίδι είναι αλλιώς, σύρε τους παίκτες όπως είναι εκεί.</span></span>
         <button class="tm-done" id="tmConfirm">✓ Είναι ίδια</button></li>` : "";
+    const keepBtn = (o) => `<button class="tm-keep" data-keep="${o.id}">🔒 Κράτα τον ${esc(sur(o.name))} αυτή την αγωνιστική</button>`;
+    const keptLine = pl.keep.length ? `<p class="tm-kept">🔒 Κρατάς: ${pl.keep.map((id) => { const r = row(id);
+        return `<b>${esc(sur(r ? r.name : String(id)))}</b> <button class="linkbtn" data-unkeep="${id}">αναίρεση</button>`; }).join(" · ")}</p>` : "";
     const list = items.map((i, n) => `<li class="tm-item"><span class="tm-kind" aria-hidden="true">${i.kind}</span>
-        <span class="tm-what">${i.html}<span class="tm-why">${i.why}</span></span>
+        <span class="tm-what">${i.html}<span class="tm-why">${i.why}</span>${i.keep ? keepBtn(i.keep) : ""}</span>
         ${t.game ? "" : `<button class="tm-done" data-i="${n}" ${i.wait ? "disabled" : ""}>✓ Το έκανα</button>`}</li>`).join("");
     const turnPlan = pl.turnPlan.map((x) => { const s = pl.aRows.find((r) => r.id === x.start.id), b = pl.aRows.find((r) => r.id === x.bench.id);
       return `<li>🕐 <b>Πριν το T${x.bench.turn}</b>: αν ο ${esc(sur(s.name))} φέρει κάτω από ${Math.round(x.bench.x_now)}, βάλε τον ${esc(sur(b.name))}.</li>`; }).join("");
@@ -303,8 +325,9 @@
         <small class="muted">(${pl.ti.max_trades > 4 ? "απεριόριστες" : `έως ${pl.ti.max_trades}`}${usedTrades(t, pl.ti) ? ` · έκανες ${usedTrades(t, pl.ti)}` : ""} · γίνονται όταν τελειώσει η τρέχουσα)</small></h2>
         <ul class="tm-list">${pl.trs.pairs.map((pr, n) => { const o = rows.find((r) => r.id === pr.out.id), nn = row(pr.in.id);
           return `<li class="tm-item"><span class="tm-kind">🔁</span><span class="tm-what"><b>${esc(sur(o.name))}</b> ➜ <b>${esc(sur(nn.name))}</b>
-            <span class="tm-why">${esc(nn.team)} · ${f1(pr.out.price)} → ${f1(pr.in.price)} cr · +${f1((nn.x_h ?? 0) - (o.x_h ?? 0))} xPTS3</span></span>
-            ${t.game ? "" : `<button class="tm-done" data-n="${n}">✓ Το έκανα</button>`}</li>`; }).join("")}</ul></div>` : "";
+            <span class="tm-why">${esc(nn.team)} · ${f1(pr.out.price)} → ${f1(pr.in.price)} cr · +${f1((nn.x_h ?? 0) - (o.x_h ?? 0))} xPTS3</span>${keepBtn(o)}</span>
+            ${t.game ? "" : `<button class="tm-done" data-n="${n}">✓ Το έκανα</button>`}</li>`; }).join("")}</ul>${keptLine}</div>`
+      : !pl.tradesNow && pl.keep.length ? `<div class="card"><h2>Μεταγραφές για την αγωνιστική ${pl.ti.round}</h2><p>Καμία αλλαγή δεν αξίζει χωρίς αυτούς που κρατάς.</p>${keptLine}</div>` : "";
     const done = !items.length && t.confirmed;
     const upd = P.generated ? new Date(P.generated).toLocaleString("el-GR", { weekday: "short", hour: "2-digit", minute: "2-digit" }) : "";
     const hint = t.game
@@ -316,6 +339,7 @@
         ${t.game ? "" : `<div class="tm-morewrap"><button class="tm-more" id="tmMore" aria-label="Περισσότερα">⋯</button><div id="tmMenu"></div></div>`}</header>
       <div class="card"><h2>Τι κάνω τώρα <small class="muted">${items.length ? `${items.length} ${items.length === 1 ? "βήμα" : "βήματα"}` : ""}</small></h2>
         ${done ? `<div class="tm-ready">✅ Έτοιμος για την αγωνιστική</div>` : `<ul class="tm-list">${confirm}${list}</ul>`}
+        ${pl.tradesNow ? keptLine : ""}
         ${turnPlan ? `<ul class="plan">${turnPlan}</ul>` : ""}
         <p class="tm-hint">${hint}
         ${pl.inRound ? "Μέσα στην αγωνιστική: όποιος έπαιξε μπορεί μόνο να βγει στον πάγκο· το x2 μόνο σε παίκτη που δεν έχει παίξει." : ""}</p></div>
@@ -556,6 +580,7 @@
       if (!g) { $("#team").innerHTML = `<div class="card warn"><h2>Η ομάδα δεν είναι διαθέσιμη</h2>
         <p>Χρειάζεται έγκυρο <code>FANTASY_TOKEN</code> στα GitHub Secrets.</p></div>${bestCard(best)}`; return; }
       $("#team").innerHTML = mainView(g, best);
+      bindKeep(g, best);
       document.querySelectorAll("#team .chip[data-fid]").forEach((el) => el.onclick = () => { const r = row(Number(el.dataset.fid)); if (r) openPlayer(r.person_id); });
       return;
     }
@@ -595,7 +620,20 @@
     on("tmConfirm", () => { t.confirmed = true; save(t); render(best); });
     on("tmMore", (e) => { e.stopPropagation(); menu(t, best); });
     on("tmEdit", () => { setup = { players: t.players.map((x) => ({ ...x })) }; mode = "setup"; render(best); });
+    bindKeep(t, best);
     bindCourt(t);
+  }
+  // «Δεν θέλω να διώξω αυτόν τον παίκτη αυτή την αγωνιστική» and its undo: re-plan the trades
+  function bindKeep(t, best) {
+    const ti = tradeInfo(t);
+    document.querySelectorAll("#team [data-keep]").forEach((b) => b.onclick = () => {
+      const id = Number(b.dataset.keep), r = row(id);
+      setKept(ti, [...new Set([...kept(ti), id])]); render(best);
+      toast(`Κρατάς τον ${sur(r ? r.name : "")} — νέες προτάσεις`);
+    });
+    document.querySelectorAll("#team [data-unkeep]").forEach((b) => b.onclick = () => {
+      setKept(ti, kept(ti).filter((x) => x !== Number(b.dataset.unkeep))); render(best);
+    });
   }
 
   // styles for this screen
@@ -648,6 +686,10 @@
     .tm-courtcard > .tm-primary { width: calc(100% - 28px); }
     .tm-courtcard .tm-floor { border-radius: 0; border-left: 0; border-right: 0; }
   }
+  .tm-keep { display: block; margin-top: 6px; padding: 0; border: 0; background: none; color: var(--series-1); font: inherit; font-size: 13px;
+    text-align: left; cursor: pointer; }
+  .tm-kept { font-size: 14px; margin: 10px 0 0; }
+  .tm-kept .linkbtn { font-size: 13px; }
   .sheet #tmQ { position: sticky; top: -14px; z-index: 1; box-shadow: 0 6px 8px -6px rgba(0,0,0,.25); }
   .tm-input { width: 100%; font: inherit; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--border);
     background: var(--surface-1); color: var(--text-primary); margin: 10px 0; }

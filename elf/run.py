@@ -738,7 +738,9 @@ def build(offline: bool = False) -> dict:
             my = {"name": t["name"], "players": mine.sort_values("x_now", ascending=False)
                   .to_dict("records"), "bank": bank, "captain_id": meta.get("captain"),
                   "parsed_players": len(ids), "max_trades": max_trades, "trade_round": trade_rnd,
-                  "actual_lineup": actual_lineup(t["raw"])}
+                  "actual_lineup": actual_lineup(t["raw"]),
+                  # preferences.yaml, so the dashboard's own re-plan (a player kept for a round) honours them
+                  "prefs": {"keep": sorted(int(i) for i in keep_ids), "avoid": sorted(int(i) for i in avoid_ids)}}
             five = [r for r in my["actual_lineup"] if r["role"] == "5άδα"]
             if five and not {"Guard", "Forward", "Center"} <= {r["position"] for r in five}:
                 health.append("ομάδα: η πεντάδα που διάβασα δεν έχει G/F/C — έλεγχος court_position")
