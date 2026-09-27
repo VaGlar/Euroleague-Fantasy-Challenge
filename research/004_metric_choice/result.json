@@ -1,0 +1,179 @@
+{
+ "price_fit": {
+  "Center": [
+   4.48,
+   0.58,
+   0.92
+  ],
+  "Forward": [
+   3.36,
+   0.62,
+   0.93
+  ],
+  "Guard": [
+   3.91,
+   0.58,
+   0.92
+  ]
+ },
+ "seasons": [
+  {
+   "season": 2025,
+   "rounds_train": "3-22",
+   "rounds_test": "23-38",
+   "pool_per_round": 321,
+   "test_second_half": {
+    "mae": {
+     "weights": [
+      0.1,
+      0.5,
+      0.5
+     ],
+     "points_per_round": 147.9,
+     "vs_live": -2.0,
+     "vs_live_se": 2.7,
+     "mae": 5.023,
+     "rmse": 6.981,
+     "tier_rho": 0.358
+    },
+    "rmse": {
+     "weights": [
+      0.1,
+      0.5,
+      1.0
+     ],
+     "points_per_round": 146.9,
+     "vs_live": -3.0,
+     "vs_live_se": 2.5,
+     "mae": 5.049,
+     "rmse": 6.996,
+     "tier_rho": 0.356
+    },
+    "tier_rho": {
+     "weights": [
+      0.1,
+      0.5,
+      0.35
+     ],
+     "points_per_round": 147.4,
+     "vs_live": -2.4,
+     "vs_live_se": 3.1,
+     "mae": 5.015,
+     "rmse": 6.979,
+     "tier_rho": 0.358
+    },
+    "points": {
+     "weights": [
+      0.1,
+      0.35,
+      0.75
+     ],
+     "points_per_round": 143.5,
+     "vs_live": -6.4,
+     "vs_live_se": 2.1,
+     "mae": 5.043,
+     "rmse": 6.993,
+     "tier_rho": 0.359
+    },
+    "live (today)": {
+     "weights": [
+      0.1,
+      0.35,
+      0.5
+     ],
+     "points_per_round": 149.9,
+     "vs_live": 0.0,
+     "vs_live_se": 0.0,
+     "mae": 5.027,
+     "rmse": 6.983,
+     "tier_rho": 0.36
+    },
+    "baseline: season average": {
+     "points_per_round": 145.4
+    },
+    "hindsight (the best possible)": {
+     "points_per_round": 281.9
+    }
+   }
+  },
+  {
+   "season": 2024,
+   "rounds_train": "3-19",
+   "rounds_test": "20-34",
+   "pool_per_round": 278,
+   "test_second_half": {
+    "mae": {
+     "weights": [
+      0.1,
+      0.35,
+      0.1
+     ],
+     "points_per_round": 163.9,
+     "vs_live": 2.8,
+     "vs_live_se": 1.8,
+     "mae": 5.187,
+     "rmse": 7.125,
+     "tier_rho": 0.36
+    },
+    "rmse": {
+     "weights": [
+      0.1,
+      0.35,
+      0.35
+     ],
+     "points_per_round": 161.9,
+     "vs_live": 0.8,
+     "vs_live_se": 1.2,
+     "mae": 5.212,
+     "rmse": 7.129,
+     "tier_rho": 0.361
+    },
+    "tier_rho": {
+     "weights": [
+      0.0,
+      0.5,
+      0.1
+     ],
+     "points_per_round": 151.0,
+     "vs_live": -10.1,
+     "vs_live_se": 6.7,
+     "mae": 5.231,
+     "rmse": 7.176,
+     "tier_rho": 0.351
+    },
+    "points": {
+     "weights": [
+      0.0,
+      0.5,
+      0.75
+     ],
+     "points_per_round": 159.2,
+     "vs_live": -1.9,
+     "vs_live_se": 3.6,
+     "mae": 5.284,
+     "rmse": 7.194,
+     "tier_rho": 0.351
+    },
+    "live (today)": {
+     "weights": [
+      0.1,
+      0.35,
+      0.5
+     ],
+     "points_per_round": 161.1,
+     "vs_live": 0.0,
+     "vs_live_se": 0.0,
+     "mae": 5.225,
+     "rmse": 7.136,
+     "tier_rho": 0.36
+    },
+    "baseline: season average": {
+     "points_per_round": 157.1
+    },
+    "hindsight (the best possible)": {
+     "points_per_round": 276.9
+    }
+   }
+  }
+ ]
+}
