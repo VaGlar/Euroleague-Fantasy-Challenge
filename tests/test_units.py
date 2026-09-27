@@ -237,3 +237,23 @@ def test_data_token_used_for_market_reads_only(monkeypatch):
                         lambda url, params=None, headers=None, timeout=None: seen.update(h=headers) or R())
     fantasy.players(1, 2)
     assert seen["h"]["Authorization"] == "Bearer data-account"
+
+
+def test_standings_wins_then_point_difference(monkeypatch):
+    import pandas as pd
+    from elf import run
+    games = pd.DataFrame([
+        {"phase": "RS", "played": True, "home": "A", "away": "B", "home_score": 90, "away_score": 70},
+        {"phase": "RS", "played": True, "home": "C", "away": "D", "home_score": 80, "away_score": 78},
+        {"phase": "RS", "played": True, "home": "B", "away": "C", "home_score": 85, "away_score": 60},
+        {"phase": "RS", "played": False, "home": "A", "away": "C", "home_score": None, "away_score": None},
+        {"phase": "PO", "played": True, "home": "D", "away": "A", "home_score": 99, "away_score": 50},
+    ])
+    monkeypatch.setattr(run.history, "load", lambda kind, season: games)
+    table = run.standings(2026, ["A", "B", "C", "D", "E"])
+    # A 1-0; B and C 1-1 split by difference (+5 vs -23); E 0-0 before D 0-1; play-offs and unplayed ignored
+    assert [r["team"] for r in table] == ["A", "B", "C", "E", "D"]
+    b = next(r for r in table if r["team"] == "B")
+    assert (b["gp"], b["w"], b["l"], b["diff"]) == (2, 1, 1, 5)
+    e = table[3]
+    assert (e["team"], e["gp"], e["pos"]) == ("E", 0, 4)

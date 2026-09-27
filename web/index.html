@@ -202,6 +202,8 @@ body.noscroll { overflow: hidden; }
 .legend { display: flex; gap: 4px; align-items: center; font-size: 11px; color: var(--text-muted); margin: 6px 0 0; flex-wrap: wrap; }
 .legend i { display: inline-block; width: 18px; height: 12px; border-radius: 3px; }
 .dots { display: inline-flex; gap: 2px; }
+.st-club { font-size: 12px; }
+@media (max-width: 560px) { .st-club { display: none; } }
 .dots b { display: inline-block; width: 16px; height: 16px; border-radius: 50%; font-size: 10px; line-height: 16px;
   text-align: center; color: #fff; }
 .dots b.w { background: var(--good); } .dots b.l { background: var(--critical); }
@@ -243,7 +245,7 @@ ul.news li { padding: 8px 0; border-bottom: 1px solid var(--border); }
     <button data-t="report" class="on">Report</button>
     <button data-t="players">Παίκτες</button>
     <button data-t="team">Η ομάδα μου</button>
-    <button data-t="teams">Ομάδες</button>
+    <button data-t="teams">Βαθμολογία</button>
     <button data-t="news">Νέα</button>
     <button data-t="compare">Σύγκριση<span class="cnt" id="cmpcnt" hidden></span></button>
     <button data-t="model">Μοντέλο</button>
@@ -434,8 +436,8 @@ function courtView(list, ref) {
 function renderTeam(my, best) { if (window.TEAM) TEAM.render(best); }
 
 // ---------------------------------------------------------------- teams
-let teamsView = "power";
-try { teamsView = localStorage.getItem("teamsView") || "power"; } catch (e) {}
+let teamsView = "standings";
+try { teamsView = localStorage.getItem("teamsView2") || "standings"; } catch (e) {}
 const TR = () => Object.fromEntries(P.team_ratings.map((t) => [t.team, t]));
 // expected margin for `team` vs `opp` (same formula as the model), + = team favoured
 function margin(team, opp, home) {
@@ -459,10 +461,23 @@ function upcoming(team, n = 4) {
 const dots = (team) => `<span class="dots">${((P.team_form || {})[team] || []).slice().reverse()
   .map((g) => `<b class="${g.won ? "w" : "l"}" title="R${g.round} ${g.home ? "vs" : "@"} ${esc(g.opp)} ${esc(g.score)}">${g.won ? "Ν" : "Η"}</b>`).join("") || '<span class="muted">–</span>'}</span>`;
 function renderTeams() {
-  const seg = `<div class="seg">${[["power", "Δύναμη"], ["fixtures", "Πρόγραμμα"], ["defense", "Άμυνες ανά θέση"]]
+  const seg = `<div class="seg">${[["standings", "Βαθμολογία"], ["power", "Δύναμη"], ["fixtures", "Πρόγραμμα"], ["defense", "Άμυνες"]]
     .map(([k, l]) => `<button data-tv="${k}" class="${teamsView === k ? "on" : ""}">${l}</button>`).join("")}</div>`;
   let body = "";
-  if (teamsView === "power") {
+  if (teamsView === "standings") {
+    const st = P.standings || [];
+    const played = st.some((r) => r.gp);
+    body = st.length ? `<div class="card tablewrap"><table id="stable" class="fit"><thead><tr><th>#</th><th>Ομάδα</th>
+      <th class="num">Αγ</th><th class="num">Ν</th><th class="num">Η</th><th class="num">+/−</th><th>Φόρμα</th></tr></thead><tbody>
+      ${st.map((r) => `<tr data-team="${esc(r.team)}"><td>${r.pos}</td>
+        <td><b>${esc(r.team)}</b> <span class="muted st-club">${esc((P.clubs || {})[r.team] || "")}</span></td>
+        <td class="num">${r.gp}</td><td class="num"><b>${r.w}</b></td><td class="num">${r.l}</td>
+        <td class="num ${r.diff > 0 ? "up" : r.diff < 0 ? "down" : ""}">${r.diff > 0 ? "+" : ""}${r.diff}</td><td>${dots(r.team)}</td></tr>`).join("")}
+      </tbody></table></div>
+      <p class="muted">Κανονική περίοδος. Σειρά: νίκες και μετά διαφορά πόντων (η επίσημη ισοβαθμία κρίνεται από τα μεταξύ τους παιχνίδια).
+      ${played ? "" : "Δεν έχει παιχτεί ακόμα αγώνας."} Πάτα μια ομάδα για λεπτομέρειες.</p>`
+      : `<div class="card"><p>Η βαθμολογία θα εμφανιστεί μετά το επόμενο update.</p></div>`;
+  } else if (teamsView === "power") {
     body = `<div class="card tablewrap"><table id="rtable"><thead><tr><th>#</th><th>Ομάδα</th><th class="num">Net</th>
       <th class="num">Pace</th><th class="num">Έδρα</th><th>Φόρμα</th></tr></thead><tbody>
       ${P.team_ratings.map((t, i) => `<tr data-team="${esc(t.team)}"><td>${i + 1}</td><td><b>${esc(t.team)}</b></td>
@@ -499,7 +514,7 @@ function renderTeams() {
   $("#teams").innerHTML = seg + body;
   $("#teams").querySelectorAll(".seg button").forEach((b) => b.onclick = () => {
     teamsView = b.dataset.tv;
-    try { localStorage.setItem("teamsView", teamsView); } catch (e) {}
+    try { localStorage.setItem("teamsView2", teamsView); } catch (e) {}
     renderTeams();
   });
   $("#teams").querySelectorAll("th[data-dk]").forEach((th) => th.onclick = () => { defSort = th.dataset.dk; renderTeams(); });
@@ -656,7 +671,7 @@ function installGuide(force) {
       <button class="x" aria-label="Κλείσιμο" onclick="dismissGuide(false)">×</button></div>
     <ol class="steps">${steps.map((x) => `<li><span>${x}</span></li>`).join("")}</ol>
     ${P && P.edition === "public" ? `<p class="note">⚠️ <b>Στήσε την ομάδα σου μέσα από την εφαρμογή</b>, αφού την ανοίξεις από το εικονίδιο. Η εφαρμογή κρατά τα δικά της δεδομένα,
-      χωριστά από τον browser· αν έχεις ήδη στήσει ομάδα εδώ, πάρε πρώτα <b>⋯ → Αντίγραφο ασφαλείας</b> και επικόλλησέ το στην εφαρμογή
+      χωριστά από τον browser· αν έχεις ήδη στήσει ομάδα εδώ, πάρε πρώτα <b>Επιλογές → Αντίγραφο ασφαλείας</b> και επικόλλησέ το στην εφαρμογή
       («📥 Έχεις σύνδεσμο αντιγράφου;»).</p>` : ""}
     ${ios ? `<p class="muted">Γιατί; Στο iPhone, αν η σελίδα δεν είναι στην οθόνη Αφετηρίας, το Safari σβήνει την αποθηκευμένη ομάδα σου μετά από 7 μέρες χωρίς χρήση.</p>` : ""}
     <div class="filters" style="margin-top:12px"><button class="seg" style="padding:8px 14px" onclick="dismissGuide(false)">Κατάλαβα</button>

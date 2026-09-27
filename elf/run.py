@@ -590,6 +590,24 @@ def team_form(season: int, n: int = 5) -> dict:
     return out
 
 
+def standings(season: int, teams: list[str] | None = None) -> list[dict]:
+    """Regular-season table: wins first, then point difference (the official tie-break is
+    head-to-head; with few games played the difference is the usual stand-in)."""
+    g = history.load("games", season)
+    rows = {t: {"team": t, "gp": 0, "w": 0, "l": 0, "pf": 0, "pa": 0} for t in (teams or [])}
+    if not g.empty:
+        g = g[g["played"] & (g["phase"].fillna("RS") == "RS")]
+        for r in g.itertuples():
+            for team, a, b in ((r.home, r.home_score, r.away_score), (r.away, r.away_score, r.home_score)):
+                s = rows.setdefault(team, {"team": team, "gp": 0, "w": 0, "l": 0, "pf": 0, "pa": 0})
+                s["gp"] += 1
+                s["w" if a > b else "l"] += 1
+                s["pf"] += int(a)
+                s["pa"] += int(b)
+    out = sorted(rows.values(), key=lambda s: (-s["w"], s["l"], -(s["pf"] - s["pa"]), -s["pf"], s["team"]))
+    return [{**s, "diff": s["pf"] - s["pa"], "pos": i + 1} for i, s in enumerate(out)]
+
+
 def build(offline: bool = False) -> dict:
     season = CURRENT_SEASON
     if not offline:
@@ -829,6 +847,7 @@ def build(offline: bool = False) -> dict:
                                        for pos in ("Guard", "Forward", "Center")}}
                         for t in pr["ratings"].index],
         "team_form": team_form(CURRENT_SEASON),
+        "standings": standings(CURRENT_SEASON, list(pr["ratings"].index)),
         "clubs": dict(zip(clubs["code"], clubs["name"])),
         "my_team": my, "best_team": best, "health": health, "fantasy_ok": fs.get("ok", False),
         # trade rules for this moment (the public edition optimizes in the browser)

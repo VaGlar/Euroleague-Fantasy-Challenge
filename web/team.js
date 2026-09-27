@@ -21,6 +21,7 @@
   // ------------------------------------------------------------ storage
   const load = () => { try { return JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) { return null; } };
   const GAME = () => P.edition !== "public";
+  const WIDE = () => window.matchMedia("(min-width: 700px)").matches;
   const save = (t) => { if (t.game) return; try { t.updated = new Date().toISOString(); localStorage.setItem(KEY, JSON.stringify(t)); } catch (e) {} };
   function encode(t) {
     const j = JSON.stringify({ p: t.players.map((x) => [x.id, x.price]), b: t.bank, r: t.roles || null, c: t.captain ?? null, u: t.used || null });
@@ -32,7 +33,7 @@
   }
   // paste a backup link (the app on the home screen keeps its own storage, apart from the browser)
   function restoreSheet(done) {
-    sheet(`<div class="sh"><div><h2>Επαναφορά ομάδας</h2><div class="muted">Επικόλλησε τον σύνδεσμο αντιγράφου (⋯ → Αντίγραφο ασφαλείας)</div></div>
+    sheet(`<div class="sh"><div><h2>Επαναφορά ομάδας</h2><div class="muted">Επικόλλησε τον σύνδεσμο αντιγράφου (Επιλογές → Αντίγραφο ασφαλείας)</div></div>
         <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
       <textarea id="tmLink" class="tm-input" rows="3" placeholder="https://…#t=…" autocomplete="off"></textarea>
       <button class="tm-primary" id="tmLinkOk">Επαναφορά</button>`);
@@ -336,7 +337,8 @@
     return `<header class="tm-top"><div><h2 class="tm-h">${t.game ? esc(t.name || "Η ομάδα μου") : "Η ομάδα μου"}</h2>
         <div class="muted">Υπόλοιπο <b>${f1(t.bank)} cr</b> · αναμενόμενοι πόντοι <b>${f1(total)}</b></div>
         <div class="tm-dead">${head}</div></div>
-        ${t.game ? "" : `<div class="tm-morewrap"><button class="tm-more" id="tmMore" aria-label="Περισσότερα">⋯</button><div id="tmMenu"></div></div>`}</header>
+        ${t.game || WIDE() ? "" : `<div class="tm-morewrap"><button class="tm-more" id="tmMore" aria-haspopup="menu">⋯ Επιλογές</button><div id="tmMenu"></div></div>`}</header>
+      ${!t.game && WIDE() ? '<div id="tmTools"></div>' : ""}
       <div class="card"><h2>Τι κάνω τώρα <small class="muted">${items.length ? `${items.length} ${items.length === 1 ? "βήμα" : "βήματα"}` : ""}</small></h2>
         ${done ? `<div class="tm-ready">✅ Έτοιμος για την αγωνιστική</div>` : `<ul class="tm-list">${confirm}${list}</ul>`}
         ${pl.tradesNow ? keptLine : ""}
@@ -462,28 +464,31 @@
   }
 
   // ------------------------------------------------------------ menu
-  function menu(t, best) {
-    const host = $("#tmMenu");
-    if (host.innerHTML) { host.innerHTML = ""; return; }
-    host.innerHTML = `<div class="tm-menu" role="menu">
+  // the team's options: a dropdown behind «⋯ Επιλογές» on phones, an always-visible toolbar on wide screens
+  function menu(t, best, inline = false) {
+    const host = inline ? $("#tmTools") : $("#tmMenu");
+    if (!host) return;
+    const close = inline ? () => {} : () => { close(); };
+    if (!inline && host.innerHTML) { close(); return; }
+    host.innerHTML = `<div class="${inline ? "tm-toolbar" : "tm-menu"}" role="${inline ? "toolbar" : "menu"}">
       <button id="mBackup">🔗 Αντίγραφο ασφαλείας (σύνδεσμος)</button>
       <button id="mEdit">✏️ Αλλαγή ομάδας</button>
       <button id="mBank">💰 Διόρθωση υπολοίπου</button>
       ${usedTrades(t, P.trade_info || {}) ? `<button id="mUsed">🔁 Μηδένισε τις μεταγραφές που έκανες (${usedTrades(t, P.trade_info || {})})</button>` : ""}
-      <button id="mInstall">📱 Βάλ' το στην οθόνη σου</button>
+      ${inline ? "" : `<button id="mInstall">📱 Βάλ' το στην οθόνη σου</button>`}
       <button id="mMail">✉️ Ιδέα ή πρόβλημα; Αντιγραφή του email μας</button>
       <button id="mDel" class="tm-danger">🗑 Διαγραφή ομάδας</button></div>`;
     $("#mBackup").onclick = async () => {
-      host.innerHTML = "";
+      close();
       const link = location.origin + location.pathname + "#t=" + encode(t);
       try { await navigator.clipboard.writeText(link); toast("Ο σύνδεσμος αντιγράφηκε — κράτα τον π.χ. στις σημειώσεις"); }
       catch (e) { sheet(`<div class="sh"><h2>Σύνδεσμος ομάδας</h2><button class="x" onclick="closePlayer()">×</button></div>
         <p class="muted">Αντίγραψε και κράτα τον. Ανοίγοντάς τον σε άλλη συσκευή επανέρχεται η ομάδα σου.</p>
         <textarea class="tm-input" rows="4" readonly onclick="this.select()">${esc(link)}</textarea>`); }
     };
-    $("#mEdit").onclick = () => { host.innerHTML = ""; setup = { players: t.players.map((x) => ({ ...x })) }; mode = "setup"; render(best); };
+    $("#mEdit").onclick = () => { close(); setup = { players: t.players.map((x) => ({ ...x })) }; mode = "setup"; render(best); };
     $("#mBank").onclick = () => {
-      host.innerHTML = "";
+      close();
       sheet(`<div class="sh"><div><h2>Υπόλοιπο</h2><div class="muted">Όπως φαίνεται στο παιχνίδι σου (credits)</div></div>
           <button class="x" onclick="closePlayer()">×</button></div>
         <input id="tmBank" class="tm-input" inputmode="decimal" value="${f1(t.bank)}" autocomplete="off"><button class="tm-primary" id="tmBankOk">Αποθήκευση</button>`);
@@ -491,18 +496,22 @@
         if (isNaN(v) || v < 0) { toast("Γράψε ένα ποσό, π.χ. 3,5"); return; }
         t.bank = v; save(t); closePlayer(); render(best); };
     };
-    if ($("#mUsed")) $("#mUsed").onclick = () => { host.innerHTML = ""; t.used = null; save(t); render(best); toast("Μηδενίστηκαν"); };
-    $("#mMail").onclick = async () => { host.innerHTML = "";
+    if ($("#mUsed")) $("#mUsed").onclick = () => { close(); t.used = null; save(t); render(best); toast("Μηδενίστηκαν"); };
+    $("#mMail").onclick = async () => { close();
       toast(await copyText(FEEDBACK_MAIL) ? `Αντιγράφηκε: ${FEEDBACK_MAIL}` : FEEDBACK_MAIL); };
-    $("#mInstall").onclick = () => { host.innerHTML = ""; installGuide(true); };
+    if ($("#mInstall")) $("#mInstall").onclick = () => { close(); installGuide(true); };
     $("#mDel").onclick = () => {
-      host.innerHTML = "";
+      close();
       sheet(`<div class="sh"><h2>Διαγραφή της ομάδας από αυτή τη συσκευή;</h2><button class="x" onclick="closePlayer()">×</button></div>
         <p class="muted">Αν έχεις κρατήσει σύνδεσμο αντιγράφου, μπορείς να την επαναφέρεις αργότερα.</p>
         <button class="tm-primary tm-danger-bg" id="tmDelOk">Διαγραφή</button>`);
       $("#tmDelOk").onclick = () => { try { localStorage.removeItem(KEY); } catch (e) {} closePlayer(); setup = null; mode = null; render(best); };
     };
   }
+  // phone ↔ wide (window resized, tablet rotated): switch between dropdown and toolbar
+  window.matchMedia("(min-width: 700px)").addEventListener("change", () => {
+    if (typeof P !== "undefined" && P && document.getElementById("tmTools") !== null !== WIDE()) render();
+  });
   document.addEventListener("click", (e) => { if (!e.target.closest("#tmMenu, #tmMore")) { const h = document.getElementById("tmMenu"); if (h) h.innerHTML = ""; } });
 
   // ------------------------------------------------------------ setup on an empty court
@@ -526,7 +535,7 @@
         <div class="tm-money"><span>Κόστος ομάδας <b>${f1(spent)}</b> cr</span><span>Υπόλοιπο <b>${f1(Math.max(0, 100 - spent))}</b> cr</span></div>
         <button class="tm-primary" id="tmFinish" ${full ? "" : "disabled"}>${full ? "Αποθήκευση ➜" : `Λείπουν ${11 - ps.length}`}</button>
         ${had ? '<button class="linkbtn" id="tmCancel" style="display:block;margin:6px auto 0">Άκυρο</button>' : ""}
-        <p class="tm-hint">Οι τιμές συμπληρώνονται με τις σημερινές· αν διαφέρουν στο παιχνίδι σου, τις διορθώνεις μετά από την καρτέλα του παίκτη. Το υπόλοιπο το διορθώνεις από το ⋯.</p>
+        <p class="tm-hint">Οι τιμές συμπληρώνονται με τις σημερινές· αν διαφέρουν στο παιχνίδι σου, τις διορθώνεις μετά από την καρτέλα του παίκτη. Το υπόλοιπο το διορθώνεις από τις «Επιλογές».</p>
         ${had ? "" : '<button class="linkbtn" id="tmRestore" style="display:block;margin:8px auto 0">📥 Έχεις σύνδεσμο αντιγράφου; Επικόλλησέ τον</button>'}</div>`;
   }
   function pickSheet(pos, best) {
@@ -619,6 +628,7 @@
     const on = (i, fn) => { const el = document.getElementById(i); if (el) el.onclick = fn; };
     on("tmConfirm", () => { t.confirmed = true; save(t); render(best); });
     on("tmMore", (e) => { e.stopPropagation(); menu(t, best); });
+    if (document.getElementById("tmTools")) menu(t, best, true);
     on("tmEdit", () => { setup = { players: t.players.map((x) => ({ ...x })) }; mode = "setup"; render(best); });
     bindKeep(t, best);
     bindCourt(t);
@@ -644,8 +654,12 @@
   .tm-dead { display: inline-block; font-size: 12px; font-weight: 600; color: var(--accent); margin-top: 4px;
     background: color-mix(in srgb, var(--accent) 12%, transparent); border-radius: 999px; padding: 2px 9px; }
   .tm-morewrap { position: relative; }
-  .tm-more { border: 1px solid var(--border); background: var(--surface-1); color: var(--text-primary); border-radius: 50%;
-    width: 38px; height: 38px; font-size: 18px; cursor: pointer; }
+  .tm-more { border: 1px solid var(--border); background: var(--surface-1); color: var(--text-primary); border-radius: 999px;
+    padding: 8px 14px; font: inherit; font-size: 14px; font-weight: 600; white-space: nowrap; cursor: pointer; }
+  .tm-toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin: -4px 0 12px; }
+  .tm-toolbar button { border: 1px solid var(--border); background: var(--surface-1); color: var(--text-primary); border-radius: 999px;
+    padding: 7px 13px; font: inherit; font-size: 14px; cursor: pointer; }
+  .tm-toolbar button:hover { border-color: var(--series-1); }
   .tm-menu { position: absolute; right: 0; top: 44px; z-index: 5; background: var(--surface-1); border: 1px solid var(--border);
     border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,.15); min-width: 230px; overflow: hidden; }
   .tm-menu button, .tm-menu a { box-sizing: border-box; text-decoration: none; }
