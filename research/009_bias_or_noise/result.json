@@ -1,0 +1,56 @@
+{
+ "n_train": 4394,
+ "n_test": 4477,
+ "train_vs_test": {
+  "train": {
+   "mae": 5.36,
+   "rmse": 7.156
+  },
+  "test": {
+   "mae": 5.283,
+   "rmse": 6.965
+  },
+  "test_form_only": {
+   "mae": 5.313,
+   "rmse": 6.983
+  }
+ },
+ "learning_curve": {
+  "5%": {
+   "rows": 219,
+   "test_mae": 5.335
+  },
+  "10%": {
+   "rows": 439,
+   "test_mae": 5.308
+  },
+  "25%": {
+   "rows": 1098,
+   "test_mae": 5.293
+  },
+  "50%": {
+   "rows": 2197,
+   "test_mae": 5.286
+  },
+  "100%": {
+   "rows": 4394,
+   "test_mae": 5.283
+  }
+ },
+ "ceilings_test": {
+  "current_model": {
+   "mae": 5.283,
+   "rmse": 6.965
+  },
+  "a_true_season_average": {
+   "mae": 5.024,
+   "rmse": 6.641
+  },
+  "b_true_rate_x_true_minutes": {
+   "mae": 4.116,
+   "rmse": 5.657
+  }
+ },
+ "within_player_sd": 6.64,
+ "between_player_sd": 4.82
+}
