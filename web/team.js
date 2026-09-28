@@ -24,7 +24,7 @@
   const WIDE = () => window.matchMedia("(min-width: 700px)").matches;
   const save = (t) => { if (t.game) return; try { t.updated = new Date().toISOString(); localStorage.setItem(KEY, JSON.stringify(t)); } catch (e) {} };
   function encode(t) {
-    const j = JSON.stringify({ p: t.players.map((x) => [x.id, x.price]), b: t.bank, r: t.roles || null, c: t.captain ?? null, u: t.used || null });
+    const j = JSON.stringify({ p: t.players.map((x) => [x.id, x.price]), b: t.bank, r: t.roles || null, c: t.captain ?? null, u: t.used ? { round: t.used.round, n: t.used.n } : null });
     return btoa(unescape(encodeURIComponent(j))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
   }
   function decode(code) {
@@ -145,7 +145,18 @@
   const usedTrades = (t, ti) => (t.used && t.used.round === ti.round ? t.used.n : 0);
   function countTrade(t) {
     const ti = P.trade_info || { round: P.round };
-    t.used = { round: ti.round, n: usedTrades(t, ti) + 1 };
+    const n = usedTrades(t, ti);
+    // before the round's first trade, keep the team as it was, so the trades can be undone
+    const before = n ? t.used.before : JSON.parse(JSON.stringify({ players: t.players, bank: t.bank,
+      roles: t.roles || null, captain: t.captain ?? null, confirmed: !!t.confirmed }));
+    t.used = { round: ti.round, n: n + 1, before };
+  }
+  // back to the team before this round's trades (older saves without the snapshot: only the count)
+  function undoTrades(t) {
+    const b = t.used && t.used.before;
+    if (b) Object.assign(t, JSON.parse(JSON.stringify(b)));
+    t.used = null;
+    return !!b;
   }
   // swaps turning `roles` into `target` (each keeps the five legal; in-round rules respected)
   function swapSteps(roles, target, rows, inRound) {
@@ -241,8 +252,8 @@
     if (i < 0) return;
     const out = t.players[i];
     const outPrice = Number(out.price ?? row(outId)?.price) || 0;   // sold at the saved price
-    t.players[i] = { id: inId, price };
     countTrade(t);
+    t.players[i] = { id: inId, price };
     t.bank = Math.round(((Number(t.bank) || 0) + outPrice - (Number(price) || 0)) * 10) / 10;
     t.roles = t.roles || {};
     t.roles[inId] = t.roles[outId]; delete t.roles[outId];
@@ -469,13 +480,13 @@
   function menu(t, best, inline = false) {
     const host = inline ? $("#tmTools") : $("#tmMenu");
     if (!host) return;
-    const close = inline ? () => {} : () => { close(); };
+    const close = inline ? () => {} : () => { host.innerHTML = ""; };
     if (!inline && host.innerHTML) { close(); return; }
     host.innerHTML = `<div class="${inline ? "tm-toolbar" : "tm-menu"}" role="${inline ? "toolbar" : "menu"}">
       <button id="mBackup">🔗 Αντίγραφο ασφαλείας (σύνδεσμος)</button>
       <button id="mEdit">✏️ Αλλαγή ομάδας</button>
       <button id="mBank">💰 Διόρθωση υπολοίπου</button>
-      ${usedTrades(t, P.trade_info || {}) ? `<button id="mUsed">🔁 Μηδένισε τις μεταγραφές που έκανες (${usedTrades(t, P.trade_info || {})})</button>` : ""}
+      ${usedTrades(t, P.trade_info || {}) ? `<button id="mUsed">↩️ Αναίρεση των μεταγραφών που έκανες (${usedTrades(t, P.trade_info || {})})</button>` : ""}
       ${inline ? "" : `<button id="mInstall">📱 Βάλ' το στην οθόνη σου</button>`}
       <button id="mMail">✉️ Ιδέα ή πρόβλημα; Αντιγραφή του email μας</button>
       <button id="mDel" class="tm-danger">🗑 Διαγραφή ομάδας</button></div>`;
@@ -497,7 +508,16 @@
         if (isNaN(v) || v < 0) { toast("Γράψε ένα ποσό, π.χ. 3,5"); return; }
         t.bank = v; save(t); closePlayer(); render(best); };
     };
-    if ($("#mUsed")) $("#mUsed").onclick = () => { close(); t.used = null; save(t); render(best); toast("Μηδενίστηκαν"); };
+    if ($("#mUsed")) $("#mUsed").onclick = () => {
+      close();
+      const n = usedTrades(t, P.trade_info || {}), snap = !!t.used.before;
+      sheet(`<div class="sh"><h2>Αναίρεση ${n === 1 ? "της μεταγραφής" : `των ${n} μεταγραφών`};</h2><button class="x" onclick="closePlayer()">×</button></div>
+        <p class="muted">${snap ? "Η ομάδα, το υπόλοιπο, οι θέσεις και ο αρχηγός γυρίζουν όπως ήταν πριν την πρώτη μεταγραφή αυτής της αγωνιστικής."
+          : "Αυτές οι μεταγραφές έγιναν πριν υπάρξει η αναίρεση, οπότε μηδενίζεται μόνο ο μετρητής· τους παίκτες τους αλλάζεις από την «Αλλαγή ομάδας»."}</p>
+        <button class="tm-primary" id="tmUndoOk">Αναίρεση</button>`);
+      $("#tmUndoOk").onclick = () => { const ok = undoTrades(t); save(t); closePlayer(); render(best);
+        toast(ok ? "Η ομάδα γύρισε όπως ήταν" : "Ο μετρητής μηδενίστηκε"); };
+    };
     $("#mMail").onclick = async () => { close();
       toast(await copyText(FEEDBACK_MAIL) ? `Αντιγράφηκε: ${FEEDBACK_MAIL}` : FEEDBACK_MAIL); };
     if ($("#mInstall")) $("#mInstall").onclick = () => { close(); installGuide(true); };
@@ -534,6 +554,7 @@
           <div class="lane"><h3>Guards · ${have("Guard").length}/4</h3><div class="crow">${slots("Guard")}</div></div>
           <div class="lane"><h3>Coach · ${have("Head Coach").length}/1</h3><div class="crow">${slots("Head Coach")}</div></div></div></div>
         <div class="tm-money"><span>Κόστος ομάδας <b>${f1(spent)}</b> cr</span><span>Υπόλοιπο <b>${f1(Math.max(0, 100 - spent))}</b> cr</span></div>
+        ${spent > 100.05 ? `<p class="tm-over">⚠️ Πάνω από το budget κατά <b>${f1(spent - 100)}</b> cr — έλεγξε τις τιμές (πάτα τον παίκτη)· το παιχνίδι δεν επιτρέπει πάνω από 100.</p>` : ""}
         <button class="tm-primary" id="tmFinish" ${full ? "" : "disabled"}>${full ? "Αποθήκευση ➜" : `Λείπουν ${11 - ps.length}`}</button>
         ${had ? '<button class="linkbtn" id="tmCancel" style="display:block;margin:6px auto 0">Άκυρο</button>' : ""}
         <p class="tm-hint">Οι τιμές συμπληρώνονται με τις σημερινές· αν στο παιχνίδι σου διαφέρουν, πάτα τον παίκτη και διόρθωσέ τες. Το υπόλοιπο το διορθώνεις από τις «Επιλογές».</p>
@@ -746,6 +767,7 @@
   .tm-primary:disabled { background: var(--border); color: var(--text-muted); cursor: default; }
   .tm-danger-bg { background: var(--critical); }
   .tm-money { display: flex; justify-content: space-between; color: var(--text-secondary); font-size: 13px; margin-top: 10px; }
+  .tm-over { color: var(--critical); font-size: 13px; margin: 6px 2px 0; }
   .tm-slot { width: 31%; max-width: 128px; border: 2px dashed var(--court-line); border-radius: 10px; padding: 12px 4px;
     background: color-mix(in srgb, var(--surface-1) 55%, transparent); color: var(--text-secondary); font: inherit; font-size: 12px; cursor: pointer; }
   .lane .tm-slot { width: calc(25% - 5px); }
