@@ -748,9 +748,12 @@
   .tm-act small { display: block; color: var(--text-muted); font-size: 12px; }
   .tm-act:disabled { opacity: .45; cursor: default; }
   /* the whole squad stands on the court: the five in the half with the basket, 6th/coach/bench past the half-court line */
-  .tm-floor { position: relative; border: 2px solid rgba(255,255,255,.55); border-radius: 12px; overflow: hidden; padding-bottom: 8px; }   /* parquet: index.html */
+  /* parquet: index.html. At most 540px wide: the lines are drawn to the width, so a wide, low court (the set-up on a PC)
+     would blow up the key and the circle and cut the three-point line */
+  .tm-floor { position: relative; border: 2px solid rgba(255,255,255,.55); border-radius: 12px; overflow: hidden; padding-bottom: 8px;
+    max-width: 540px; margin-left: auto; margin-right: auto; }
   .tm-floor .court { background: transparent; border: 0; border-bottom: 2px solid var(--court-line); border-radius: 0; overflow: visible; }
-  .tm-floor .lanes { position: relative; margin-top: 0; padding: 32px 8px 0; }
+  .tm-floor .lanes { position: relative; margin-top: 0; padding: calc(12% + 12px) 8px 0; }   /* below the centre circle */
   /* the centre circle, whole, on the half-court line (FIBA: 3.6 m of the 15 m width) */
   .tm-floor .lanes::before { content: ""; position: absolute; left: 50%; top: -1px; width: 24%; aspect-ratio: 1; transform: translate(-50%, -50%);
     border: 2px solid var(--court-line); border-radius: 50%; background: var(--court-key); }
