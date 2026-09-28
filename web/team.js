@@ -117,39 +117,45 @@
     try { const k = JSON.parse(localStorage.getItem(KEEP) || "null"); return k && k.round === ti.round ? k.ids : []; } catch (e) { return []; }
   }
   function setKept(ti, ids) { try { localStorage.setItem(KEEP, JSON.stringify({ round: ti.round, ids })); } catch (e) {} }
+  // players the user doesn't want to buy for that round («δεν θέλω αυτόν, πρότεινε άλλον»)
+  const AVOID = "tm_avoid";
+  function avoided(ti) {
+    try { const k = JSON.parse(localStorage.getItem(AVOID) || "null"); return k && k.round === ti.round ? k.ids : []; } catch (e) { return []; }
+  }
+  function setAvoided(ti, ids) { try { localStorage.setItem(AVOID, JSON.stringify({ round: ti.round, ids })); } catch (e) {} }
   const tradeInfo = (t) => t.game ? { round: P.my_team?.trade_round ?? P.round, max_trades: P.my_team?.max_trades ?? 4,
     min_gain: P.trade_info?.min_gain ?? 2 } : (P.trade_info || { round: P.round, max_trades: 4, min_gain: 2 });
   const poolRows = (avoid = []) => P.players.filter((p) => p.fantasy_id != null && p.price != null && !avoid.includes(Number(p.fantasy_id)))
     .map((p) => ({ id: Number(p.fantasy_id), position: p.position, price: p.price, x_h: p.x_h ?? 0, x_now: p.x_now ?? 0 }));
   function tradesFor(t, rows) {
     if (t.game) {
-      const my = P.my_team || {}, ti = tradeInfo(t), keep = kept(ti);
-      if (keep.length) {   // re-plan in the browser (same optimizer, checked against Python) without selling them
+      const my = P.my_team || {}, ti = tradeInfo(t), keep = kept(ti), avoid = avoided(ti);
+      if (keep.length || avoid.length) {   // re-plan in the browser (same optimizer, checked against Python)
         const prefs = my.prefs || { keep: [], avoid: [] };
-        const k = "g|" + keep.join(",") + "|" + P.generated;
+        const k = "g|" + keep.join(",") + "|" + avoid.join(",") + "|" + P.generated;
         if (cache.key !== k) {
-          cache = { key: k, trs: ELFOPT.transfers(optRows(rows, t, false), poolRows(prefs.avoid), Number(t.bank) || 0,
+          cache = { key: k, trs: ELFOPT.transfers(optRows(rows, t, false), poolRows([...prefs.avoid, ...avoid]), Number(t.bank) || 0,
             { maxTrades: ti.max_trades, minGain: ti.min_gain, keep: [...keep, ...prefs.keep] }) };
           cache.trs.pairs.sort((a, b) => (a.in.price - a.out.price) - (b.in.price - b.out.price));
         }
-        return { ti, trs: cache.trs, keep };
+        return { ti, trs: cache.trs, keep, avoid };
       }
       const pairs = (my.transfers || []).filter((m) => m.out_id != null && m.in_id != null)
         .map((m) => ({ out: { id: Number(m.out_id), price: m.price_out }, in: { id: Number(m.in_id), price: m.price_in } }))
         .sort((a, b) => (a.in.price - a.out.price) - (b.in.price - b.out.price));
-      return { ti, trs: { pairs, gain: my.transfer_gain ?? 0 }, keep };
+      return { ti, trs: { pairs, gain: my.transfer_gain ?? 0 }, keep, avoid };
     }
-    const ti = tradeInfo(t), keep = kept(ti);
+    const ti = tradeInfo(t), keep = kept(ti), avoid = avoided(ti);
     const left = Math.max(0, ti.max_trades - usedTrades(t, ti));
-    const k = t.players.map((x) => `${x.id}:${x.price}`).join(",") + "|" + t.bank + "|" + left + "|" + keep.join(",") + "|" + P.generated;
+    const k = t.players.map((x) => `${x.id}:${x.price}`).join(",") + "|" + t.bank + "|" + left + "|" + keep.join(",") + "|" + avoid.join(",") + "|" + P.generated;
     if (cache.key !== k && !left) cache = { key: k, trs: { pairs: [], gain: 0 } };
     if (cache.key !== k) {
-      cache = { key: k, trs: ELFOPT.transfers(optRows(rows, t, false), poolRows(), Number(t.bank) || 0,
+      cache = { key: k, trs: ELFOPT.transfers(optRows(rows, t, false), poolRows(avoid), Number(t.bank) || 0,
         { maxTrades: left, minGain: ti.min_gain, keep }) };
       // money-freeing trades first, so the bank never goes negative while making them
       cache.trs.pairs.sort((a, b) => (a.in.price - a.out.price) - (b.in.price - b.out.price));
     }
-    return { ti, trs: cache.trs, left, keep };
+    return { ti, trs: cache.trs, left, keep, avoid };
   }
   // trades already made for the round the proposal is for (so a done trade isn't re-proposed)
   const usedTrades = (t, ti) => (t.used && t.used.round === ti.round ? t.used.n : 0);
@@ -198,7 +204,7 @@
   function plan(t) {
     const rows = rowsOf(t);
     const inRound = started();
-    const { ti, trs, keep } = tradesFor(t, rows);
+    const { ti, trs, keep, avoid } = tradesFor(t, rows);
     const tradesNow = !inRound && ti.round === P.round;          // trades are for this round
     const pairs = trs.pairs;
     // squad after this round's trades (incoming players inherit the outgoing one's role)
@@ -218,11 +224,12 @@
       const v = inRound && played(r) ? r.actual : (r.x_now ?? 0);
       return a + v * (p.role === "πάγκος" ? 0.5 : 1) * (p.captain ? 2 : 1); }, 0);
     const items = [];
+    const unsure = (r) => (typeof fewGames === "function" && fewGames(r) ? ` · 🆕 νέος, ${r.games} ματς: αβέβαιο` : "");
     if (tradesNow) for (const pr of pairs) {
       const o = rows.find((r) => r.id === pr.out.id), n = row(pr.in.id);
       items.push({ kind: "🔁", html: `Trade: <b>${esc(sur(o.name))}</b> ➜ <b>${esc(sur(n.name))}</b>`,
-        why: `${esc(n.team)}${n.turn ? " · T" + n.turn : ""} · ${f1(pr.out.price)} → ${f1(pr.in.price)} cr · +${f1((n.x_h ?? 0) - (o.x_h ?? 0))} xFPT3`,
-        keep: o,
+        why: `${esc(n.team)}${n.turn ? " · T" + n.turn : ""} · ${f1(pr.out.price)} → ${f1(pr.in.price)} cr · +${f1((n.x_h ?? 0) - (o.x_h ?? 0))} xFPT3${unsure(n)}`,
+        keep: o, avoid: n,
         run: () => { applyTrade(t, pr.out.id, pr.in.id, pr.in.price); save(t); toast(`${sur(o.name)} ➜ ${sur(n.name)} · υπόλοιπο ${f1(t.bank)} cr`); } });
     }
     const pendingTrades = items.length > 0;
@@ -257,7 +264,7 @@
         why: ready ? `xFPT ${f1(inRound && played(c) ? c.actual : c.x_now)} · διπλοί πόντοι` : "μετά τη μεταγραφή και την πεντάδα", wait: !ready,
         run: () => { t.captain = targetCap; save(t); toast(`CAP: ${sur(c.name)}`); } });
     }
-    return { rows, items, turnPlan, trs, ti, tradesNow, inRound, aRows, target, targetCap, keep: keep || [], planned };
+    return { rows, items, turnPlan, trs, ti, tradesNow, inRound, aRows, target, targetCap, keep: keep || [], avoid: avoid || [], planned };
   }
 
   // ------------------------------------------------------------ actions on the saved team
@@ -306,7 +313,7 @@
     const cap = t && t.captain === r.id;
     return `<div class="chip${cap ? " cap" : ""} ${extraCls}" data-fid="${r.id}" tabindex="0" role="button" aria-label="${esc(nm(r.name))}">
       <div class="ct"><span>${LETTER[r.position] || ""}</span>${r.turn ? `<span class="tb t${r.turn > 1 ? 2 : 1}">T${r.turn}</span>` : ""}</div>
-      <div class="cn">${esc(sur(r.name))}${inj(r) ? " 🚑" : ""}${r.price_trend === "up" ? " $" : ""}</div>
+      <div class="cn">${esc(sur(r.name))}${inj(r) ? " 🚑" : ""}${r.price_trend === "up" ? " $" : ""}${typeof fewGames === "function" && fewGames(r) ? ' <span class="few" title="νέος στη EuroLeague, λίγα ματς: αβέβαιη πρόβλεψη">🆕</span>' : ""}</div>
       <div class="cp${isPlayed ? " done" : ""}">${f1(isPlayed ? r.actual : r.x_now)}</div>
       <div class="cs">${r.opp ? `${r.home ? "🏠" : "✈️"} ${esc(r.opp)}` : ""}${r.price != null ? ` · ${f1(r.price)}${arrow(dPrice(r))}` : ""}</div></div>`;
   }
@@ -342,10 +349,14 @@
         <span class="tm-why">Βάλαμε ρόλους με βάση την πρόταση. Αν στο παιχνίδι είναι αλλιώς, σύρε τους παίκτες όπως είναι εκεί.</span></span>
         <button class="tm-done" id="tmConfirm">✓ Είναι ίδια</button></li>` : "";
     const keepBtn = (o) => `<button class="tm-keep" data-keep="${o.id}">🔒 Κράτα τον ${esc(sur(o.name))} αυτή την αγωνιστική</button>`;
-    const keptLine = pl.keep.length ? `<p class="tm-kept">🔒 Κρατάς: ${pl.keep.map((id) => { const r = row(id);
-        return `<b>${esc(sur(r ? r.name : String(id)))}</b> <button class="linkbtn" data-unkeep="${id}">αναίρεση</button>`; }).join(" · ")}</p>` : "";
+    const avoidBtn = (n) => n ? `<button class="tm-keep" data-avoid="${n.fantasy_id ?? n.id}">🚫 Όχι τον ${esc(sur(n.name))}, πρότεινε άλλον</button>` : "";
+    const who = (id) => { const r = row(id); return esc(sur(r ? r.name : String(id))); };
+    const keptLine = (pl.keep.length ? `<p class="tm-kept">🔒 Κρατάς: ${pl.keep.map((id) =>
+        `<b>${who(id)}</b> <button class="linkbtn" data-unkeep="${id}">αναίρεση</button>`).join(" · ")}</p>` : "")
+      + (pl.avoid.length ? `<p class="tm-kept">🚫 Δεν θέλεις: ${pl.avoid.map((id) =>
+        `<b>${who(id)}</b> <button class="linkbtn" data-unavoid="${id}">αναίρεση</button>`).join(" · ")}</p>` : "");
     const list = items.map((i, n) => `<li class="tm-item"><span class="tm-kind" aria-hidden="true">${i.kind}</span>
-        <span class="tm-what">${i.html}<span class="tm-why">${i.why}</span>${i.keep ? keepBtn(i.keep) : ""}</span>
+        <span class="tm-what">${i.html}<span class="tm-why">${i.why}</span>${i.keep ? keepBtn(i.keep) : ""}${i.avoid ? avoidBtn(i.avoid) : ""}</span>
         ${t.game ? "" : `<button class="tm-done" data-i="${n}" ${i.wait ? "disabled" : ""}>✓ Το έκανα</button>`}</li>`).join("");
     const turnPlan = pl.turnPlan.map((x) => { const s = pl.aRows.find((r) => r.id === x.start.id), b = pl.aRows.find((r) => r.id === x.bench.id);
       return `<li>🕐 <b>Πριν το T${x.bench.turn}</b>: αν ο ${esc(sur(s.name))} φέρει κάτω από ${Math.round(x.bench.x_now)}, βάλε τον ${esc(sur(b.name))}.</li>`; }).join("");
@@ -353,9 +364,9 @@
         <small class="muted">(${pl.ti.max_trades > 4 ? "απεριόριστα" : `Trades ${usedTrades(t, pl.ti)}/${pl.ti.max_trades}`} · γίνονται όταν τελειώσει το τρέχον round)</small></h2>
         <ul class="tm-list">${pl.trs.pairs.map((pr, n) => { const o = rows.find((r) => r.id === pr.out.id), nn = row(pr.in.id);
           return `<li class="tm-item"><span class="tm-kind">🔁</span><span class="tm-what"><b>${esc(sur(o.name))}</b> ➜ <b>${esc(sur(nn.name))}</b>
-            <span class="tm-why">${esc(nn.team)} · ${f1(pr.out.price)} → ${f1(pr.in.price)} cr · +${f1((nn.x_h ?? 0) - (o.x_h ?? 0))} xFPT3</span>${keepBtn(o)}</span>
+            <span class="tm-why">${esc(nn.team)} · ${f1(pr.out.price)} → ${f1(pr.in.price)} cr · +${f1((nn.x_h ?? 0) - (o.x_h ?? 0))} xFPT3${typeof fewGames === "function" && fewGames(nn) ? ` · 🆕 νέος, ${nn.games} ματς: αβέβαιο` : ""}</span>${keepBtn(o)}${avoidBtn(nn)}</span>
             ${t.game ? "" : `<button class="tm-done" data-n="${n}">✓ Το έκανα</button>`}</li>`; }).join("")}</ul>${keptLine}</div>`
-      : !pl.tradesNow && pl.keep.length ? `<div class="card"><h2>Trades για το Round ${pl.ti.round}</h2><p>Καμία αλλαγή δεν αξίζει χωρίς αυτούς που κρατάς.</p>${keptLine}</div>` : "";
+      : !pl.tradesNow && (pl.keep.length || pl.avoid.length) ? `<div class="card"><h2>Trades για το Round ${pl.ti.round}</h2><p>Καμία αλλαγή δεν αξίζει με αυτές τις επιλογές σου.</p>${keptLine}</div>` : "";
     const done = !items.length && t.confirmed;
     const upd = P.generated ? new Date(P.generated).toLocaleString("el-GR", { weekday: "short", hour: "2-digit", minute: "2-digit" }) : "";
     const hint = t.game
@@ -704,6 +715,14 @@
     });
     document.querySelectorAll("#team [data-unkeep]").forEach((b) => b.onclick = () => {
       setKept(ti, kept(ti).filter((x) => x !== Number(b.dataset.unkeep))); render(best);
+    });
+    document.querySelectorAll("#team [data-avoid]").forEach((b) => b.onclick = () => {
+      const id = Number(b.dataset.avoid), r = row(id);
+      setAvoided(ti, [...new Set([...avoided(ti), id])]); render(best);
+      toast(`Χωρίς τον ${sur(r ? r.name : "")} — νέες προτάσεις`);
+    });
+    document.querySelectorAll("#team [data-unavoid]").forEach((b) => b.onclick = () => {
+      setAvoided(ti, avoided(ti).filter((x) => x !== Number(b.dataset.unavoid))); render(best);
     });
   }
 

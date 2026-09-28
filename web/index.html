@@ -92,6 +92,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
   border: 1px solid var(--border); color: var(--text-secondary); }
 .pill.up { color: var(--good); border-color: var(--good); font-weight: 700; }
 .pill.down { color: var(--critical); border-color: var(--critical); }
+.pill.few { color: var(--accent); border-color: var(--accent); cursor: help; }
 .msg { white-space: pre-wrap; font-size: 14px; }
 .warn { border-left: 3px solid var(--accent); }
 a { color: var(--series-1); }
@@ -458,6 +459,10 @@ const nm = (n) => { const [s, f] = String(n || "").split(","); return (f ? f.tri
 const f1 = (x) => (x == null ? "–" : Number(x).toFixed(1));
 const inj = (r) => (r.avail_game != null && r.avail_game < 1
   ? ` <span class="pill">🚑 ${r.avail_game === 0 ? "εκτός" : Math.round(r.avail_game * 100) + "%"}</span>` : "");
+// new to the EuroLeague (no last season) with few games: the prediction rests on 1-4 games (R&D 015)
+const fewGames = (r) => r.position !== "Head Coach" && r.prev_pir == null && r.games >= 1 && r.games <= 4;
+const newb = (r) => (r.no_data && !r.prior ? ' <span class="pill">νέος</span>'
+  : fewGames(r) ? ` <span class="pill few" data-info="few">νέος · ${r.games} ${r.games === 1 ? "ματς" : "ματς"}</span>` : "");
 const exb = (r) => (r.expert_pick > 0 ? ` <span class="pill" title="στήλες fantasy που τον προτείνουν">👍${r.expert_pick}${r.expert_cap ? "★" : ""}</span>` : "")
   + (r.expert_avoid > 0 ? ` <span class="pill" title="στήλη που προτείνει να τον αποφύγεις">👎</span>` : "")
   + (r.prior ? ` <span class="pill" title="χωρίς ιστορικό: εκτίμηση από την τιμή">≈τιμή</span>` : "");
@@ -533,6 +538,7 @@ const INFO = {
   turn: "T1 / T2: σε ποιο turn παίζει η ομάδα του. Ανάμεσα στα turns μπορείς να αλλάξεις πεντάδα με όσους δεν έχουν παίξει.",
   matchup: "Ματσάρισμα: πόσο περισσότερο (▲) ή λιγότερο (▼) PIR δίνει ο αντίπαλος στη θέση του, σε σχέση με τον μέσο όρο της λίγκας.",
   avail: "Διαθεσιμότητα από το παιχνίδι και τα νέα: εκτός, ή η πιθανότητα να παίξει. Ανανεώνεται και 3 ώρες πριν τον πρώτο αγώνα.",
+  few: "Νέος στη EuroLeague: δεν έχει περσινή σεζόν εδώ, οπότε η πρόβλεψη στηρίζεται μόνο στα λίγα φετινά του ματς και είναι αβέβαιη. Ένα καλό ματς δεν είναι επίπεδο: σε παλιότερες σεζόν, τέτοιοι παίκτες με υψηλή πρόβλεψη έφεραν συχνά αρκετά λιγότερα. Η εικόνα καθαρίζει μετά από 4–5 ματς.",
   pop: "POP: τι ποσοστό των managers του παιχνιδιού τον έχει στην ομάδα του.",
   pchg: "Δ τιμής: πόσο έχει αλλάξει η τιμή του από την πρώτη αγωνιστική της σεζόν.",
   pir: "PIR: η αξιολόγηση της EuroLeague (πόντοι, ριμπάουντ, ασίστ, κλεψίματα, κοψίματα, κερδισμένα φάουλ, μείον άστοχα, λάθη και φάουλ).",
@@ -613,7 +619,7 @@ function renderPlayers() {
   $("#ptable").innerHTML = "<thead><tr>" + cols.map(([k, l, n]) =>
     `<th data-k="${k}" class="${n ? "num" : ""}">${l}${sortKey === k ? (sortDir < 0 ? " ↓" : " ↑") : ""}</th>`).join("") + "</tr></thead><tbody>"
     + rows.slice(0, 250).map((r) => `<tr data-pid="${esc(r.person_id)}">
-      <td>${cbox(r)}${esc(nm(r.name))}${r.no_data && !r.prior ? ' <span class="pill">νέος</span>' : ""}${inj(r)}${exb(r)}${dol(r)}<br><span class="muted">${esc(r.team)} · ${esc(r.position || "")}${r.price != null ? ` · <b>${f1(r.price)}cr</b>` : ""}</span></td>
+      <td>${cbox(r)}${esc(nm(r.name))}${newb(r)}${inj(r)}${exb(r)}${dol(r)}<br><span class="muted">${esc(r.team)} · ${esc(r.position || "")}${r.price != null ? ` · <b>${f1(r.price)}cr</b>` : ""}</span></td>
       <td class="num"><span class="bar" style="width:${Math.max(2, 40 * (r.x_now || 0) / max)}px"></span><b>${f1(r.x_now)}</b></td>
       <td>${r.home ? "🏠" : "✈️"} ${esc(r.opp)}</td><td class="num">${matchup(r.pos_dev)}</td>
       <td class="num">${f1(r.x_h)}</td><td class="num">${f1(r.season_pir)}</td><td class="num">${f1(r.prev_pir)}</td>
@@ -622,7 +628,7 @@ function renderPlayers() {
     const k = th.dataset.k; sortDir = sortKey === k ? -sortDir : -1; sortKey = k; renderPlayers();
   });
   $("#plist").innerHTML = rows.slice(0, 150).map((r) => `<div class="pcard" data-pid="${esc(r.person_id)}" style="${tcol(r.team)}">
-    <div class="pn">${cbox(r)}${esc(nm(r.name))}${avb(r)}${r.no_data && !r.prior ? ' <span class="pill">νέος</span>' : ""}${exb(r)}${dol(r)}</div>
+    <div class="pn">${cbox(r)}${esc(nm(r.name))}${avb(r)}${newb(r)}${exb(r)}${dol(r)}</div>
     <div class="px"><b>${f1(r.x_now)}</b><small>xFPT${ii("xpts")}</small><span class="h">${f1(r.x_h)} <small>xFPT3</small></span></div>
     <div class="pm">${esc(r.team)} · ${esc((r.position || "")[0] || "")}${r.price != null ? ` · <b>${f1(r.price)}cr</b>${chg(r.price_chg)}` : ""}${pop(r) ? ` · POP ${pop(r)}` : ""} · ${r.home ? "🏠" : "✈️"} ${esc(r.opp || "")} ${matchup(r.pos_dev)}</div>
   </div>`).join("") + (rows.length > 150 ? `<p class="muted">…και ${rows.length - 150} ακόμα — στένεψε τα φίλτρα.</p>` : "");
@@ -997,7 +1003,7 @@ async function openPlayer(pid) {
       <div class="gs">${esc(g.date || "")} · ${g.win}% πιθανότητα νίκης</div></div>`).join("")}</div>`
     : `<p class="muted">${missing ? "Δεν φορτώθηκαν τα στοιχεία — έλεγξε τη σύνδεση και άνοιξε ξανά τον παίκτη." : "Δεν υπάρχουν προγραμματισμένοι αγώνες στα δεδομένα."}</p>`;
   $("#sheet").innerHTML = `<div class="sh"><div><h2>${esc(nm(r.name))}${inj(r)}${exb(r)}${dol(r)}</h2>
-      <div class="muted">${esc(r.team)} · ${esc(r.position || "")}${r.price != null ? ` · <b>${f1(r.price)} cr</b>` : ""}${pop(r) ? ` · POP ${pop(r)}` : ""}${turn ? ` · Turn ${turn.turn} (${esc(turn.date.slice(8))}/${esc(turn.date.slice(5, 7))})` : ""}</div></div>
+      <div class="muted">${esc(r.team)} · ${esc(r.position || "")}${r.price != null ? ` · <b>${f1(r.price)} cr</b>` : ""}${pop(r) ? ` · POP ${pop(r)}` : ""}${newb(r)}${turn ? ` · Turn ${turn.turn} (${esc(turn.date.slice(8))}/${esc(turn.date.slice(5, 7))})` : ""}</div></div>
       <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
     <div class="kpis"><div class="kpi"><b>${r.actual != null ? f1(r.actual) : f1(r.x_now)}</b><span>${r.actual != null ? "πόντοι (έπαιξε)" : "xFPT αγωνιστικής"}</span></div>
       <div class="kpi"><b>${f1(r.x_h)}</b><span>xFPT3</span></div>
@@ -1264,6 +1270,12 @@ function renderToday() {
       <span class="v"><b>${f1(v[0])}</b><small>${v[1]}</small></span><span class="m">${sub}</span></li>`;
   const where = (r) => `${esc(r.team)} · ${esc((r.position || "")[0] || "")}${r.price != null ? ` · ${f1(r.price)}cr` : ""} · ${r.home ? "🏠" : "✈️"} ${esc(r.opp || "")}${r.turn ? ` · T${r.turn}` : ""}`;
 
+  // start of the season: predictions for players new to the EuroLeague rest on one or two games (R&D 015)
+  const fewN = P.players.filter(fewGames).length;
+  const early = P.round <= 5 && fewN ? `<div class="card wide note-early">🆕 <b>Αρχή σεζόν.</b> Για ${fewN} παίκτες νέους στη EuroLeague η πρόβλεψη
+    στηρίζεται σε 1–${Math.max(...P.players.filter(fewGames).map((r) => r.games))} ματς (σήμα «νέος» ${ii("few")}): ένα καλό ματς δεν είναι επίπεδο.
+    Το μοντέλο κρίνεται σε 5–10 αγωνιστικές, όχι σε μία.</div>` : "";
+
   // my team
   const sm = window.TEAM && TEAM.summary ? TEAM.summary() : null;
   const team = P.edition === "public" && !sm
@@ -1307,7 +1319,7 @@ function renderToday() {
 
   const health = (P.health || []).length ? `<div class="card warn wide"><h2>⚠️ Κατάσταση</h2>${P.health.map(esc).join("<br>")}</div>` : "";
   $("#today").innerHTML = `<div class="td-grid">${health}
-    <div class="card wide">${heroHtml()}</div>
+    <div class="card wide">${heroHtml()}</div>${early}
     <div class="card wide"><h2>${P.edition === "public" ? "Η ομάδα μου" : esc(P.my_team?.name || "Η ομάδα μου")}</h2>${team}</div>
     <div class="card"><h2>Τραυματίες & αμφίβολοι ${ii("avail")}</h2>${availHtml}</div>
     <div class="card"><h2>Για CAP ${ii("xpts")}</h2><ul class="td-list">${caps.map((r) => li(r, [r.x_now, "xFPT"], where(r))).join("")}</ul></div>
