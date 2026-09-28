@@ -5,7 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ELF">
-<meta name="theme-color" content="#1a1a19">
+<meta name="theme-color" content="#13233f" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#ef6a2f" media="(prefers-color-scheme: dark)">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@600;700;800&display=swap">
+<script>try { const t = localStorage.getItem("theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
@@ -14,26 +18,33 @@
 <style>
 :root {
   color-scheme: light;
-  --surface-0: #f3f3f1; --surface-1: #fcfcfb; --border: #e2e1dc;
-  --text-primary: #0b0b0b; --text-secondary: #52514e; --text-muted: #7a7974;
-  --series-1: #2a78d6; --good: #008300; --critical: #d13a39; --accent: #eb6834;
-  --court: #ecdcc0; --court-line: #c9ab7c; --court-key: #e4cfa9;
+  --surface-0: #f6f1ea; --surface-1: #fffdf9; --border: #e8dccb;
+  --text-primary: #18202e; --text-secondary: #4b5364; --text-muted: #6b7280;
+  --series-1: #1f5fae; --good: #16813d; --critical: #c8372c; --accent: #e0620f;
+  --bar: #13233f; --bar-fg: #ffffff; --bar-muted: rgba(255,255,255,.72); --bar-line: var(--accent);
+  --shadow: 0 1px 2px rgba(60,40,10,.06), 0 4px 14px rgba(60,40,10,.06);
+  /* the court: the same parquet in both themes, white lines like a real floor */
+  --court: #dcae70; --court-line: rgba(255,255,255,.88); --court-key: rgba(255,255,255,.14); --court-text: #3a2710;
+  --num-font: "Roboto Condensed", "Arial Narrow", system-ui, sans-serif;
 }
+/* dark: the phone's setting («Αυτόματο»), or chosen in the header (data-theme) */
 @media (prefers-color-scheme: dark) {
   :root:where(:not([data-theme="light"])) {
     color-scheme: dark;
-    --surface-0: #121211; --surface-1: #1a1a19; --border: #2e2e2c;
-    --text-primary: #ffffff; --text-secondary: #c3c2b7; --text-muted: #8f8e86;
-    --series-1: #3987e5; --good: #2fa84f; --critical: #e66767; --accent: #d95926;
-    --court: #2a2419; --court-line: #5c4a31; --court-key: #332b1e;
+  --surface-0: #0b1026; --surface-1: #151b3b; --border: #262e58;
+  --text-primary: #f3f5ff; --text-secondary: #b6bddf; --text-muted: #8a93bb;
+  --series-1: #4fb3ff; --good: #38d27f; --critical: #ff6b77; --accent: #ff7a1a;
+  --bar: linear-gradient(100deg, #e8741c, #cf3f1a); --bar-fg: #ffffff; --bar-muted: rgba(255,255,255,.86); --bar-line: #ffffff;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 18px rgba(0,0,0,.25);
   }
 }
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --surface-0: #121211; --surface-1: #1a1a19; --border: #2e2e2c;
-  --text-primary: #ffffff; --text-secondary: #c3c2b7; --text-muted: #8f8e86;
-  --series-1: #3987e5; --good: #2fa84f; --critical: #e66767; --accent: #d95926;
-  --court: #2a2419; --court-line: #5c4a31; --court-key: #332b1e;
+  --surface-0: #0b1026; --surface-1: #151b3b; --border: #262e58;
+  --text-primary: #f3f5ff; --text-secondary: #b6bddf; --text-muted: #8a93bb;
+  --series-1: #4fb3ff; --good: #38d27f; --critical: #ff6b77; --accent: #ff7a1a;
+  --bar: linear-gradient(100deg, #e8741c, #cf3f1a); --bar-fg: #ffffff; --bar-muted: rgba(255,255,255,.86); --bar-line: #ffffff;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 18px rgba(0,0,0,.25);
 }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--surface-0); color: var(--text-primary);
@@ -304,11 +315,51 @@ ul.news li { padding: 8px 0; border-bottom: 1px solid var(--border); }
   color: var(--text-primary); font: inherit; font-weight: 600; padding: 13px 14px; border-radius: 12px; cursor: pointer; }
 .more-list button small { display: block; font-weight: 400; color: var(--text-muted); font-size: 13px; }
 .more-list .cnt { margin-left: auto; }
+
+/* ---- theme: navy + orange (light «Parquet», dark «Arena»); the numbers in a condensed face */
+body > header { background: var(--bar); border-bottom: 0; color: var(--bar-fg); }
+body > header h1, body > header h1 small, body > header h1 .muted { color: var(--bar-fg) !important; }
+body > header h1 { padding-right: 44px; }
+body > header .sub { color: var(--bar-muted); }
+body > header nav button { color: var(--bar-muted); }
+body > header nav button.on { color: var(--bar-fg); border-color: var(--bar-line); }
+.card, .pcard, .kpi { border-radius: 14px; box-shadow: var(--shadow); }
+.chip { border-radius: 12px; }
+.chip .cp, .kpi b, .td-hero .big, .pcard .px b, .tm-top b, #ptable td.num b {
+  font-family: var(--num-font); font-variant-numeric: tabular-nums; letter-spacing: .1px; }
+.chip .cp { font-size: 21px; } .td-hero .big { font-size: 26px; }
+.themebtn { position: absolute; right: 12px; top: max(10px, env(safe-area-inset-top)); width: 34px; height: 34px; border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.35); background: rgba(255,255,255,.1); color: var(--bar-fg); font: 16px/1 system-ui; cursor: pointer;
+  display: grid; place-items: center; padding: 0; }
+.themebtn:hover { background: rgba(255,255,255,.2); }
+@media (max-width: 700px) {
+  .bnav { background: var(--surface-1); box-shadow: 0 -2px 14px rgba(0,0,0,.08); }
+  :root[data-theme="dark"] .bnav { background: #0f1433; }
+}
+@media (prefers-color-scheme: dark) and (max-width: 700px) { :root:where(:not([data-theme="light"])) .bnav { background: #0f1433; } }
+
+/* ---- the court: parquet planks, white FIBA lines drawn by courtLines() */
+.court, .tm-floor { background-color: var(--court);
+  background-image:
+    linear-gradient(180deg, rgba(255,255,255,.10), rgba(0,0,0,.06)),
+    repeating-linear-gradient(90deg, rgba(0,0,0,.05) 0 1px, transparent 1px 22px),
+    repeating-linear-gradient(90deg, #e2b77b 0 22px, #d6a767 22px 44px, #e6bf88 44px 66px, #dcae70 66px 88px);
+  border-color: rgba(255,255,255,.55); }
+.tm-floor .court { background: transparent; }
+.court::before, .court::after { content: none !important; }
+.court.lined { padding-top: calc(10.5% + 16px); }   /* the chips start just under the basket */
+.court > .court-lines { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+.court-lines * { fill: none; stroke: var(--court-line); stroke-width: 2px; vector-effect: non-scaling-stroke; }
+.court-lines .key { fill: var(--court-key); }
+.court-lines .rim { stroke: #f26a1b; stroke-width: 2.5px; }
+.court-lines .dash { stroke-dasharray: 5 5; }
+.tm-floor .lane h3 { color: var(--court-text) !important; opacity: .85; }
 </style>
 </head>
 <body>
 <header>
   <h1>🏀 EuroLeague Fantasy — <span id="round">…</span></h1>
+  <button id="themeBtn" class="themebtn" type="button" aria-label="Θέμα: αυτόματο / φωτεινό / σκούρο" title="Θέμα"></button>
   <div class="sub" id="updated">Φόρτωση…</div>
   <nav id="tabs">
     <button data-t="today" class="on">Σήμερα</button>
@@ -408,6 +459,36 @@ const avb = (r) => (r.avail_game == null || r.avail_game >= 1 ? ""
   : r.avail_game === 0 ? ` <span class="av out" data-info="avail">Εκτός</span>`
   : ` <span class="av q" data-info="avail">${Math.round(r.avail_game * 100)}%</span>`);
 const get = (f) => fetch(`data/${f}?t=${Date.now()}`).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+
+// ---------- the court's lines (FIBA half court, basket at the top): drawn into every .court as it appears.
+// Units of 10 cm, 15 m wide; scaled to the width so the circles stay round (slice).
+const COURT_SVG = `<svg class="court-lines" viewBox="0 0 150 140" preserveAspectRatio="xMidYMin slice" aria-hidden="true">
+  <path d="M9 0V29.9A67.5 67.5 0 0 0 141 29.9V0"/>
+  <rect class="key" x="50.5" y="0" width="49" height="58"/>
+  <path d="M57 58A18 18 0 0 0 93 58"/><path class="dash" d="M57 58A18 18 0 0 1 93 58"/>
+  <path d="M62.5 15.75A12.5 12.5 0 0 0 87.5 15.75"/>
+  <path d="M50.5 17.5h-2M50.5 26h-2M50.5 34.5h-2M50.5 43h-2M99.5 17.5h2M99.5 26h2M99.5 34.5h2M99.5 43h2"/>
+  <path d="M66 12H84"/><circle class="rim" cx="75" cy="15.75" r="2.3"/></svg>`;
+function courtLines(root) {
+  (root || document).querySelectorAll(".court:not(.lined)").forEach((c) => { c.classList.add("lined"); c.insertAdjacentHTML("afterbegin", COURT_SVG); });
+}
+new MutationObserver(() => courtLines()).observe(document.documentElement, { childList: true, subtree: true });
+
+// ---------- theme: automatic (the phone's setting) → light → dark
+const THEMES = [["", "◐", "Αυτόματο (όπως το κινητό)"], ["light", "☀", "Φωτεινό"], ["dark", "☾", "Σκούρο"]];
+function setTheme(t) {
+  if (t) document.documentElement.dataset.theme = t; else delete document.documentElement.dataset.theme;
+  try { if (t) localStorage.setItem("theme", t); else localStorage.removeItem("theme"); } catch (e) {}
+  const cur = THEMES.find((x) => x[0] === (t || "")) || THEMES[0];
+  const b = document.getElementById("themeBtn");
+  if (b) { b.textContent = cur[1]; b.title = `Θέμα: ${cur[2]}`; }
+}
+document.getElementById("themeBtn").onclick = () => {
+  const now = document.documentElement.dataset.theme || "";
+  const next = THEMES[(THEMES.findIndex((x) => x[0] === now) + 1) % THEMES.length];
+  setTheme(next[0]);
+};
+setTheme(document.documentElement.dataset.theme || "");
 
 // tabs: the top bar (wide screens), the bottom bar (phones) and «Περισσότερα» all go through here
 const MORE_TABS = [["news", "Νέα", "Σύνοψη ειδικών, τραυματίες και άρθρα"], ["compare", "Σύγκριση", "Παίκτες δίπλα-δίπλα"],
@@ -561,10 +642,10 @@ function courtView(list, ref) {
   const row = (pos) => five.filter((p) => p.position === pos).map((p) => chip(p, ref && ref[p.id] !== p.role)).join("");
   const lane = (cls, title, ps) => ps.length ? `<div class="lane ${cls}"><h3>${title}</h3><div class="crow">${
     ps.map((p) => chip(p, ref && ref[p.id] !== p.role)).join("")}</div></div>` : "";
-  return `<div class="court"><div class="crow">${row("Center")}</div><div class="crow">${row("Forward")}</div>
+  return `<div class="tm-floor"><div class="court"><div class="crow">${row("Center")}</div><div class="crow">${row("Forward")}</div>
     <div class="crow">${row("Guard")}</div></div>
     <div class="lanes"><div class="pair">${lane("six", "6th (100% FPT)", by("6ος"))}${lane("coach", "Head Coach", by("coach"))}</div>
-      ${lane("bench", "Bench (50% FPT)", by("πάγκος").sort((a, b) => (b.x_now ?? 0) - (a.x_now ?? 0)))}</div>`;
+      ${lane("bench", "Bench (50% FPT)", by("πάγκος").sort((a, b) => (b.x_now ?? 0) - (a.x_now ?? 0)))}</div></div>`;
 }
 // «Η ομάδα μου»: web/team.js draws it for both editions
 function renderTeam(my, best) { if (window.TEAM) TEAM.render(best); }

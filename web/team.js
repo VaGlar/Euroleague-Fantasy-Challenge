@@ -749,9 +749,8 @@
   .tm-act small { display: block; color: var(--text-muted); font-size: 12px; }
   .tm-act:disabled { opacity: .45; cursor: default; }
   /* the whole squad stands on the court: the five in the half with the basket, 6th/coach/bench past the half-court line */
-  .tm-floor { position: relative; background: var(--court); border: 2px solid var(--court-line); border-radius: 12px; overflow: hidden; padding-bottom: 8px; }
+  .tm-floor { position: relative; border: 2px solid rgba(255,255,255,.55); border-radius: 12px; overflow: hidden; padding-bottom: 8px; }   /* parquet: index.html */
   .tm-floor .court { background: transparent; border: 0; border-bottom: 2px solid var(--court-line); border-radius: 0; overflow: visible; }
-  .tm-floor .court::before { top: 0; }
   .tm-floor .lanes { position: relative; margin-top: 0; padding: 32px 8px 0; }
   .tm-floor .lanes::before { content: ""; position: absolute; left: 50%; top: -30px; width: 58px; height: 58px; transform: translateX(-50%);
     border: 2px solid var(--court-line); border-radius: 50%; background: var(--court-key); clip-path: inset(30px 0 0 0); }
