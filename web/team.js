@@ -72,9 +72,13 @@
   const sur = (n) => nm(n).replace(/^\S\. /, "");
   const started = () => P.players.some((p) => p.actual != null);
   const played = (r) => started() && r.actual != null;
+  // price: today's (players are sold at it); buy: what the user paid (public edition), for the change only
   function rowsOf(t) {
-    return t.players.map((x) => { const r = row(x.id); return r ? { ...r, id: x.id, price: x.price ?? r.price } : null; }).filter(Boolean);
+    return t.players.map((x) => { const r = row(x.id); return r ? { ...r, id: x.id, price: r.price ?? x.price,
+      buy: t.game || x.price == null ? null : Number(x.price) } : null; }).filter(Boolean);
   }
+  const dPrice = (r) => (r.buy == null || r.price == null ? 0 : Math.round((r.price - r.buy) * 10) / 10);
+  const arrow = (d) => (d > 0 ? `<span class="tm-up">▲${f1(d)}</span>` : d < 0 ? `<span class="tm-down">▼${f1(-d)}</span>` : "");
   function optRows(rows, t, inRound) {
     return rows.map((r) => ({ id: r.id, position: r.position, price: Number(r.price) || 0, x_h: r.x_h ?? 0,
       x_now: inRound && played(r) ? r.actual : (r.x_now ?? 0), turn: r.turn, played: inRound && played(r),
@@ -251,7 +255,7 @@
     const i = t.players.findIndex((x) => x.id === outId);
     if (i < 0) return;
     const out = t.players[i];
-    const outPrice = Number(out.price ?? row(outId)?.price) || 0;   // sold at the saved price
+    const outPrice = Number(row(outId)?.price ?? out.price) || 0;   // sold at today's price
     countTrade(t);
     t.players[i] = { id: inId, price };
     t.bank = Math.round(((Number(t.bank) || 0) + outPrice - (Number(price) || 0)) * 10) / 10;
@@ -294,7 +298,7 @@
       <div class="ct"><span>${LETTER[r.position] || ""}</span>${r.turn ? `<span class="tb t${r.turn > 1 ? 2 : 1}">T${r.turn}</span>` : ""}</div>
       <div class="cn">${esc(sur(r.name))}${inj(r) ? " 🚑" : ""}${r.price_trend === "up" ? " $" : ""}</div>
       <div class="cp${isPlayed ? " done" : ""}">${f1(isPlayed ? r.actual : r.x_now)}</div>
-      <div class="cs">${r.opp ? `${r.home ? "🏠" : "✈️"} ${esc(r.opp)}` : ""}${r.price != null ? ` · ${f1(r.price)}` : ""}</div></div>`;
+      <div class="cs">${r.opp ? `${r.home ? "🏠" : "✈️"} ${esc(r.opp)}` : ""}${r.price != null ? ` · ${f1(r.price)}${arrow(dPrice(r))}` : ""}</div></div>`;
   }
   function courtHtml(t, rows, pl) {
     const moved = (r) => pl && !pl.tradesNow && pl.target[r.id] && (t.roles || {})[r.id] !== pl.target[r.id] ? "chg" : "";
@@ -319,6 +323,8 @@
     const items = pl.items;
     const total = rows.reduce((a, r) => { const role = (t.roles || {})[r.id]; const v = played(r) ? r.actual : (r.x_now ?? 0);
       return a + v * (role === "πάγκος" ? 0.5 : 1) * (t.captain === r.id ? 2 : 1); }, 0);
+    const value = rows.reduce((a, r) => a + (Number(r.price) || 0), 0);
+    const gain = Math.round(rows.reduce((a, r) => a + dPrice(r), 0) * 10) / 10;
     const head = pl.inRound
       ? `⏱ Αγωνιστική ${P.round} σε εξέλιξη`
       : `⏱ Αγωνιστική ${P.round} · κλείνει ${deadline()}`;
@@ -346,7 +352,8 @@
       ? `Πεντάδα και αρχηγός εφαρμόζονται με <b>/lineup</b> στο Telegram· τις μεταγραφές τις κάνεις στο παιχνίδι. Η ομάδα διαβάστηκε από το παιχνίδι ${esc(upd)}.`
       : "Κάνε τις αλλαγές στο παιχνίδι και πάτα ✓ — η ομάδα σου εδώ ενημερώνεται μόνη της.";
     return `<header class="tm-top"><div><h2 class="tm-h">${t.game ? esc(t.name || "Η ομάδα μου") : "Η ομάδα μου"}</h2>
-        <div class="muted">Υπόλοιπο <b>${f1(t.bank)} cr</b> · αναμενόμενοι πόντοι <b>${f1(total)}</b></div>
+        <div class="muted">Αξία ομάδας <b>${f1(value)} cr</b>${gain ? ` (${gain > 0 ? "+" : "−"}${f1(Math.abs(gain))} από την αγορά)` : ""} · Υπόλοιπο <b>${f1(t.bank)} cr</b></div>
+        <div class="muted">Αναμενόμενοι πόντοι <b>${f1(total)}</b></div>
         <div class="tm-dead">${head}</div></div>
         ${t.game || WIDE() ? "" : `<div class="tm-morewrap"><button class="tm-more" id="tmMore" aria-haspopup="menu">⋯ Επιλογές</button><div id="tmMenu"></div></div>`}</header>
       ${!t.game && WIDE() ? '<div id="tmTools"></div>' : ""}
@@ -371,7 +378,7 @@
     const canCap = role === "5άδα" && t.captain !== id && !(played(r) && t.captain !== id);
     const capWhy = role !== "5άδα" ? "μόνο παίκτης της πεντάδας" : t.captain === id ? "είναι ήδη αρχηγός" : played(r) ? "έχει ήδη παίξει" : "διπλοί πόντοι";
     sheet(`<div class="sh"><div><h2>${esc(nm(r.name))}</h2>
-        <div class="muted">${esc(r.team)} · ${NAME[r.position]} · ${f1(r.price)} cr${r.turn ? ` · Turn ${r.turn}` : ""}${role && role !== "coach" ? ` · ${role}` : ""}</div></div>
+        <div class="muted">${esc(r.team)} · ${NAME[r.position]} · τώρα ${f1(r.price)} cr${r.buy != null ? ` · αγορά ${f1(r.buy)}${dPrice(r) ? ` (${dPrice(r) > 0 ? "+" : "−"}${f1(Math.abs(dPrice(r)))})` : ""}` : ""}${r.turn ? ` · Turn ${r.turn}` : ""}${role && role !== "coach" ? ` · ${role}` : ""}</div></div>
         <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
       <div class="kpis"><div class="kpi"><b>${f1(played(r) ? r.actual : r.x_now)}</b><span>${played(r) ? "πόντοι" : "xPTS"}</span></div>
         <div class="kpi"><b>${f1(r.x_h)}</b><span>xPTS3</span></div><div class="kpi"><b>${r.value == null ? "–" : r.value.toFixed(2)}</b><span>xPTS3/cr</span></div></div>
@@ -379,7 +386,7 @@
         ${r.position !== "Head Coach" ? `<button class="tm-act" id="aCap" ${canCap ? "" : "disabled"}><span>★</span><div>Κάν' τον αρχηγό<small>${capWhy}</small></div></button>
         <button class="tm-act" id="aSwap"><span>⇄</span><div>Αλλαγή θέσης με…<small>ή σύρε τον πάνω σε άλλον παίκτη</small></div></button>` : ""}
         <button class="tm-act" id="aRep"><span>🔁</span><div>Αντικατάσταση (μεταγραφή)<small>${NAME[r.position]} έως ${f1((Number(t.bank) || 0) + Number(r.price || 0))} cr</small></div></button>
-        <button class="tm-act" id="aPrice"><span>✎</span><div>Διόρθωση τιμής<small>αν στο παιχνίδι σου διαφέρει (τώρα ${f1(r.price)} cr)</small></div></button>
+        <button class="tm-act" id="aPrice"><span>✎</span><div>Διόρθωση τιμής αγοράς<small>όσο τον πλήρωσες στο παιχνίδι (έχεις γράψει ${f1(r.buy ?? r.price)} cr)</small></div></button>
         <button class="tm-act" id="aInfo"><span>📊</span><div>Στατιστικά και επόμενα παιχνίδια<small>η πλήρης καρτέλα του παίκτη</small></div></button>
       </div>`);
     const on = (i, fn) => { const el = document.getElementById(i); if (el) el.onclick = fn; };
@@ -394,14 +401,14 @@
     });
     on("aRep", () => replaceSheet(t, r));
     on("aPrice", () => {
-      sheet(`<div class="sh"><div><h2>Τιμή: ${esc(sur(r.name))}</h2><div class="muted">Όπως φαίνεται στο παιχνίδι σου</div></div>
+      sheet(`<div class="sh"><div><h2>Τιμή αγοράς: ${esc(sur(r.name))}</h2><div class="muted">Όσο τον πλήρωσες στο παιχνίδι · σημερινή τιμή ${f1(r.price)} cr</div></div>
           <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
-        <input id="tmPrice" class="tm-input" inputmode="decimal" value="${f1(r.price)}" autocomplete="off">
+        <input id="tmPrice" class="tm-input" inputmode="decimal" value="${f1(r.buy ?? r.price)}" autocomplete="off">
         <button class="tm-primary" id="tmPriceOk">Αποθήκευση</button>`);
       $("#tmPriceOk").onclick = () => {
         const v = parseFloat(String($("#tmPrice").value).replace(",", "."));
         if (isNaN(v) || v <= 0) { toast("Γράψε μια τιμή, π.χ. 7,5"); return; }
-        t.players.find((x) => x.id === id).price = v; save(t); closePlayer(); render(); toast(`${sur(r.name)}: ${f1(v)} cr`);
+        t.players.find((x) => x.id === id).price = v; save(t); closePlayer(); render(); toast(`${sur(r.name)}: αγορά ${f1(v)} cr`);
       };
     });
     on("aInfo", () => openPlayer(r.person_id));
@@ -547,7 +554,7 @@
       + Array.from({ length: NEED[pos] - have(pos).length }, () => `<button class="tm-slot" data-pos="${pos}"><b>+</b>${NAME[pos]}</button>`).join("");
     const had = !!load();
     return `<header class="tm-top"><div><h2 class="tm-h">${had ? "Αλλαγή ομάδας" : "Φτιάξε την ομάδα σου"}</h2>
-        <div class="muted">Πάτα μια κενή θέση και διάλεξε παίκτη · πάτα έναν παίκτη για να αλλάξεις την τιμή του ή να τον αφαιρέσεις · ${ps.length}/11</div></div></header>
+        <div class="muted">Πάτα μια κενή θέση και διάλεξε παίκτη · πάτα έναν παίκτη για να γράψεις την τιμή αγοράς του ή να τον αφαιρέσεις · ${ps.length}/11</div></div></header>
       <div class="card tm-courtcard"><div class="tm-floor"><div class="court"><div class="crow">${slots("Center")}</div></div>
         <div class="lanes">
           <div class="lane"><h3>Forwards · ${have("Forward").length}/4</h3><div class="crow">${slots("Forward")}</div></div>
@@ -557,7 +564,7 @@
         ${spent > 100.05 ? `<p class="tm-over">⚠️ Πάνω από το budget κατά <b>${f1(spent - 100)}</b> cr — έλεγξε τις τιμές (πάτα τον παίκτη)· το παιχνίδι δεν επιτρέπει πάνω από 100.</p>` : ""}
         <button class="tm-primary" id="tmFinish" ${full ? "" : "disabled"}>${full ? "Αποθήκευση ➜" : `Λείπουν ${11 - ps.length}`}</button>
         ${had ? '<button class="linkbtn" id="tmCancel" style="display:block;margin:6px auto 0">Άκυρο</button>' : ""}
-        <p class="tm-hint">Οι τιμές συμπληρώνονται με τις σημερινές· αν στο παιχνίδι σου διαφέρουν, πάτα τον παίκτη και διόρθωσέ τες. Το υπόλοιπο το διορθώνεις από τις «Επιλογές».</p>
+        <p class="tm-hint">Γράψε τις τιμές <b>αγοράς</b> (όσο πλήρωσες τον καθένα)· συμπληρώνονται με τις σημερινές, αν διαφέρουν πάτα τον παίκτη. Έτσι βλέπεις πόσο ανέβηκαν ή έπεσαν· στις μεταγραφές μετράει η σημερινή τιμή. Το υπόλοιπο το διορθώνεις από τις «Επιλογές».</p>
         ${had ? "" : '<button class="linkbtn" id="tmRestore" style="display:block;margin:8px auto 0">📥 Έχεις σύνδεσμο αντιγράφου; Επικόλλησέ τον</button>'}</div>`;
   }
   // setting up: a picked player's price (as in your game) or removing him
@@ -566,9 +573,9 @@
     if (!x || !r) return;
     sheet(`<div class="sh"><div><h2>${esc(nm(r.name))}</h2><div class="muted">${esc(r.team)} · ${NAME[r.position]} · σημερινή τιμή ${f1(r.price)} cr</div></div>
         <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
-      <label class="muted" for="tmSetPrice">Τιμή όπως στο παιχνίδι σου (αν τον αγόρασες φθηνότερα ή ακριβότερα)</label>
+      <label class="muted" for="tmSetPrice">Τιμή αγοράς: όσο τον πλήρωσες στο παιχνίδι</label>
       <input id="tmSetPrice" class="tm-input" inputmode="decimal" value="${f1(x.price)}" autocomplete="off">
-      <button class="tm-primary" id="tmSetOk">Αποθήκευση τιμής</button>
+      <button class="tm-primary" id="tmSetOk">Αποθήκευση τιμής αγοράς</button>
       <button class="tm-primary tm-danger-bg" id="tmSetRm" style="margin-top:8px">Αφαίρεση από την ομάδα</button>`);
     setTimeout(() => $("#tmSetPrice")?.select(), 50);
     const ok = () => {
@@ -767,6 +774,7 @@
   .tm-primary:disabled { background: var(--border); color: var(--text-muted); cursor: default; }
   .tm-danger-bg { background: var(--critical); }
   .tm-money { display: flex; justify-content: space-between; color: var(--text-secondary); font-size: 13px; margin-top: 10px; }
+  .tm-up { color: var(--good, #1e8e3e); font-size: 10px; margin-left: 2px; } .tm-down { color: var(--critical); font-size: 10px; margin-left: 2px; }
   .tm-over { color: var(--critical); font-size: 13px; margin: 6px 2px 0; }
   .tm-slot { width: 31%; max-width: 128px; border: 2px dashed var(--court-line); border-radius: 10px; padding: 12px 4px;
     background: color-mix(in srgb, var(--surface-1) 55%, transparent); color: var(--text-secondary); font: inherit; font-size: 12px; cursor: pointer; }
