@@ -10,9 +10,54 @@
 
 ## Αρχιτεκτονική
 
+Πώς ρέουν τα δεδομένα, από τις πηγές μέχρι το κινητό σου (το GitHub το δείχνει ως διάγραμμα). Εκτός διαγράμματος για να μένει καθαρό: `analytics.yml` (επισκεψιμότητα, 09:05 → Telegram), `functions/feed.js` (proxy όταν ένα Substack μπλοκάρει το GitHub), `tests.yml`.
+
+```mermaid
+flowchart TB
+  BOT["🤖 Telegram bot · worker/<br/>ωριαίο cron στο Cloudflare"]
+
+  subgraph SRC["Πηγές"]
+    direction LR
+    EL["EuroLeague API<br/>αγώνες, box scores"]
+    FG["Fantasy game<br/>τιμές, POP, η ομάδα σου"]
+    NEWS["RSS / Substack<br/>νέα, ειδικοί"]
+  end
+
+  UPD["⚙️ update.yml → elf/run.py (GitHub Actions)<br/>μοντέλο xFPT · βελτιστοποίηση · report"]
+  GEM["Gemini<br/>σύνοψη νέων"]
+  DATA[("data/public")]
+  PUB["elf/publish.py<br/>αφαιρεί τα προσωπικά"]
+  P1["elf-dashboard.pages.dev<br/>προσωπική"]
+  P2["hoopslab-beta.pages.dev<br/>δημόσια"]
+  LU["lineup.yml<br/>πεντάδα + CAP"]
+  TG(["📱 Telegram"])
+
+  BOT -- "07:05 · 3ω πριν τον 1ο αγώνα · μετά τους αγώνες" --> UPD
+  SRC --> UPD
+  UPD <--> GEM
+  UPD --> DATA
+  DATA --> P1
+  DATA --> PUB --> P2
+  UPD -- "report · προβλήματα" --> TG
+  BOT -- "/lineup" --> LU
+  LU -- "γράφει μόνο πεντάδα/αρχηγό" --> FG
+  TG <--> BOT
+```
+
+Πώς περνάει μια αλλαγή στο live (βλ. «Ροή αλλαγών» παρακάτω):
+
+```mermaid
+flowchart LR
+  W["branch εργασίας<br/>claude/…"] -- "update από το branch" --> PRE["preview<br/>dev.*.pages.dev<br/>χωρίς δεδομένα / Telegram"]
+  W -- "PR" --> T{"tests<br/>πράσινα;"}
+  T -- "ναι → merge" --> M["main = live"]
+  T -- "όχι → διόρθωση" --> W
+  M -- "προγραμματισμένα updates (bot)" --> LIVE["elf-dashboard + hoopslab<br/>δεδομένα + Telegram"]
+```
+
 | Κομμάτι | Πού τρέχει | Τι κάνει |
 |---|---|---|
-| `elf/` (Python) | GitHub Actions (3×/μέρα) | στατιστικά EuroLeague, τιμές fantasy, νέα, xPIR, report |
+| `elf/` (Python) | GitHub Actions (από το bot, 3–4×/μέρα) | στατιστικά EuroLeague, τιμές fantasy, νέα, xPIR, report |
 | `web/` | Cloudflare Pages | dashboard (PWA: «Προσθήκη στην αρχική οθόνη» στο iPhone) |
 | `worker/` | Cloudflare Workers | ωριαίο cron (report ~10:10, update 3 ώρες και υπενθύμιση 2 ώρες πριν τον 1ο αγώνα) + εντολές bot |
 | `sources.yaml` | — | λίστα πηγών νέων (πρόσθεσε RSS feeds εδώ) |
