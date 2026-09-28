@@ -93,7 +93,7 @@ details.fbox > summary::-webkit-details-marker { display: none; }
 .pcard .pn { font-weight: 600; min-width: 0; }
 .pcard .px { grid-row: span 2; text-align: right; align-self: center; }
 .pcard .px b { font-size: 20px; font-variant-numeric: tabular-nums; }
-.pcard .px small { display: block; color: var(--text-muted); font-size: 11px; }
+.pcard .px small { display: block; color: var(--text-muted); font-size: 12px; }
 .pcard .pm { color: var(--text-secondary); font-size: 13px; }
 .pcard .ps { grid-column: 1 / -1; color: var(--text-muted); font-size: 12px; font-variant-numeric: tabular-nums; }
 @media (max-width: 640px) {
@@ -170,7 +170,7 @@ footer.fb .fbcopy { margin-left: 6px; font: inherit; font-size: 12px; padding: 4
 .kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
 .kpi { background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px; padding: 8px; text-align: center; }
 .kpi b { display: block; font-size: 22px; font-variant-numeric: tabular-nums; }
-.kpi span { font-size: 11px; color: var(--text-muted); }
+.kpi span { font-size: 12px; color: var(--text-muted); }
 .why { list-style: none; padding: 0; margin: 0; font-size: 14px; }
 .why li { padding: 5px 0; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; gap: 10px; }
 .why li span:last-child { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
@@ -180,7 +180,7 @@ footer.fb .fbcopy { margin-left: 6px; font: inherit; font-size: 12px; padding: 4
 .game .gs { color: var(--text-muted); font-size: 12px; }
 .game .gv { grid-row: span 2; align-self: center; text-align: right; }
 .game .gv b { font-size: 18px; font-variant-numeric: tabular-nums; }
-.game .gv small { display: block; font-size: 11px; color: var(--text-muted); }
+.game .gv small { display: block; font-size: 12px; color: var(--text-muted); }
 .W { color: var(--good); font-weight: 700; } .L { color: var(--critical); font-weight: 700; }
 body.noscroll { overflow: hidden; }
 .steps { counter-reset: st; list-style: none; padding: 0; margin: 10px 0; }
@@ -199,7 +199,7 @@ body.noscroll { overflow: hidden; }
 .tk td.fx { border-radius: 6px; text-align: center; font-size: 12px; line-height: 1.25; padding: 5px 1px; }
 .tk td.fx small { display: block; font-size: 10px; opacity: .8; }
 .tk td.none { color: var(--text-muted); font-size: 11px; text-align: center; }
-.legend { display: flex; gap: 4px; align-items: center; font-size: 11px; color: var(--text-muted); margin: 6px 0 0; flex-wrap: wrap; }
+.legend { display: flex; gap: 4px; align-items: center; font-size: 12px; color: var(--text-muted); margin: 6px 0 0; flex-wrap: wrap; }
 .legend i { display: inline-block; width: 18px; height: 12px; border-radius: 3px; }
 .dots { display: inline-flex; gap: 2px; }
 .st-club { font-size: 12px; }
@@ -235,6 +235,66 @@ table.h2h tr.sec td { background: var(--surface-0); font-weight: 700; color: var
 .h2h .ng { font-size: 12px; line-height: 1.5; }
 .plan li { padding: 4px 0; }
 ul.news li { padding: 8px 0; border-bottom: 1px solid var(--border); }
+
+/* ---- player cards: availability first, a team colour stripe, fewer numbers */
+.pcard { border-left: 4px solid var(--tc, var(--border)); }
+.av { display: inline-block; font-size: 12px; font-weight: 700; padding: 1px 7px; border-radius: 999px; margin-left: 4px; vertical-align: 1px; }
+.av.out { background: color-mix(in srgb, var(--critical) 16%, transparent); color: var(--critical); }
+.av.q { background: color-mix(in srgb, var(--accent) 18%, transparent); color: var(--accent); }
+.pcard .px .h { display: block; font-size: 12px; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+.pcard .px .h small { display: inline; }
+
+/* ---- ⓘ: one-line explanations of the fantasy terms */
+.ii { border: 0; background: none; color: var(--text-muted); font: inherit; font-size: 12px; padding: 0 2px; cursor: pointer; line-height: 1; vertical-align: 1px; }
+.ii:hover, .ii:focus-visible { color: var(--series-1); }
+.tip { position: absolute; z-index: 20; max-width: min(300px, calc(100vw - 32px)); background: var(--text-primary); color: var(--surface-1);
+  font-size: 13px; line-height: 1.4; padding: 8px 10px; border-radius: 10px; box-shadow: 0 6px 18px rgba(0,0,0,.25); }
+
+/* ---- «Σήμερα» */
+.td-hero { display: grid; gap: 4px; }
+.td-hero .big { font-size: 22px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.td-grid { display: grid; gap: 12px; }
+@media (min-width: 760px) { .td-grid { grid-template-columns: 1fr 1fr; align-items: start; } .td-grid .wide { grid-column: 1 / -1; } }
+.td-grid .card { margin-bottom: 0; }
+.td-team { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.td-btn { border: 0; border-radius: 999px; padding: 9px 16px; font: inherit; font-weight: 700; cursor: pointer; background: var(--text-primary); color: var(--surface-1); white-space: nowrap; }
+.td-list { list-style: none; margin: 0; padding: 0; }
+.td-list li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 10px; padding: 8px 0; border-bottom: 1px solid var(--border); cursor: pointer; }
+.td-list li:last-child { border-bottom: 0; }
+.td-list .n { font-weight: 600; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.td-list .m { grid-column: 1; color: var(--text-secondary); font-size: 13px; }
+.td-list .v { grid-row: span 2; grid-column: 2; align-self: center; text-align: right; font-variant-numeric: tabular-nums; }
+.td-list .v b { font-size: 18px; } .td-list .v small { display: block; font-size: 12px; color: var(--text-muted); }
+.td-tiers { display: grid; gap: 10px; }
+@media (min-width: 760px) { .td-tiers { grid-template-columns: repeat(3, 1fr); } }
+.td-tiers h3 { font-size: 13px; margin: 0 0 2px; color: var(--text-secondary); }
+.td-games { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.td-games span { font-size: 13px; border: 1px solid var(--border); border-radius: 999px; padding: 3px 9px; background: var(--surface-0); font-variant-numeric: tabular-nums; }
+.td-turn { margin-top: 10px; } .td-turn:first-child { margin-top: 0; }
+.td-turn b { font-size: 14px; }
+
+/* ---- phones: bottom navigation (thumb reach); the top tabs stay on wide screens */
+.bnav { display: none; }
+@media (max-width: 700px) {
+  :root { --bnav: 60px; }
+  header nav#tabs { display: none; }
+  header { padding-bottom: 10px; }
+  .bnav { display: grid; grid-template-columns: repeat(5, 1fr); position: fixed; left: 0; right: 0; bottom: 0; z-index: 6;
+    background: var(--surface-1); border-top: 1px solid var(--border); padding-bottom: env(safe-area-inset-bottom, 0px); }
+  .bnav button { border: 0; background: none; color: var(--text-muted); font: inherit; font-size: 11px; font-weight: 600;
+    display: grid; justify-items: center; gap: 2px; padding: 7px 2px 6px; cursor: pointer; position: relative; }
+  .bnav button svg { width: 22px; height: 22px; }
+  .bnav button.on { color: var(--accent); }
+  .bnav .cnt { position: absolute; top: 3px; left: calc(50% + 6px); }
+  main { padding-bottom: calc(var(--bnav) + 24px); }
+  footer.fb { padding-bottom: calc(var(--bnav) + 24px + env(safe-area-inset-bottom)); }
+  .cmpbar { bottom: calc(var(--bnav) + 12px + env(safe-area-inset-bottom)); }
+}
+.more-list { display: grid; gap: 8px; margin-top: 12px; }
+.more-list button { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; border: 1px solid var(--border); background: var(--surface-1);
+  color: var(--text-primary); font: inherit; font-weight: 600; padding: 13px 14px; border-radius: 12px; cursor: pointer; }
+.more-list button small { display: block; font-weight: 400; color: var(--text-muted); font-size: 13px; }
+.more-list .cnt { margin-left: auto; }
 </style>
 </head>
 <body>
@@ -242,17 +302,19 @@ ul.news li { padding: 8px 0; border-bottom: 1px solid var(--border); }
   <h1>🏀 EuroLeague Fantasy — <span id="round">…</span></h1>
   <div class="sub" id="updated">Φόρτωση…</div>
   <nav id="tabs">
-    <button data-t="report" class="on">Report</button>
-    <button data-t="players">Παίκτες</button>
+    <button data-t="today" class="on">Σήμερα</button>
     <button data-t="team">Η ομάδα μου</button>
+    <button data-t="players">Παίκτες</button>
     <button data-t="teams">Βαθμολογία</button>
     <button data-t="news">Νέα</button>
     <button data-t="compare">Σύγκριση<span class="cnt" id="cmpcnt" hidden></span></button>
     <button data-t="model">Μοντέλο</button>
+    <button data-t="report">Report</button>
   </nav>
 </header>
 <main>
-  <section id="report" class="on"></section>
+  <section id="today" class="on"></section>
+  <section id="report"></section>
   <section id="players">
     <details class="fbox" id="fbox"><summary id="fsum">Φίλτρα</summary>
     <div class="filters">
@@ -285,6 +347,13 @@ ul.news li { padding: 8px 0; border-bottom: 1px solid var(--border); }
 <footer id="feedback" class="fb" hidden>💬 Ιδέες, προβλήματα ή ό,τι σκέψη έχεις; Γράψε μας στο
   <a href="mailto:euroleaguefantasy26@gmail.com?subject=HoopsLab%20beta">euroleaguefantasy26@gmail.com</a>
   <button class="fbcopy" type="button" onclick="copyMail(this)">📋 Αντιγραφή</button></footer>
+<nav class="bnav" id="bnav" aria-label="Κύρια πλοήγηση">
+  <button data-t="today" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/></svg><span>Σήμερα</span></button>
+  <button data-t="team"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 12h18"/><circle cx="12" cy="12" r="3"/></svg><span>Η ομάδα μου</span></button>
+  <button data-t="players"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8"/><path d="M18 14.8c1.8.7 3 2.4 3.5 5.2"/></svg><span>Παίκτες</span></button>
+  <button data-t="teams"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3"/><path d="M7 5H4v2a3 3 0 0 0 3 3"/></svg><span>Βαθμολογία</span></button>
+  <button data-t="more"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/></svg><span>Περισσότερα</span><span class="cnt" id="cmpcnt2" hidden></span></button>
+</nav>
 <div class="cmpbar" id="cmpbar"><span id="cmptxt"></span>
   <button class="go" type="button" onclick="document.querySelector('nav [data-t=compare]').click()">Σύγκριση →</button>
   <button class="clr" type="button" onclick="setCmp([])">✕</button></div>
@@ -319,17 +388,71 @@ const exb = (r) => (r.expert_pick > 0 ? ` <span class="pill" title="στήλες
   + (r.expert_avoid > 0 ? ` <span class="pill" title="στήλη που προτείνει να τον αποφύγεις">👎</span>` : "")
   + (r.prior ? ` <span class="pill" title="χωρίς ιστορικό: εκτίμηση από την τιμή">≈τιμή</span>` : "");
 const dol = (r) => (r.price_trend === "up"
-  ? ` <span class="pill up" title="πιθανή άνοδος τιμής μετά την αγωνιστική${r.price_delta != null ? ` (~+${r.price_delta.toFixed(1)} cr)` : ""}">$</span>`
-  : r.price_trend === "down" ? ` <span class="pill down" title="πιθανή πτώση τιμής">↓$</span>` : "");
+  ? ` <span class="pill up" data-info="dollar" title="πιθανή άνοδος τιμής μετά την αγωνιστική${r.price_delta != null ? ` (~+${r.price_delta.toFixed(1)} cr)` : ""}">$</span>`
+  : r.price_trend === "down" ? ` <span class="pill down" data-info="dollar" title="πιθανή πτώση τιμής">↓$</span>` : "");
+// club colours (a thin stripe on the player cards)
+const TEAMC = { OLY: "#c8102e", PAN: "#00843d", MAD: "#5b2d8e", BAR: "#a50044", IST: "#0b2d6b", ULK: "#f2c200",
+  ZAL: "#00843d", MUN: "#dc052d", MIL: "#e2001a", TEL: "#f5c800", PAR: "#222", RED: "#d6001c", VIR: "#222",
+  BAS: "#1d4f91", PAM: "#f07c00", HTA: "#e4002b", BES: "#222" };
+const tcol = (t) => TEAMC[t] ? `--tc:${TEAMC[t]}` : "";
+const avb = (r) => (r.avail_game == null || r.avail_game >= 1 ? ""
+  : r.avail_game === 0 ? ` <span class="av out" data-info="avail">Εκτός</span>`
+  : ` <span class="av q" data-info="avail">${Math.round(r.avail_game * 100)}%</span>`);
 const get = (f) => fetch(`data/${f}?t=${Date.now()}`).then((r) => (r.ok ? r.json() : null)).catch(() => null);
 
-document.querySelectorAll("nav button").forEach((b) => b.onclick = () => {
-  document.querySelectorAll("nav button, section").forEach((x) => x.classList.remove("on"));
-  b.classList.add("on"); $("#" + b.dataset.t).classList.add("on");
-  if (b.dataset.t === "compare" && P) renderCompare();
-  $("#cmpbar").classList.toggle("on", CMP.length > 0 && b.dataset.t === "players");
-  try { localStorage.setItem("tab", b.dataset.t); } catch (e) {}
-});
+// tabs: the top bar (wide screens), the bottom bar (phones) and «Περισσότερα» all go through here
+const MORE_TABS = [["news", "Νέα", "Σύνοψη ειδικών, τραυματίες και άρθρα"], ["compare", "Σύγκριση", "Παίκτες δίπλα-δίπλα"],
+  ["model", "Μοντέλο", "Πόσο πέφτει έξω το μοντέλο, φέτος και πέρσι"], ["report", "Report", "Το report της αγωνιστικής σε κείμενο"]];
+function showTab(t) {
+  if (t === "more") { moreSheet(); return; }
+  if (!document.getElementById(t)) t = "today";
+  const changed = !$("#" + t).classList.contains("on");
+  document.querySelectorAll("main > section").forEach((x) => x.classList.toggle("on", x.id === t));
+  document.querySelectorAll("nav button[data-t]").forEach((b) => b.classList.toggle("on",
+    b.dataset.t === t || (b.dataset.t === "more" && MORE_TABS.some((m) => m[0] === t))));
+  if (t === "compare" && P) renderCompare();
+  if (t === "today" && P) renderToday();
+  $("#cmpbar").classList.toggle("on", CMP.length > 0 && t === "players");
+  if (changed && window.scrollY > 0) window.scrollTo({ top: 0 });
+  try { localStorage.setItem("tab", t); } catch (e) {}
+}
+document.querySelectorAll("nav button[data-t]").forEach((b) => b.onclick = () => showTab(b.dataset.t));
+function moreSheet() {
+  $("#sheet").innerHTML = `<div class="sh"><h2>Περισσότερα</h2><button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
+    <div class="more-list">${MORE_TABS.map(([k, l, d]) => `<button data-go="${k}"><div>${l}<small>${d}</small></div>${
+      k === "compare" && CMP.length ? `<span class="cnt">${CMP.length}</span>` : ""}</button>`).join("")}</div>`;
+  $("#modal").classList.add("on"); document.body.classList.add("noscroll");
+  $("#sheet").querySelectorAll("[data-go]").forEach((b) => b.onclick = () => { closePlayer(); showTab(b.dataset.go); });
+}
+
+// ---------- ⓘ: one-line explanations of the fantasy terms
+const INFO = {
+  xpts: "xPTS: αναμενόμενοι πόντοι fantasy στην αγωνιστική (PIR, +10% αν κερδίσει η ομάδα· για τον coach, από τη διαφορά σκορ).",
+  xpts3: "xPTS3: αναμενόμενοι πόντοι των επόμενων 3 αγωνιστικών, με βάρη 1 / 0,6 / 0,35 (η επόμενη μετράει περισσότερο). Με αυτό διαλέγονται οι μεταγραφές.",
+  value: "Value: xPTS3 ανά credit, πόσους πόντους δίνει κάθε credit της τιμής του.",
+  dollar: "$: πιθανή άνοδος τιμής μετά την αγωνιστική. ↓$: πιθανή πτώση.",
+  turn: "T1 / T2: σε ποιο turn παίζει η ομάδα του. Ανάμεσα στα turns μπορείς να αλλάξεις πεντάδα με όσους δεν έχουν παίξει.",
+  matchup: "Ματσάρισμα: πόσο περισσότερο (▲) ή λιγότερο (▼) PIR δίνει ο αντίπαλος στη θέση του, σε σχέση με τον μέσο όρο της λίγκας.",
+  avail: "Διαθεσιμότητα από το παιχνίδι και τα νέα: εκτός, ή η πιθανότητα να παίξει. Ανανεώνεται και 3 ώρες πριν τον πρώτο αγώνα.",
+  pir: "PIR: η αξιολόγηση της EuroLeague (πόντοι, ριμπάουντ, ασίστ, κλεψίματα, κοψίματα, κερδισμένα φάουλ, μείον άστοχα, λάθη και φάουλ).",
+};
+const ii = (k) => `<button type="button" class="ii" data-info="${k}" aria-label="Τι σημαίνει">ⓘ</button>`;
+document.addEventListener("click", (e) => {
+  const old = document.getElementById("tip");
+  const el = e.target.closest("[data-info]");
+  if (!el) { if (old) old.remove(); return; }
+  e.preventDefault(); e.stopPropagation();            // not the card / sort / popup underneath
+  if (old) { old.remove(); if (old.dataset.k === el.dataset.info + el.getBoundingClientRect().top) return; }
+  const tip = document.createElement("div");
+  tip.id = "tip"; tip.className = "tip"; tip.role = "tooltip"; tip.textContent = INFO[el.dataset.info] || "";
+  const r = el.getBoundingClientRect();
+  tip.dataset.k = el.dataset.info + r.top;
+  document.body.appendChild(tip);
+  const w = tip.offsetWidth, left = Math.min(Math.max(16, r.left + r.width / 2 - w / 2), window.innerWidth - w - 16);
+  tip.style.left = left + window.scrollX + "px";
+  tip.style.top = r.bottom + window.scrollY + 6 + "px";
+}, true);
+window.addEventListener("scroll", () => document.getElementById("tip")?.remove(), { passive: true });
 
 function matchup(dev) {
   if (dev == null) return "";
@@ -382,9 +505,9 @@ function renderPlayers() {
   rows.sort((a, b) => ((a[sortKey] ?? -1e9) > (b[sortKey] ?? -1e9) ? 1 : -1) * sortDir);
   const max = Math.max(...rows.map((r) => r.x_now || 0), 1);
   const hasPrice = P.fantasy_ok;
-  const cols = [["name", "Παίκτης"], ["x_now", "xPTS", 1], ["opp", "Αντ."], ["pos_dev", "Ματσάρ.", 1],
-    ["x_h", "xPTS3", 1], ["season_pir", "PIR φέτος", 1], ["prev_pir", "PIR πέρσι", 1]]
-    .concat(hasPrice ? [["price", "Τιμή", 1], ["value", "Value", 1]] : []);
+  const cols = [["name", "Παίκτης"], ["x_now", "xPTS" + ii("xpts"), 1], ["opp", "Αντ."], ["pos_dev", "Ματσάρ." + ii("matchup"), 1],
+    ["x_h", "xPTS3" + ii("xpts3"), 1], ["season_pir", "PIR φέτος" + ii("pir"), 1], ["prev_pir", "PIR πέρσι", 1]]
+    .concat(hasPrice ? [["price", "Τιμή", 1], ["value", "Value" + ii("value"), 1]] : []);
   $("#ptable").innerHTML = "<thead><tr>" + cols.map(([k, l, n]) =>
     `<th data-k="${k}" class="${n ? "num" : ""}">${l}${sortKey === k ? (sortDir < 0 ? " ↓" : " ↑") : ""}</th>`).join("") + "</tr></thead><tbody>"
     + rows.slice(0, 250).map((r) => `<tr data-pid="${esc(r.person_id)}">
@@ -396,11 +519,10 @@ function renderPlayers() {
   $("#ptable").querySelectorAll("th").forEach((th) => th.onclick = () => {
     const k = th.dataset.k; sortDir = sortKey === k ? -sortDir : -1; sortKey = k; renderPlayers();
   });
-  $("#plist").innerHTML = rows.slice(0, 150).map((r) => `<div class="pcard" data-pid="${esc(r.person_id)}">
-    <div class="pn">${cbox(r)}${esc(nm(r.name))}${r.no_data && !r.prior ? ' <span class="pill">νέος</span>' : ""}${inj(r)}${exb(r)}${dol(r)}</div>
-    <div class="px"><b>${f1(r.x_now)}</b><small>xPTS</small></div>
+  $("#plist").innerHTML = rows.slice(0, 150).map((r) => `<div class="pcard" data-pid="${esc(r.person_id)}" style="${tcol(r.team)}">
+    <div class="pn">${cbox(r)}${esc(nm(r.name))}${avb(r)}${r.no_data && !r.prior ? ' <span class="pill">νέος</span>' : ""}${exb(r)}${dol(r)}</div>
+    <div class="px"><b>${f1(r.x_now)}</b><small>xPTS${ii("xpts")}</small><span class="h">${f1(r.x_h)} <small>xPTS3</small></span></div>
     <div class="pm">${esc(r.team)} · ${esc((r.position || "")[0] || "")}${r.price != null ? ` · <b>${f1(r.price)}cr</b>` : ""} · ${r.home ? "🏠" : "✈️"} ${esc(r.opp || "")} ${matchup(r.pos_dev)}</div>
-    <div class="ps">xPTS3 ${f1(r.x_h)} · PIR ${f1(r.season_pir)} (πέρσι ${f1(r.prev_pir)})${r.value != null ? ` · value ${r.value.toFixed(2)}` : ""}</div>
   </div>`).join("") + (rows.length > 150 ? `<p class="muted">…και ${rows.length - 150} ακόμα — στένεψε τα φίλτρα.</p>` : "");
   const active = FILTERS.filter((id) => { const el = $("#" + id); return el.type === "checkbox" ? el.checked : el.value; }).length;
   $("#fsum").textContent = active ? `Φίλτρα (${active} ενεργά)` : "Φίλτρα";
@@ -558,8 +680,7 @@ function setCmp(list) {
   CMP = list;
   try { localStorage.setItem("cmp", JSON.stringify(CMP)); } catch (e) {}
   document.querySelectorAll("input.cmp").forEach((el) => { el.checked = CMP.includes(el.dataset.cmp); });
-  const c = $("#cmpcnt");
-  c.hidden = !CMP.length; c.textContent = CMP.length;
+  for (const c of [$("#cmpcnt"), $("#cmpcnt2")]) { c.hidden = !CMP.length; c.textContent = CMP.length; }
   $("#cmptxt").textContent = `${CMP.length} για σύγκριση`;
   $("#cmpbar").classList.toggle("on", CMP.length > 0 && $("#players").classList.contains("on"));
   if ($("#compare").classList.contains("on")) renderCompare();
@@ -892,14 +1013,151 @@ function renderModel(mp, trk) {
   $("#model").innerHTML = html;
 }
 
+
+// ---------------------------------------------------------------- «Σήμερα»
+let NW = null;
+const DAYS_GR = ["Κυριακή", "Δευτέρα", "Τρίτη", "Τετάρτη", "Πέμπτη", "Παρασκευή", "Σάββατο"];
+// Athens wall-clock time -> epoch ms (DST-proof, as the bot)
+function athensMs(date, hm) {
+  const [y, mo, d] = date.split("-").map(Number), [h, mi] = String(hm).split(":").map(Number);
+  const guess = Date.UTC(y, mo - 1, d, h, mi);
+  const z = new Intl.DateTimeFormat("en-US", { timeZone: "Europe/Athens", timeZoneName: "shortOffset" })
+    .formatToParts(new Date(guess)).find((x) => x.type === "timeZoneName")?.value || "GMT+2";
+  const m = z.match(/GMT([+-]\d+)(?::(\d+))?/), off = m ? Number(m[1]) * 60 + Math.sign(Number(m[1])) * Number(m[2] || 0) : 120;
+  return guess - off * 60000;
+}
+const athensDate = (ms) => new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Athens" }).format(new Date(ms));
+const athensHM = (ms) => new Intl.DateTimeFormat("el-GR", { timeZone: "Europe/Athens", hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date(ms));
+function dayWord(ms) {
+  const today = athensDate(Date.now()), d = athensDate(ms);
+  if (d === today) return "σήμερα";
+  if (d === athensDate(Date.now() + 864e5)) return "αύριο";
+  return DAYS_GR[new Date(d + "T12:00:00Z").getUTCDay()];
+}
+function span(ms) {
+  const m = Math.max(0, Math.round(ms / 60000)), d = Math.floor(m / 1440), h = Math.floor((m % 1440) / 60), mm = m % 60;
+  const hw = (x) => `${x} ${x === 1 ? "ώρα" : "ώρες"}`;
+  return d ? `${d} ${d === 1 ? "μέρα" : "μέρες"}${h ? ` ${hw(h)}` : ""}` : h ? `${hw(h)} ${mm}′` : `${mm}′`;
+}
+function ago(ms) {
+  const m = Math.round(ms / 60000);
+  if (m < 1) return "μόλις τώρα";
+  if (m < 60) return `πριν ${m}′`;
+  const h = Math.round(m / 60);
+  if (h < 24) return `πριν ${h} ${h === 1 ? "ώρα" : "ώρες"}`;
+  const d = Math.round(h / 24);
+  return `πριν ${d} ${d === 1 ? "μέρα" : "μέρες"}`;
+}
+const tips = (t) => (t.games || []).map((g) => String(g).split(" ").pop()).filter((x) => /^\d{1,2}:\d{2}$/.test(x));
+// when the bot updates next: 07:05 every day, 3h before a game day's first tip-off, ~2.5h after its last one
+function nextUpdate(now = Date.now()) {
+  const c = [];
+  for (let k = 0; k < 3; k++) c.push(athensMs(athensDate(now + k * 864e5), "07:05"));
+  for (const t of P.turns || []) {
+    const first = athensMs(t.date, t.first_tip), h = Number(String(t.first_tip).split(":")[0]);
+    if (h - 3 !== 7) c.push(athensMs(t.date, `${h - 3}:05`));
+    const ts = tips(t).map((hm) => athensMs(t.date, hm));
+    if (ts.length) { const due = Math.max(...ts) + 150 * 60000; c.push(Math.ceil((due - 5 * 60000) / 36e5) * 36e5 + 5 * 60000); }
+    void first;
+  }
+  return Math.min(...c.filter((x) => x > now));
+}
+function freshness() {
+  if (!P) return;
+  const nx = nextUpdate(), a = ago(Date.now() - new Date(P.generated).getTime());
+  $("#updated").textContent = `Ενημερώθηκε ${a} · επόμενη ${dayWord(nx)} ${athensHM(nx)}` + (P.fantasy_ok ? "" : " · χωρίς τιμές fantasy");
+}
+function roundState(now = Date.now()) {
+  const ts = (P.turns || []).map((t) => ({ t, start: athensMs(t.date, t.first_tip) })).sort((a, b) => a.start - b.start);
+  if (!ts.length) return { kind: "none" };
+  if (now < ts[0].start) return { kind: "before", at: ts[0].start - 60000, turn: ts[0].t };
+  const next = ts.find((x) => x.start > now);
+  return next ? { kind: "between", at: next.start - 60000, turn: next.t } : { kind: "live" };
+}
+function heroHtml() {
+  const st = roundState();
+  const when = (ms) => `${dayWord(ms)} ${athensHM(ms)}`;
+  if (st.kind === "before") return `<div class="td-hero"><span class="muted">Αγωνιστική ${P.round} · κλείνει ${when(st.at)}</span>
+      <span class="big" id="tdCount">κλείνει σε ${span(st.at - Date.now())}</span></div>`;
+  if (st.kind === "between") return `<div class="td-hero"><span class="muted">Αγωνιστική ${P.round} σε εξέλιξη</span>
+      <span class="big" id="tdCount">Turn ${st.turn.turn} σε ${span(st.at - Date.now())}</span>
+      <span class="muted">Αλλαγές στην πεντάδα ως ${when(st.at)}, μόνο με όσους δεν έχουν παίξει.</span></div>`;
+  return `<div class="td-hero"><span class="muted">Αγωνιστική ${P.round}</span><span class="big">Σε εξέλιξη · τελευταίοι αγώνες</span>
+    <span class="muted">Οι μεταγραφές για την επόμενη αγωνιστική εμφανίζονται στο «Η ομάδα μου».</span></div>`;
+}
+function renderToday() {
+  if (!P) return;
+  const players = P.players.filter((r) => r.x_now != null);
+  const healthy = (r) => r.avail_game == null || r.avail_game >= 1;
+  const court = players.filter((r) => r.position !== "Head Coach");
+  const li = (r, v, sub) => `<li data-pid="${esc(r.person_id)}"><span class="n">${esc(nm(r.name))}${avb(r)}${dol(r)}</span>
+      <span class="v"><b>${f1(v[0])}</b><small>${v[1]}</small></span><span class="m">${sub}</span></li>`;
+  const where = (r) => `${esc(r.team)} · ${esc((r.position || "")[0] || "")}${r.price != null ? ` · ${f1(r.price)}cr` : ""} · ${r.home ? "🏠" : "✈️"} ${esc(r.opp || "")}${r.turn ? ` · T${r.turn}` : ""}`;
+
+  // my team
+  const sm = window.TEAM && TEAM.summary ? TEAM.summary() : null;
+  const team = P.edition === "public" && !sm
+    ? `<div class="td-team"><div><b>Δεν έχεις στήσει ομάδα ακόμα</b><div class="muted">Βάλε τους 11 σου για προτάσεις μεταγραφών, πεντάδας και αρχηγού.</div></div>
+        <button class="td-btn" data-tab="team">Φτιάξ' την</button></div>`
+    : !sm ? `<div class="muted">Η ομάδα δεν διαβάστηκε από το παιχνίδι.</div>`
+    : `<div class="td-team"><div><b>${sm.steps == null ? "Έλεγξε την ομάδα σου" : sm.steps ? `${sm.steps} ${sm.steps === 1 ? "βήμα εκκρεμεί" : "βήματα εκκρεμούν"}` : "✅ Έτοιμος για την αγωνιστική"}</b>
+        <div class="muted">${sm.trades ? `${sm.trades} ${sm.trades === 1 ? "μεταγραφή" : "μεταγραφές"} · ` : ""}${sm.captain ? `αρχηγός: ${esc(sm.captain)} · ` : ""}υπόλοιπο ${f1(sm.bank)} cr</div></div>
+        <button class="td-btn" data-tab="team">Άνοιγμα</button></div>`;
+
+  // availability: the game's flags plus what the news say
+  const out = new Map();
+  for (const r of players.filter((r) => !healthy(r))) out.set(r.person_id, { r, note: "" });
+  for (const a of NW?.digest?.availability || []) {
+    if (a.status === "available") continue;
+    const r = findPlayer(a.player);
+    if (!r) continue;
+    const e = out.get(r.person_id) || { r, note: "" };
+    e.note = a.note || ""; e.status = a.status; out.set(r.person_id, e);
+  }
+  const SL = { out: "εκτός (νέα)", doubtful: "αμφίβολος (νέα)", questionable: "αμφίβολος (νέα)" };
+  const avail = [...out.values()].sort((a, b) => (b.r.x_h ?? 0) - (a.r.x_h ?? 0)).slice(0, 8);
+  const availHtml = avail.length ? `<ul class="td-list">${avail.map(({ r, note, status }) => `<li data-pid="${esc(r.person_id)}">
+      <span class="n">${esc(nm(r.name))}${avb(r) || (status ? ` <span class="av ${status === "out" ? "out" : "q"}" data-info="avail">${SL[status] || status}</span>` : "")}</span>
+      <span class="v"><b>${f1(r.x_h)}</b><small>xPTS3</small></span>
+      <span class="m">${esc(r.team)} · ${esc((r.position || "")[0] || "")}${note ? ` · ${esc(note)}` : ""}</span></li>`).join("")}</ul>`
+    : `<p class="muted" style="margin:0">Κανένας γνωστός τραυματίας ή αμφίβολος.</p>`;
+
+  // captain
+  const caps = court.filter(healthy).sort((a, b) => (b.x_now ?? 0) - (a.x_now ?? 0)).slice(0, 3);
+  // best picks per price tier (the budget forces a mix of stars and cheap fillers)
+  const tiers = [["Φτηνοί · έως 6 cr", (p) => p <= 6], ["Μεσαίοι · 6–10 cr", (p) => p > 6 && p <= 10], ["Ακριβοί · πάνω από 10 cr", (p) => p > 10]];
+  const tierHtml = P.fantasy_ok ? tiers.map(([l, f]) => {
+    const top = court.filter((r) => healthy(r) && r.price != null && f(r.price)).sort((a, b) => (b.x_h ?? 0) - (a.x_h ?? 0)).slice(0, 3);
+    return `<div><h3>${l}</h3><ul class="td-list">${top.map((r) => li(r, [r.x_h, "xPTS3"], where(r))).join("")}</ul></div>`;
+  }).join("") : `<p class="muted">Χωρίς τιμές fantasy αυτή τη στιγμή.</p>`;
+
+  const games = (P.turns || []).map((t) => `<div class="td-turn"><b>Turn ${t.turn}</b> <span class="muted">· ${DAYS_GR[new Date(t.date + "T12:00:00Z").getUTCDay()]} ${t.date.slice(8)}/${t.date.slice(5, 7)}</span>
+      <div class="td-games">${(t.games || []).slice().sort((a, b) => String(a).split(" ").pop().localeCompare(String(b).split(" ").pop()))
+        .map((g) => `<span>${esc(String(g).replace("-", " – "))}</span>`).join("")}</div></div>`).join("");
+
+  const health = (P.health || []).length ? `<div class="card warn wide"><h2>⚠️ Κατάσταση</h2>${P.health.map(esc).join("<br>")}</div>` : "";
+  $("#today").innerHTML = `<div class="td-grid">${health}
+    <div class="card wide">${heroHtml()}</div>
+    <div class="card wide"><h2>${P.edition === "public" ? "Η ομάδα μου" : esc(P.my_team?.name || "Η ομάδα μου")}</h2>${team}</div>
+    <div class="card"><h2>Τραυματίες & αμφίβολοι ${ii("avail")}</h2>${availHtml}</div>
+    <div class="card"><h2>Για αρχηγό ${ii("xpts")}</h2><ul class="td-list">${caps.map((r) => li(r, [r.x_now, "xPTS"], where(r))).join("")}</ul></div>
+    <div class="card wide"><h2>Καλύτερες επιλογές ανά τιμή ${ii("xpts3")}</h2><div class="td-tiers">${tierHtml}</div></div>
+    <div class="card wide"><h2>Αγώνες της αγωνιστικής</h2>${games}</div></div>`;
+  $("#today").querySelectorAll("[data-tab]").forEach((b) => b.onclick = () => showTab(b.dataset.tab));
+}
+setInterval(() => {
+  freshness();
+  const c = document.getElementById("tdCount");
+  if (c && $("#today").classList.contains("on")) { const st = roundState(); if (st.at) c.textContent = (st.kind === "before" ? "κλείνει σε " : `Turn ${st.turn.turn} σε `) + span(st.at - Date.now()); }
+}, 30000);
+
 (async () => {
   const [p, rep, nw, mp, trk] = await Promise.all([get("predictions.json"), get("report.json"), get("news.json"),
     get("model_params.json"), get("tracking.json")]);
   if (!p) { $("#updated").textContent = "Δεν υπάρχουν δεδομένα ακόμα."; return; }
-  P = p;
+  P = p; NW = nw;
   $("#round").textContent = `Αγωνιστική ${p.round}`;
-  $("#updated").textContent = `Ενημέρωση: ${new Date(p.generated).toLocaleString("el-GR")}`
-    + (p.fantasy_ok ? "" : " · χωρίς τιμές fantasy");
+  freshness();
 
   const health = (p.health || []).length ? `<div class="card warn"><h2>⚠️ Κατάσταση</h2>${p.health.map(esc).join("<br>")}</div>` : "";
   $("#report").innerHTML = health + (rep?.messages || []).map((m) =>
@@ -919,7 +1177,9 @@ function renderModel(mp, trk) {
   $("#feedback").hidden = p.edition !== "public";   // the product's feedback address
   renderTeam(p.my_team, p.best_team);
   setCmp(CMP.filter((id) => p.players.some((x) => x.person_id === id)));
-  try { const t = localStorage.getItem("tab"); if (t) document.querySelector(`nav [data-t=${t}]`)?.click(); } catch (e) {}
+  let tab = "today";
+  try { tab = localStorage.getItem("tab") || "today"; } catch (e) {}
+  showTab(tab);
   setTimeout(() => installGuide(false), 800);
 
   renderTeams();
@@ -937,6 +1197,6 @@ function renderModel(mp, trk) {
 </script>
 <script src="opt.js"></script>
 <script src="team.js"></script>
-<script>if (P) renderTeam(P.my_team, P.best_team);</script>
+<script>if (P) { renderTeam(P.my_team, P.best_team); if ($("#today").classList.contains("on")) renderToday(); }</script>
 </body>
 </html>

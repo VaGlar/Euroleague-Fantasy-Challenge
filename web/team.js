@@ -339,15 +339,16 @@
         <div class="tm-dead">${head}</div></div>
         ${t.game || WIDE() ? "" : `<div class="tm-morewrap"><button class="tm-more" id="tmMore" aria-haspopup="menu">⋯ Επιλογές</button><div id="tmMenu"></div></div>`}</header>
       ${!t.game && WIDE() ? '<div id="tmTools"></div>' : ""}
+      <div class="tm-cols"><div class="tm-colL">
       <div class="card"><h2>Τι κάνω τώρα <small class="muted">${items.length ? `${items.length} ${items.length === 1 ? "βήμα" : "βήματα"}` : ""}</small></h2>
         ${done ? `<div class="tm-ready">✅ Έτοιμος για την αγωνιστική</div>` : `<ul class="tm-list">${confirm}${list}</ul>`}
         ${pl.tradesNow ? keptLine : ""}
         ${turnPlan ? `<ul class="plan">${turnPlan}</ul>` : ""}
         <p class="tm-hint">${hint}
         ${pl.inRound ? "Μέσα στην αγωνιστική: όποιος έπαιξε μπορεί μόνο να βγει στον πάγκο· το x2 μόνο σε παίκτη που δεν έχει παίξει." : ""}</p></div>
-      ${nextTrades}
-      <div class="card tm-courtcard"><h2>${t.game ? (t.fromGame ? "Στο παιχνίδι τώρα" : "Η πρόταση") : "Η πεντάδα σου"} <small class="muted">${t.game ? (t.fromGame ? "διακεκομμένο = αλλάζει με την πρόταση" : "δεν διαβάστηκε η πεντάδα του παιχνιδιού") : "σύρε έναν παίκτη πάνω σε άλλον για αλλαγή θέσης"}</small></h2>
-        ${courtHtml(t, rows, t.game ? pl : null)}<p class="tm-hint">${t.game ? "Πάτα έναν παίκτη για στατιστικά και επόμενα παιχνίδια." : "Πάτα έναν παίκτη για αρχηγό, αντικατάσταση ή στατιστικά."}</p></div>
+      ${nextTrades}</div>
+      <div class="tm-colR"><div class="card tm-courtcard"><h2>${t.game ? (t.fromGame ? "Στο παιχνίδι τώρα" : "Η πρόταση") : "Η πεντάδα σου"} <small class="muted">${t.game ? (t.fromGame ? "διακεκομμένο = αλλάζει με την πρόταση" : "δεν διαβάστηκε η πεντάδα του παιχνιδιού") : "σύρε έναν παίκτη πάνω σε άλλον για αλλαγή θέσης"}</small></h2>
+        ${courtHtml(t, rows, t.game ? pl : null)}<p class="tm-hint">${t.game ? "Πάτα έναν παίκτη για στατιστικά και επόμενα παιχνίδια." : "Πάτα έναν παίκτη για αρχηγό, αντικατάσταση ή στατιστικά."}</p></div></div></div>
       ${bestCard(best)}`;
   }
 
@@ -704,6 +705,10 @@
     text-align: left; cursor: pointer; }
   .tm-kept { font-size: 14px; margin: 10px 0 0; }
   .tm-kept .linkbtn { font-size: 13px; }
+  /* wide screens: the to-do list and the court side by side */
+  @media (min-width: 1000px) {
+    .tm-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 14px; align-items: start; }
+  }
   .sheet #tmQ { position: sticky; top: -14px; z-index: 1; box-shadow: 0 6px 8px -6px rgba(0,0,0,.25); }
   .tm-input { width: 100%; font: inherit; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--border);
     background: var(--surface-1); color: var(--text-primary); margin: 10px 0; }
@@ -732,7 +737,7 @@
     box-shadow: 0 10px 24px rgba(0,0,0,.25); }
   .tm-flash { animation: tmflash .6s ease; }
   @keyframes tmflash { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--good) 70%, transparent); } 100% { box-shadow: 0 0 0 12px transparent; } }
-  .tm-toast { pointer-events: none; position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%) translateY(20px);
+  .tm-toast { pointer-events: none; position: fixed; left: 50%; bottom: calc(18px + var(--bnav, 0px) + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%) translateY(20px);
     opacity: 0; background: var(--text-primary); color: var(--surface-1); border-radius: 12px; padding: 10px 14px; font-size: 14px;
     z-index: 60; transition: opacity .2s, transform .2s; max-width: calc(100% - 32px); text-align: center; pointer-events: none; }
   .tm-toast.on { opacity: 1; transform: translateX(-50%) translateY(0); }
@@ -740,5 +745,18 @@
   document.head.appendChild(css);
 
   if (typeof P === "undefined" || !GAME()) importFromHash();
-  window.TEAM = { render, encode, decode, KEY };
+  // a short status for the «Σήμερα» screen: null = no team yet (public edition)
+  function summary() {
+    try {
+      const t = GAME() ? gameTeam() : load();
+      if (!t) return null;
+      if (!t.roles) return { steps: null, bank: t.bank };
+      const pl = plan(t);
+      const cap = pl.targetCap != null ? (pl.aRows.find((r) => r.id === pl.targetCap) || row(pl.targetCap)) : null;
+      const pending = pl.items.length + (t.confirmed ? 0 : 1);
+      return { steps: pending, trades: pl.tradesNow ? pl.trs.pairs.length : 0, captain: cap ? sur(cap.name) : null,
+        bank: t.bank, name: t.game ? t.name : null, inRound: pl.inRound };
+    } catch (e) { return null; }
+  }
+  window.TEAM = { render, summary, encode, decode, KEY };
 })();
