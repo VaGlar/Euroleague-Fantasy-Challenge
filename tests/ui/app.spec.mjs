@@ -160,3 +160,14 @@ test("the court: parquet and white FIBA lines (no basket) in both themes", async
     expect(wood).toBe("rgb(220, 174, 112)");                 // the same parquet in light and dark
   }
 });
+
+test("install bar: on phones from the first visit (before any team), opens the steps; not on a PC", async ({ page }, testInfo) => {
+  await open(page, "public", { tab: "team" });                  // no team yet: the set-up screen
+  const bar = page.locator("#a2hsBar");
+  if (!isPhone(testInfo)) { await expect(bar).toBeHidden(); return; }
+  await expect(bar).toBeVisible();
+  await expect(bar).toContainText("πριν");
+  await page.locator("#a2hsGo").click();
+  await expect(page.locator("#sheet")).toContainText("Βάλ' το στην οθόνη σου");
+  await checkLayout(page, "install bar");
+});
