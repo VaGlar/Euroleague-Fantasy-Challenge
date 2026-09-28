@@ -221,7 +221,7 @@ def fantasy_state(clubs: pd.DataFrame, roster: pd.DataFrame, season: int) -> dic
         # price history (append one snapshot per matchday)
         hist_path = PUBLIC / "prices.csv"
         snap = fp[["fantasy_id", "person_id", "first_name", "last_name", "team", "position",
-                   "price", "is_injured", "prob_play", "fantasy_avg"]].assign(matchday=md["number"])
+                   "price", "is_injured", "prob_play", "fantasy_avg", "popularity"]].assign(matchday=md["number"])
         if hist_path.exists():
             old = pd.read_csv(hist_path, dtype={"person_id": str})
             old = old[old["matchday"] != md["number"]]
