@@ -226,6 +226,19 @@ test.describe("public edition", () => {
 });
 
 test.describe("personal edition", () => {
+  test("«Κράτα τον» re-plans and the expected points with the plan follow", async ({ page }) => {
+    await open(page, "personal", { tab: "team" });
+    const planned = () => header(page).locator(".tm-planned").innerText();
+    const before = await planned();
+    const trades = await page.locator("#team .tm-list").innerText();
+    await page.locator("#team .tm-keep").first().click();
+    await expect(page.locator("#team .tm-kept")).toBeVisible();
+    expect(await page.locator("#team .tm-list").innerText()).not.toEqual(trades);
+    expect(await planned()).not.toEqual(before);
+    await page.locator("#team [data-unkeep]").first().click();
+    await expect(header(page).locator(".tm-planned")).toHaveText(before);
+  });
+
   test("the game's team: 11 on the court, credits from the game, no set-up or ✓ buttons", async ({ page }) => {
     const errors = await open(page, "personal", { tab: "team" });
     await expect(court(page)).toHaveCount(11);

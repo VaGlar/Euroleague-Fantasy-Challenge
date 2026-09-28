@@ -213,6 +213,10 @@
     if (res && !inRound) ({ team, plan: turnPlan } = ELFOPT.deferLaterTurns(res.team));
     const target = Object.fromEntries(team.map((p) => [p.id, p.role]));
     const targetCap = team.find((p) => p.captain)?.id ?? null;
+    // expected points of the round if the plan is followed (its trades, five, 6th and CAP)
+    const planned = team.reduce((a, p) => { const r = aRows.find((x) => x.id === p.id); if (!r) return a;
+      const v = inRound && played(r) ? r.actual : (r.x_now ?? 0);
+      return a + v * (p.role === "πάγκος" ? 0.5 : 1) * (p.captain ? 2 : 1); }, 0);
     const items = [];
     if (tradesNow) for (const pr of pairs) {
       const o = rows.find((r) => r.id === pr.out.id), n = row(pr.in.id);
@@ -253,7 +257,7 @@
         why: ready ? `xFPT ${f1(inRound && played(c) ? c.actual : c.x_now)} · διπλοί πόντοι` : "μετά τη μεταγραφή και την πεντάδα", wait: !ready,
         run: () => { t.captain = targetCap; save(t); toast(`CAP: ${sur(c.name)}`); } });
     }
-    return { rows, items, turnPlan, trs, ti, tradesNow, inRound, aRows, target, targetCap, keep: keep || [] };
+    return { rows, items, turnPlan, trs, ti, tradesNow, inRound, aRows, target, targetCap, keep: keep || [], planned };
   }
 
   // ------------------------------------------------------------ actions on the saved team
@@ -359,7 +363,8 @@
       : "Κάνε τις αλλαγές στο παιχνίδι και πάτα ✓ — η ομάδα σου εδώ ενημερώνεται μόνη της.";
     return `<header class="tm-top"><div><h2 class="tm-h">${t.game ? esc(t.name || "Η ομάδα μου") : "Η ομάδα μου"}</h2>
         <div class="muted">Credits <b>${f1(t.bank)}/${f1(Number(t.bank) + value)}</b>${gain ? ` <span class="${gain > 0 ? "tm-up" : "tm-down"}">(${gain > 0 ? "+" : "−"}${f1(Math.abs(gain))} gain)</span>` : ""} · Trades <b>${usedTrades(t, pl.ti)}/${pl.ti.max_trades > 4 ? "∞" : pl.ti.max_trades}</b></div>
-        <div class="muted">Αναμενόμενοι πόντοι <b>${f1(total)}</b></div>
+        <div class="muted">Αναμενόμενοι πόντοι <b>${f1(total)}</b>${Math.abs(pl.planned - total) >= 0.05
+          ? ` → <b class="tm-planned">${f1(pl.planned)}</b> με το πλάνο` : ""}</div>
         <div class="tm-dead">${head}</div></div>
         ${t.game || WIDE() ? "" : `<div class="tm-morewrap"><button class="tm-more" id="tmMore" aria-haspopup="menu">⋯ Επιλογές</button><div id="tmMenu"></div></div>`}</header>
       ${!t.game && WIDE() ? '<div id="tmTools"></div>' : ""}
@@ -783,6 +788,7 @@
   .tm-danger-bg { background: var(--critical); }
   .tm-money { display: flex; justify-content: space-between; color: var(--text-secondary); font-size: 13px; margin-top: 10px; }
   .tm-up { color: var(--good, #1e8e3e); font-size: 10px; margin-left: 2px; } .tm-down { color: var(--critical); font-size: 10px; margin-left: 2px; }
+  .tm-planned { color: var(--good); }
   .tm-over { color: var(--critical); font-size: 13px; margin: 6px 2px 0; }
   .tm-slot { width: 31%; max-width: 128px; border: 2px dashed var(--court-line); border-radius: 10px; padding: 12px 4px;
     background: color-mix(in srgb, var(--surface-1) 55%, transparent); color: var(--text-secondary); font: inherit; font-size: 12px; cursor: pointer; }
