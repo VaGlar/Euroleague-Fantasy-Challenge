@@ -171,3 +171,13 @@ test("install bar: on phones from the first visit (before any team), opens the s
   await expect(page.locator("#sheet")).toContainText("Βάλ' το στην οθόνη σου");
   await checkLayout(page, "install bar");
 });
+
+test("players new to the EuroLeague with few games are marked «νέος · N ματς», explained, and flagged in trades", async ({ page }, testInfo) => {
+  await open(page, "public", { tab: "players" });
+  const pill = page.locator(isPhone(testInfo) ? "#plist .pill.few" : "#ptable .pill.few").first();
+  await expect(pill).toContainText("νέος · 1 ματς");
+  await pill.click();
+  await expect(page.locator("#tip")).toContainText("αβέβαιη");
+  await goTab(page, testInfo, "today");
+  await expect(page.locator("#today .note-early")).toContainText("Αρχή σεζόν");
+});

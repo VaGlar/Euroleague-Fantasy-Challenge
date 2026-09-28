@@ -1,0 +1,236 @@
+{
+ "calibration": {
+  "2024": {
+   "returning_g1": {
+    "n": 286,
+    "pred": 6.34,
+    "actual": 4.85,
+    "n_pred12+": 46,
+    "pred12+": 15.36,
+    "actual12+": 12.87
+   },
+   "returning_g2": {
+    "n": 266,
+    "pred": 6.38,
+    "actual": 5.27,
+    "n_pred12+": 44,
+    "pred12+": 14.91,
+    "actual12+": 12.44
+   },
+   "returning_g3": {
+    "n": 258,
+    "pred": 6.51,
+    "actual": 5.73,
+    "n_pred12+": 44,
+    "pred12+": 14.91,
+    "actual12+": 13.86
+   },
+   "returning_g4-5": {
+    "n": 562,
+    "pred": 7.81,
+    "actual": 5.25,
+    "n_pred12+": 136,
+    "pred12+": 14.76,
+    "actual12+": 7.39
+   },
+   "returning_g6+": {
+    "n": 4764,
+    "pred": 7.95,
+    "actual": 7.47,
+    "n_pred12+": 976,
+    "pred12+": 15.36,
+    "actual12+": 14.29
+   },
+   "new_g1": {
+    "n": 229,
+    "pred": 2.3,
+    "actual": 2.51,
+    "n_pred12+": 11,
+    "pred12+": 16.56,
+    "actual12+": 15.33
+   },
+   "new_g2": {
+    "n": 196,
+    "pred": 3.02,
+    "actual": 2.48,
+    "n_pred12+": 13,
+    "pred12+": 16.62,
+    "actual12+": 15.48
+   },
+   "new_g3": {
+    "n": 209,
+    "pred": 2.83,
+    "actual": 2.92,
+    "n_pred12+": 10,
+    "pred12+": 18.15,
+    "actual12+": 19.62
+   },
+   "new_g4-5": {
+    "n": 265,
+    "pred": 4.04,
+    "actual": 4.32,
+    "n_pred12+": 20,
+    "pred12+": 18.09,
+    "actual12+": 17.14
+   },
+   "new_g6+": {
+    "n": 2077,
+    "pred": 5.8,
+    "actual": 5.29,
+    "n_pred12+": 231,
+    "pred12+": 17.93,
+    "actual12+": 16.57
+   }
+  },
+  "2025": {
+   "returning_g1": {
+    "n": 299,
+    "pred": 5.94,
+    "actual": 5.74,
+    "n_pred12+": 50,
+    "pred12+": 16.11,
+    "actual12+": 14.33
+   },
+   "returning_g2": {
+    "n": 307,
+    "pred": 7.88,
+    "actual": 5.21,
+    "n_pred12+": 87,
+    "pred12+": 15.16,
+    "actual12+": 9.05
+   },
+   "returning_g3": {
+    "n": 228,
+    "pred": 7.47,
+    "actual": 6.16,
+    "n_pred12+": 55,
+    "pred12+": 15.52,
+    "actual12+": 12.95
+   },
+   "returning_g4-5": {
+    "n": 537,
+    "pred": 7.96,
+    "actual": 5.97,
+    "n_pred12+": 128,
+    "pred12+": 15.45,
+    "actual12+": 9.76
+   },
+   "returning_g6+": {
+    "n": 5495,
+    "pred": 8.34,
+    "actual": 7.55,
+    "n_pred12+": 1336,
+    "pred12+": 15.48,
+    "actual12+": 14.01
+   },
+   "new_g1": {
+    "n": 392,
+    "pred": 1.9,
+    "actual": 1.94,
+    "n_pred12+": 23,
+    "pred12+": 17.82,
+    "actual12+": 11.96
+   },
+   "new_g2": {
+    "n": 376,
+    "pred": 2.36,
+    "actual": 2.06,
+    "n_pred12+": 20,
+    "pred12+": 16.65,
+    "actual12+": 10.26
+   },
+   "new_g3": {
+    "n": 334,
+    "pred": 3.37,
+    "actual": 2.56,
+    "n_pred12+": 19,
+    "pred12+": 16.31,
+    "actual12+": 9.67
+   },
+   "new_g4-5": {
+    "n": 386,
+    "pred": 4.17,
+    "actual": 3.99,
+    "n_pred12+": 34,
+    "pred12+": 15.3,
+    "actual12+": 11.05
+   },
+   "new_g6+": {
+    "n": 3455,
+    "pred": 5.89,
+    "actual": 5.34,
+    "n_pred12+": 394,
+    "pred12+": 14.57,
+    "actual12+": 12.94
+   }
+  }
+ },
+ "fit": {
+  "on_2024": {
+   "1": [
+    0.903,
+    0.699
+   ],
+   "2": [
+    0.105,
+    0.786
+   ],
+   "3": [
+    0.005,
+    1.027
+   ],
+   "4-5": [
+    0.686,
+    0.898
+   ]
+  },
+  "on_2025": {
+   "1": [
+    0.646,
+    0.678
+   ],
+   "2": [
+    0.44,
+    0.684
+   ],
+   "3": [
+    0.778,
+    0.53
+   ],
+   "4-5": [
+    0.904,
+    0.741
+   ]
+  }
+ },
+ "out_of_sample": {
+  "fit_2024_test_2025": {
+   "current": {
+    "mae_new_few_games": 4.645,
+    "bias_new_few_games": 0.146,
+    "mae_all_early": 5.674,
+    "squad_early": 1032.2
+   },
+   "corrected": {
+    "mae_new_few_games": 4.593,
+    "bias_new_few_games": -0.11,
+    "mae_all_early": 5.659,
+    "squad_early": 1066.7
+   }
+  },
+  "fit_2025_test_2024": {
+   "current": {
+    "mae_new_few_games": 4.32,
+    "bias_new_few_games": -0.312,
+    "mae_all_early": 5.405,
+    "squad_early": 762.2
+   },
+   "corrected": {
+    "mae_new_few_games": 4.541,
+    "bias_new_few_games": -1.198,
+    "mae_all_early": 5.455,
+    "squad_early": 753.5
+   }
+  }
+ }
+}

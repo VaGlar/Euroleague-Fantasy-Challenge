@@ -726,7 +726,7 @@ def build(offline: bool = False) -> dict:
         x_h=("xpir_w", "sum"), x_first=("xpir_first", "sum"),
         base=("base", "first"), no_data=("no_data", "first"),
         season_pir=("season_pir", "first"), prev_pir=("prev_pir", "first"),
-        season_min=("season_min", "first"))
+        season_min=("season_min", "first"), games=("games", "first"))
     nr = now_round.groupby("person_id").agg(x_now=("xpir", "sum"), opp=("opp", "first"),
                                             home=("is_home", "first"), margin=("margin", "first"),
                                             pos_dev=("pos_dev", "first"))
