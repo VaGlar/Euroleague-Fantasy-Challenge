@@ -110,6 +110,17 @@ xPIR = base × (1 + calib + pos·pos_dev + pace·pace_dev + margin·m/10 + blowo
 Τρέχουν αυτόματα σε κάθε push (workflow **Tests**) και **πριν από κάθε `/lineup` apply**: αν αποτύχουν,
 δεν γράφεται τίποτα στο παιχνίδι και έρχεται ❌ στο Telegram.
 
+UI tests (Playwright, PC + iPhone + δύο Android, και οι δύο εκδόσεις): `tests/ui/`, βλ. `tests/ui/README.md`.
+
+## Ροή αλλαγών (main = live)
+- **`main`** είναι το live: από εκεί τρέχουν τα προγραμματισμένα updates (το bot ξεκινάει πάντα το default
+  branch), γράφονται τα δεδομένα και ανεβαίνουν οι δύο σελίδες.
+- **Branch εργασίας** (το `claude/…`): οι αλλαγές ανεβαίνουν εκεί χωρίς αναμονή. Ένα update από αυτό είναι
+  **preview**: ανεβαίνει στο `https://dev.elf-dashboard.pages.dev` και στο `https://dev.<δημόσιο project>.pages.dev`,
+  δεν γράφει δεδομένα και δεν στέλνει τίποτα στο Telegram.
+- Όταν μαζευτούν αλλαγές: **PR προς `main`** → τρέχουν όλα τα tests (Python + UI) → merge μόνο αν είναι πράσινα.
+- Επείγον (π.χ. λάθος στις μεταγραφές πριν κλείσει η αγωνιστική): μικρή διόρθωση απευθείας στο `main`.
+
 ## Τοπικά
 ```
 pip install -r requirements.txt

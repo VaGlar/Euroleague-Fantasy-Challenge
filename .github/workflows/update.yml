@@ -25,9 +25,15 @@ concurrency:
   group: update
   cancel-in-progress: false
 
+# Live vs preview: a run on the default branch (main) is the real thing - it commits the data and
+# deploys the two sites. A run on any other branch (the work branch) is a preview: it deploys to
+# dev.<site>.pages.dev, commits nothing and sends nothing to Telegram.
 jobs:
   update:
     runs-on: ubuntu-latest
+    env:
+      LIVE: ${{ github.ref_name == github.event.repository.default_branch }}
+      PAGES_BRANCH: ${{ github.ref_name == github.event.repository.default_branch && 'main' || 'dev' }}
     timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
@@ -56,7 +62,7 @@ jobs:
         run: python -m elf.run
 
       - name: Problems to the owner (Telegram)
-        if: ${{ always() }}
+        if: ${{ always() && env.LIVE == 'true' }}
         continue-on-error: true
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
@@ -64,13 +70,14 @@ jobs:
         run: python -m elf.notify health
 
       - name: Send today's report
-        if: ${{ inputs.report }}
+        if: ${{ inputs.report && env.LIVE == 'true' }}
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python -m elf.notify report
 
       - name: Commit data
+        if: ${{ env.LIVE == 'true' }}
         run: |
           git config user.name "elf-bot"
           git config user.email "elf-bot@users.noreply.github.com"
@@ -91,13 +98,13 @@ jobs:
           cp -r web/* site/
           cp data/public/*.json site/data/
 
-      - name: Deploy to Cloudflare Pages
+      - name: Deploy to Cloudflare Pages (preview on a work branch → https://dev.elf-dashboard.pages.dev)
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           npx --yes wrangler@3 pages project create elf-dashboard --production-branch main || true
-          npx --yes wrangler@3 pages deploy site --project-name elf-dashboard --branch main --commit-dirty=true
+          npx --yes wrangler@3 pages deploy site --project-name elf-dashboard --branch "$PAGES_BRANCH" --commit-dirty=true
 
       # Public edition: same run, sanitized data (elf/publish.py). Off until the repo
       # variable PUBLIC_PROJECT (Cloudflare Pages project name) is set.
@@ -111,10 +118,10 @@ jobs:
           PROJECT=$(echo "$PROJECT" | tr '[:upper:]' '[:lower:]')   # Pages names are lower-case
           python -m elf.publish site_public
           npx --yes wrangler@3 pages project create "$PROJECT" --production-branch main || true
-          npx --yes wrangler@3 pages deploy site_public --project-name "$PROJECT" --branch main --commit-dirty=true
+          npx --yes wrangler@3 pages deploy site_public --project-name "$PROJECT" --branch "$PAGES_BRANCH" --commit-dirty=true
 
       - name: Run failed (Telegram)
-        if: ${{ failure() && !inputs.notify }}
+        if: ${{ failure() && !inputs.notify && env.LIVE == 'true' }}
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
@@ -125,7 +132,7 @@ jobs:
             --data-urlencode "text=❌ Το αυτόματο update απέτυχε — η δημόσια έκδοση δεν ενημερώθηκε: ${RUN_URL}" > /dev/null
 
       - name: Notify Telegram
-        if: ${{ always() && inputs.notify }}
+        if: ${{ always() && inputs.notify && env.LIVE == 'true' }}
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
