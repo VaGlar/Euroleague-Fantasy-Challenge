@@ -154,6 +154,15 @@
    "fantasy": false
   },
   {
+   "title": "Nikola Milutinov does not travel to Kaunas",
+   "url": "https://www.eurohoops.net/en/euroleague/2013457/nikola-milutinov-does-not-travel-to-kaunas/",
+   "date": "2026-09-28T15:07:02+00:00",
+   "text": "By Eurohoops team/ info@eurohoops.net *]:pointer-events-auto R6Vx5W_threadScrollVars scroll-mb-[calc(var(--scroll-root-safe-area-inset-bottom,0px)+var(--thread-response-height))] scroll-mt-[calc(var(--header-height)+min(200px,max(70px,20svh)))]\" dir=\"auto\" data-turn-id=\"request-WEB:6fcb0bc4-5c62-4326-b467-1f5077be05d6-0\" data-turn-id-container=\"request-WEB:6fcb0bc4-5c62-4326-b467-1f5077be05d6-0\" data-testid=\"conversation-turn-2\" data-turn=\"assistant\"> div:has([data-free-thinking-preview-answer=true])+:is(.text-message,.relative:has(>.text-message))]:-mt-2 grow\"> The first week of the double-ga",
+   "source": "Eurohoops",
+   "weight": 1,
+   "fantasy": false
+  },
+  {
    "title": "Παναθηναϊκός για κλήση Τσάπρα στην Εθνική: «Μια κλήση που δεν ξεχνάς ποτέ»",
    "url": "https://www.gazzetta.gr/football/uefa-nations-league/2572893/panathinaikos-gia-klisi-tsapra-stin-ethniki-mia-klisi-poy-den",
    "date": "2026-09-28T17:03:50+02:00",
@@ -577,15 +586,6 @@
    "fantasy": false
   },
   {
-   "title": "Το πρώτο «ταμείο» Ολυμπιακού και ΠΑΟΚ από το Super Cup",
-   "url": "https://www.novasports.gr/mpasket/article/15138150/to-proto-tameio-olympiakou-kai-paok-apo-to-super-cup/",
-   "date": "2026-09-28T09:00:00+00:00",
-   "text": "O νικητής Ολυμπιακός και ο ηττημένος ΠΑΟΚ στον τελικό του Super Cup, θα ξεχάσουν από σήμερα το πρωί, το συναρπαστικό παιχνίδι και τις δυνατές στιγμές που πρόσφερε. Δεν γίνεται αλλιώς, γιατί ο μεν Ολυμπιακός θα ταξιδέψει σήμερα το μεσημέρι στο Κάουνας για να παίξει με την Ζάλγκιρις, την Τρίτη (29/9) στην 2 η αγωνιστική της Euroleague, o δε ΠΑΟΚ αρχίζει άμεσα την προετοιμασία του για την πρεμιέρα του Eurocup και την υποδοχή της Μανρέσα, την Τετάρτη (30/9), στο κλειστό της Πυλαίας. Η εβδομάδα που άρχισε είναι «γεμάτη» από 20 αγώνες της Euroleague με back to back αγωνιστικές και 16 αναμετρήσεις στ",
-   "source": "Novasports",
-   "weight": 1,
-   "fantasy": false
-  },
-  {
    "title": "Μπαρτζώκας για Ντάνστον: “Θα μας βοηθήσει πάρα πολύ και στα αποδυτήρια & στο γήπεδο”",
    "url": "https://www.eurohoops.net/el/euroleague-el-2/2013326/bartzokas-pezoume-pente-mats-se-epta-meres-ki-afto-den-ine-fisiologiko-ine-gambling/",
    "date": "2026-09-28T08:41:32+00:00",
@@ -793,15 +793,6 @@
    "fantasy": false
   },
   {
-   "title": "Olimpia survives Trieste scare, Virtus cruises past Varese",
-   "url": "https://www.eurohoops.net/en/legabasket/2012989/olimpia-milano-survives-trieste-scare-in-italian-league-opener/",
-   "date": "2026-09-27T16:10:27+00:00",
-   "text": "By Eurohoops team / info@eurohoops.net Olimpia Milano bounced back from its EuroLeague loss to Partizan by edging Trieste 83-79 in its Italian League opener. Trieste kept the game close for most of the night, but Peppe Poeta’s team took control in the fourth quarter and held on through a tense finish. Jason Burnell led the winners with 20 points and 10 rebounds. Moses Wright added 16 points and seven rebounds, while Leandro Bolmaro and RJ Cole scored 11 apiece. Colbey Ross paced Trieste with 17 points and seven assists, while Langston Galloway contributed 14 points and six rebounds. Virtus Bol",
-   "source": "Eurohoops",
-   "weight": 1,
-   "fantasy": false
-  },
-  {
    "title": "Rookie report cards: Round 1 ratings for EuroLeague newcomers",
    "url": "https://www.euroleaguebasketball.net/en/euroleague/news/rookie-report-cards-round-1-ratings-for-euroleague-newcomers/",
    "date": "2026-09-27T14:06:08.478000+00:00",
@@ -978,69 +969,99 @@
    {
     "player": "MILUTINOV, NIKOLA",
     "status": "out",
-    "note": "Τενοντίτιδα στο αριστερό ισχίο, εκτός για τη διαβολοβδομάδα",
-    "source": "EuroLeague (official)"
+    "note": "Ενοχλήσεις στο αριστερό ισχύο",
+    "source": "Eurohoops (GR)"
    },
    {
     "player": "WILLIAMS-GOSS, NIGEL",
     "status": "out",
-    "note": "Τραυματισμός από την πρεμιέρα, εκτός",
+    "note": "Τραυματισμός στην πρεμιέρα",
     "source": "Eurohoops (GR)"
+   },
+   {
+    "player": "LAUVERGNE, JOFFREY",
+    "status": "out",
+    "note": "Τραυματισμός στη γάμπα",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "MARINKOVIC, VANJA",
+    "status": "out",
+    "note": "Αποθεραπεία μετά από χειρουργείο",
+    "source": "Eurohoops"
+   },
+   {
+    "player": "WILLIS, DEREK",
+    "status": "out",
+    "note": "Τραυματισμός στον αστράγαλο",
+    "source": "Novasports"
+   },
+   {
+    "player": "NEBO, JOSH",
+    "status": "out",
+    "note": "Εκτός λόγω τραυματισμού",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "MATHEWS, GARRISON",
+    "status": "out",
+    "note": "Εκτός λόγω τραυματισμού",
+    "source": "EuroBallin (Substack)"
    }
   ],
   "expert": [
    {
     "player": "LESSORT, MATHIAS",
     "stance": "pick",
-    "note": "Κορυφαία επιλογή, υψηλό floor, ιδανικός για captain",
+    "note": "Κορυφαία επιλογή, υψηλό floor",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "OTURU, DAN",
     "stance": "pick",
-    "note": "Πρώτη επιλογή του Ιτούδη, εξαιρετικά νούμερα",
+    "note": "Πρώτη επιλογή του Ιτούδη στο 5",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "BALCEROWSKI, OLEK",
     "stance": "pick",
-    "note": "Φθηνή λύση λόγω απουσίας του Nebo",
+    "note": "Value επιλογή λόγω απουσίας Νέμπο",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "VOIGTMANN, JOHANNES",
     "stance": "pick",
-    "note": "Πολύ καλή σχέση απόδοσης-τιμής",
+    "note": "Καλή επιλογή σε χαμηλή τιμή",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "HAYES, KEVARRIUS",
     "stance": "pick",
-    "note": "Αυξημένος χρόνος συμμετοχής λόγω απουσιών",
+    "note": "Αυξημένος χρόνος συμμετοχής",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "SARIC, DARIO",
     "stance": "pick",
-    "note": "Κυρίαρχος στην πρεμιέρα, ηγέτης της Εφές",
+    "note": "Κυρίαρχος στο πρώτο ματς",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "TUBELIS, AZUOLAS",
     "stance": "pick",
-    "note": "Εξαιρετική ευκαιρία για την τιμή του",
+    "note": "Εξαιρετική ευκαιρία για το budget",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "SEDEKERSKIS, TADAS",
     "stance": "pick",
-    "note": "Σε εξαιρετική κατάσταση, γεμάτα στατιστικά",
+    "note": "Σταθερή αξία, λίγα λάθη",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "KEY, BRAXTON",
     "stance": "pick",
-    "note": "Εξαιρετικό value for money, σταθερός",
+    "note": "Value for money, σταθερός",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
@@ -1052,13 +1073,13 @@
    {
     "player": "FRANCISCO, SYLVAIN",
     "stance": "pick",
-    "note": "Βασικός πυλώνας του Παναθηναϊκού",
+    "note": "Παίκτης-κλειδί για τον ΠΑΟ",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "JONES, CARLIK",
     "stance": "pick",
-    "note": "MVP της πρεμιέρας, απαραίτητος",
+    "note": "MVP της πρεμιέρας, must-have",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
@@ -1070,20 +1091,20 @@
    {
     "player": "FODZO DADA, MARC-OWEN",
     "stance": "pick",
-    "note": "Η αποκάλυψη της πρεμιέρας",
+    "note": "Αποκάλυψη, εξαιρετικό value",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "GIEDRAITIS, DOVYDAS",
     "stance": "pick",
-    "note": "Πολύ φθηνή λύση λόγω απουσιών",
+    "note": "Φθηνή λύση λόγω απουσιών",
     "source": "EuroLeague Fantasy Tips (official)"
    }
   ],
   "round": 2,
-  "summary_el": "• Ο Νίκολα Μιλουτίνοφ μένει εκτός για τη διαβολοβδομάδα λόγω τενοντίτιδας.\n• Ο Μπράιαντ Ντάνστον επιστρέφει στον Ολυμπιακό για να καλύψει το κενό στη φροντ λάιν.\n• Ο Ματίας Λεσόρ αποτελεί την κορυφαία επιλογή για captain στη 2η αγωνιστική.\n• Η Χάποελ Τελ Αβίβ αιτείται τη μεταφορά των εντός έδρας αγώνων της στην Κύπρο.\n• Ο Κάρλικ Τζόουνς παραμένει ο παίκτης-κλειδί μετά την εντυπωσιακή πρεμιέρα.\n• Προτείνεται η αξιοποίηση παικτών από ομάδες με ευνοϊκό πρόγραμμα για τη διαβολοβδομάδα.\n• Η EuroLeague εισάγει σύστημα ορισμού διαιτητών μέσω τεχνητής νοημοσύνης.",
+  "summary_el": "• Ο Νίκολα Μιλουτίνοφ μένει εκτός για τη διαβολοβδομάδα του Ολυμπιακού.\n• Ο Μπάντζα Σι επιστρέφει στην Παρτιζάν με βραχυπρόθεσμο συμβόλαιο λόγω των πολλών τραυματισμών.\n• Η Χάποελ Τελ Αβίβ ζήτησε επίσημα την Κύπρο ως έδρα για τα εντός έδρας παιχνίδια της.\n• Η Euroleague εισάγει σύστημα τεχνητής νοημοσύνης για τον ορισμό των διαιτητών.\n• Ο Μπράιαντ Ντάνστον επέστρεψε επίσημα στον Ολυμπιακό.\n• Στο fantasy, προτιμήστε παίκτες από ομάδες με ευνοϊκό πρόγραμμα και εκμεταλλευτείτε τις απουσίες για value επιλογές.\n• Ο Ματίας Λεσόρ και ο Κάρλικ Τζόουνς παραμένουν κορυφαίες επιλογές για captain.",
   "_model": "gemini-3.1-flash-lite"
  },
- "digest_at": "2026-09-28T13:59:25.064896+00:00",
+ "digest_at": "2026-09-28T15:15:36.652045+00:00",
  "failed": []
 }
