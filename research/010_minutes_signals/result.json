@@ -1,0 +1,236 @@
+{
+ "train_rows": 4677,
+ "share_rows_with_absent_teammate": 0.588,
+ "share_role_up": 0.056,
+ "share_role_down": 0.042,
+ "a_position": {
+  "coef": {
+   "const": [
+    0.322,
+    0.122
+   ],
+   "a_pos_same": [
+    0.129,
+    0.052
+   ],
+   "a_pos_other": [
+    -0.148,
+    0.113
+   ]
+  },
+  "2025 second half": {
+   "baseline": {
+    "mae": 5.334,
+    "rmse": 6.963
+   },
+   "with": {
+    "mae": 5.323,
+    "rmse": 6.952
+   },
+   "mae_change": -0.011
+  },
+  "2024 all": {
+   "baseline": {
+    "mae": 5.174,
+    "rmse": 6.795
+   },
+   "with": {
+    "mae": 5.171,
+    "rmse": 6.785
+   },
+   "mae_change": -0.003
+  }
+ },
+ "a_no_position": {
+  "coef": {
+   "const": [
+    0.32,
+    0.123
+   ],
+   "a_all": [
+    0.023,
+    0.09
+   ]
+  },
+  "2025 second half": {
+   "baseline": {
+    "mae": 5.334,
+    "rmse": 6.963
+   },
+   "with": {
+    "mae": 5.332,
+    "rmse": 6.962
+   },
+   "mae_change": -0.002
+  },
+  "2024 all": {
+   "baseline": {
+    "mae": 5.174,
+    "rmse": 6.795
+   },
+   "with": {
+    "mae": 5.173,
+    "rmse": 6.793
+   },
+   "mae_change": -0.001
+  }
+ },
+ "b_role": {
+  "coef": {
+   "const": [
+    0.337,
+    0.109
+   ],
+   "b_up": [
+    0.372,
+    0.46
+   ],
+   "b_down": [
+    -0.775,
+    0.521
+   ],
+   "b_trend": [
+    0.09,
+    0.067
+   ]
+  },
+  "2025 second half": {
+   "baseline": {
+    "mae": 5.334,
+    "rmse": 6.963
+   },
+   "with": {
+    "mae": 5.322,
+    "rmse": 6.954
+   },
+   "mae_change": -0.012
+  },
+  "2024 all": {
+   "baseline": {
+    "mae": 5.174,
+    "rmse": 6.795
+   },
+   "with": {
+    "mae": 5.167,
+    "rmse": 6.79
+   },
+   "mae_change": -0.007
+  }
+ },
+ "e_depth": {
+  "coef": {
+   "const": [
+    0.319,
+    0.105
+   ],
+   "e_depth": [
+    -0.056,
+    0.062
+   ]
+  },
+  "2025 second half": {
+   "baseline": {
+    "mae": 5.334,
+    "rmse": 6.963
+   },
+   "with": {
+    "mae": 5.328,
+    "rmse": 6.964
+   },
+   "mae_change": -0.006
+  },
+  "2024 all": {
+   "baseline": {
+    "mae": 5.174,
+    "rmse": 6.795
+   },
+   "with": {
+    "mae": 5.174,
+    "rmse": 6.797
+   },
+   "mae_change": 0.0
+  }
+ },
+ "a+b+e": {
+  "coef": {
+   "const": [
+    0.301,
+    0.131
+   ],
+   "a_pos_same": [
+    0.125,
+    0.053
+   ],
+   "a_pos_other": [
+    -0.139,
+    0.114
+   ],
+   "b_up": [
+    0.362,
+    0.461
+   ],
+   "b_down": [
+    -0.748,
+    0.521
+   ],
+   "b_trend": [
+    0.081,
+    0.067
+   ],
+   "e_depth": [
+    -0.057,
+    0.063
+   ]
+  },
+  "2025 second half": {
+   "baseline": {
+    "mae": 5.334,
+    "rmse": 6.963
+   },
+   "with": {
+    "mae": 5.307,
+    "rmse": 6.944
+   },
+   "mae_change": -0.027
+  },
+  "2024 all": {
+   "baseline": {
+    "mae": 5.174,
+    "rmse": 6.795
+   },
+   "with": {
+    "mae": 5.164,
+    "rmse": 6.783
+   },
+   "mae_change": -0.01
+  }
+ },
+ "squad_points_second_half": {
+  "2025": {
+   "absences_known": 169.1,
+   "plus_minutes_signals": 166.1,
+   "diff_per_round": -3.0,
+   "diff_se": 3.0
+  },
+  "2024": {
+   "absences_known": 171.2,
+   "plus_minutes_signals": 169.4,
+   "diff_per_round": -1.7,
+   "diff_se": 4.4
+  }
+ },
+ "value_of_knowing_absences": {
+  "2025": {
+   "absences_unknown": 149.9,
+   "absences_known": 169.1,
+   "diff": 19.2,
+   "se": 4.6
+  },
+  "2024": {
+   "absences_unknown": 161.1,
+   "absences_known": 171.2,
+   "diff": 10.1,
+   "se": 3.2
+  }
+ }
+}
