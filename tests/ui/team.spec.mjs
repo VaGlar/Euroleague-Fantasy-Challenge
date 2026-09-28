@@ -240,6 +240,26 @@ test.describe("public edition", () => {
   });
 });
 
+test.describe("player sheet on the team screen", () => {
+  test("tapping a player shows the actions and, below them, his analysis and stats", async ({ page }) => {
+    await savedTeam(page);
+    await court(page).first().click();
+    await expect(page.locator("#aRep")).toBeVisible();
+    await expect(page.locator("#tmDetails")).toContainText("Ανάλυση");
+    await expect(page.locator("#tmDetails")).toContainText("Επόμενα 3 παιχνίδια");
+    await expect(page.locator("#tmDetails")).not.toContainText("Δεν υπάρχουν προγραμματισμένοι αγώνες");
+  });
+
+  test("tapping 🆕 on a chip explains it instead of opening the player", async ({ page }) => {
+    await savedTeam(page);
+    const few = page.locator(`${C} .chip .few`).first();
+    test.skip(!(await few.count()), "no newcomer in this team");
+    await few.click();
+    await expect(page.locator("#tip")).toContainText("Νέος στη EuroLeague");
+    await expect(page.locator("#modal")).not.toHaveClass(/\bon\b/);
+  });
+});
+
 test.describe("personal edition", () => {
   test("«Όχι τον X» on the game's team re-plans without him", async ({ page }) => {
     await open(page, "personal", { tab: "team" });

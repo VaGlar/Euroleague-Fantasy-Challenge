@@ -313,7 +313,7 @@
     const cap = t && t.captain === r.id;
     return `<div class="chip${cap ? " cap" : ""} ${extraCls}" data-fid="${r.id}" tabindex="0" role="button" aria-label="${esc(nm(r.name))}">
       <div class="ct"><span>${LETTER[r.position] || ""}</span>${r.turn ? `<span class="tb t${r.turn > 1 ? 2 : 1}">T${r.turn}</span>` : ""}</div>
-      <div class="cn">${esc(sur(r.name))}${inj(r) ? " 🚑" : ""}${r.price_trend === "up" ? " $" : ""}${typeof fewGames === "function" && fewGames(r) ? ' <span class="few" title="νέος στη EuroLeague, λίγα ματς: αβέβαιη πρόβλεψη">🆕</span>' : ""}</div>
+      <div class="cn">${esc(sur(r.name))}${inj(r) ? " 🚑" : ""}${r.price_trend === "up" ? " $" : ""}${typeof fewGames === "function" && fewGames(r) ? ' <span class="few" data-info="few" role="button" tabindex="0" aria-label="Τι σημαίνει νέος">🆕</span>' : ""}</div>
       <div class="cp${isPlayed ? " done" : ""}">${f1(isPlayed ? r.actual : r.x_now)}</div>
       <div class="cs">${r.opp ? `${r.home ? "🏠" : "✈️"} ${esc(r.opp)}` : ""}${r.price != null ? ` · ${f1(r.price)}${arrow(dPrice(r))}` : ""}</div></div>`;
   }
@@ -409,7 +409,6 @@
         <button class="tm-act" id="aSwap"><span>⇄</span><div>Αλλαγή θέσης με…<small>ή σύρε τον πάνω σε άλλον παίκτη</small></div></button>` : ""}
         <button class="tm-act" id="aRep"><span>🔁</span><div>Αντικατάσταση (μεταγραφή)<small>${NAME[r.position]} έως ${f1((Number(t.bank) || 0) + Number(r.price || 0))} cr</small></div></button>
         <button class="tm-act" id="aPrice"><span>✎</span><div>Διόρθωση τιμής αγοράς<small>όσο τον πλήρωσες στο παιχνίδι (έχεις γράψει ${f1(r.buy ?? r.price)} cr)</small></div></button>
-        <button class="tm-act" id="aInfo"><span>📊</span><div>Στατιστικά και επόμενα παιχνίδια<small>η πλήρης καρτέλα του παίκτη</small></div></button>
       </div>`);
     const on = (i, fn) => { const el = document.getElementById(i); if (el) el.onclick = fn; };
     on("aCap", () => { t.captain = id; save(t); closePlayer(); render(); flash(id); toast(`CAP: ${sur(r.name)}`); });
@@ -433,7 +432,16 @@
         t.players.find((x) => x.id === id).price = v; save(t); closePlayer(); render(); toast(`${sur(r.name)}: αγορά ${f1(v)} cr`);
       };
     });
-    on("aInfo", () => openPlayer(r.person_id));
+    // the player's analysis, stats, games and price under the actions (same as the players' popup)
+    if (typeof playerBody === "function") {
+      $("#sheet").insertAdjacentHTML("beforeend", `<div id="tmDetails" data-pid="${esc(r.person_id)}"><p class="muted">Φόρτωση στατιστικών…</p></div>`);
+      playerBody(r.person_id).then((html) => {
+        const box = document.getElementById("tmDetails");
+        if (!box || box.dataset.pid !== String(r.person_id)) return;   // closed or another player meanwhile
+        box.innerHTML = html;
+        if (typeof bindPriceChart === "function") bindPriceChart(box);
+      });
+    }
   }
   function replaceSheet(t, r) {
     const max = (Number(t.bank) || 0) + Number(r.price || 0);
@@ -465,6 +473,7 @@
       el.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); playerSheet(t, id); } });
       el.addEventListener("pointerdown", (e) => {
         if (e.button !== 0) return;
+        if (e.target.closest("[data-info]")) return;          // 🆕 and co. explain themselves (index.html), no drag or sheet
         const sx = e.clientX, sy = e.clientY;
         let ghost = null, target = null, last = null, raf = 0;
         try { el.setPointerCapture(e.pointerId); } catch (err) {}
@@ -828,6 +837,7 @@
   .tm-money { display: flex; justify-content: space-between; color: var(--text-secondary); font-size: 13px; margin-top: 10px; }
   .tm-up { color: var(--good, #1e8e3e); font-size: 10px; margin-left: 2px; } .tm-down { color: var(--critical); font-size: 10px; margin-left: 2px; }
   .tm-planned { color: var(--good); }
+  .chip .few { cursor: help; padding: 2px; margin: -2px; }
   .tm-over { color: var(--critical); font-size: 13px; margin: 6px 2px 0; }
   .tm-slot { width: 31%; max-width: 128px; border: 2px dashed var(--court-line); border-radius: 10px; padding: 12px 4px;
     background: color-mix(in srgb, var(--surface-1) 55%, transparent); color: var(--text-secondary); font: inherit; font-size: 12px; cursor: pointer; }
