@@ -4,3 +4,6 @@ __pycache__/
 site/
 node_modules/
 .wrangler/
+tests/ui/node_modules/
+tests/ui/test-results/
+tests/ui/playwright-report/

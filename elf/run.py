@@ -797,7 +797,10 @@ def build(offline: bool = False) -> dict:
             mine = table[table["fantasy_id"].isin(ids)].copy()
             mine["label"] = mine["name"] + " (" + mine["team"] + ")"
             info = t.get("info") or {}
-            bank = _num(info.get("credits"), meta.get("bank", max(0.0, BUDGET - mine["price"].sum())))
+            # the app's CREDITS 0/100.2: "credits" is the whole budget (100 + gain); left = budget - team value
+            budget = _num(info.get("credits"))
+            bank = (round(max(0.0, budget - float(mine["price"].sum())), 1) if budget is not None
+                    else meta.get("bank", max(0.0, BUDGET - mine["price"].sum())))
             my = {"name": t["name"], "players": mine.sort_values("x_now", ascending=False)
                   .to_dict("records"), "bank": bank, "captain_id": meta.get("captain"),
                   "gain": _num(info.get("total_plus")),   # team value gained since purchase, as the app shows it

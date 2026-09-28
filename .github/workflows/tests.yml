@@ -32,3 +32,33 @@ jobs:
           pathlib.Path("/tmp/dashboard.js").write_text(js)
           PY
           node --check /tmp/dashboard.js
+
+  ui:
+    # the dashboard in a browser: both editions, PC and iPhone-sized screens (tests/ui)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install Playwright
+        working-directory: tests/ui
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+      - name: UI tests
+        working-directory: tests/ui
+        run: npx playwright test
+      - name: Report (screenshots of every tab, traces of failures)
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-report
+          path: tests/ui/playwright-report
+          retention-days: 7

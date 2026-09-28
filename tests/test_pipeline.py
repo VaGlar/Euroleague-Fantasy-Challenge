@@ -46,7 +46,7 @@ def _run(monkeypatch, public):
     roles[next(p["id"] for p in court if p not in five)] = "6ος"
     game = FakeGame(squad, roles, captain=five[0]["id"]).install(monkeypatch)
     monkeypatch.setattr(fantasy, "players", lambda *a, **k: raw_players)
-    monkeypatch.setattr(fantasy, "team_matchday", lambda *a, **k: {"credits": 3.4, "total_plus": 1.2, "trades": 0})
+    monkeypatch.setattr(fantasy, "team_matchday", lambda *a, **k: {"credits": 101.2, "total_plus": 1.2, "trades": 0})
     monkeypatch.setattr(el_api, "clubs", lambda season: json.loads(
         (REPO / "data/public/clubs.json").read_text()))
     monkeypatch.setattr(history, "update_season", lambda *a, **k: None)
@@ -197,6 +197,7 @@ def test_public_site_is_renamed(pipeline, tmp_path):
 
 def test_game_credits_gain_and_popularity(pipeline):
     my = pipeline["pred"]["my_team"]
-    assert my["bank"] == 3.4 and my["gain"] == 1.2          # from the team's matchday endpoint
+    value = sum(p["price"] for p in my["players"])
+    assert my["gain"] == 1.2 and my["bank"] == round(max(0.0, 101.2 - value), 1)   # credits = whole budget
     pops = {p.get("popularity") for p in pipeline["pred"]["players"] if p.get("fantasy_id") is not None}
     assert pops == {25.0}                                    # 0-1 from the API -> percent

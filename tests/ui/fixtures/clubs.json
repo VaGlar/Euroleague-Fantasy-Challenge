@@ -1,0 +1,142 @@
+[
+ {
+  "code": "IST",
+  "tv": "EFS",
+  "name": "Anadolu Efes Istanbul",
+  "short": "Anadolu Efes",
+  "crest": "https://media-cdn.cortextech.io/1dU3kpCqReRp93/1BSdBWIjCgOCxM/a844756c-a58d-4666-93b8-48f7337bc79d.png"
+ },
+ {
+  "code": "MIL",
+  "tv": "MIL",
+  "name": "Armani Olimpia Milan",
+  "short": "Milan",
+  "crest": "https://media-cdn.cortextech.io/1dU3kpCqReRp93/1BSdBWIjChWbHH/5c2f0ab6-f86a-4df0-b2f3-f9ab92f7267b.png"
+ },
+ {
+  "code": "BES",
+  "tv": "BJK",
+  "name": "Besiktas Istanbul",
+  "short": "Besiktas",
+  "crest": "https://media-cdn.cortextech.io/1dU3kpCqReRp93/1BSdBWIjChWbHH/b05e3c54-e672-4b31-9f86-c91e9de7715c.png"
+ },
+ {
+  "code": "RED",
+  "tv": "CZV",
+  "name": "Crvena Zvezda Meridianbet Belgrade",
+  "short": "Crvena Zvezda",
+  "crest": "https://media-cdn.incrowdsports.com/d2eef4a8-62df-4fdd-9076-276004268515.png"
+ },
+ {
+  "code": "DUB",
+  "tv": "DUB",
+  "name": "Dubai Basketball",
+  "short": "Dubai",
+  "crest": "https://media-cdn.incrowdsports.com/1efae090-16e2-4963-ae47-4b94f249c244.png"
+ },
+ {
+  "code": "BAR",
+  "tv": "BAR",
+  "name": "FC Barcelona",
+  "short": "FC Barcelona",
+  "crest": "https://media-cdn.incrowdsports.com/35dfa503-e417-481f-963a-bdf6f013763e.png"
+ },
+ {
+  "code": "MUN",
+  "tv": "BAY",
+  "name": "FC Bayern Munich",
+  "short": "Bayern Munich",
+  "crest": "https://media-cdn.incrowdsports.com/817b0e58-d595-4b09-ab0b-1e7cc26249ff.png"
+ },
+ {
+  "code": "ULK",
+  "tv": "FBT",
+  "name": "Fenerbahce Tarfin Istanbul",
+  "short": "Fenerbahce",
+  "crest": "https://media-cdn.cortextech.io/1dU3kpCqReRp93/1BSdBWIjCiezrk/aa39750a-6203-49ee-a87d-edd0c6f0397d.png"
+ },
+ {
+  "code": "HTA",
+  "tv": "HTA",
+  "name": "Hapoel IBI Tel Aviv",
+  "short": "Hapoel TLV",
+  "crest": "https://media-cdn.incrowdsports.com/cbb1c3ad-03d5-426a-b5ef-2832a4eee484.png"
+ },
+ {
+  "code": "BAS",
+  "tv": "KBA",
+  "name": "Kosner Baskonia Vitoria-Gasteiz",
+  "short": "Baskonia",
+  "crest": "https://media-cdn.cortextech.io/cbc49cb0-99ce-4462-bdb7-56983ee03cf4.png"
+ },
+ {
+  "code": "ASV",
+  "tv": "ASV",
+  "name": "LDLC ASVEL Villeurbanne",
+  "short": "LDLC ASVEL",
+  "crest": "https://media-cdn.incrowdsports.com/e33c6d1a-95ca-4dbc-b8cb-0201812104cc.png"
+ },
+ {
+  "code": "TEL",
+  "tv": "MTA",
+  "name": "Maccabi Rapyd Tel Aviv",
+  "short": "Maccabi",
+  "crest": "https://media-cdn.cortextech.io/1b533342-78f5-4932-b714-a7d80b5826b5.png"
+ },
+ {
+  "code": "OLY",
+  "tv": "OLY",
+  "name": "Olympiacos Piraeus",
+  "short": "Olympiacos",
+  "crest": "https://media-cdn.incrowdsports.com/789423ac-3cdf-4b89-b11c-b458aa5f59a6.png"
+ },
+ {
+  "code": "PAN",
+  "tv": "PAO",
+  "name": "Panathinaikos AKTOR Athens",
+  "short": "Panathinaikos",
+  "crest": "https://media-cdn.incrowdsports.com/e3dff28a-9ec6-4faf-9d96-ecbc68f75780.png"
+ },
+ {
+  "code": "PRS",
+  "tv": "PBB",
+  "name": "Paris Basketball",
+  "short": "Paris",
+  "crest": "https://media-cdn.incrowdsports.com/a033e5b3-0de7-48a3-98d9-d9a4b9df1f39.png"
+ },
+ {
+  "code": "PAR",
+  "tv": "PAR",
+  "name": "Partizan Mozzart Bet Belgrade",
+  "short": "Partizan",
+  "crest": "https://media-cdn.incrowdsports.com/2681304e-77dd-4331-88b1-683078c0fb49.png"
+ },
+ {
+  "code": "MAD",
+  "tv": "RMB",
+  "name": "Real Madrid",
+  "short": "Real Madrid",
+  "crest": "https://media-cdn.incrowdsports.com/371b0d9b-9250-4c09-bda7-0686cf024657.png"
+ },
+ {
+  "code": "PAM",
+  "tv": "VBC",
+  "name": "Valencia Basket",
+  "short": "Valencia",
+  "crest": "https://media-cdn.cortextech.io/1dU3kpCqReRp93/1BSdBWIjChWbHL/bc3e00b2-fea4-40be-a7ec-1e633129bde3.png"
+ },
+ {
+  "code": "VIR",
+  "tv": "VIR",
+  "name": "Virtus Bologna",
+  "short": "Virtus Bologna",
+  "crest": "https://media-cdn.cortextech.io/1dU3kpCqReRp93/1BSdBWIjCiezvk/a92d4c3b-9f9c-4163-8a10-bcf8fc15893e.png"
+ },
+ {
+  "code": "ZAL",
+  "tv": "ZAL",
+  "name": "Zalgiris Kaunas",
+  "short": "Zalgiris",
+  "crest": "https://media-cdn.incrowdsports.com/0aa09358-3847-4c4e-b228-3582ee4e536d.png"
+ }
+]

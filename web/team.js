@@ -803,6 +803,12 @@
   document.head.appendChild(css);
 
   if (typeof P === "undefined" || !GAME()) importFromHash();
+  // the link pasted into a tab that already shows the app: only the #hash changes, no reload
+  window.addEventListener("hashchange", () => {
+    if (!/[#&]t=/.test(location.hash) || (typeof P !== "undefined" && GAME())) return;
+    importFromHash(); setup = null; mode = null;
+    if (typeof P !== "undefined" && P) { render(); if (typeof showTab === "function") showTab("team"); }
+  });
   // a short status for the «Σήμερα» screen: null = no team yet (public edition)
   function summary() {
     try {
