@@ -99,7 +99,7 @@ def test_swap_plan_pairs_later_players_with_weakest_compatible_starter():
     team, plan = optimize.defer_later_turns(optimize.lineup(squad_t1_t2())["team"])
     pairs = {(pl["bench"]["id"], pl["start"]["id"]) for pl in plan}
     # C 10 -> sixth man 7 (weakest); F 8 cannot take the only T1 Center's slot -> F 6;
-    # G 3 -> G 2; G 4 (xPTS 3) is below PLAN_MIN_X -> no plan
+    # G 3 -> G 2; G 4 (xFPT 3) is below PLAN_MIN_X -> no plan
     assert pairs == {(10, 7), (8, 6), (3, 2)}
     check_lineup(team)
 

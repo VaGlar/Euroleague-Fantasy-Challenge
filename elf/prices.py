@@ -6,8 +6,8 @@ same score a cheap player gains more). The exact formula is not published, so:
   * once prices.csv holds 2+ matchdays, we fit it from data:
         delta_price ~ b0 + b1 * points + b2 * price + b3 * points / price
     (points = the round's fantasy points from the box scores) and predict the change
-    for this round from xPTS;
-  * before that, a proxy: xPTS minus the xPTS the market "prices in" (a price -> xPTS
+    for this round from xFPT;
+  * before that, a proxy: xFPT minus the xFPT the market "prices in" (a price -> xFPT
     line fitted across players). Well above the line = likely to rise.
 """
 from __future__ import annotations
@@ -20,7 +20,7 @@ from .config import CURRENT_SEASON, PUBLIC, WIN_BONUS
 
 RISE_CR = 0.3        # fitted model: flag if predicted change >= +0.3 cr
 FALL_CR = -0.3
-RISE_RESID = 3.0     # proxy: flag if xPTS beats the price line by 3+ points ...
+RISE_RESID = 3.0     # proxy: flag if xFPT beats the price line by 3+ points ...
 RISE_REL = 0.30      # ... and by 30%+ of what the price implies (cheap players move more)
 FALL_RESID = -3.0
 
@@ -85,7 +85,7 @@ def annotate(table: pd.DataFrame) -> tuple[pd.DataFrame, dict]:
         t.loc[ok & (t["price_delta"] >= RISE_CR) & healthy, "price_trend"] = "up"
         t.loc[ok & (t["price_delta"] <= FALL_CR), "price_trend"] = "down"
         return t, {"method": "fitted", **model}
-    # proxy: residual vs the market's price -> xPTS line (players with data only)
+    # proxy: residual vs the market's price -> xFPT line (players with data only)
     known = ok & ~t.get("no_data", pd.Series(False, index=t.index)).fillna(False) \
         & (t["x_now"] > 0)
     if known.sum() < 30:

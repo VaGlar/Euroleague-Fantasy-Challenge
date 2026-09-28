@@ -127,7 +127,7 @@ details.fbox > summary::-webkit-details-marker { display: none; }
 .chip .cs { font-size: 11px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .chip .ct { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-secondary); }
 .chip.cap { border: 2px solid var(--accent); }
-.chip.cap::before { content: "★ x2"; position: absolute; top: -9px; left: 50%; transform: translateX(-50%);
+.chip.cap::before { content: "CAP"; position: absolute; top: -9px; left: 50%; transform: translateX(-50%);
   background: var(--accent); color: #fff; font-size: 10px; font-weight: 700; padding: 0 6px; border-radius: 999px; }
 .chip.chg { outline: 2px dashed var(--series-1); outline-offset: 1px; }
 .tb { border-radius: 4px; padding: 0 4px; font-weight: 700; }
@@ -335,13 +335,13 @@ ul.news li { padding: 8px 0; border-bottom: 1px solid var(--border); }
       <button id="freset" class="linkbtn" type="button">Καθαρισμός</button>
     </div></details>
     <div class="filters" id="fsortwrap"><label class="chk">Ταξινόμηση <select id="fsort">
-      <option value="x_now">xPTS</option><option value="x_h">xPTS3</option><option value="value">Value</option>
-      <option value="price">Τιμή</option><option value="price_chg">Άνοδος τιμής</option><option value="price_last_chg">Τελευταία αλλαγή τιμής</option><option value="popularity">Pop (πόσοι τον έχουν)</option><option value="pos_dev">Ματσάρισμα</option><option value="season_pir">PIR φέτος</option>
+      <option value="x_now">xFPT</option><option value="x_h">xFPT3</option><option value="value">Value</option>
+      <option value="price">Τιμή</option><option value="price_chg">Άνοδος τιμής</option><option value="price_last_chg">Τελευταία αλλαγή τιμής</option><option value="popularity">POP (πόσοι τον έχουν)</option><option value="pos_dev">Ματσάρισμα</option><option value="season_pir">PIR φέτος</option>
     </select></label></div>
     <div class="muted" id="fcount"></div>
     <div class="card tablewrap"><table id="ptable"></table></div>
     <div class="plist" id="plist"></div>
-    <p class="muted">xPTS: αναμενόμενοι πόντοι fantasy αγωνιστικής (PIR +10% αν κερδίσει η ομάδα· coach: βαθμολογία από τη διαφορά σκορ). xPTS3: xPTS των επόμενων 3 αγωνιστικών όπου μπορεί να γίνει μεταγραφή (αφού ξεκινήσει η αγωνιστική, από την επόμενη) με βάρη 1 / 0.6 / 0.35 (η επόμενη μετράει όσο οι άλλες δύο μαζί)· αγωνιστικές μετά από παράθυρο απεριόριστων μεταγραφών δεν μετράνε.
+    <p class="muted">xFPT: αναμενόμενοι πόντοι fantasy αγωνιστικής (PIR +10% αν κερδίσει η ομάδα· coach: βαθμολογία από τη διαφορά σκορ). xFPT3: xFPT των επόμενων 3 αγωνιστικών όπου μπορεί να γίνει μεταγραφή (αφού ξεκινήσει η αγωνιστική, από την επόμενη) με βάρη 1 / 0.6 / 0.35 (η επόμενη μετράει όσο οι άλλες δύο μαζί)· αγωνιστικές μετά από παράθυρο απεριόριστων μεταγραφών δεν μετράνε.
       Ματσάρισμα: πόσο περισσότερο/λιγότερο PIR δίνει ο αντίπαλος στη θέση (▲ ευνοϊκό).
       <b>$</b>: πιθανή άνοδος τιμής μετά την αγωνιστική (↓$ πτώση).</p>
   </section>
@@ -434,18 +434,18 @@ function moreSheet() {
 
 // ---------- ⓘ: one-line explanations of the fantasy terms
 const INFO = {
-  xpts: "xPTS: αναμενόμενοι πόντοι fantasy στην αγωνιστική (PIR, +10% αν κερδίσει η ομάδα· για τον coach, από τη διαφορά σκορ).",
-  xpts3: "xPTS3: αναμενόμενοι πόντοι των επόμενων 3 αγωνιστικών, με βάρη 1 / 0,6 / 0,35 (η επόμενη μετράει περισσότερο). Με αυτό διαλέγονται οι μεταγραφές.",
-  value: "Value: xPTS3 ανά credit, πόσους πόντους δίνει κάθε credit της τιμής του.",
+  xpts: "xFPT: αναμενόμενοι πόντοι fantasy (FPT) στην αγωνιστική (PIR, +10% αν κερδίσει η ομάδα· για τον coach, από τη διαφορά σκορ).",
+  xpts3: "xFPT3: αναμενόμενοι πόντοι των επόμενων 3 αγωνιστικών, με βάρη 1 / 0,6 / 0,35 (η επόμενη μετράει περισσότερο). Με αυτό διαλέγονται οι μεταγραφές.",
+  value: "Value: xFPT3 ανά credit, πόσους πόντους δίνει κάθε credit της τιμής του.",
   dollar: "$: πιθανή άνοδος τιμής μετά την αγωνιστική. ↓$: πιθανή πτώση.",
   turn: "T1 / T2: σε ποιο turn παίζει η ομάδα του. Ανάμεσα στα turns μπορείς να αλλάξεις πεντάδα με όσους δεν έχουν παίξει.",
   matchup: "Ματσάρισμα: πόσο περισσότερο (▲) ή λιγότερο (▼) PIR δίνει ο αντίπαλος στη θέση του, σε σχέση με τον μέσο όρο της λίγκας.",
   avail: "Διαθεσιμότητα από το παιχνίδι και τα νέα: εκτός, ή η πιθανότητα να παίξει. Ανανεώνεται και 3 ώρες πριν τον πρώτο αγώνα.",
-  pop: "Pop: τι ποσοστό των managers του παιχνιδιού τον έχει στην ομάδα του.",
+  pop: "POP: τι ποσοστό των managers του παιχνιδιού τον έχει στην ομάδα του.",
   pchg: "Δ τιμής: πόσο έχει αλλάξει η τιμή του από την πρώτη αγωνιστική της σεζόν.",
   pir: "PIR: η αξιολόγηση της EuroLeague (πόντοι, ριμπάουντ, ασίστ, κλεψίματα, κοψίματα, κερδισμένα φάουλ, μείον άστοχα, λάθη και φάουλ).",
 };
-const pop = (r) => (r.popularity == null ? "" : `${Math.round(r.popularity)}%`);
+const pop = (r) => (r.popularity == null ? "" : `${f1(r.popularity)} %`);
 const ii = (k) => `<button type="button" class="ii" data-info="${k}" aria-label="Τι σημαίνει">ⓘ</button>`;
 document.addEventListener("click", (e) => {
   const old = document.getElementById("tip");
@@ -515,9 +515,9 @@ function renderPlayers() {
   rows.sort((a, b) => ((a[sortKey] ?? -1e9) > (b[sortKey] ?? -1e9) ? 1 : -1) * sortDir);
   const max = Math.max(...rows.map((r) => r.x_now || 0), 1);
   const hasPrice = P.fantasy_ok;
-  const cols = [["name", "Παίκτης"], ["x_now", "xPTS" + ii("xpts"), 1], ["opp", "Αντ."], ["pos_dev", "Ματσάρ." + ii("matchup"), 1],
-    ["x_h", "xPTS3" + ii("xpts3"), 1], ["season_pir", "PIR φέτος" + ii("pir"), 1], ["prev_pir", "PIR πέρσι", 1]]
-    .concat(hasPrice ? [["price", "Τιμή", 1], ["price_chg", "Δ τιμής" + ii("pchg"), 1], ["popularity", "Pop" + ii("pop"), 1], ["value", "Value" + ii("value"), 1]] : []);
+  const cols = [["name", "Παίκτης"], ["x_now", "xFPT" + ii("xpts"), 1], ["opp", "Αντ."], ["pos_dev", "Ματσάρ." + ii("matchup"), 1],
+    ["x_h", "xFPT3" + ii("xpts3"), 1], ["season_pir", "PIR φέτος" + ii("pir"), 1], ["prev_pir", "PIR πέρσι", 1]]
+    .concat(hasPrice ? [["price", "Τιμή", 1], ["price_chg", "Δ τιμής" + ii("pchg"), 1], ["popularity", "POP" + ii("pop"), 1], ["value", "Value" + ii("value"), 1]] : []);
   $("#ptable").innerHTML = "<thead><tr>" + cols.map(([k, l, n]) =>
     `<th data-k="${k}" class="${n ? "num" : ""}">${l}${sortKey === k ? (sortDir < 0 ? " ↓" : " ↑") : ""}</th>`).join("") + "</tr></thead><tbody>"
     + rows.slice(0, 250).map((r) => `<tr data-pid="${esc(r.person_id)}">
@@ -531,8 +531,8 @@ function renderPlayers() {
   });
   $("#plist").innerHTML = rows.slice(0, 150).map((r) => `<div class="pcard" data-pid="${esc(r.person_id)}" style="${tcol(r.team)}">
     <div class="pn">${cbox(r)}${esc(nm(r.name))}${avb(r)}${r.no_data && !r.prior ? ' <span class="pill">νέος</span>' : ""}${exb(r)}${dol(r)}</div>
-    <div class="px"><b>${f1(r.x_now)}</b><small>xPTS${ii("xpts")}</small><span class="h">${f1(r.x_h)} <small>xPTS3</small></span></div>
-    <div class="pm">${esc(r.team)} · ${esc((r.position || "")[0] || "")}${r.price != null ? ` · <b>${f1(r.price)}cr</b>${chg(r.price_chg)}` : ""}${pop(r) ? ` · pop ${pop(r)}` : ""} · ${r.home ? "🏠" : "✈️"} ${esc(r.opp || "")} ${matchup(r.pos_dev)}</div>
+    <div class="px"><b>${f1(r.x_now)}</b><small>xFPT${ii("xpts")}</small><span class="h">${f1(r.x_h)} <small>xFPT3</small></span></div>
+    <div class="pm">${esc(r.team)} · ${esc((r.position || "")[0] || "")}${r.price != null ? ` · <b>${f1(r.price)}cr</b>${chg(r.price_chg)}` : ""}${pop(r) ? ` · POP ${pop(r)}` : ""} · ${r.home ? "🏠" : "✈️"} ${esc(r.opp || "")} ${matchup(r.pos_dev)}</div>
   </div>`).join("") + (rows.length > 150 ? `<p class="muted">…και ${rows.length - 150} ακόμα — στένεψε τα φίλτρα.</p>` : "");
   const active = FILTERS.filter((id) => { const el = $("#" + id); return el.type === "checkbox" ? el.checked : el.value; }).length;
   $("#fsum").textContent = active ? `Φίλτρα (${active} ενεργά)` : "Φίλτρα";
@@ -561,8 +561,8 @@ function courtView(list, ref) {
     ps.map((p) => chip(p, ref && ref[p.id] !== p.role)).join("")}</div></div>` : "";
   return `<div class="court"><div class="crow">${row("Center")}</div><div class="crow">${row("Forward")}</div>
     <div class="crow">${row("Guard")}</div></div>
-    <div class="lanes"><div class="pair">${lane("six", "6ος · 100%", by("6ος"))}${lane("coach", "Coach", by("coach"))}</div>
-      ${lane("bench", "Πάγκος · 50%", by("πάγκος").sort((a, b) => (b.x_now ?? 0) - (a.x_now ?? 0)))}</div>`;
+    <div class="lanes"><div class="pair">${lane("six", "6th (100% FPT)", by("6ος"))}${lane("coach", "Head Coach", by("coach"))}</div>
+      ${lane("bench", "Bench (50% FPT)", by("πάγκος").sort((a, b) => (b.x_now ?? 0) - (a.x_now ?? 0)))}</div>`;
 }
 // «Η ομάδα μου»: web/team.js draws it for both editions
 function renderTeam(my, best) { if (window.TEAM) TEAM.render(best); }
@@ -663,7 +663,7 @@ function openTeam(team) {
   const coach = players.find((x) => x.position === "Head Coach");
   const top = players.filter((x) => x.position !== "Head Coach").slice(0, 6);
   $("#sheet").innerHTML = `<div class="sh"><div><h2>${esc((P.clubs || {})[team] || team)}</h2>
-      <div class="muted">${esc(team)} · #${rank} σε δύναμη${turn ? ` · Αγωνιστική ${P.round}: Turn ${turn.turn} (${esc(turn.date.slice(8))}/${esc(turn.date.slice(5, 7))})` : ""}${coach ? ` · coach ${esc(nm(coach.name))}` : ""}</div></div>
+      <div class="muted">${esc(team)} · #${rank} σε δύναμη${turn ? ` · Round ${P.round}: Turn ${turn.turn} (${esc(turn.date.slice(8))}/${esc(turn.date.slice(5, 7))})` : ""}${coach ? ` · coach ${esc(nm(coach.name))}` : ""}</div></div>
       <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
     <div class="kpis"><div class="kpi"><b class="${t.net >= 0 ? "up" : "down"}">${t.net >= 0 ? "+" : ""}${f1(t.net)}</b><span>Net /100</span></div>
       <div class="kpi"><b>${f1(t.pace)}</b><span>Pace</span></div><div class="kpi"><b>+${f1(t.hca)}</b><span>Έδρα</span></div></div>
@@ -673,9 +673,9 @@ function openTeam(team) {
       <div class="gs">${new Date(g.utc).toLocaleString("el-GR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Europe/Athens" })} · διαφορά ${g.m >= 0 ? "+" : ""}${f1(g.m)}</div></div>`).join("") || '<p class="muted">–</p>'}</div>
     <h3>Άμυνα: PIR που δίνει ανά θέση</h3><ul class="why">${["Guard", "Forward", "Center"].map((pos) =>
       `<li><span>${pos}</span><span>${matchup(pa[pos]) || "≈ 0%"}</span></li>`).join("")}</ul>
-    <h3>Κορυφαίοι παίκτες (xPTS αγωνιστικής)</h3><div class="games">${top.map((x) => `<div class="game" data-pid="${esc(x.person_id)}" style="cursor:pointer">
-      <div><b>${esc(nm(x.name))}</b>${inj(x)}${dol(x)}</div><div class="gv"><b>${f1(x.actual ?? x.x_now)}</b><small>${x.actual != null ? "πόντοι" : "xPTS"}</small></div>
-      <div class="gs">${esc(x.position || "")}${x.price != null ? ` · ${f1(x.price)} cr` : ""} · xPTS3 ${f1(x.x_h)}</div></div>`).join("")}</div>`;
+    <h3>Κορυφαίοι παίκτες (xFPT αγωνιστικής)</h3><div class="games">${top.map((x) => `<div class="game" data-pid="${esc(x.person_id)}" style="cursor:pointer">
+      <div><b>${esc(nm(x.name))}</b>${inj(x)}${dol(x)}</div><div class="gv"><b>${f1(x.actual ?? x.x_now)}</b><small>${x.actual != null ? "πόντοι" : "xFPT"}</small></div>
+      <div class="gs">${esc(x.position || "")}${x.price != null ? ` · ${f1(x.price)} cr` : ""} · xFPT3 ${f1(x.x_h)}</div></div>`).join("")}</div>`;
   $("#modal").classList.add("on");
   document.body.classList.add("noscroll");
   $("#sheet").scrollTop = 0;
@@ -735,12 +735,12 @@ async function renderCompare() {
       <button class="rm" type="button" title="αφαίρεση" onclick="setCmp(CMP.filter((x) => x !== '${esc(r.person_id)}'))">✕</button></th>`).join("")}</tr></thead><tbody>
     ${sec("Fantasy")}
     ${line("Τιμή (cr)", rows.map((r) => r.price), "lo")}
-    ${line("xPTS αγωνιστικής", rows.map((r) => r.actual ?? r.x_now), "hi")}
-    ${line("xPTS3 (σταθμ.)", rows.map((r) => r.x_h), "hi")}
-    ${line("Value (xPTS3/cr)", rows.map((r) => r.value), "hi", (v) => v.toFixed(2))}
+    ${line("xFPT αγωνιστικής", rows.map((r) => r.actual ?? r.x_now), "hi")}
+    ${line("xFPT3 (σταθμ.)", rows.map((r) => r.x_h), "hi")}
+    ${line("Value (xFPT3/cr)", rows.map((r) => r.value), "hi", (v) => v.toFixed(2))}
     ${line("Τάση τιμής", rows.map((r) => (r.price_trend === "up" ? "$ άνοδος" : r.price_trend === "down" ? "↓$ πτώση" : "σταθερή")), null, (v) => v)}
     ${sec("Επόμενα 3 παιχνίδια")}
-    ${line("Άθροισμα xPTS", nextSum, "hi")}
+    ${line("Άθροισμα xFPT", nextSum, "hi")}
     <tr><td>Αγώνες</td>${det.map((d) => `<td class="ng">${d.next.map((g) => `R${g.round} ${g.home ? "🏠" : "✈️"}${esc(g.opp)} <b>${f1(g.x)}</b>`).join("<br>") || "–"}</td>`).join("")}</tr>
     ${line("Ματσάρισμα (επόμενος)", det.map((d) => d.next[0]?.pos_dev), "hi", (v) => `${v >= 0 ? "+" : ""}${Math.round(v * 100)}%`)}
     ${line("Πιθ. νίκης (επόμενος)", det.map((d) => d.next[0]?.win), "hi", pct0)}
@@ -852,7 +852,7 @@ async function openPlayer(pid) {
   const marg = g.margin != null ? `${g.margin >= 0 ? "+" : ""}${f1(g.margin)} (${wp}% νίκη)` : "–";
   const why = coach ? [
       ["Αναμενόμενη διαφορά σκορ", marg],
-      ["xPTS", `<b>${f1(g.x)}</b>`],
+      ["xFPT", `<b>${f1(g.x)}</b>`],
       ["Βαθμολογία coach", "+10/+20/+25 νίκη · −5/−10/−20 ήττα"]]
     : [
       ["Φόρμα: τελευταία 3 / σεζόν / πέρσι (PIR)", `${f1(f.last3_pir)} / ${f1(f.season_pir)} / ${f1(f.prev_pir)}`],
@@ -862,7 +862,7 @@ async function openPlayer(pid) {
       ["Αναμενόμενη διαφορά σκορ", g.margin != null ? `${marg.replace(")", " → +10%)")}` : "–"],
       ["Διαθεσιμότητα (παιχνίδι / νέα)", `${r.avail_game == null ? "–" : Math.round(r.avail_game * 100) + "%"} / ${d.news_avail == null ? "–" : Math.round(d.news_avail * 100) + "%"}`],
       ...(done ? [] : [["Στήλες fantasy", r.expert_pick || r.expert_avoid ? `👍${r.expert_pick || 0}${r.expert_cap ? " ★" : ""}${r.expert_avoid ? " 👎" : ""}` : "–"]]),
-      ["xPTS", `<b>${f1(g.x)}</b>`],
+      ["xFPT", `<b>${f1(g.x)}</b>`],
       ["Τιμή", r.price_trend === "up" ? "$ πιθανή άνοδος" : r.price_trend === "down" ? "↓$ πιθανή πτώση" : "σταθερή"]];
   const stats = d.stats.length ? `<div class="tablewrap"><table><thead><tr><th>Σεζόν</th><th class="num">Αγ</th><th class="num">Λεπ</th><th class="num">PIR</th>
       <th class="num">Πόν</th><th class="num">Ριμ</th><th class="num">Ασ</th><th class="num">Κλ</th><th class="num">Κοψ</th>
@@ -879,15 +879,15 @@ async function openPlayer(pid) {
     : `<p class="muted">Κανένας αγώνας φέτος ακόμα.</p>`;
   const next = d.next.length ? `<div class="games">${d.next.map((g) => `<div class="game">
       <div>R${g.round} · ${g.home ? "🏠" : "✈️"} <b>${esc(g.opp)}</b></div>
-      <div class="gv"><b>${f1(g.x)}</b><small>xPTS</small></div>
+      <div class="gv"><b>${f1(g.x)}</b><small>xFPT</small></div>
       <div class="gs">${esc(g.date || "")} · ${g.win}% πιθανότητα νίκης</div></div>`).join("")}</div>`
     : `<p class="muted">${missing ? "Δεν φορτώθηκαν τα στοιχεία — έλεγξε τη σύνδεση και άνοιξε ξανά τον παίκτη." : "Δεν υπάρχουν προγραμματισμένοι αγώνες στα δεδομένα."}</p>`;
   $("#sheet").innerHTML = `<div class="sh"><div><h2>${esc(nm(r.name))}${inj(r)}${exb(r)}${dol(r)}</h2>
-      <div class="muted">${esc(r.team)} · ${esc(r.position || "")}${r.price != null ? ` · <b>${f1(r.price)} cr</b>` : ""}${pop(r) ? ` · pop ${pop(r)}` : ""}${turn ? ` · Turn ${turn.turn} (${esc(turn.date.slice(8))}/${esc(turn.date.slice(5, 7))})` : ""}</div></div>
+      <div class="muted">${esc(r.team)} · ${esc(r.position || "")}${r.price != null ? ` · <b>${f1(r.price)} cr</b>` : ""}${pop(r) ? ` · POP ${pop(r)}` : ""}${turn ? ` · Turn ${turn.turn} (${esc(turn.date.slice(8))}/${esc(turn.date.slice(5, 7))})` : ""}</div></div>
       <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
-    <div class="kpis"><div class="kpi"><b>${r.actual != null ? f1(r.actual) : f1(r.x_now)}</b><span>${r.actual != null ? "πόντοι (έπαιξε)" : "xPTS αγωνιστικής"}</span></div>
-      <div class="kpi"><b>${f1(r.x_h)}</b><span>xPTS3</span></div>
-      <div class="kpi"><b>${r.value == null ? "–" : r.value.toFixed(2)}</b><span>xPTS3 / cr</span></div></div>
+    <div class="kpis"><div class="kpi"><b>${r.actual != null ? f1(r.actual) : f1(r.x_now)}</b><span>${r.actual != null ? "πόντοι (έπαιξε)" : "xFPT αγωνιστικής"}</span></div>
+      <div class="kpi"><b>${f1(r.x_h)}</b><span>xFPT3</span></div>
+      <div class="kpi"><b>${r.value == null ? "–" : r.value.toFixed(2)}</b><span>xFPT3 / cr</span></div></div>
     <h3>Ανάλυση${g.label ? ` ${done ? "" : "· "}${g.label}` : ""}</h3>
     <ul class="why">${why.map(([k, v]) => `<li><span>${k}</span><span>${v}</span></li>`).join("")}</ul>
     ${coach ? "" : `<h3>Στατιστικά (μ.ό. ανά αγώνα)</h3>${stats}`}
@@ -1003,7 +1003,7 @@ function renderModel(mp, trk) {
     html += `<div class="kpis"><div class="kpi"><b>${f1(tot.mae_model)}</b><span>μέσο σφάλμα μοντέλου</span></div>
         <div class="kpi"><b>${f1(tot.mae_naive)}</b><span>χωρίς μοντέλο (μ.ό.)</span></div>
         <div class="kpi"><b class="${gain > 0 ? "up" : "down"}">${gain > 0 ? "+" : ""}${gain}%</b><span>βελτίωση</span></div></div>
-      <p class="muted">${tot.n} προβλέψεις παικτών με xPTS ≥ ${trk.min_xpred}, καταγεγραμμένες <b>πριν</b> από κάθε τζάμπολ. Spearman ${tot.spearman ?? "–"} · top-20 ${tot.top20 != null ? Math.round(tot.top20 * 100) + "%" : "–"}.</p>
+      <p class="muted">${tot.n} προβλέψεις παικτών με xFPT ≥ ${trk.min_xpred}, καταγεγραμμένες <b>πριν</b> από κάθε τζάμπολ. Spearman ${tot.spearman ?? "–"} · top-20 ${tot.top20 != null ? Math.round(tot.top20 * 100) + "%" : "–"}.</p>
       <div class="tablewrap"><table class="fit"><thead><tr><th>Αγων.</th><th class="num">Παίκτες</th><th class="num">Σφάλμα μοντέλου</th>
         <th class="num">Χωρίς μοντέλο</th><th class="num">Top-20</th></tr></thead><tbody>
       ${trk.rounds.map((r) => `<tr><td>R${r.round}</td><td class="num">${r.n}</td>
@@ -1037,7 +1037,7 @@ function renderModel(mp, trk) {
   html += ex.length ? `<div class="tablewrap"><table class="fit"><thead><tr><th>Στήλη</th><th class="num">Επιλογές</th><th class="num">Έφεραν</th><th class="num">Μοντέλο έλεγε</th><th class="num">Διαφορά</th></tr></thead><tbody>
       ${ex.map((e) => `<tr><td>${esc(e.source)}</td><td class="num">${e.n}</td><td class="num">${f1(e.actual)}</td><td class="num">${f1(e.model)}</td>
         <td class="num ${e.diff >= 0 ? "up" : "down"}"><b>${e.diff >= 0 ? "+" : ""}${f1(e.diff)}</b></td></tr>`).join("")}</tbody></table></div>
-      <p class="muted">Μέσοι πόντοι fantasy των παικτών που πρότεινε κάθε στήλη, έναντι του xPTS που τους έδινε το μοντέλο. Σταθερά θετικό = η στήλη βλέπει κάτι που το μοντέλο δεν βλέπει (τότε αξίζει να της δώσουμε μεγαλύτερο βάρος). Με λίγες επιλογές, αγνόησέ το.</p>`
+      <p class="muted">Μέσοι πόντοι fantasy των παικτών που πρότεινε κάθε στήλη, έναντι του xFPT που τους έδινε το μοντέλο. Σταθερά θετικό = η στήλη βλέπει κάτι που το μοντέλο δεν βλέπει (τότε αξίζει να της δώσουμε μεγαλύτερο βάρος). Με λίγες επιλογές, αγνόησέ το.</p>`
     : `<p class="muted">Εμφανίζεται μόλις ολοκληρωθεί μια αγωνιστική με καταγεγραμμένες προτάσεις στηλών.</p>`;
   html += `</div>`;
   // 4. last season's backtest
@@ -1133,12 +1133,12 @@ function roundState(now = Date.now()) {
 function heroHtml() {
   const st = roundState();
   const when = (ms) => `${dayWord(ms)} ${athensHM(ms)}`;
-  if (st.kind === "before") return `<div class="td-hero"><span class="muted">Αγωνιστική ${P.round} · κλείνει ${when(st.at)}</span>
+  if (st.kind === "before") return `<div class="td-hero"><span class="muted">Round ${P.round} · κλείνει ${when(st.at)}</span>
       <span class="big" id="tdCount">κλείνει σε ${span(st.at - Date.now())}</span></div>`;
-  if (st.kind === "between") return `<div class="td-hero"><span class="muted">Αγωνιστική ${P.round} σε εξέλιξη</span>
+  if (st.kind === "between") return `<div class="td-hero"><span class="muted">Round ${P.round} σε εξέλιξη</span>
       <span class="big" id="tdCount">Turn ${st.turn.turn} σε ${span(st.at - Date.now())}</span>
       <span class="muted">Αλλαγές στην πεντάδα ως ${when(st.at)}, μόνο με όσους δεν έχουν παίξει.</span></div>`;
-  return `<div class="td-hero"><span class="muted">Αγωνιστική ${P.round}</span><span class="big">Σε εξέλιξη · τελευταίοι αγώνες</span>
+  return `<div class="td-hero"><span class="muted">Round ${P.round}</span><span class="big">Σε εξέλιξη · τελευταίοι αγώνες</span>
     <span class="muted">Οι μεταγραφές για την επόμενη αγωνιστική εμφανίζονται στο «Η ομάδα μου».</span></div>`;
 }
 function renderToday() {
@@ -1157,7 +1157,7 @@ function renderToday() {
         <button class="td-btn" data-tab="team">Φτιάξ' την</button></div>`
     : !sm ? `<div class="muted">Η ομάδα δεν διαβάστηκε από το παιχνίδι.</div>`
     : `<div class="td-team"><div><b>${sm.steps == null ? "Έλεγξε την ομάδα σου" : sm.steps ? `${sm.steps} ${sm.steps === 1 ? "βήμα εκκρεμεί" : "βήματα εκκρεμούν"}` : "✅ Έτοιμος για την αγωνιστική"}</b>
-        <div class="muted">${sm.trades ? `${sm.trades} ${sm.trades === 1 ? "μεταγραφή" : "μεταγραφές"} · ` : ""}${sm.captain ? `αρχηγός: ${esc(sm.captain)} · ` : ""}υπόλοιπο ${f1(sm.bank)} cr</div></div>
+        <div class="muted">${sm.trades ? `${sm.trades} ${sm.trades === 1 ? "trade" : "trades"} · ` : ""}${sm.captain ? `CAP: ${esc(sm.captain)} · ` : ""}Credits ${f1(sm.bank)}</div></div>
         <button class="td-btn" data-tab="team">Άνοιγμα</button></div>`;
 
   // availability: the game's flags plus what the news say
@@ -1174,7 +1174,7 @@ function renderToday() {
   const avail = [...out.values()].sort((a, b) => (b.r.x_h ?? 0) - (a.r.x_h ?? 0)).slice(0, 8);
   const availHtml = avail.length ? `<ul class="td-list">${avail.map(({ r, note, status }) => `<li data-pid="${esc(r.person_id)}">
       <span class="n">${esc(nm(r.name))}${avb(r) || (status ? ` <span class="av ${status === "out" ? "out" : "q"}" data-info="avail">${SL[status] || status}</span>` : "")}</span>
-      <span class="v"><b>${f1(r.x_h)}</b><small>xPTS3</small></span>
+      <span class="v"><b>${f1(r.x_h)}</b><small>xFPT3</small></span>
       <span class="m">${esc(r.team)} · ${esc((r.position || "")[0] || "")}${note ? ` · ${esc(note)}` : ""}</span></li>`).join("")}</ul>`
     : `<p class="muted" style="margin:0">Κανένας γνωστός τραυματίας ή αμφίβολος.</p>`;
 
@@ -1184,7 +1184,7 @@ function renderToday() {
   const tiers = [["Φτηνοί · έως 6 cr", (p) => p <= 6], ["Μεσαίοι · 6–10 cr", (p) => p > 6 && p <= 10], ["Ακριβοί · πάνω από 10 cr", (p) => p > 10]];
   const tierHtml = P.fantasy_ok ? tiers.map(([l, f]) => {
     const top = court.filter((r) => healthy(r) && r.price != null && f(r.price)).sort((a, b) => (b.x_h ?? 0) - (a.x_h ?? 0)).slice(0, 3);
-    return `<div><h3>${l}</h3><ul class="td-list">${top.map((r) => li(r, [r.x_h, "xPTS3"], where(r))).join("")}</ul></div>`;
+    return `<div><h3>${l}</h3><ul class="td-list">${top.map((r) => li(r, [r.x_h, "xFPT3"], where(r))).join("")}</ul></div>`;
   }).join("") : `<p class="muted">Χωρίς τιμές fantasy αυτή τη στιγμή.</p>`;
 
   const games = (P.turns || []).map((t) => `<div class="td-turn"><b>Turn ${t.turn}</b> <span class="muted">· ${DAYS_GR[new Date(t.date + "T12:00:00Z").getUTCDay()]} ${t.date.slice(8)}/${t.date.slice(5, 7)}</span>
@@ -1196,7 +1196,7 @@ function renderToday() {
     <div class="card wide">${heroHtml()}</div>
     <div class="card wide"><h2>${P.edition === "public" ? "Η ομάδα μου" : esc(P.my_team?.name || "Η ομάδα μου")}</h2>${team}</div>
     <div class="card"><h2>Τραυματίες & αμφίβολοι ${ii("avail")}</h2>${availHtml}</div>
-    <div class="card"><h2>Για αρχηγό ${ii("xpts")}</h2><ul class="td-list">${caps.map((r) => li(r, [r.x_now, "xPTS"], where(r))).join("")}</ul></div>
+    <div class="card"><h2>Για CAP ${ii("xpts")}</h2><ul class="td-list">${caps.map((r) => li(r, [r.x_now, "xFPT"], where(r))).join("")}</ul></div>
     <div class="card wide"><h2>Καλύτερες επιλογές ανά τιμή ${ii("xpts3")}</h2><div class="td-tiers">${tierHtml}</div></div>
     ${movesHtml(court)}
     <div class="card wide"><h2>Αγώνες της αγωνιστικής</h2>${games}</div></div>`;
@@ -1225,7 +1225,7 @@ setInterval(() => {
     get("model_params.json"), get("tracking.json")]);
   if (!p) { $("#updated").textContent = "Δεν υπάρχουν δεδομένα ακόμα."; return; }
   P = p; NW = nw;
-  $("#round").textContent = `Αγωνιστική ${p.round}`;
+  $("#round").textContent = `Round ${p.round}`;
   freshness();
 
   const health = (p.health || []).length ? `<div class="card warn"><h2>⚠️ Κατάσταση</h2>${p.health.map(esc).join("<br>")}</div>` : "";
@@ -1261,7 +1261,7 @@ setInterval(() => {
   const d = nw?.digest;
   $("#news").innerHTML = (d ? `<div class="card"><h2>Σύνοψη (AI)</h2><div class="msg">${esc(d.summary_el)}</div></div>`
     + (d.expert?.length ? `<div class="card"><h2>Ειδικοί</h2>${d.expert.map((e) => { const r = findPlayer(e.player);
-        const info = r ? ` <span class="muted">${esc(r.team)} · ${esc((r.position || "")[0] || "")}${r.price != null ? " · " + f1(r.price) + "cr" : ""}${r.x_now != null ? " · xPTS " + f1(r.x_now) : ""}</span>${dol(r)}` : "";
+        const info = r ? ` <span class="muted">${esc(r.team)} · ${esc((r.position || "")[0] || "")}${r.price != null ? " · " + f1(r.price) + "cr" : ""}${r.x_now != null ? " · xFPT " + f1(r.x_now) : ""}</span>${dol(r)}` : "";
         return `• <b>${esc(nm(String(e.player).split(" (")[0]))}</b>${info} — ${esc(STANCE[e.stance] || e.stance)}: ${esc(e.note || "")} <span class="muted">(${esc(e.source)})</span>`; }).join("<br>")}</div>` : "") : "")
     + `<div class="card"><h2>Άρθρα</h2><ul class="news">${(nw?.articles || []).slice(0, 60).map((a) =>
       `<li><a href="${esc(a.url)}" target="_blank" rel="noopener">${esc(a.title)}</a><br><span class="muted">${esc(a.source)} · ${a.date ? new Date(a.date).toLocaleString("el-GR") : ""}</span></li>`).join("")}</ul></div>`;

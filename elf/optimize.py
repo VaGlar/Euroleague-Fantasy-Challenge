@@ -6,7 +6,7 @@ Scoring model mirrored from the game rules:
   - the starting five needs at least one Guard, one Forward and one Center
   - squad: 4 G, 4 F, 2 C, 1 head coach, within the credit budget
 
-`value` is the multi-round expectation (xPTS over the horizon) used to pick
+`value` is the multi-round expectation (xFPT over the horizon) used to pick
 players; `now` is this round's expectation, used for the captain bonus.
 """
 from __future__ import annotations
@@ -197,7 +197,7 @@ def defer_later_turns(team: list[dict]) -> tuple[list[dict], list[dict]]:
     The lineup starts only current-turn players (see `later_turn_ids`); each later-turn
     bench player is paired with the weakest current-turn starter he could replace
     (the five must keep >= 1 Guard, Forward and Center). Before the later turn: if the
-    early starter scored less than the later player's xPTS, swap them.
+    early starter scored less than the later player's xFPT, swap them.
     If a later-turn player still starts (no valid lineup otherwise), he is moved to the
     bench when an earlier-turn bench player can take his slot. Players who already
     played are never moved. Returns (team, plan [{"start": early, "bench": later}])."""

@@ -221,7 +221,7 @@ export default {
         const rows = p.players.filter((x) => x.x_now != null).slice(0, 15)
           .map((x, i) => `${i + 1}. ${x.name} (${x.team}) ${x.position || ""} — <b>${x.x_now.toFixed(1)}</b>`
             + (x.price ? ` · ${x.price}cr` : ""));
-        await send(env, chat, `📈 <b>Top xPTS — Αγωνιστική ${p.round}</b>\n` + rows.join("\n"));
+        await send(env, chat, `📈 <b>Top xFPT — Round ${p.round}</b>\n` + rows.join("\n"));
       } else if (cmd === "/lineup") {
         await startLineupPreview(env, chat);
       } else if (cmd === "/update") {
@@ -249,7 +249,7 @@ export default {
         await send(env, chat, `Ενημέρωση: ${p.generated}\nFantasy: ${p.fantasy_ok ? "OK" : "ΟΧΙ"}\n`
           + ((p.health || []).join("\n") || "Χωρίς προβλήματα"));
       } else {
-        await send(env, chat, "/report — report ημέρας\n/top — top xPTS\n/lineup — πρόταση πεντάδας/αρχηγού με επιβεβαίωση\n/update — φρέσκα δεδομένα τώρα\n/health — κατάσταση\n"
+        await send(env, chat, "/report — report ημέρας\n/top — top xFPT\n/lineup — πρόταση πεντάδας/αρχηγού με επιβεβαίωση\n/update — φρέσκα δεδομένα τώρα\n/health — κατάσταση\n"
           + (env.DASHBOARD_URL ? `\n${env.DASHBOARD_URL}` : ""));
       }
     } catch (e) {

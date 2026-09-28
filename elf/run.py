@@ -25,7 +25,7 @@ HORIZON = 3  # rounds used for transfer value
 # with the next rounds' trades, so the next round counts as much as the other two
 HORIZON_WEIGHTS = (1.0, 0.6, 0.35)
 UNLIMITED_AFTER = {6, 13, 18, 23, 28, 34}  # trades unlimited before the next round
-MIN_GAIN_PER_TRADE = 2.0  # weighted xPTS a trade must add over the full 3-round horizon
+MIN_GAIN_PER_TRADE = 2.0  # weighted xFPT a trade must add over the full 3-round horizon
 
 
 def horizon_weights(rnd: int) -> list[float]:
@@ -316,7 +316,7 @@ POS_ORDER = {"Guard": 0, "Forward": 1, "Center": 2, "Head Coach": 3}
 
 
 def _opt_rows(df: pd.DataFrame) -> list[dict]:
-    """Rows for the optimizer: fantasy id, position, price, horizon/round xPTS."""
+    """Rows for the optimizer: fantasy id, position, price, horizon/round xFPT."""
     d = df.dropna(subset=["price", "fantasy_id"])
     d = d[d["position"].isin(POS_ORDER)]
     return [{"id": int(r["fantasy_id"]), "position": r["position"], "price": float(r["price"]),
@@ -428,7 +428,7 @@ def expert_factor(v: dict | None) -> float:
 
 def log_experts(dig: dict, rnd: int, cur: pd.DataFrame) -> None:
     """Append this round's column picks with the model's own expectation, so their
-    hit rate can be measured later (actual vs xPTS for picked vs not picked)."""
+    hit rate can be measured later (actual vs xFPT for picked vs not picked)."""
     path = PUBLIC / "expert_log.csv"
     by_key = {_key(n): r for n, r in zip(cur["name"], cur.to_dict("records"))}
     rows = []
@@ -527,7 +527,7 @@ def _pct(m, a):
 def player_details(season: int, ctx: pd.DataFrame, fixtures: pd.DataFrame,
                    ids: set) -> dict:
     """Per player, for the dashboard popup: season stats (this and last season), the
-    last 3 games played and the next 3 with their xPTS. Keyed by person_id."""
+    last 3 games played and the next 3 with their xFPT. Keyed by person_id."""
     box, games = [], []
     for s in (season - 1, season):
         b, g = history.load("players", s), history.load("games", s)
@@ -757,7 +757,7 @@ def build(offline: bool = False) -> dict:
         table["x_h"] = table["x_h"] - table["x_first"].fillna(0) * (1 - f_game)
         table["x_now"] = table["x_now"] - lost_now
         # no history (new to EuroLeague): the game's price is the market's estimate.
-        # Map price -> xPTS per position from players with data, discounted 20% for
+        # Map price -> xFPT per position from players with data, discounted 20% for
         # the extra uncertainty, instead of leaving them at 0.
         known = table[~table["no_data"].fillna(False) & table["price"].notna()
                       & (table["x_now"] > 0) & (table["position"] != "Head Coach")]
@@ -943,7 +943,7 @@ def turn_check(tu: dict, table: pd.DataFrame, my: dict | None) -> list[str]:
     """Before a later turn: the best legal lineup given what already happened, from the
     same optimizer as /lineup (a played starter can only go to the bench, the armband
     only to a player who has not played)."""
-    lines = ["⭐ <b>Αρχηγός & αλλαγές πριν το Turn " f"{tu['turn']}</b>"]
+    lines = ["⭐ <b>CAP & αλλαγές πριν το Turn " f"{tu['turn']}</b>"]
     sq = in_round_squad(my)
     res = optimize.lineup_in_round(sq) if len(sq) == 11 else None
     if not res:
@@ -966,10 +966,10 @@ def turn_check(tu: dict, table: pd.DataFrame, my: dict | None) -> list[str]:
     cap_cur = next((p for p in sq if p["cur_captain"]), None)
     if ins:
         lines.append("🔄 <b>Αλλαγή</b>: μπαίνει " + ", ".join(
-            f"{nm(p)} (xPTS {p['x_now']:.1f})" for p in ins) + " — βγαίνει " + ", ".join(
-            f"{nm(p)} ({'έφερε' if p['played'] else 'xPTS'} {p['x_now']:.1f})" for p in outs))
+            f"{nm(p)} (xFPT {p['x_now']:.1f})" for p in ins) + " — βγαίνει " + ", ".join(
+            f"{nm(p)} ({'έφερε' if p['played'] else 'xFPT'} {p['x_now']:.1f})" for p in outs))
     if cap_cur is None or cap_new["id"] != cap_cur["id"]:
-        lines.append(f"👉 <b>Αρχηγός</b>: {nm(cap_new)} (xPTS {cap_new['x_now']:.1f})")
+        lines.append(f"👉 <b>CAP</b>: {nm(cap_new)} (xFPT {cap_new['x_now']:.1f})")
     if ins or cap_cur is None or cap_new["id"] != cap_cur["id"]:
         lines.append("<i>Το /lineup το εφαρμόζει.</i>")
     else:
@@ -988,7 +988,7 @@ def messages(rnd, trn, table, my, dig, health, dash: str | None = None) -> list[
             continue
         day = datetime.fromisoformat(tu["date"])
         playing = t[t["team"].isin(tu["teams"])]
-        lines = [f"🏀 <b>Αγωνιστική {rnd} — Turn {tu['turn']}</b> "
+        lines = [f"🏀 <b>Round {rnd} — Turn {tu['turn']}</b> "
                  f"({DAYS_EL[day.weekday()]} {day:%d/%m}, 1ο τζάμπολ {tu['first_tip']})", ""]
         lines += ["📅 " + " · ".join(tu["games"]), ""]
         # captain candidates: my starting five if known, else the whole league
@@ -1003,10 +1003,10 @@ def messages(rnd, trn, table, my, dig, health, dash: str | None = None) -> list[
                                                 if x["turn"] > tu["turn"]], []))]
         if tu["turn"] == 1:
             if my and my.get("transfers"):
-                lim = "απεριόριστες" if my.get("max_trades", 4) > 4 else "έως 4"
+                lim = "απεριόριστα trades" if my.get("max_trades", 4) > 4 else "έως 4 trades"
                 tr_r = my.get("trade_round", rnd)
-                lines += [f"🔁 <b>Προτεινόμενες αλλαγές</b> ({lim}· +{my.get('transfer_gain', 0)} "
-                          f"σταθμισμένα xPTS R{tr_r}–R{tr_r + sum(w > 0 for w in horizon_weights(tr_r)) - 1})"]
+                lines += [f"🔁 <b>Προτεινόμενα trades</b> ({lim}· +{my.get('transfer_gain', 0)} "
+                          f"σταθμισμένα xFPT R{tr_r}–R{tr_r + sum(w > 0 for w in horizon_weights(tr_r)) - 1})"]
                 for m in my["transfers"]:
                     lines.append(f"• {m['out']} ➜ {m['in']}  ({m['price_out']}→{m['price_in']}cr)")
                 lines.append("")
@@ -1018,8 +1018,8 @@ def messages(rnd, trn, table, my, dig, health, dash: str | None = None) -> list[
                                  + (f", T{p['turn']}" if p.get("turn") else "") + ")")
                 lines.append("👥 <b>Προτεινόμενη πεντάδα</b> (με την τωρινή ομάδα)")
                 lines.append(", ".join(nm_(p) for p in role("5άδα")))
-                lines.append("6ος: " + ", ".join(nm_(p) for p in role("6ος")))
-                lines.append("Πάγκος: " + ", ".join(nm_(p) for p in role("πάγκος")))
+                lines.append("6th: " + ", ".join(nm_(p) for p in role("6ος")))
+                lines.append("Bench: " + ", ".join(nm_(p) for p in role("πάγκος")))
                 for pl in my.get("lineup_plan") or []:
                     lines.append(f"🕐 <b>Πριν το T{pl['bench_turn']}</b>: αν ο "
                                  f"{pl['start'].split(',')[0].title()} φέρει κάτω από "
@@ -1044,12 +1044,12 @@ def messages(rnd, trn, table, my, dig, health, dash: str | None = None) -> list[
                     lines.append("✅ Η ομάδα σου στο παιχνίδι είναι ήδη έτσι." if not diff else
                                  "✏️ <b>Στο παιχνίδι</b>: " + "; ".join(diff) + ".")
                 lines.append("")
-            lines.append("⭐ <b>Αρχηγός</b>" + (" (από την πεντάδα σου)" if lu else ""))
+            lines.append("⭐ <b>CAP</b>" + (" (από την πεντάδα σου)" if lu else ""))
             if len(cand_now):
                 lines.append(f"Turn 1: {_fmt(cand_now.iloc[0])}")
             if len(cand_later):
                 lines.append(f"Plan B (Turn 2+): {_fmt(cand_later.iloc[0])}")
-            lines.append("<i>Βάλε αρχηγό στο Turn 1· αν δεν φτάσει το xPTS του plan B, "
+            lines.append("<i>Βάλε αρχηγό στο Turn 1· αν δεν φτάσει το xFPT του plan B, "
                          "μεταφέρεις το x2 σε παίκτη του Turn 2 (όχι σε κάποιον που έπαιξε).</i>")
         else:
             lines += turn_check(tu, table, my)
@@ -1060,12 +1060,12 @@ def messages(rnd, trn, table, my, dig, health, dash: str | None = None) -> list[
             if c.get("price") == c.get("price") and c.get("price") is not None:
                 line += f" · {c['price']}cr"
             lines += ["", line]
-        lines += ["", f"📈 <b>Top xPTS {'σήμερα' if tu['turn'] > 1 else 'αγωνιστικής'}</b>"]
+        lines += ["", f"📈 <b>Top xFPT {'σήμερα' if tu['turn'] > 1 else 'αγωνιστικής'}</b>"]
         src = playing if tu["turn"] > 1 else t
         lines += [f"{i}. {_fmt(r)}" for i, r in enumerate(src.head(8).to_dict("records"), 1)]
         if "value" in t and tu["turn"] == 1:
             v = t.dropna(subset=["value"]).sort_values("value", ascending=False).head(5)
-            lines += ["", "💰 <b>Value (σταθμισμένα xPTS/credit)</b>"]
+            lines += ["", "💰 <b>Value (σταθμισμένα xFPT/credit)</b>"]
             lines += [f"• {r['name'].split(',')[0].title()} ({r['team']}) {r['price']}cr — "
                       f"{r['value']:.2f}" for r in v.to_dict("records")]
         if tu["turn"] == 1 and "avail_game" in t:
@@ -1089,7 +1089,7 @@ def messages(rnd, trn, table, my, dig, health, dash: str | None = None) -> list[
                     lines.append(f"• {r['name'].split(',')[0].title()} ({r['team']}, "
                                  f"{str(r['position'])[:1]}{price}) — "
                                  f"{int(r['expert_pick'])}/{n_fantasy_sources()}{extra} · "
-                                 f"xPTS {r['x_now']:.1f}{dollar}")
+                                 f"xFPT {r['x_now']:.1f}{dollar}")
         if dig:
             inj = [a for a in dig.get("availability", []) if a.get("status") != "available"]
             if inj:
