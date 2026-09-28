@@ -566,11 +566,10 @@
     const had = !!load();
     return `<header class="tm-top"><div><h2 class="tm-h">${had ? "Αλλαγή ομάδας" : "Φτιάξε την ομάδα σου"}</h2>
         <div class="muted">Πάτα μια κενή θέση και διάλεξε παίκτη · πάτα έναν παίκτη για να γράψεις την τιμή αγοράς του ή να τον αφαιρέσεις · ${ps.length}/11</div></div></header>
-      <div class="card tm-courtcard"><div class="tm-floor"><div class="court"><div class="crow">${slots("Center")}</div></div>
+      <div class="card tm-courtcard"><div class="tm-floor"><div class="court tm-setcourt">
+          <div class="crow">${slots("Center")}</div><div class="crow">${slots("Forward")}</div><div class="crow">${slots("Guard")}</div></div>
         <div class="lanes">
-          <div class="lane"><h3>Forwards · ${have("Forward").length}/4</h3><div class="crow">${slots("Forward")}</div></div>
-          <div class="lane"><h3>Guards · ${have("Guard").length}/4</h3><div class="crow">${slots("Guard")}</div></div>
-          <div class="lane"><h3>Coach · ${have("Head Coach").length}/1</h3><div class="crow">${slots("Head Coach")}</div></div></div></div>
+          <div class="lane"><h3>Head Coach · ${have("Head Coach").length}/1</h3><div class="crow">${slots("Head Coach")}</div></div></div></div>
         <div class="tm-money"><span>Κόστος ομάδας <b>${f1(spent)}</b> cr</span><span>Credits <b>${f1(Math.max(0, 100 - spent))}/100</b></span></div>
         ${spent > 100.05 ? `<p class="tm-over">⚠️ Πάνω από το budget κατά <b>${f1(spent - 100)}</b> cr — έλεγξε τις τιμές (πάτα τον παίκτη)· το παιχνίδι δεν επιτρέπει πάνω από 100.</p>` : ""}
         <button class="tm-primary" id="tmFinish" ${full ? "" : "disabled"}>${full ? "Αποθήκευση ➜" : `Λείπουν ${11 - ps.length}`}</button>
@@ -755,6 +754,10 @@
   .tm-floor .lanes::before { content: ""; position: absolute; left: 50%; top: -30px; width: 58px; height: 58px; transform: translateX(-50%);
     border: 2px solid var(--court-line); border-radius: 50%; background: var(--court-key); clip-path: inset(30px 0 0 0); }
   .tm-floor .lanes > * { position: relative; z-index: 1; }
+  /* set-up: the 4 forwards and 4 guards stand on the court too, four to a row */
+  .tm-setcourt .crow > * { width: calc(25% - 5px); max-width: 128px; }
+  .tm-setcourt .chip .cp { font-size: 17px; white-space: nowrap; } .tm-setcourt .chip .cp small { font-size: 11px; }
+  .tm-setcourt .chip .ct span:last-child { font-size: 9px; }
   .tm-floor .lane h3 { color: var(--text-primary); opacity: .75; }
   /* phones: the court runs edge to edge */
   @media (max-width: 560px) {

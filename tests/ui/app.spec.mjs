@@ -130,33 +130,32 @@ test("installable as an app (Android): manifest with 192/512 icons, standalone, 
   await expect(page.locator('meta[name="theme-color"]').first()).toHaveAttribute("content", /.+/);
 });
 
-test("theme switch: automatic → light → dark, remembered after a reload", async ({ page }, testInfo) => {
+test("theme switch: light ↔ dark; the first visit follows the phone; remembered after a reload", async ({ page }) => {
   await page.emulateMedia({ colorScheme: "dark" });
   await open(page, "public");
   const bg = () => page.evaluate(() => getComputedStyle(document.body).backgroundColor);
   const lum = (c) => { const [r, g, b] = c.match(/\d+/g).map(Number); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
   const btn = page.locator("#themeBtn");
-  await expect(btn).toBeVisible();
-  expect(lum(await bg())).toBeLessThan(60);                 // automatic: follows the phone (dark here)
-  await btn.click();                                         // light, even though the phone is dark
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");   // the phone is dark
+  expect(lum(await bg())).toBeLessThan(60);
+  await btn.click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
   expect(lum(await bg())).toBeGreaterThan(200);
   await page.reload();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
   expect(lum(await bg())).toBeGreaterThan(200);
-  await page.locator("#themeBtn").click();                   // dark
+  await page.locator("#themeBtn").click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-  await page.locator("#themeBtn").click();                   // back to automatic
-  await expect(page.locator("html")).not.toHaveAttribute("data-theme", /./);
   await checkLayout(page, "theme switch");
 });
 
-test("the court: parquet and white FIBA lines in both themes", async ({ page }) => {
+test("the court: parquet and white FIBA lines (no basket) in both themes", async ({ page }) => {
   for (const scheme of ["light", "dark"]) {
     await page.emulateMedia({ colorScheme: scheme });
     await open(page, "personal", { tab: "team" });
     const floor = page.locator("#team .tm-courtcard .tm-floor");
     await expect(floor.locator(".court-lines .key")).toHaveCount(1);
-    await expect(floor.locator(".court-lines .rim")).toHaveCount(1);
+    await expect(floor.locator(".court-lines .rim, .court-lines circle")).toHaveCount(0);   // no basket
     const wood = await floor.evaluate((el) => getComputedStyle(el).backgroundColor);
     expect(wood).toBe("rgb(220, 174, 112)");                 // the same parquet in light and dark
   }

@@ -347,11 +347,10 @@ body > header nav button.on { color: var(--bar-fg); border-color: var(--bar-line
   border-color: rgba(255,255,255,.55); }
 .tm-floor .court { background: transparent; }
 .court::before, .court::after { content: none !important; }
-.court.lined { padding-top: calc(10.5% + 16px); }   /* the chips start just under the basket */
+.court.lined { padding-top: 18px; }
 .court > .court-lines { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
 .court-lines * { fill: none; stroke: var(--court-line); stroke-width: 2px; vector-effect: non-scaling-stroke; }
 .court-lines .key { fill: var(--court-key); }
-.court-lines .rim { stroke: #f26a1b; stroke-width: 2.5px; }
 .court-lines .dash { stroke-dasharray: 5 5; }
 .tm-floor .lane h3 { color: var(--court-text) !important; opacity: .85; }
 </style>
@@ -359,7 +358,7 @@ body > header nav button.on { color: var(--bar-fg); border-color: var(--bar-line
 <body>
 <header>
   <h1>🏀 EuroLeague Fantasy — <span id="round">…</span></h1>
-  <button id="themeBtn" class="themebtn" type="button" aria-label="Θέμα: αυτόματο / φωτεινό / σκούρο" title="Θέμα"></button>
+  <button id="themeBtn" class="themebtn" type="button" aria-label="Θέμα" title="Θέμα"></button>
   <div class="sub" id="updated">Φόρτωση…</div>
   <nav id="tabs">
     <button data-t="today" class="on">Σήμερα</button>
@@ -461,34 +460,29 @@ const avb = (r) => (r.avail_game == null || r.avail_game >= 1 ? ""
 const get = (f) => fetch(`data/${f}?t=${Date.now()}`).then((r) => (r.ok ? r.json() : null)).catch(() => null);
 
 // ---------- the court's lines (FIBA half court, basket at the top): drawn into every .court as it appears.
-// Units of 10 cm, 15 m wide; scaled to the width so the circles stay round (slice).
+// Units of 10 cm, 15 m wide; scaled to the width so the circles stay round (slice). No basket: just the lines.
 const COURT_SVG = `<svg class="court-lines" viewBox="0 0 150 140" preserveAspectRatio="xMidYMin slice" aria-hidden="true">
   <path d="M9 0V29.9A67.5 67.5 0 0 0 141 29.9V0"/>
   <rect class="key" x="50.5" y="0" width="49" height="58"/>
   <path d="M57 58A18 18 0 0 0 93 58"/><path class="dash" d="M57 58A18 18 0 0 1 93 58"/>
   <path d="M62.5 15.75A12.5 12.5 0 0 0 87.5 15.75"/>
   <path d="M50.5 17.5h-2M50.5 26h-2M50.5 34.5h-2M50.5 43h-2M99.5 17.5h2M99.5 26h2M99.5 34.5h2M99.5 43h2"/>
-  <path d="M66 12H84"/><circle class="rim" cx="75" cy="15.75" r="2.3"/></svg>`;
+</svg>`;
 function courtLines(root) {
   (root || document).querySelectorAll(".court:not(.lined)").forEach((c) => { c.classList.add("lined"); c.insertAdjacentHTML("afterbegin", COURT_SVG); });
 }
 new MutationObserver(() => courtLines()).observe(document.documentElement, { childList: true, subtree: true });
 
-// ---------- theme: automatic (the phone's setting) → light → dark
-const THEMES = [["", "◐", "Αυτόματο (όπως το κινητό)"], ["light", "☀", "Φωτεινό"], ["dark", "☾", "Σκούρο"]];
-function setTheme(t) {
-  if (t) document.documentElement.dataset.theme = t; else delete document.documentElement.dataset.theme;
-  try { if (t) localStorage.setItem("theme", t); else localStorage.removeItem("theme"); } catch (e) {}
-  const cur = THEMES.find((x) => x[0] === (t || "")) || THEMES[0];
+// ---------- theme: light or dark. The first visit follows the phone's setting; the header button switches.
+function setTheme(t, keep) {
+  document.documentElement.dataset.theme = t;
+  if (keep) try { localStorage.setItem("theme", t); } catch (e) {}
   const b = document.getElementById("themeBtn");
-  if (b) { b.textContent = cur[1]; b.title = `Θέμα: ${cur[2]}`; }
+  if (b) { b.textContent = t === "dark" ? "☀" : "☾"; b.title = t === "dark" ? "Φωτεινό θέμα" : "Σκούρο θέμα";
+    b.setAttribute("aria-label", b.title); }
 }
-document.getElementById("themeBtn").onclick = () => {
-  const now = document.documentElement.dataset.theme || "";
-  const next = THEMES[(THEMES.findIndex((x) => x[0] === now) + 1) % THEMES.length];
-  setTheme(next[0]);
-};
-setTheme(document.documentElement.dataset.theme || "");
+document.getElementById("themeBtn").onclick = () => setTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark", true);
+setTheme(document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"));
 
 // tabs: the top bar (wide screens), the bottom bar (phones) and «Περισσότερα» all go through here
 const MORE_TABS = [["news", "Νέα", "Σύνοψη ειδικών, τραυματίες και άρθρα"], ["compare", "Σύγκριση", "Παίκτες δίπλα-δίπλα"],
