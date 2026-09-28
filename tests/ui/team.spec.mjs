@@ -188,6 +188,18 @@ test.describe("public edition", () => {
     await expect(header(page)).toContainText("Trades 0/4");
   });
 
+  test("all the proposed trades together fit in the credits left", async ({ page }) => {
+    await savedTeam(page);
+    await page.locator("#tmConfirm").click();
+    for (let n = 0; n < 11 && await tradeRows(page).count(); n++) {
+      await tradeRows(page).first().locator(".tm-done").click();
+      expect((await stored(page)).bank).toBeGreaterThanOrEqual(-1e-9);
+    }
+    const t = await stored(page);
+    expect(t.used.n).toBeGreaterThan(0);
+    expect(t.bank).toBeGreaterThanOrEqual(0);
+  });
+
   test("«Κράτα τον» removes the player's trade and re-plans; undo brings it back", async ({ page }) => {
     await savedTeam(page);
     await page.locator("#tmConfirm").click();

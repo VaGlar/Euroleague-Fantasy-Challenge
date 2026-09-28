@@ -95,6 +95,11 @@ def test_transfers_are_legal(pipeline):
     my = pipeline["pred"]["my_team"]
     assert len(my["transfers"]) <= my["max_trades"]
     assert my["bank_after"] >= -1e-6
+    # the trades together never cost more than what is left (sold at today's price)
+    net = sum(m["price_in"] - m["price_out"] for m in my["transfers"])
+    assert net <= my["bank"] + 1e-6, (net, my["bank"])
+    # what is left can't exceed the game's budget minus the team's value
+    assert my["bank"] <= max(0.0, 100 + (my.get("gain") or 0) - sum(p["price"] for p in my["players"])) + 0.05
     # preferences go to the dashboard as ids (its own re-plan honours them); never to the public edition
     assert set(my["prefs"]) == {"keep", "avoid"} and all(isinstance(i, int) for i in my["prefs"]["keep"])
 
