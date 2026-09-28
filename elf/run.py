@@ -572,6 +572,28 @@ def player_details(season: int, ctx: pd.DataFrame, fixtures: pd.DataFrame,
     return out
 
 
+def price_history() -> dict:
+    """{person_id: [[matchday, price], ...]} from the per-matchday snapshots in prices.csv."""
+    path = PUBLIC / "prices.csv"
+    if not path.exists():
+        return {}
+    p = pd.read_csv(path, dtype={"person_id": str}).dropna(subset=["person_id", "price"])
+    p = p.sort_values("matchday").drop_duplicates(["person_id", "matchday"], keep="last")
+    return {pid: [[int(m), float(x)] for m, x in zip(g["matchday"], g["price"])]
+            for pid, g in p.groupby("person_id")}
+
+
+def price_moves(table: pd.DataFrame, hist: dict) -> pd.DataFrame:
+    """price_start (first snapshot), price_chg (now - start), price_last_chg (the last change)."""
+    def f(pid):
+        h = hist.get(pid) or []
+        if len(h) < 2:
+            return (h[0][1] if h else None, 0.0 if h else None, 0.0 if h else None)
+        return (h[0][1], round(h[-1][1] - h[0][1], 1), round(h[-1][1] - h[-2][1], 1))
+    m = table["person_id"].map(f)
+    return table.assign(price_start=m.str[0], price_chg=m.str[1], price_last_chg=m.str[2])
+
+
 def team_form(season: int, n: int = 5) -> dict:
     """{team: last n results this season, newest first} for the Teams tab."""
     g = history.load("games", season)
@@ -737,6 +759,7 @@ def build(offline: bool = False) -> dict:
             table.loc[m, "x_h"] = est * sum(horizon_weights(trade_rnd))
             table.loc[m, "prior"] = "τιμή"
         table, price_info = prices.annotate(table)  # $ = likely price rise
+        table = price_moves(table, price_history())
         n_inj = int((f_game < 1).sum())
         if n_inj == 0:
             health.append("fantasy: το παιχνίδι δεν έδωσε κανέναν τραυματία/αμφίβολο (έλεγχος πεδίων)")
@@ -830,8 +853,11 @@ def build(offline: bool = False) -> dict:
     except Exception as e:  # noqa: BLE001
         health.append(f"tracking: {type(e).__name__}: {e}")
     try:
-        _write("players.json", player_details(
-            CURRENT_SEASON, ctx, pr["fixtures"], set(table.loc[table["x_now"].notna(), "person_id"])))
+        det = player_details(CURRENT_SEASON, ctx, pr["fixtures"], set(table.loc[table["x_now"].notna(), "person_id"]))
+        hist = price_history()
+        for pid, d in det.items():
+            d["prices"] = hist.get(pid, [])
+        _write("players.json", det)
     except Exception as e:  # noqa: BLE001 - the popup is a nice-to-have
         health.append(f"λεπτομέρειες παικτών: {type(e).__name__}: {e}")
     ratings = pr["ratings"].sort_values("net", ascending=False).reset_index()

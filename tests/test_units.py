@@ -257,3 +257,17 @@ def test_standings_wins_then_point_difference(monkeypatch):
     assert (b["gp"], b["w"], b["l"], b["diff"]) == (2, 1, 1, 5)
     e = table[3]
     assert (e["team"], e["gp"], e["pos"]) == ("E", 0, 4)
+
+
+def test_price_history_and_moves(tmp_path, monkeypatch):
+    import pandas as pd
+    from elf import run
+    monkeypatch.setattr(run, "PUBLIC", tmp_path)
+    pd.DataFrame([{"person_id": "A", "matchday": 1, "price": 10.0}, {"person_id": "A", "matchday": 2, "price": 10.4},
+                  {"person_id": "A", "matchday": 3, "price": 10.2}, {"person_id": "B", "matchday": 1, "price": 5.0},
+                  {"person_id": "A", "matchday": 3, "price": 10.3}]).to_csv(tmp_path / "prices.csv", index=False)
+    h = run.price_history()
+    assert h["A"] == [[1, 10.0], [2, 10.4], [3, 10.3]] and h["B"] == [[1, 5.0]]     # a re-run of a matchday wins
+    t = run.price_moves(pd.DataFrame({"person_id": ["A", "B", "C"]}), h)
+    assert t.loc[0, ["price_start", "price_chg", "price_last_chg"]].tolist() == [10.0, 0.3, -0.1]
+    assert t.loc[1, "price_chg"] == 0.0 and pd.isna(t.loc[2, "price_start"])
