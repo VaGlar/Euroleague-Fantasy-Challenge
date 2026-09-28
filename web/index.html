@@ -1231,6 +1231,11 @@ setInterval(() => {
   [...new Set(p.players.map((x) => x.team))].sort().forEach((t) => $("#fteam").insertAdjacentHTML("beforeend", `<option>${esc(t)}</option>`));
   p.turns.forEach((t) => $("#fturn").insertAdjacentHTML("beforeend", `<option value="${t.turn}">Turn ${t.turn} (${t.date})</option>`));
   loadFilters();
+  // wide screens show the filters without the «Φίλτρα» toggle: keep the <details> open there
+  // (newer browsers hide a closed <details>' content whatever the CSS says)
+  const wideF = window.matchMedia("(min-width: 641px)");
+  const syncF = () => { if (wideF.matches) $("#fbox").open = true; };
+  wideF.addEventListener("change", syncF); syncF();
   FILTERS.forEach((id) => $("#" + id).addEventListener("input", renderPlayers));
   $("#fsearch").addEventListener("focus", (e) => searchToTop(e.target));
   $("#fsort").addEventListener("input", () => { sortKey = $("#fsort").value; sortDir = -1; renderPlayers(); });
