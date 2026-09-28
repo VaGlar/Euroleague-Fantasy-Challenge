@@ -1,4 +1,4 @@
-// Cloudflare Worker: schedule (07:00 update, 10:00 report, pre-deadline check, post-game update) + Telegram bot.
+// Cloudflare Worker: schedule (07:00 update, 10:00 report, pre-deadline update + check, post-game update) + Telegram bot.
 //
 // Secrets (wrangler secret put): TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, WEBHOOK_SECRET,
 //   GH_DISPATCH_TOKEN (optional: fine-grained PAT, Actions read/write on this repo only)
@@ -8,7 +8,8 @@
 //   07:05  every day -> data update (both editions)
 //   09:05  every day -> yesterday's Web Analytics report
 //   10:05  game day -> the day's report on Telegram (from the 07:05 data)
-//   first tip-off - 2h -> pre-deadline check (lineup differs / trades pending)
+//   first tip-off - 3h -> update: the day's late injury news reaches the advice before the deadline
+//   first tip-off - 2h -> pre-deadline check (lineup differs / trades pending), on those fresh data
 //   ~2.5h after the day's last tip-off -> update with the results
 // GitHub's own schedule runs hours late, so all timing lives here.
 
@@ -156,6 +157,9 @@ async function hourly(env) {
   const today = turns.find((t) => t.date === now.date);
   if (canDispatch && today) {
     const tipHour = Number(String(today.first_tip).split(":")[0]);
+    // knowing who is out is worth far more than any model tweak (research/010), so refresh
+    // injuries and news before the deadline; the 07:05 run already covers a 10:00 tip-off
+    if (now.hour === tipHour - 3 && now.hour !== 7) await update("πριν τη λήξη");
     if (now.hour === tipHour - 2) await dispatch(env, "lineup.yml", { mode: "check", nonce: "" });
   }
   // results: one run in the hour after (last tip-off of a game day + RESULTS_DELAY_MIN)
