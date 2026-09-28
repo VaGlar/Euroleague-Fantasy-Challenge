@@ -357,6 +357,15 @@ body > header nav button.on { color: var(--bar-fg); border-color: var(--bar-line
 .court-lines .key { fill: var(--court-key); }
 .court-lines .dash { stroke-dasharray: 5 5; }
 .tm-floor .lane h3 { color: var(--court-text) !important; opacity: .85; }
+
+/* ---- «Βάλ' το στην οθόνη σου»: on top of every tab until the app is installed */
+.a2hs { display: flex; gap: 10px; align-items: center; justify-content: space-between; margin: 0 0 12px; padding: 10px 12px;
+  border-radius: 12px; background: color-mix(in srgb, var(--accent) 12%, var(--surface-1)); border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  font-size: 13px; line-height: 1.35; }
+.a2hs[hidden] { display: none; }
+.a2hs button, .a2hs-now { border: 0; border-radius: 10px; padding: 8px 12px; background: var(--accent); color: #fff; font: inherit; font-weight: 700;
+  white-space: nowrap; cursor: pointer; }
+.a2hs-now { display: block; width: 100%; margin-top: 12px; padding: 12px; font-size: 15px; }
 </style>
 </head>
 <body>
@@ -376,6 +385,8 @@ body > header nav button.on { color: var(--bar-fg); border-color: var(--bar-line
   </nav>
 </header>
 <main>
+  <div id="a2hsBar" class="a2hs" hidden><span>📱 <b>Βάλ' το στην οθόνη σου</b> — ανοίγει σαν εφαρμογή και κρατά την ομάδα σου.
+    Κάν' το <b>πριν</b> στήσεις την ομάδα.</span><button type="button" id="a2hsGo">Πώς;</button></div>
   <section id="today" class="on"></section>
   <section id="report"></section>
   <section id="players">
@@ -855,11 +866,32 @@ async function renderCompare() {
 
 // ---------------------------------------------------------------- install guide
 const SHARE_ICON = `<svg class="shareic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 8l5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>`;
-function installGuide(force) {
+// Android/Chrome: its own install prompt, kept for our button (iPhone has none: the steps are the only way)
+let INSTALL_PROMPT = null;
+window.addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); INSTALL_PROMPT = e; a2hsBar(); });
+window.addEventListener("appinstalled", () => { INSTALL_PROMPT = null; a2hsBar(); });
+function platform() {
   const ua = navigator.userAgent;
-  const ios = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-  const android = /Android/.test(ua);
-  const standalone = navigator.standalone || matchMedia("(display-mode: standalone)").matches;
+  return { ua, ios: /iPhone|iPad|iPod/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1),
+    android: /Android/.test(ua), standalone: !!(navigator.standalone || matchMedia("(display-mode: standalone)").matches) };
+}
+// the bar on top of every tab, on a phone that doesn't have the app yet (until it is installed)
+function a2hsBar() {
+  const { ios, android, standalone } = platform();
+  const bar = document.getElementById("a2hsBar");
+  if (!bar) return;
+  bar.hidden = standalone || !(ios || android);
+  document.getElementById("a2hsGo").textContent = INSTALL_PROMPT ? "Εγκατάσταση" : "Πώς;";
+}
+async function installNow() {
+  if (!INSTALL_PROMPT) return false;
+  INSTALL_PROMPT.prompt();
+  try { await INSTALL_PROMPT.userChoice; } catch (e) {}
+  INSTALL_PROMPT = null; a2hsBar();
+  return true;
+}
+function installGuide(force) {
+  const { ua, ios, android, standalone } = platform();
   if (!force) {
     if (standalone || !(ios || android)) return;
     try {
@@ -886,6 +918,7 @@ function installGuide(force) {
       χωριστά από τον browser· αν έχεις ήδη στήσει ομάδα εδώ, πάρε πρώτα <b>Επιλογές → Αντίγραφο ασφαλείας</b> και επικόλλησέ το στην εφαρμογή
       («📥 Έχεις σύνδεσμο αντιγράφου;»).</p>` : ""}
     ${ios ? `<p class="muted">Γιατί; Στο iPhone, αν η σελίδα δεν είναι στην οθόνη Αφετηρίας, το Safari σβήνει την αποθηκευμένη ομάδα σου μετά από 7 μέρες χωρίς χρήση.</p>` : ""}
+    ${INSTALL_PROMPT ? `<button class="a2hs-now" type="button" onclick="closePlayer(); installNow()">📲 Εγκατάσταση τώρα</button>` : ""}
     <div class="filters" style="margin-top:12px"><button class="seg" style="padding:8px 14px" onclick="dismissGuide(false)">Κατάλαβα</button>
       <button class="linkbtn" onclick="dismissGuide(true)">Να μην ξαναεμφανιστεί</button></div>`;
   $("#modal").classList.add("on");
@@ -1336,6 +1369,8 @@ setInterval(() => {
   try { tab = localStorage.getItem("tab") || "today"; } catch (e) {}
   showTab(tab);
   setTimeout(() => installGuide(false), 800);
+  a2hsBar();
+  $("#a2hsGo").onclick = async () => { if (!(await installNow())) installGuide(true); };
 
   renderTeams();
 
