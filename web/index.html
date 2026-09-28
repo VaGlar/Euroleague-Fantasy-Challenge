@@ -336,7 +336,7 @@ ul.news li { padding: 8px 0; border-bottom: 1px solid var(--border); }
     </div></details>
     <div class="filters" id="fsortwrap"><label class="chk">Ταξινόμηση <select id="fsort">
       <option value="x_now">xPTS</option><option value="x_h">xPTS3</option><option value="value">Value</option>
-      <option value="price">Τιμή</option><option value="price_chg">Άνοδος τιμής</option><option value="price_last_chg">Τελευταία αλλαγή τιμής</option><option value="pos_dev">Ματσάρισμα</option><option value="season_pir">PIR φέτος</option>
+      <option value="price">Τιμή</option><option value="price_chg">Άνοδος τιμής</option><option value="price_last_chg">Τελευταία αλλαγή τιμής</option><option value="popularity">Pop (πόσοι τον έχουν)</option><option value="pos_dev">Ματσάρισμα</option><option value="season_pir">PIR φέτος</option>
     </select></label></div>
     <div class="muted" id="fcount"></div>
     <div class="card tablewrap"><table id="ptable"></table></div>
@@ -441,9 +441,11 @@ const INFO = {
   turn: "T1 / T2: σε ποιο turn παίζει η ομάδα του. Ανάμεσα στα turns μπορείς να αλλάξεις πεντάδα με όσους δεν έχουν παίξει.",
   matchup: "Ματσάρισμα: πόσο περισσότερο (▲) ή λιγότερο (▼) PIR δίνει ο αντίπαλος στη θέση του, σε σχέση με τον μέσο όρο της λίγκας.",
   avail: "Διαθεσιμότητα από το παιχνίδι και τα νέα: εκτός, ή η πιθανότητα να παίξει. Ανανεώνεται και 3 ώρες πριν τον πρώτο αγώνα.",
+  pop: "Pop: τι ποσοστό των managers του παιχνιδιού τον έχει στην ομάδα του.",
   pchg: "Δ τιμής: πόσο έχει αλλάξει η τιμή του από την πρώτη αγωνιστική της σεζόν.",
   pir: "PIR: η αξιολόγηση της EuroLeague (πόντοι, ριμπάουντ, ασίστ, κλεψίματα, κοψίματα, κερδισμένα φάουλ, μείον άστοχα, λάθη και φάουλ).",
 };
+const pop = (r) => (r.popularity == null ? "" : `${Math.round(r.popularity)}%`);
 const ii = (k) => `<button type="button" class="ii" data-info="${k}" aria-label="Τι σημαίνει">ⓘ</button>`;
 document.addEventListener("click", (e) => {
   const old = document.getElementById("tip");
@@ -515,7 +517,7 @@ function renderPlayers() {
   const hasPrice = P.fantasy_ok;
   const cols = [["name", "Παίκτης"], ["x_now", "xPTS" + ii("xpts"), 1], ["opp", "Αντ."], ["pos_dev", "Ματσάρ." + ii("matchup"), 1],
     ["x_h", "xPTS3" + ii("xpts3"), 1], ["season_pir", "PIR φέτος" + ii("pir"), 1], ["prev_pir", "PIR πέρσι", 1]]
-    .concat(hasPrice ? [["price", "Τιμή", 1], ["price_chg", "Δ τιμής" + ii("pchg"), 1], ["value", "Value" + ii("value"), 1]] : []);
+    .concat(hasPrice ? [["price", "Τιμή", 1], ["price_chg", "Δ τιμής" + ii("pchg"), 1], ["popularity", "Pop" + ii("pop"), 1], ["value", "Value" + ii("value"), 1]] : []);
   $("#ptable").innerHTML = "<thead><tr>" + cols.map(([k, l, n]) =>
     `<th data-k="${k}" class="${n ? "num" : ""}">${l}${sortKey === k ? (sortDir < 0 ? " ↓" : " ↑") : ""}</th>`).join("") + "</tr></thead><tbody>"
     + rows.slice(0, 250).map((r) => `<tr data-pid="${esc(r.person_id)}">
@@ -523,14 +525,14 @@ function renderPlayers() {
       <td class="num"><span class="bar" style="width:${Math.max(2, 40 * (r.x_now || 0) / max)}px"></span><b>${f1(r.x_now)}</b></td>
       <td>${r.home ? "🏠" : "✈️"} ${esc(r.opp)}</td><td class="num">${matchup(r.pos_dev)}</td>
       <td class="num">${f1(r.x_h)}</td><td class="num">${f1(r.season_pir)}</td><td class="num">${f1(r.prev_pir)}</td>
-      ${hasPrice ? `<td class="num">${f1(r.price)}</td><td class="num">${chg(r.price_chg) || "–"}</td><td class="num">${r.value == null ? "–" : r.value.toFixed(2)}</td>` : ""}</tr>`).join("") + "</tbody>";
+      ${hasPrice ? `<td class="num">${f1(r.price)}</td><td class="num">${chg(r.price_chg) || "–"}</td><td class="num">${pop(r) || "–"}</td><td class="num">${r.value == null ? "–" : r.value.toFixed(2)}</td>` : ""}</tr>`).join("") + "</tbody>";
   $("#ptable").querySelectorAll("th").forEach((th) => th.onclick = () => {
     const k = th.dataset.k; sortDir = sortKey === k ? -sortDir : -1; sortKey = k; renderPlayers();
   });
   $("#plist").innerHTML = rows.slice(0, 150).map((r) => `<div class="pcard" data-pid="${esc(r.person_id)}" style="${tcol(r.team)}">
     <div class="pn">${cbox(r)}${esc(nm(r.name))}${avb(r)}${r.no_data && !r.prior ? ' <span class="pill">νέος</span>' : ""}${exb(r)}${dol(r)}</div>
     <div class="px"><b>${f1(r.x_now)}</b><small>xPTS${ii("xpts")}</small><span class="h">${f1(r.x_h)} <small>xPTS3</small></span></div>
-    <div class="pm">${esc(r.team)} · ${esc((r.position || "")[0] || "")}${r.price != null ? ` · <b>${f1(r.price)}cr</b>${chg(r.price_chg)}` : ""} · ${r.home ? "🏠" : "✈️"} ${esc(r.opp || "")} ${matchup(r.pos_dev)}</div>
+    <div class="pm">${esc(r.team)} · ${esc((r.position || "")[0] || "")}${r.price != null ? ` · <b>${f1(r.price)}cr</b>${chg(r.price_chg)}` : ""}${pop(r) ? ` · pop ${pop(r)}` : ""} · ${r.home ? "🏠" : "✈️"} ${esc(r.opp || "")} ${matchup(r.pos_dev)}</div>
   </div>`).join("") + (rows.length > 150 ? `<p class="muted">…και ${rows.length - 150} ακόμα — στένεψε τα φίλτρα.</p>` : "");
   const active = FILTERS.filter((id) => { const el = $("#" + id); return el.type === "checkbox" ? el.checked : el.value; }).length;
   $("#fsum").textContent = active ? `Φίλτρα (${active} ενεργά)` : "Φίλτρα";
@@ -881,7 +883,7 @@ async function openPlayer(pid) {
       <div class="gs">${esc(g.date || "")} · ${g.win}% πιθανότητα νίκης</div></div>`).join("")}</div>`
     : `<p class="muted">${missing ? "Δεν φορτώθηκαν τα στοιχεία — έλεγξε τη σύνδεση και άνοιξε ξανά τον παίκτη." : "Δεν υπάρχουν προγραμματισμένοι αγώνες στα δεδομένα."}</p>`;
   $("#sheet").innerHTML = `<div class="sh"><div><h2>${esc(nm(r.name))}${inj(r)}${exb(r)}${dol(r)}</h2>
-      <div class="muted">${esc(r.team)} · ${esc(r.position || "")}${r.price != null ? ` · <b>${f1(r.price)} cr</b>` : ""}${turn ? ` · Turn ${turn.turn} (${esc(turn.date.slice(8))}/${esc(turn.date.slice(5, 7))})` : ""}</div></div>
+      <div class="muted">${esc(r.team)} · ${esc(r.position || "")}${r.price != null ? ` · <b>${f1(r.price)} cr</b>` : ""}${pop(r) ? ` · pop ${pop(r)}` : ""}${turn ? ` · Turn ${turn.turn} (${esc(turn.date.slice(8))}/${esc(turn.date.slice(5, 7))})` : ""}</div></div>
       <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
     <div class="kpis"><div class="kpi"><b>${r.actual != null ? f1(r.actual) : f1(r.x_now)}</b><span>${r.actual != null ? "πόντοι (έπαιξε)" : "xPTS αγωνιστικής"}</span></div>
       <div class="kpi"><b>${f1(r.x_h)}</b><span>xPTS3</span></div>

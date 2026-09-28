@@ -62,7 +62,7 @@
       : (my.lineup || []).map((p) => ({ id: Number(p.id), role: p.role, captain: p.captain }));
     const roles = Object.fromEntries(src.map((x) => [x.id, x.role]));
     for (const x of players) if (!roles[x.id] && row(x.id)?.position === "Head Coach") roles[x.id] = "coach";
-    return { game: true, fromGame: real.length === players.length, name: my.name, players, bank: Number(my.bank) || 0,
+    return { game: true, fromGame: real.length === players.length, name: my.name, players, bank: Number(my.bank) || 0, gain: my.gain ?? null,
       roles, captain: src.find((x) => x.captain)?.id ?? null, confirmed: true };
   }
 
@@ -324,7 +324,7 @@
     const total = rows.reduce((a, r) => { const role = (t.roles || {})[r.id]; const v = played(r) ? r.actual : (r.x_now ?? 0);
       return a + v * (role === "πάγκος" ? 0.5 : 1) * (t.captain === r.id ? 2 : 1); }, 0);
     const value = rows.reduce((a, r) => a + (Number(r.price) || 0), 0);
-    const gain = Math.round(rows.reduce((a, r) => a + dPrice(r), 0) * 10) / 10;
+    const gain = t.game ? Math.round((Number(t.gain) || 0) * 10) / 10 : Math.round(rows.reduce((a, r) => a + dPrice(r), 0) * 10) / 10;
     const head = pl.inRound
       ? `⏱ Αγωνιστική ${P.round} σε εξέλιξη`
       : `⏱ Αγωνιστική ${P.round} · κλείνει ${deadline()}`;
@@ -378,7 +378,7 @@
     const canCap = role === "5άδα" && t.captain !== id && !(played(r) && t.captain !== id);
     const capWhy = role !== "5άδα" ? "μόνο παίκτης της πεντάδας" : t.captain === id ? "είναι ήδη αρχηγός" : played(r) ? "έχει ήδη παίξει" : "διπλοί πόντοι";
     sheet(`<div class="sh"><div><h2>${esc(nm(r.name))}</h2>
-        <div class="muted">${esc(r.team)} · ${NAME[r.position]} · τώρα ${f1(r.price)} cr${r.buy != null ? ` · αγορά ${f1(r.buy)}${dPrice(r) ? ` (${dPrice(r) > 0 ? "+" : "−"}${f1(Math.abs(dPrice(r)))})` : ""}` : ""}${r.turn ? ` · Turn ${r.turn}` : ""}${role && role !== "coach" ? ` · ${role}` : ""}</div></div>
+        <div class="muted">${esc(r.team)} · ${NAME[r.position]} · τώρα ${f1(r.price)} cr${r.buy != null ? ` · αγορά ${f1(r.buy)}${dPrice(r) ? ` (${dPrice(r) > 0 ? "+" : "−"}${f1(Math.abs(dPrice(r)))})` : ""}` : ""}${r.popularity != null ? ` · pop ${Math.round(r.popularity)}%` : ""}${r.turn ? ` · Turn ${r.turn}` : ""}${role && role !== "coach" ? ` · ${role}` : ""}</div></div>
         <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
       <div class="kpis"><div class="kpi"><b>${f1(played(r) ? r.actual : r.x_now)}</b><span>${played(r) ? "πόντοι" : "xPTS"}</span></div>
         <div class="kpi"><b>${f1(r.x_h)}</b><span>xPTS3</span></div><div class="kpi"><b>${r.value == null ? "–" : r.value.toFixed(2)}</b><span>xPTS3/cr</span></div></div>

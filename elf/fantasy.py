@@ -95,6 +95,11 @@ def my_teams(game_mode: int = 1) -> list[dict]:
     return data if isinstance(data, list) else data.get("fantasy_teams", [])
 
 
+def team_matchday(fantasy_team_id: int, matchday_id: int) -> dict:
+    """The team's state for a matchday: credits (bank), total_plus (value gained), trades..."""
+    return get(f"/fantasy-teams/{fantasy_team_id}/matchdays/{matchday_id}")
+
+
 def roster(fantasy_team_id: int, matchday_id: int) -> dict:
     return get(f"/fantasy-teams/{fantasy_team_id}/matchdays/{matchday_id}/roster")
 

@@ -207,6 +207,9 @@ def fantasy_state(clubs: pd.DataFrame, roster: pd.DataFrame, season: int) -> dic
         md = cfg["current_matchday"]
         raw = fantasy.players(cfg["current_players_list_id"], md["id"])
         fp = pd.DataFrame([fantasy.normalize_player(x) for x in raw])
+        # popularity: % of managers who own him (the API may send 0-1 or 0-100)
+        pop = pd.to_numeric(fp.get("popularity"), errors="coerce")
+        fp["popularity"] = (pop * 100 if pop.max() <= 1 else pop).round(1)
         tv2code = dict(zip(clubs["tv"], clubs["code"]))
         fp["team"] = fp["team"].map(lambda t: tv2code.get(t, t))
         fp["person_id"] = match_people(fp, roster)
@@ -238,10 +241,12 @@ def fantasy_state(clubs: pd.DataFrame, roster: pd.DataFrame, season: int) -> dic
     try:
         for t in fantasy.my_teams():
             ros = fantasy.roster(t["id"], md["id"])
-            out["my_teams"].append({"id": t["id"], "name": t.get("name"), "raw": ros})
+            try:
+                info = fantasy.team_matchday(t["id"], md["id"])
+            except Exception:  # noqa: BLE001 - credits/gain are extras; the roster is enough
+                info = {}
+            out["my_teams"].append({"id": t["id"], "name": t.get("name"), "raw": ros, "info": info})
             _write("roster_shape.json", _shape(ros))  # structure only, for debugging
-            if not out["my_teams"][1:]:
-                _write("api_shapes.json", probe_shapes(t, md["id"], raw))
     except fantasy.TokenError as e:
         out["error"] = f"token: {e}"
     except Exception as e:  # noqa: BLE001
@@ -249,21 +254,12 @@ def fantasy_state(clubs: pd.DataFrame, roster: pd.DataFrame, season: int) -> dic
     return out
 
 
-def probe_shapes(team: dict, matchday_id: int, market: list) -> dict:
-    """Structure (keys and types, no values) of read-only endpoints that may carry what the app
-    shows but the roster lacks: purchase price / gain per player, and popularity."""
-    tid = team["id"]
-    out = {"my_teams_item": _shape(team), "market_player": _shape(market[0]) if market else None}
-    for path in (f"/fantasy-teams/{tid}", f"/fantasy-teams/{tid}/matchdays/{matchday_id}",
-                 f"/fantasy-teams/{tid}/matchdays/{matchday_id}/players",
-                 f"/fantasy-teams/{tid}/matchdays/{matchday_id}/transfers",
-                 f"/fantasy-teams/{tid}/transfers", f"/fantasy-teams/{tid}/players"):
-        name = path.replace(str(tid), "{team}").replace(str(matchday_id), "{md}")
-        try:
-            out[name] = _shape(fantasy.get(path))
-        except Exception as e:  # noqa: BLE001 - an unknown endpoint is expected to fail
-            out[name] = f"{type(e).__name__} {getattr(getattr(e, 'response', None), 'status_code', '')}".strip()
-    return out
+def _num(v, default=None):
+    """A number from the API, or default."""
+    try:
+        return float(v)
+    except (TypeError, ValueError):
+        return default
 
 
 def _shape(o, depth: int = 0):
@@ -746,7 +742,7 @@ def build(offline: bool = False) -> dict:
     if fs.get("ok"):
         fp = fs["players"]
         table = table.merge(fp.dropna(subset=["person_id"]).drop_duplicates("person_id")
-                            [["person_id", "fantasy_id", "price", "status", "position"]]
+                            [["person_id", "fantasy_id", "price", "status", "position", "popularity"]]
                             .rename(columns={"position": "f_position"}), on="person_id", how="left")
         # squad slots follow the fantasy game's position, not the EuroLeague listing
         table["position"] = table["f_position"].fillna(table["position"])
@@ -800,9 +796,11 @@ def build(offline: bool = False) -> dict:
             ids, meta = parse_my_roster(t["raw"])
             mine = table[table["fantasy_id"].isin(ids)].copy()
             mine["label"] = mine["name"] + " (" + mine["team"] + ")"
-            bank = meta.get("bank", max(0.0, BUDGET - mine["price"].sum()))
+            info = t.get("info") or {}
+            bank = _num(info.get("credits"), meta.get("bank", max(0.0, BUDGET - mine["price"].sum())))
             my = {"name": t["name"], "players": mine.sort_values("x_now", ascending=False)
                   .to_dict("records"), "bank": bank, "captain_id": meta.get("captain"),
+                  "gain": _num(info.get("total_plus")),   # team value gained since purchase, as the app shows it
                   "parsed_players": len(ids), "max_trades": max_trades, "trade_round": trade_rnd,
                   "actual_lineup": actual_lineup(t["raw"]),
                   # preferences.yaml, so the dashboard's own re-plan (a player kept for a round) honours them
