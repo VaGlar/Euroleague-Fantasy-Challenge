@@ -751,8 +751,9 @@
   .tm-floor { position: relative; border: 2px solid rgba(255,255,255,.55); border-radius: 12px; overflow: hidden; padding-bottom: 8px; }   /* parquet: index.html */
   .tm-floor .court { background: transparent; border: 0; border-bottom: 2px solid var(--court-line); border-radius: 0; overflow: visible; }
   .tm-floor .lanes { position: relative; margin-top: 0; padding: 32px 8px 0; }
-  .tm-floor .lanes::before { content: ""; position: absolute; left: 50%; top: -30px; width: 58px; height: 58px; transform: translateX(-50%);
-    border: 2px solid var(--court-line); border-radius: 50%; background: var(--court-key); clip-path: inset(30px 0 0 0); }
+  /* the centre circle, whole, on the half-court line (FIBA: 3.6 m of the 15 m width) */
+  .tm-floor .lanes::before { content: ""; position: absolute; left: 50%; top: -1px; width: 24%; aspect-ratio: 1; transform: translate(-50%, -50%);
+    border: 2px solid var(--court-line); border-radius: 50%; background: var(--court-key); }
   .tm-floor .lanes > * { position: relative; z-index: 1; }
   /* set-up: the 4 forwards and 4 guards stand on the court too, four to a row */
   .tm-setcourt .crow > * { width: calc(25% - 5px); max-width: 128px; }
