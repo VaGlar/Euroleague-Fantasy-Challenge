@@ -171,7 +171,7 @@ def test_public_edition_has_nothing_personal(pipeline, tmp_path):
     written = publish.bundle(tmp_path, src=pub)
     files = {p.name: p.read_text() for p in (tmp_path / "data").iterdir()}
     assert set(files) == set(written)
-    assert not {"lineup_log.json", "sent.json", "roster_shape.json", "report_public.json"} & set(files)
+    assert not {"lineup_log.json", "sent.json", "roster_shape.json", "api_shapes.json", "report_public.json"} & set(files)
     pred = json.loads(files["predictions.json"])
     assert pred["my_team"] is None and pred["health"] == []
     assert all('"TEST"' not in txt for txt in files.values()), "το όνομα της ομάδας διέρρευσε"

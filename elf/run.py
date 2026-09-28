@@ -240,10 +240,29 @@ def fantasy_state(clubs: pd.DataFrame, roster: pd.DataFrame, season: int) -> dic
             ros = fantasy.roster(t["id"], md["id"])
             out["my_teams"].append({"id": t["id"], "name": t.get("name"), "raw": ros})
             _write("roster_shape.json", _shape(ros))  # structure only, for debugging
+            if not out["my_teams"][1:]:
+                _write("api_shapes.json", probe_shapes(t, md["id"], raw))
     except fantasy.TokenError as e:
         out["error"] = f"token: {e}"
     except Exception as e:  # noqa: BLE001
         out["team_error"] = f"ομάδα: {type(e).__name__}: {e}"
+    return out
+
+
+def probe_shapes(team: dict, matchday_id: int, market: list) -> dict:
+    """Structure (keys and types, no values) of read-only endpoints that may carry what the app
+    shows but the roster lacks: purchase price / gain per player, and popularity."""
+    tid = team["id"]
+    out = {"my_teams_item": _shape(team), "market_player": _shape(market[0]) if market else None}
+    for path in (f"/fantasy-teams/{tid}", f"/fantasy-teams/{tid}/matchdays/{matchday_id}",
+                 f"/fantasy-teams/{tid}/matchdays/{matchday_id}/players",
+                 f"/fantasy-teams/{tid}/matchdays/{matchday_id}/transfers",
+                 f"/fantasy-teams/{tid}/transfers", f"/fantasy-teams/{tid}/players"):
+        name = path.replace(str(tid), "{team}").replace(str(matchday_id), "{md}")
+        try:
+            out[name] = _shape(fantasy.get(path))
+        except Exception as e:  # noqa: BLE001 - an unknown endpoint is expected to fail
+            out[name] = f"{type(e).__name__} {getattr(getattr(e, 'response', None), 'status_code', '')}".strip()
     return out
 
 
