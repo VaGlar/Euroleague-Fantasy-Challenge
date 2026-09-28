@@ -1,6 +1,6 @@
 // The app as a whole: loads, navigation, every tab fits the screen, both editions, dark mode.
 import { test, expect } from "@playwright/test";
-import { open, goTab, checkLayout, isPhone } from "./helpers.mjs";
+import { open, goTab, checkLayout, isPhone, isAndroid } from "./helpers.mjs";
 
 const TABS = ["today", "team", "players", "teams", "news", "compare", "model", "report"];
 
@@ -93,4 +93,39 @@ test("Σήμερα: countdown, captain picks and picks per price tier", async ({
   await expect(today).toContainText(/Round \d+/);
   await expect(today).toContainText("Για CAP");
   await expect(today.locator(".td-hero")).toBeVisible();
+});
+
+test("install guide on a phone's first visit: Android (⋮ menu) or iPhone (Share) steps", async ({ page }, testInfo) => {
+  test.skip(!isPhone(testInfo), "phones only");
+  await open(page, "public", { guide: true });
+  const sheet = page.locator("#sheet");
+  await expect(sheet).toContainText("Βάλ' το στην οθόνη σου", { timeout: 5000 });
+  if (isAndroid(testInfo)) {
+    await expect(sheet).toContainText("⋮");
+    await expect(sheet).toContainText("Εγκατάσταση εφαρμογής");
+    await expect(sheet).not.toContainText("Safari");
+  } else {
+    await expect(sheet).toContainText("Κοινοποίηση");
+  }
+  await expect(sheet).toContainText("Στήσε την ομάδα σου μέσα από την εφαρμογή");
+  await checkLayout(page, "install guide");
+  await sheet.getByText("Να μην ξαναεμφανιστεί").click();
+  await page.reload();
+  await page.waitForTimeout(1200);
+  await expect(page.locator("#modal")).not.toHaveClass(/\bon\b/);
+});
+
+test("installable as an app (Android): manifest with 192/512 icons, standalone, theme colour", async ({ page }) => {
+  await open(page, "public");
+  const href = await page.locator('link[rel="manifest"]').getAttribute("href");
+  const m = await (await page.request.get(`/public/${href}`)).json();
+  expect(m.name).toBe("HoopsLab");
+  expect(m.display).toBe("standalone");
+  expect(m.start_url).toBeTruthy();
+  for (const size of ["192x192", "512x512"]) {
+    const icon = m.icons.find((i) => i.sizes === size);
+    expect(icon, `εικονίδιο ${size}`).toBeTruthy();
+    expect((await page.request.get(`/public/${icon.src}`)).ok()).toBeTruthy();
+  }
+  await expect(page.locator('meta[name="theme-color"]').first()).toHaveAttribute("content", /.+/);
 });

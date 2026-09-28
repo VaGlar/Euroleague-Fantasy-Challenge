@@ -733,6 +733,8 @@
   .tm-done { border: 0; border-radius: 10px; padding: 8px 12px; background: var(--text-primary); color: var(--surface-1);
     font: inherit; font-weight: 600; font-size: 13px; cursor: pointer; white-space: nowrap; }
   .tm-done:disabled { opacity: .35; cursor: default; }
+  @media (max-width: 400px) {   /* narrow phones: the button goes under the text, which keeps the full width */
+    .tm-item { grid-template-columns: 30px 1fr; } .tm-item .tm-done { grid-column: 2; justify-self: start; } }
   .tm-ready { padding: 12px; border-radius: 12px; font-weight: 600; background: color-mix(in srgb, var(--good) 14%, transparent); }
   .tm-hint { color: var(--text-muted); font-size: 12px; margin: 8px 2px 0; }
   .tm-acts { display: grid; gap: 8px; margin-top: 12px; }

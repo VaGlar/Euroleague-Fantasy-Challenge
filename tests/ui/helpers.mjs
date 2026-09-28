@@ -6,22 +6,23 @@ import fs from "node:fs";
 const PRED = JSON.parse(fs.readFileSync(new URL("./fixtures/predictions.json", import.meta.url)));
 export const NOW = new Date(Date.parse(PRED.generated) + 20 * 60 * 1000);
 export const ROUND = PRED.round;
-export const isPhone = (testInfo) => testInfo.project.name === "iphone";
+export const isPhone = (testInfo) => testInfo.project.name !== "pc";
+export const isAndroid = (testInfo) => testInfo.project.name.startsWith("android");
 
 // Opens an edition ("public" | "personal") with a clean slate; returns the list of JS errors.
-export async function open(page, edition, { tab = "today", team = null } = {}) {
+export async function open(page, edition, { tab = "today", team = null, guide = false } = {}) {
   const errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
   page.on("console", (m) => { if (m.type() === "error" && !/favicon|Failed to load resource/.test(m.text())) errors.push(m.text()); });
   await page.clock.setFixedTime(NOW);
-  await page.addInitScript(([tab, team]) => {
+  await page.addInitScript(([tab, team, guide]) => {
     if (sessionStorage.getItem("ui-init")) return;          // only on the first load: reloads keep what the test did
     sessionStorage.setItem("ui-init", "1");
     localStorage.clear();
-    localStorage.setItem("a2hs", JSON.stringify({ at: Date.now(), never: true }));   // no install guide
+    if (!guide) localStorage.setItem("a2hs", JSON.stringify({ at: Date.now(), never: true }));   // no install guide
     localStorage.setItem("tab", tab);
     if (team) localStorage.setItem("myteam_v1", JSON.stringify(team));
-  }, [tab, team]);
+  }, [tab, team, guide]);
   await page.goto(`/${edition}/index.html`);
   await expect(page.locator("#round")).toHaveText(`Round ${ROUND}`);
   return errors;

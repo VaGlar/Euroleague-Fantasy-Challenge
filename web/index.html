@@ -112,6 +112,8 @@ details.fbox > summary::-webkit-details-marker { display: none; }
 .seg { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 10px; }
 .seg button { border: 0; background: none; color: var(--text-secondary); font: inherit; padding: 6px 12px; cursor: pointer; }
 .seg button.on { background: var(--text-primary); color: var(--surface-1); }
+@media (max-width: 400px) {   /* narrow phones (320-400px): the four sub-tabs share the width */
+  .seg { display: flex; max-width: 100%; } .seg button { flex: 1 1 auto; padding: 6px 4px; font-size: 14px; white-space: nowrap; } }
 .court { position: relative; background: var(--court); border: 2px solid var(--court-line); border-radius: 12px;
   padding: 34px 6px 12px; overflow: hidden; }
 .court::before { content: ""; position: absolute; left: 50%; top: -2px; width: 38%; height: 38%; transform: translateX(-50%);
