@@ -521,13 +521,13 @@
     const have = (pos) => ps.filter((x) => x.r.position === pos);
     const spent = ps.reduce((a, x) => a + (Number(x.price) || 0), 0);
     const full = Object.entries(NEED).every(([pos, n]) => have(pos).length === n);
-    const slots = (pos) => have(pos).map((x) => `<div class="chip tm-setchip" data-rm="${x.id}" role="button" tabindex="0" title="πάτα για αφαίρεση">
-        <div class="ct"><span>${LETTER[pos]}</span><span>✕</span></div><div class="cn">${esc(sur(x.r.name))}</div>
-        <div class="cs">${esc(x.r.team)} · ${f1(x.price)}</div></div>`).join("")
+    const slots = (pos) => have(pos).map((x) => `<div class="chip tm-setchip" data-set="${x.id}" role="button" tabindex="0" title="τιμή ή αφαίρεση">
+        <div class="ct"><span>${LETTER[pos]}</span><span>${esc(x.r.team)}</span></div><div class="cn">${esc(sur(x.r.name))}</div>
+        <div class="cp">${f1(x.price)}<small> cr</small></div></div>`).join("")
       + Array.from({ length: NEED[pos] - have(pos).length }, () => `<button class="tm-slot" data-pos="${pos}"><b>+</b>${NAME[pos]}</button>`).join("");
     const had = !!load();
     return `<header class="tm-top"><div><h2 class="tm-h">${had ? "Αλλαγή ομάδας" : "Φτιάξε την ομάδα σου"}</h2>
-        <div class="muted">Πάτα μια κενή θέση και διάλεξε παίκτη · ${ps.length}/11</div></div></header>
+        <div class="muted">Πάτα μια κενή θέση και διάλεξε παίκτη · πάτα έναν παίκτη για να αλλάξεις την τιμή του ή να τον αφαιρέσεις · ${ps.length}/11</div></div></header>
       <div class="card tm-courtcard"><div class="tm-floor"><div class="court"><div class="crow">${slots("Center")}</div></div>
         <div class="lanes">
           <div class="lane"><h3>Forwards · ${have("Forward").length}/4</h3><div class="crow">${slots("Forward")}</div></div>
@@ -536,8 +536,28 @@
         <div class="tm-money"><span>Κόστος ομάδας <b>${f1(spent)}</b> cr</span><span>Υπόλοιπο <b>${f1(Math.max(0, 100 - spent))}</b> cr</span></div>
         <button class="tm-primary" id="tmFinish" ${full ? "" : "disabled"}>${full ? "Αποθήκευση ➜" : `Λείπουν ${11 - ps.length}`}</button>
         ${had ? '<button class="linkbtn" id="tmCancel" style="display:block;margin:6px auto 0">Άκυρο</button>' : ""}
-        <p class="tm-hint">Οι τιμές συμπληρώνονται με τις σημερινές· αν διαφέρουν στο παιχνίδι σου, τις διορθώνεις μετά από την καρτέλα του παίκτη. Το υπόλοιπο το διορθώνεις από τις «Επιλογές».</p>
+        <p class="tm-hint">Οι τιμές συμπληρώνονται με τις σημερινές· αν στο παιχνίδι σου διαφέρουν, πάτα τον παίκτη και διόρθωσέ τες. Το υπόλοιπο το διορθώνεις από τις «Επιλογές».</p>
         ${had ? "" : '<button class="linkbtn" id="tmRestore" style="display:block;margin:8px auto 0">📥 Έχεις σύνδεσμο αντιγράφου; Επικόλλησέ τον</button>'}</div>`;
+  }
+  // setting up: a picked player's price (as in your game) or removing him
+  function setupPlayerSheet(id, best) {
+    const x = setup.players.find((q) => q.id === id), r = row(id);
+    if (!x || !r) return;
+    sheet(`<div class="sh"><div><h2>${esc(nm(r.name))}</h2><div class="muted">${esc(r.team)} · ${NAME[r.position]} · σημερινή τιμή ${f1(r.price)} cr</div></div>
+        <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
+      <label class="muted" for="tmSetPrice">Τιμή όπως στο παιχνίδι σου (αν τον αγόρασες φθηνότερα ή ακριβότερα)</label>
+      <input id="tmSetPrice" class="tm-input" inputmode="decimal" value="${f1(x.price)}" autocomplete="off">
+      <button class="tm-primary" id="tmSetOk">Αποθήκευση τιμής</button>
+      <button class="tm-primary tm-danger-bg" id="tmSetRm" style="margin-top:8px">Αφαίρεση από την ομάδα</button>`);
+    setTimeout(() => $("#tmSetPrice")?.select(), 50);
+    const ok = () => {
+      const v = parseFloat(String($("#tmSetPrice").value).replace(",", "."));
+      if (isNaN(v) || v <= 0 || v > 40) { toast("Γράψε μια τιμή, π.χ. 7,5"); return; }
+      x.price = Math.round(v * 10) / 10; closePlayer(); render(best);
+    };
+    $("#tmSetOk").onclick = ok;
+    $("#tmSetPrice").onkeydown = (e) => { if (e.key === "Enter") ok(); };
+    $("#tmSetRm").onclick = () => { setup.players = setup.players.filter((q) => q.id !== id); closePlayer(); render(best); };
   }
   function pickSheet(pos, best) {
     const have = new Set(setup.players.map((x) => x.id));
@@ -600,8 +620,10 @@
       mode = "setup";
       $("#team").innerHTML = setupView();
       document.querySelectorAll("#team .tm-slot").forEach((b) => b.onclick = () => pickSheet(b.dataset.pos, best));
-      document.querySelectorAll("#team [data-rm]").forEach((c) => c.onclick = () => {
-        setup.players = setup.players.filter((x) => x.id !== Number(c.dataset.rm)); render(best);
+      document.querySelectorAll("#team [data-set]").forEach((c) => {
+        const open = () => setupPlayerSheet(Number(c.dataset.set), best);
+        c.onclick = open;
+        c.onkeydown = (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); } };
       });
       const fin = document.getElementById("tmFinish");
       if (fin) fin.onclick = () => { finishSetup(); render(best); window.scrollTo({ top: 0 }); toast("Η ομάδα αποθηκεύτηκε"); };
