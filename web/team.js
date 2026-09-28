@@ -317,8 +317,8 @@
     const line = (pos) => five.filter((r) => r.position === pos).map((r) => chipHtml(r, t, moved(r))).join("");
     return `<div class="tm-floor"><div class="court"><div class="crow">${line("Center")}</div><div class="crow">${line("Forward")}</div><div class="crow">${line("Guard")}</div></div>
       <div class="lanes"><div class="pair">
-        <div class="lane"><h3>6th (100% FPT)</h3><div class="crow">${by("6ος").map((r) => chipHtml(r, t, moved(r))).join("")}</div></div>
-        <div class="lane"><h3>Head Coach</h3><div class="crow">${by("coach").map((r) => chipHtml(r, t, moved(r))).join("")}</div></div></div>
+        <div class="lane six"><h3>6th (100% FPT)</h3><div class="crow">${by("6ος").map((r) => chipHtml(r, t, moved(r))).join("")}</div></div>
+        <div class="lane coach"><h3>Head Coach</h3><div class="crow">${by("coach").map((r) => chipHtml(r, t, moved(r))).join("")}</div></div></div>
         <div class="lane bench"><h3>Bench (50% FPT)</h3><div class="crow">${by("πάγκος").sort((a, b) => (b.x_now ?? 0) - (a.x_now ?? 0)).map((r) => chipHtml(r, t, moved(r))).join("")}</div></div></div></div>`;
   }
 
@@ -569,7 +569,7 @@
       <div class="card tm-courtcard"><div class="tm-floor"><div class="court tm-setcourt">
           <div class="crow">${slots("Center")}</div><div class="crow">${slots("Forward")}</div><div class="crow">${slots("Guard")}</div></div>
         <div class="lanes">
-          <div class="lane"><h3>Head Coach · ${have("Head Coach").length}/1</h3><div class="crow">${slots("Head Coach")}</div></div></div></div>
+          <div class="lane coach"><h3>Head Coach · ${have("Head Coach").length}/1</h3><div class="crow">${slots("Head Coach")}</div></div></div></div>
         <div class="tm-money"><span>Κόστος ομάδας <b>${f1(spent)}</b> cr</span><span>Credits <b>${f1(Math.max(0, 100 - spent))}/100</b></span></div>
         ${spent > 100.05 ? `<p class="tm-over">⚠️ Πάνω από το budget κατά <b>${f1(spent - 100)}</b> cr — έλεγξε τις τιμές (πάτα τον παίκτη)· το παιχνίδι δεν επιτρέπει πάνω από 100.</p>` : ""}
         <button class="tm-primary" id="tmFinish" ${full ? "" : "disabled"}>${full ? "Αποθήκευση ➜" : `Λείπουν ${11 - ps.length}`}</button>
@@ -758,6 +758,20 @@
   .tm-floor .lanes::before { content: ""; position: absolute; left: 50%; top: -1px; width: 24%; aspect-ratio: 1; transform: translate(-50%, -50%);
     border: 2px solid var(--court-line); border-radius: 50%; background: var(--court-key); }
   .tm-floor .lanes > * { position: relative; z-index: 1; }
+  /* room beside the court (PC, tablet): the head coach and the 6th stand on the sideline, left of the floor,
+     so the court card is shorter and the whole squad fits without scrolling. Phones keep them on the floor. */
+  .tm-courtcard { container-type: inline-size; }
+  @container (min-width: 500px) {
+    .tm-courtcard .tm-floor { overflow: visible; margin-left: 132px; margin-right: auto; }
+    .tm-courtcard .tm-floor .lanes .pair { display: block; }
+    .tm-courtcard .tm-floor .lane.coach, .tm-courtcard .tm-floor .lane.six { position: absolute; left: -132px; width: 120px; margin: 0; }
+    .tm-courtcard .tm-floor .lane.coach { top: -175px; }
+    .tm-courtcard .tm-floor .lane.six { top: 6px; }
+    .tm-courtcard .tm-floor .lane.coach .chip, .tm-courtcard .tm-floor .lane.six .chip { width: 100%; max-width: none; }
+    .tm-courtcard .tm-floor .lane.coach h3, .tm-courtcard .tm-floor .lane.six h3 { color: var(--text-secondary) !important; opacity: 1; }
+    .tm-courtcard .tm-floor .lane.coach .tm-slot { width: 100%; max-width: none; border-color: var(--text-muted); color: var(--text-secondary);
+      background: var(--surface-0); }
+  }
   /* set-up: the 4 forwards and 4 guards stand on the court too, four to a row */
   .tm-setcourt .crow > * { width: calc(25% - 5px); max-width: 128px; }
   .tm-setcourt .chip .cp { font-size: 17px; white-space: nowrap; } .tm-setcourt .chip .cp small { font-size: 11px; }
