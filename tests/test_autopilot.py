@@ -78,3 +78,26 @@ def test_public_edition_drops_the_owners_points(pub, tmp_path):
     publish.bundle(tmp_path / "site", src=pub)
     out = json.loads((tmp_path / "site" / "data" / "autopilot.json").read_text())
     assert out["rounds"] == [{"round": 3, "pts": 150.0}]
+
+
+def test_starts_from_the_seed_of_the_rounds_before_it(pub, monkeypatch):
+    """The rounds before the autopilot existed come from the proposals made before each of them (the
+    seed file): it plays from round 1 like a real manager, and a later start is replaced by the seed."""
+    monkeypatch.setattr(autopilot, "actual_points", lambda s: (pd.DataFrame(columns=["round", "gamecode", "person_id", "fp"]), None))
+    monkeypatch.setattr(autopilot.history, "load", lambda *a, **k: pd.DataFrame())
+    rows, table = pool()
+    first = [1, 2, 3, 4, 9, 10, 11, 12, 17, 18, 21]                # 4 guards, 4 forwards, 2 centers, coach
+    best = {"cost": 60.0, "team": [{"id": r["id"], "price": r["price"], "position": r["position"], "x_now": r["x_now"],
+                                    "role": "5άδα", "captain": r["id"] == 3} for r in rows if r["id"] in first]}
+    pred = {"players": [{**r, "fantasy_id": r["id"], "person_id": f"p{r['id']}"} for r in rows], "best_team": best}
+    r1, r2 = autopilot.seed_rounds([(1, pred), (2, pred)], max_trades=4, min_gain=0.5)
+    assert r1["bank"] == 40.0 and [p["id"] for p in r1["squad"]] == first
+    assert r1["squad"][2]["captain"] and r1["squad"][0]["person_id"] == "p1"
+    assert 0 < r2["trades"] <= 4                                   # better players were affordable
+    (pub.parent / "autopilot_seed.json").write_text(json.dumps({"rounds": [r1, r2]}))
+
+    autopilot.update(2026, rnd=3, trade_rnd=3, rows=rows, table=table, max_trades=4, min_gain=0.5)
+    s = json.loads((pub / "autopilot.json").read_text())
+    assert [e["round"] for e in s["rounds"]] == [1, 2, 3] and s["start_round"] == 1
+    assert s["rounds"][:2] == [r1, r2]
+    assert s["rounds"][2]["trades"] <= 4                           # round 3 goes on from the seed's squad

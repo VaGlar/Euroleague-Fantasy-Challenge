@@ -1,0 +1,263 @@
+{
+ "note": "decisions from the app's last predictions before each round (see autopilot._seed_path)",
+ "rounds": [
+  {
+   "round": 1,
+   "trades": 0,
+   "bank": 0.0,
+   "squad": [
+    {
+     "id": 4012,
+     "price": 4.5,
+     "position": "Forward",
+     "person_id": "001518",
+     "name": "RICCI, GIAMPAOLO",
+     "team": "MIL",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 4.4
+    },
+    {
+     "id": 3886,
+     "price": 4.8,
+     "position": "Guard",
+     "person_id": "001844",
+     "name": "HACKETT, DANIEL",
+     "team": "VIR",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 4.0
+    },
+    {
+     "id": 3766,
+     "price": 17.0,
+     "position": "Forward",
+     "person_id": "003469",
+     "name": "VEZENKOV, SASHA",
+     "team": "OLY",
+     "role": "5άδα",
+     "captain": true,
+     "x_now": 23.9
+    },
+    {
+     "id": 3887,
+     "price": 14.8,
+     "position": "Guard",
+     "person_id": "007975",
+     "name": "FRANCISCO, SYLVAIN",
+     "team": "PAN",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 21.9
+    },
+    {
+     "id": 7231,
+     "price": 5.5,
+     "position": "Center",
+     "person_id": "010318",
+     "name": "DESSERT, BRICE",
+     "team": "IST",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 4.7
+    },
+    {
+     "id": 3905,
+     "price": 8.3,
+     "position": "Guard",
+     "person_id": "010781",
+     "name": "LUNDBERG, IFFE",
+     "team": "TEL",
+     "role": "6ος",
+     "captain": false,
+     "x_now": 13.1
+    },
+    {
+     "id": 4016,
+     "price": 4.0,
+     "position": "Forward",
+     "person_id": "011816",
+     "name": "AKELE, NICOLA",
+     "team": "MIL",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 2.9
+    },
+    {
+     "id": 3948,
+     "price": 7.5,
+     "position": "Forward",
+     "person_id": "012731",
+     "name": "NDIAYE, MBAYE",
+     "team": "OLY",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 10.2
+    },
+    {
+     "id": 3843,
+     "price": 14.0,
+     "position": "Center",
+     "person_id": "012878",
+     "name": "WRIGHT, MOSES",
+     "team": "MIL",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 18.3
+    },
+    {
+     "id": 3815,
+     "price": 10.6,
+     "position": "Guard",
+     "person_id": "013367",
+     "name": "FORREST, TRENT",
+     "team": "ULK",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 15.0
+    },
+    {
+     "id": 3897,
+     "price": 9.0,
+     "position": "Head Coach",
+     "person_id": "ADG",
+     "name": "JASIKEVICIUS, SARAS",
+     "team": "ULK",
+     "role": "coach",
+     "captain": false,
+     "x_now": 10.4
+    }
+   ],
+   "x_total": 144.7
+  },
+  {
+   "round": 2,
+   "trades": 4,
+   "bank": 0.1,
+   "squad": [
+    {
+     "id": 3766,
+     "price": 17.6,
+     "position": "Forward",
+     "person_id": "003469",
+     "name": "VEZENKOV, SASHA",
+     "team": "OLY",
+     "role": "5άδα",
+     "captain": true,
+     "x_now": 27.5
+    },
+    {
+     "id": 11516,
+     "price": 10.2,
+     "position": "Forward",
+     "person_id": "015166",
+     "name": "CROWDER, JAE",
+     "team": "ASV",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 21.9
+    },
+    {
+     "id": 4247,
+     "price": 12.6,
+     "position": "Guard",
+     "person_id": "010568",
+     "name": "JONES, CHRIS",
+     "team": "RED",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 21.0
+    },
+    {
+     "id": 3887,
+     "price": 14.9,
+     "position": "Guard",
+     "person_id": "007975",
+     "name": "FRANCISCO, SYLVAIN",
+     "team": "PAN",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 20.8
+    },
+    {
+     "id": 11504,
+     "price": 11.0,
+     "position": "Center",
+     "person_id": "003958",
+     "name": "THIEMANN, JOHANNES",
+     "team": "MUN",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 18.5
+    },
+    {
+     "id": 11521,
+     "price": 5.3,
+     "position": "Guard",
+     "person_id": "015161",
+     "name": "FODZO DADA, MARC-OWEN",
+     "team": "ASV",
+     "role": "6ος",
+     "captain": false,
+     "x_now": 16.8
+    },
+    {
+     "id": 3897,
+     "price": 9.0,
+     "position": "Head Coach",
+     "person_id": "ADG",
+     "name": "JASIKEVICIUS, SARAS",
+     "team": "ULK",
+     "role": "coach",
+     "captain": false,
+     "x_now": 10.0
+    },
+    {
+     "id": 4012,
+     "price": 4.5,
+     "position": "Forward",
+     "person_id": "001518",
+     "name": "RICCI, GIAMPAOLO",
+     "team": "MIL",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 5.8
+    },
+    {
+     "id": 7231,
+     "price": 5.4,
+     "position": "Center",
+     "person_id": "010318",
+     "name": "DESSERT, BRICE",
+     "team": "IST",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 4.9
+    },
+    {
+     "id": 4016,
+     "price": 4.0,
+     "position": "Forward",
+     "person_id": "011816",
+     "name": "AKELE, NICOLA",
+     "team": "MIL",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 3.3
+    },
+    {
+     "id": 3886,
+     "price": 4.6,
+     "position": "Guard",
+     "person_id": "001844",
+     "name": "HACKETT, DANIEL",
+     "team": "VIR",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 2.7
+    }
+   ],
+   "x_total": 172.2
+  }
+ ]
+}

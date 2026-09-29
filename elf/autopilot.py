@@ -29,6 +29,19 @@ def _path():
     return PUBLIC / "autopilot.json"      # at call time: tests point PUBLIC elsewhere
 
 
+def _seed_path():
+    """The decisions of the rounds before the autopilot existed, rebuilt once from the proposals the app
+    made before each of those rounds (`python -m elf.autopilot seed`). Never rewritten by the pipeline."""
+    return PUBLIC.parent / "autopilot_seed.json"
+
+
+def _seed() -> list[dict]:
+    try:
+        return json.loads(_seed_path().read_text())["rounds"]
+    except (OSError, ValueError, KeyError):
+        return []
+
+
 def load() -> dict:
     try:
         return json.loads(_path().read_text())
@@ -122,6 +135,9 @@ def update(season: int, rnd: int, trade_rnd: int, rows: list[dict], table: pd.Da
            max_trades: int, min_gain: float, my_points: dict | None = None) -> dict:
     """Decide the coming round (until its tip-off), score the finished ones."""
     state = load()
+    seed = _seed()
+    if seed and (not state["rounds"] or state["rounds"][0]["round"] > seed[0]["round"]):
+        state = {"rounds": [dict(e) for e in seed]}                   # start from round 1, as a real manager
     kept = [r for r in state["rounds"] if r["round"] < trade_rnd]      # frozen: already under way or done
     state["rounds"] = kept
     entry = decide(state, trade_rnd, rows, table, max_trades, min_gain)
@@ -151,3 +167,49 @@ def update(season: int, rnd: int, trade_rnd: int, rows: list[dict], table: pd.Da
                       if any(e.get("avg_raw") is not None for e in done) else None}
     _save(state)
     return state
+
+
+# ------------------------------------------------------------------ seed: the rounds before it existed
+
+def _rows(pred: dict) -> tuple[list[dict], pd.DataFrame]:
+    """Optimizer rows and the players table from a saved predictions.json (as run.py builds them)."""
+    t = pd.DataFrame(pred["players"]).dropna(subset=["price", "fantasy_id"])
+    t = t[t["position"].isin(["Guard", "Forward", "Center", "Head Coach"])]
+    num = lambda v: float(v) if v == v and v is not None else 0.0          # noqa: E731
+    rows = [{"id": int(r["fantasy_id"]), "position": r["position"], "price": float(r["price"]),
+             "x_h": num(r["x_h"]), "x_now": num(r["x_now"])} for r in t.to_dict("records")]
+    return rows, t
+
+
+def seed_rounds(snapshots: list[tuple[int, dict]], max_trades: int = 4, min_gain: float = 2.0) -> list[dict]:
+    """The autopilot's decisions for past rounds from the app's last predictions before each of them:
+    the first is the proposed squad from scratch (`best_team`, as shown), the rest are decide()."""
+    state = {"rounds": []}
+    for rnd, pred in snapshots:
+        rows, table = _rows(pred)
+        if not state["rounds"]:
+            info, bt = _info(table), pred["best_team"]
+            squad = [{"id": p["id"], "price": p["price"], "position": p["position"],
+                      **{k: info.get(p["id"], {}).get(k) for k in ("person_id", "name", "team")},
+                      "role": p["role"], "captain": bool(p.get("captain")), "x_now": round(p["x_now"], 1)}
+                     for p in bt["team"]]
+            x = sum(p["x_now"] * (BENCH_MULTIPLIER if p["role"] == "πάγκος" else 1.0)
+                    * (CAPTAIN_MULTIPLIER if p["captain"] else 1) for p in squad)
+            entry = {"round": rnd, "trades": 0, "bank": round(BUDGET - float(bt["cost"]), 1),
+                     "squad": squad, "x_total": round(x, 1)}
+        else:
+            entry = decide(state, rnd, rows, table, max_trades, min_gain)
+        if not entry:
+            raise ValueError(f"no decision for round {rnd}")
+        state["rounds"].append(entry)
+    return state["rounds"]
+
+
+if __name__ == "__main__":
+    # python -m elf.autopilot seed 1:<predictions.json before round 1> 2:<... before round 2> ...
+    import sys
+    snaps = [(int(a.split(":", 1)[0]), json.loads(open(a.split(":", 1)[1]).read())) for a in sys.argv[2:]]
+    out = {"note": "decisions from the app's last predictions before each round (see autopilot._seed_path)",
+           "rounds": seed_rounds(snaps)}
+    _seed_path().write_text(json.dumps(out, ensure_ascii=False, indent=1))
+    print([(e["round"], e["trades"], e["bank"], e["x_total"]) for e in out["rounds"]])
