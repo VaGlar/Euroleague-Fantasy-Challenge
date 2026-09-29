@@ -228,7 +228,7 @@
     if (tradesNow) for (const pr of pairs) {
       const o = rows.find((r) => r.id === pr.out.id), n = row(pr.in.id);
       items.push({ kind: "🔁", html: `Trade: <b>${esc(sur(o.name))}</b> ➜ <b>${esc(sur(n.name))}</b>`,
-        why: `${esc(n.team)}${n.turn ? " · T" + n.turn : ""} · ${f1(pr.out.price)} → ${f1(pr.in.price)} cr · +${f1((n.x_h ?? 0) - (o.x_h ?? 0))} xFPT3${unsure(n)}`,
+        why: `${esc(tc(n.team))}${n.turn ? " · T" + n.turn : ""} · ${f1(pr.out.price)} → ${f1(pr.in.price)} cr · +${f1((n.x_h ?? 0) - (o.x_h ?? 0))} xFPT3${unsure(n)}`,
         keep: o, avoid: n,
         run: () => { applyTrade(t, pr.out.id, pr.in.id, pr.in.price); save(t); toast(`${sur(o.name)} ➜ ${sur(n.name)} · υπόλοιπο ${f1(t.bank)} cr`); } });
     }
@@ -315,7 +315,7 @@
       <div class="ct"><span>${LETTER[r.position] || ""}</span>${r.turn ? `<span class="tb t${r.turn > 1 ? 2 : 1}">T${r.turn}</span>` : ""}</div>
       <div class="cn cnx"><span class="nm">${esc(sur(r.name))}</span>${inj(r) ? "<span>🚑</span>" : ""}${r.price_trend === "up" ? "<span>$</span>" : ""}${typeof fewGames === "function" && fewGames(r) ? '<span class="few" data-info="few" role="button" tabindex="0" aria-label="Τι σημαίνει νέος">🆕</span>' : ""}</div>
       <div class="cp${isPlayed ? " done" : ""}">${f1(isPlayed ? r.actual : r.x_now)}</div>
-      <div class="cs">${r.opp ? `${r.home ? "🏠" : "✈️"} ${esc(r.opp)}` : ""}${r.price != null ? ` · ${f1(r.price)}${arrow(dPrice(r))}` : ""}</div></div>`;
+      <div class="cs">${r.opp ? `${r.home ? "🏠" : "✈️"} ${esc(tc(r.opp))}` : ""}${r.price != null ? ` · ${f1(r.price)}${arrow(dPrice(r))}` : ""}</div></div>`;
   }
   function courtHtml(t, rows, pl) {
     const moved = (r) => pl && !pl.tradesNow && pl.target[r.id] && (t.roles || {})[r.id] !== pl.target[r.id] ? "chg" : "";
@@ -364,7 +364,7 @@
         <small class="muted">(${pl.ti.max_trades > 4 ? "απεριόριστα" : `Trades ${usedTrades(t, pl.ti)}/${pl.ti.max_trades}`} · γίνονται όταν τελειώσει το τρέχον round)</small></h2>
         <ul class="tm-list">${pl.trs.pairs.map((pr, n) => { const o = rows.find((r) => r.id === pr.out.id), nn = row(pr.in.id);
           return `<li class="tm-item"><span class="tm-kind">🔁</span><span class="tm-what"><b>${esc(sur(o.name))}</b> ➜ <b>${esc(sur(nn.name))}</b>
-            <span class="tm-why">${esc(nn.team)} · ${f1(pr.out.price)} → ${f1(pr.in.price)} cr · +${f1((nn.x_h ?? 0) - (o.x_h ?? 0))} xFPT3${typeof fewGames === "function" && fewGames(nn) ? ` · 🆕 νέος, ${nn.games} ματς: αβέβαιο` : ""}</span>${keepBtn(o)}${avoidBtn(nn)}</span>
+            <span class="tm-why">${esc(tc(nn.team))} · ${f1(pr.out.price)} → ${f1(pr.in.price)} cr · +${f1((nn.x_h ?? 0) - (o.x_h ?? 0))} xFPT3${typeof fewGames === "function" && fewGames(nn) ? ` · 🆕 νέος, ${nn.games} ματς: αβέβαιο` : ""}</span>${keepBtn(o)}${avoidBtn(nn)}</span>
             ${t.game ? "" : `<button class="tm-done" data-n="${n}">✓ Το έκανα</button>`}</li>`; }).join("")}</ul>${keptLine}</div>`
       : !pl.tradesNow && (pl.keep.length || pl.avoid.length) ? `<div class="card"><h2>Trades για το Round ${pl.ti.round}</h2><p>Καμία αλλαγή δεν αξίζει με αυτές τις επιλογές σου.</p>${keptLine}</div>` : "";
     const done = !items.length && t.confirmed;
@@ -400,7 +400,7 @@
     const canCap = role === "5άδα" && t.captain !== id && !(played(r) && t.captain !== id);
     const capWhy = role !== "5άδα" ? "μόνο παίκτης της πεντάδας" : t.captain === id ? "είναι ήδη αρχηγός" : played(r) ? "έχει ήδη παίξει" : "διπλοί πόντοι";
     sheet(`<div class="sh"><div><h2>${esc(nm(r.name))}</h2>
-        <div class="muted">${esc(r.team)} · ${NAME[r.position]} · τώρα ${f1(r.price)} cr${r.buy != null ? ` · αγορά ${f1(r.buy)}${dPrice(r) ? ` (${dPrice(r) > 0 ? "+" : "−"}${f1(Math.abs(dPrice(r)))})` : ""}` : ""}${r.popularity != null ? ` · POP ${f1(r.popularity)} %` : ""}${r.turn ? ` · Turn ${r.turn}` : ""}${role && role !== "coach" ? ` · ${role}` : ""}</div></div>
+        <div class="muted">${esc(tc(r.team))} · ${NAME[r.position]} · τώρα ${f1(r.price)} cr${r.buy != null ? ` · αγορά ${f1(r.buy)}${dPrice(r) ? ` (${dPrice(r) > 0 ? "+" : "−"}${f1(Math.abs(dPrice(r)))})` : ""}` : ""}${r.popularity != null ? ` · POP ${f1(r.popularity)} %` : ""}${r.turn ? ` · Turn ${r.turn}` : ""}${role && role !== "coach" ? ` · ${role}` : ""}</div></div>
         <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
       <div class="kpis"><div class="kpi"><b>${f1(played(r) ? r.actual : r.x_now)}</b><span>${played(r) ? "πόντοι" : "xFPT"}</span></div>
         <div class="kpi"><b>${f1(r.x_h)}</b><span>xFPT3</span></div><div class="kpi"><b>${r.value == null ? "–" : r.value.toFixed(2)}</b><span>xFPT3/cr</span></div></div>
@@ -455,7 +455,7 @@
       const k = key(q).trim();
       $("#tmList").innerHTML = list.filter((p) => !k || key(p.name).includes(k)).slice(0, 40).map((p) => `<button class="tm-pick" data-n="${p.fantasy_id}">
           <span><b>${esc(nm(p.name))}</b>${typeof newb === "function" ? newb(p, false) : ""}</span><span class="tm-pv"><b class="${gain(p) > 0 ? "tm-up" : "tm-down"}">${gain(p) > 0 ? "+" : "−"}${f1(Math.abs(gain(p)))}</b><small>xFPT3</small></span>
-          <span class="muted tm-pm">${esc(p.team)} · ${f1(p.price)} cr · xFPT3 ${f1(p.x_h)} · μένουν ${f1(max - p.price)} cr</span></button>`).join("")
+          <span class="muted tm-pm">${esc(tc(p.team))} · ${f1(p.price)} cr · xFPT3 ${f1(p.x_h)} · μένουν ${f1(max - p.price)} cr</span></button>`).join("")
         || `<p class="muted">${k ? `Κανένας ${NAME[r.position]} με αυτό το όνομα μέσα στο υπόλοιπο.` : `Κανένας ${NAME[r.position]} δεν χωράει στο υπόλοιπο.`}</p>`;
       document.querySelectorAll("#tmList [data-n]").forEach((b) => b.onclick = () => {
         const n = row(Number(b.dataset.n));
@@ -587,7 +587,7 @@
     const spent = ps.reduce((a, x) => a + (Number(x.price) || 0), 0);
     const full = Object.entries(NEED).every(([pos, n]) => have(pos).length === n);
     const slots = (pos) => have(pos).map((x) => `<div class="chip tm-setchip" data-set="${x.id}" role="button" tabindex="0" title="τιμή ή αφαίρεση">
-        <div class="ct"><span>${LETTER[pos]}</span><span>${esc(x.r.team)}</span></div><div class="cn">${esc(sur(x.r.name))}</div>
+        <div class="ct"><span>${LETTER[pos]}</span><span>${esc(tc(x.r.team))}</span></div><div class="cn">${esc(sur(x.r.name))}</div>
         <div class="cp">${f1(x.price)}<small> cr</small></div></div>`).join("")
       + Array.from({ length: NEED[pos] - have(pos).length }, () => `<button class="tm-slot" data-pos="${pos}"><b>+</b>${NAME[pos]}</button>`).join("");
     const had = !!load();
@@ -608,7 +608,7 @@
   function setupPlayerSheet(id, best) {
     const x = setup.players.find((q) => q.id === id), r = row(id);
     if (!x || !r) return;
-    sheet(`<div class="sh"><div><h2>${esc(nm(r.name))}</h2><div class="muted">${esc(r.team)} · ${NAME[r.position]} · σημερινή τιμή ${f1(r.price)} cr</div></div>
+    sheet(`<div class="sh"><div><h2>${esc(nm(r.name))}</h2><div class="muted">${esc(tc(r.team))} · ${NAME[r.position]} · σημερινή τιμή ${f1(r.price)} cr</div></div>
         <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
       <label class="muted" for="tmSetPrice">Τιμή αγοράς: όσο τον πλήρωσες στο παιχνίδι</label>
       <input id="tmSetPrice" class="tm-input" inputmode="decimal" value="${f1(x.price)}" autocomplete="off">
@@ -632,7 +632,7 @@
       const k = key(q).trim();
       $("#tmList").innerHTML = list.filter((p) => !k || key(p.name).includes(k)).slice(0, 60).map((p) => `<button class="tm-pick" data-p="${p.fantasy_id}">
           <span><b>${esc(nm(p.name))}</b></span><span class="tm-pv"><b>${f1(p.price)}</b><small>cr</small></span>
-          <span class="muted tm-pm">${esc(p.team)} · xFPT ${f1(p.x_now)}</span></button>`).join("") || `<p class="muted">Κανένας ${NAME[pos]} με αυτό το όνομα.</p>`;
+          <span class="muted tm-pm">${esc(tc(p.team))} · xFPT ${f1(p.x_now)}</span></button>`).join("") || `<p class="muted">Κανένας ${NAME[pos]} με αυτό το όνομα.</p>`;
       document.querySelectorAll("#tmList [data-p]").forEach((b) => b.onclick = () => {
         const r = row(Number(b.dataset.p)); setup.players.push({ id: r.fantasy_id, price: r.price }); closePlayer(); render(best);
       });
