@@ -824,281 +824,251 @@
   "availability": [
    {
     "player": "HERNANGOMEZ, JUANCHO",
-    "status": "doubtful",
-    "note": "Ενόχληση στον προσαγωγό, εκτός για περίπου 10 μέρες.",
-    "source": "Gazzetta"
-   },
-   {
-    "player": "MILUTINOV, NIKOLA",
     "status": "out",
-    "note": "Τενοντίτιδα, εκτός αποστολής.",
-    "source": "Novasports"
+    "note": "Εκτός για περίπου 10 ημέρες λόγω σπασμών στον δεξιό προσαγωγό.",
+    "source": "Gazzetta"
    },
    {
     "player": "WILLIAMS-GOSS, NIGEL",
     "status": "out",
-    "note": "Τραυματίας.",
+    "note": "Τραυματίας, εκτός αγωνιστικής δράσης.",
     "source": "Eurohoops (GR)"
+   },
+   {
+    "player": "MILUTINOV, NIKOLA",
+    "status": "out",
+    "note": "Εκτός αποστολής λόγω τενοντίτιδας.",
+    "source": "Novasports"
    }
   ],
   "expert": [
    {
     "player": "WRIGHT, MOSES",
     "stance": "pick",
-    "note": "Βασικός πυλώνας της Μιλάνο, διατηρείται παρά το μέτριο ξεκίνημα.",
+    "note": "Βασική επιλογή για κράτημα (hold) στηfrontcourt.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "PARRA, JOEL",
     "stance": "pick",
-    "note": "Κορυφαία επιλογή value για τη Μπαρτσελόνα.",
+    "note": "Κορυφαία budget επιλογή για κράτημα.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "LAKIC, ARIJAN",
     "stance": "pick",
-    "note": "Απαραίτητος στα 4.0 credits λόγω χρόνου συμμετοχής.",
+    "note": "Must-have στα 4.0 credits με σταθερό χρόνο συμμετοχής.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "SHORTS, TJ",
     "stance": "pick",
-    "note": "Ηγέτης της Βαλένθια σε ρυθμό και εκτέλεση.",
+    "note": "Εξαιρετική επιλογή για αγορά (buy) με υψηλό usage.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "MITOGLOU, KONSTANTINOS",
     "stance": "pick",
-    "note": "Εξαιρετική αξία λόγω απουσιών στον Παναθηναϊκό.",
+    "note": "Εξαιρετική value επιλογή στη frontcourt.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "SAINT-SUPERY, MARIO",
     "stance": "pick",
-    "note": "Αξιόπιστη οικονομική λύση για τον πάγκο.",
+    "note": "Ιδανικός budget guard για ενίσχυση.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "VALANCIUNAS, JONAS",
     "stance": "avoid",
-    "note": "Προτείνεται η πώλησή του λόγω δύσκολου προγράμματος.",
+    "note": "Προτείνεται η πώλησή του λόγω κούρασης και δύσκολου προγράμματος.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "BOLOMBOY, JOEL",
     "stance": "avoid",
-    "note": "Χαμηλή επιθετική συμμετοχή στην επίθεση της Βιλερμπάν.",
+    "note": "Χαμηλή επιθετική συμμετοχή, προτείνεται πώληση.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "FERNANDO, BRUNO",
     "stance": "avoid",
-    "note": "Μικρός χρόνος συμμετοχής και δύσκολο πρόγραμμα.",
+    "note": "Χαμηλό usage και δύσκολο πρόγραμμα, να αποφευχθεί.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "FRANCISCO, SYLVAIN",
     "stance": "pick",
-    "note": "Υψηλό κίνητρο απέναντι στην πρώην ομάδα του και ηγετικός ρόλος.",
+    "note": "Premium επιλογή με κίνητρο απέναντι στη Βιλερμπάν.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "JONES, CARLIK",
     "stance": "pick",
-    "note": "MVP της 1ης αγωνιστικής, κομβικός για την Παρτιζάν.",
+    "note": "Ελίτ επιλογή guards, διατηρείται σταθερά.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "LAWSON, A.J.",
     "stance": "pick",
-    "note": "Εξαιρετικός αθλητής με ευνοϊκό πρόγραμμα στη Μπασκόνια.",
+    "note": "Προσιτή value επιλογή με εξαιρετικό ρυθμό.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "LUNDBERG, IFFE",
     "stance": "pick",
-    "note": "Ευκαιρία αγοράς σε χαμηλή τιμή με σταθερό χρόνο.",
+    "note": "Buy-low επιλογή με σταθερό χρόνο συμμετοχής.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "VEZENKOV, SASHA",
     "stance": "captain",
-    "note": "Αναντικατάστατος πυλώνας και σίγουρη επιλογή αρχηγού.",
+    "note": "Αναντικατάστατος πυλώνας και κορυφαίος υποψήφιος για αρχηγός.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "TAYLOR, KAMERON",
     "stance": "pick",
-    "note": "Σταθερός πυλώνας στη 5αδα της Βαλένθια.",
+    "note": "Αξιόπιστος επιθετικός άξονας σε φουλ ρυθμό.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "OMORUYI, EUGENE",
     "stance": "pick",
-    "note": "Βασικός επιθετικός πυλώνας για τη Μπεσίκτας.",
+    "note": "Σταθερός ψηλός με υψηλό floor.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "STEVENS, LAMAR",
     "stance": "pick",
-    "note": "Αυξημένος χρόνος συμμετοχής λόγω απουσιών στην Παρτιζάν.",
+    "note": "Value επιλογή forward με αυξημένο χρόνο.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "NKAMHOUA, OLIVIER",
     "stance": "pick",
-    "note": "Αυξημένος ρόλος στη ρακέτα της Μπαρτσελόνα λόγω απουσιών.",
+    "note": "Αυξημένος ρόλος λόγω απουσιών στη frontcourt.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "LESSORT, MATHIAS",
     "stance": "pick",
-    "note": "Υψηλότατο «tavoli» και σταθερότητα στη ρακέτα.",
+    "note": "Αδιαμφισβήτητη επιλογή κορυφαίου επιπέδου στη ρακέτα.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "OTURU, DAN",
     "stance": "pick",
-    "note": "Κεντρική επιλογή στη ρακέτα για τη Χαπόελ.",
+    "note": "Βασική επιλογή σέντερ με εξαιρετική παρουσία.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "BALCEROWSKI, OLEK",
     "stance": "pick",
-    "note": "Εξαιρετική φθηνή λύση λόγω τραυματισμού του Νέμπο.",
+    "note": "Εξαιρετική φθηνή επιλογή σέντερ.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "VOIGTMANN, JOHANNES",
     "stance": "pick",
-    "note": "Value pick μετά το νικητήριο σουτ.",
+    "note": "Value επιλογή με καλή επαφή με το καλάθι.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "HAYES, KEVARRIUS",
     "stance": "pick",
-    "note": "Αυξημένος χρόνος συμμετοχής με την Παρτιζάν.",
+    "note": "Αξιόπιστη λύση σέντερ σε προσιτή τιμή.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "SARIC, DARIO",
     "stance": "pick",
-    "note": "Εξαιρετική επιστροφή στη EuroLeague με ηγετικά νούμερα.",
+    "note": "Κορυφαία επιλογή forward με υψηλό PIR.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "TUBELIS, AZUOLAS",
     "stance": "pick",
-    "note": "Συνεχίζει την ανοδική του πορεία στη Zalgiris.",
+    "note": "Εξαιρετική πρόταση νεαρού παίκτη με γεμάτη στατιστική.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "SEDEKERSKIS, TADAS",
     "stance": "pick",
-    "note": "Αποτελεσματικός και γεμάτος στατιστικά για τη Μπασκόνια.",
+    "note": "Σταθερός και αποτελεσματικός forward.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "KEY, BRAXTON",
     "stance": "pick",
-    "note": "Απίστευτο value for money στη γραμμή των φόργουορντ.",
+    "note": "Value bargain στη θέση των φόργουορντ.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "WILBEKIN, SCOTTIE",
     "stance": "pick",
-    "note": "Εξαιρετική τιμή για παίκτη της κλάσης του.",
+    "note": "Ευκαιρία ρίσκου σε χαμηλή τιμή.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "FODZO DADA, MARC-OWEN",
     "stance": "pick",
-    "note": "Απρόσμενη ευκαιρία από τη Βιλερμπάν σε χαμηλή τιμή.",
+    "note": "Απρόσμενη ευκαιρία από χαμηλή τιμή.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "GIEDRAITIS, DOVYDAS",
     "stance": "pick",
-    "note": "Φθηνή λύση από τη Ζαλγκίρις λόγω απουσιών.",
+    "note": "Φθηνός γκαρντ λόγω απουσιών.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "JONES, CHRIS",
     "stance": "pick",
-    "note": "Ανεβασμένος ρόλος ηγέτη και δημιουργού.",
+    "note": "Ανερχόμενος ηγέτης στην περιφέρεια.",
     "source": "EuroBallin (Substack)"
    },
    {
     "player": "MALEDON, THEO",
     "stance": "pick",
-    "note": "Εξαιρετική φόρμα υπό τις οδηγίες του Πέδρο Μαρτίνεθ.",
+    "note": "Εξαιρετική φόρμα και αυξημένος ρόλος.",
     "source": "EuroBallin (Substack)"
    },
    {
     "player": "HALL, DEVON",
     "stance": "pick",
-    "note": "Σταθερός και ασφαλής παίκτης για το rotation.",
+    "note": "Ασφαλής επιλογή με σταθερή συνεισφορά.",
     "source": "EuroBallin (Substack)"
    },
    {
     "player": "LO, MAODO",
     "stance": "pick",
-    "note": "Πιθανός αντικatαστάτης του Γουίλιαμς-Γκος με ποιοτικά χαρακτηριστικά.",
+    "note": "Άμεση επιλογή αντικατάστασης στην περιφέρεια.",
     "source": "EuroBallin (Substack)"
    },
    {
     "player": "PETERS, ALEC",
     "stance": "pick",
-    "note": "Εξαιρετική τιμή στα 12 credits όσο απουσιάζει ο Μάθιους.",
+    "note": "Εξαιρετική επιλογή φόργουορντ όσο απουσιάζει ο Μαθιούς.",
     "source": "EuroBallin (Substack)"
    },
    {
     "player": "EDWARDS, KESSLER",
     "stance": "pick",
-    "note": "Πολύπλευρος φόργουορντ με συνεισφορά και χωρίς πόντους.",
+    "note": "Πολύπλευρος φόργουορντ με υψηλή απόδοση.",
     "source": "EuroBallin (Substack)"
    },
    {
     "player": "RIVERO, JASIEL",
     "stance": "pick",
-    "note": "Πλεονέκτημα στη ρακέτα απέναντι σε αδύναμες άμυνες.",
+    "note": "Οικονομική λύση frontcourt με πλεονέκτημα στα ψηλά.",
     "source": "EuroBallin (Substack)"
-   },
-   {
-    "player": "BRYANT, ELIJAH",
-    "stance": "pick",
-    "note": "Ηγετικός ρόλος στη Χαπόελ με ευνοϊκή πρεμιέρα.",
-    "source": "Basketball Sphere – Fantasy"
-   },
-   {
-    "player": "DEJULIUS, DAVID",
-    "stance": "pick",
-    "note": "Πλεονέκτημα μεγέθους στην περιφέρεια για τη Μπεσίκτας.",
-    "source": "Basketball Sphere – Fantasy"
-   },
-   {
-    "player": "MADAR, YAM",
-    "stance": "pick",
-    "note": "Αυξημένες ευθύνες στη Μακάμπι Τελ Αβίβ.",
-    "source": "Basketball Sphere – Fantasy"
-   },
-   {
-    "player": "NUNEZ, JUAN",
-    "stance": "pick",
-    "note": "Εξαιρετικά φθηνή επιλογή για τη θέση του πλέι μέικερ.",
-    "source": "Basketball Sphere – Fantasy"
-   },
-   {
-    "player": "YABUSELE, GUERSCHON",
-    "stance": "pick",
-    "note": "Αυξημένος χρόνος συμμετοχής λόγω απουσιών στον Παναθηναϊκό.",
-    "source": "Basketball Sphere – Fantasy"
    }
   ],
   "round": 2,
-  "summary_el": "• Ξεκινά η πρώτη «διαβολοβδομάδα» της φετινής EuroLeague με κρίσιμες αναμετρήσεις και περιορισμένο χρόνο προετοιμασίας.\n• Ο Παναθηναϊκός αντιμετωπίζει σημαντικά προβλήματα απουσιών, με τον Χουάντσο Ερνανγκόμεθ να μένει εκτός για περίπου 10 ημέρες λόγω τραυματισμού στον προσαγωγό.\n• Ο Νίκος Μιλουτίνοφ ταλαιπωρείται από τενοντίτιδα και δεν ακολούθησε την αποστολή του Ολυμπιακού στο Κάουνας για το παιχνίδι κόντρα στη Ζαλγκίρις.\n• Στη μάχη του Fantasy, οι αναλυτές προτείνουν την εμπιστοσύνη σε παίκτες με σταθερό χρόνο συμμετοχής και ευνοϊκό πρόγραμμα, όπως ο Σάσα Βεζένκοφ και ο Ματίας Λεσόρ.\n• Ο Νάιτζελ Γουίλιαμς-Γκος παραμένει τραυματίας, ενώ η Μπασκόνια ενίσχυσε τη γραμμή των ψηλών της με την απόκτηση του Μάρσιο Σάντος.\n• Οι managers καλούνται να αξιοποιήσουν σωστά τις τέσσερις διαθέσιμες αλλαγές τους για να βελτιστοποιήσουν τις αποδόσεις των ομάδων τους.",
+  "summary_el": "• Ξεκινά η πρώτη «διαβολοβδομάδα» της φετινής EuroLeague με κρίσιμες αναμετρήσεις σε όλη την Ευρώπη.\n• Ο Παναθηναϊκός αντιμετωπίζει τη Βιλερμπάν στο ΟΑΚΑ, αγωνιζόμενος χωρίς τον τραυματία Χουάντσο Ερνανγκόμεθ.\n• Ο Ολυμπιακός δοκιμάζεται στο Κάουνας κόντρα στη Ζάλγκιρις, χωρίς τη συμμετοχή του Νικόλα Μιλουτίνοφ.\n• Στο EuroLeague Fantasy, προτείνονται για αγορά οι T.J. Shorts, Mathias Lessort και Dinos Mitoglou.\n• Προτείνεται η αποφυγή ή πώληση παικτών όπως ο Jonas Valanciunas λόγω δύσκολου προγράμματος και κόπωσης.\n• Οι παίκτες χαμηλού προϋπολογισμού (budget options) όπως ο Marc-Owen Fodzo Dada και ο Arijan Lakic προσφέρουν σημαντική ευελιξία στα ρόστερ.",
   "_model": "gemini-3.5-flash-lite"
  },
- "digest_at": "2026-09-29T13:03:03.439817+00:00",
+ "digest_at": "2026-09-29T13:06:19.134548+00:00",
  "failed": []
 }
