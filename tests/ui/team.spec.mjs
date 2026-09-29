@@ -370,3 +370,16 @@ test("a change doesn't throw you back to the top of the page", async ({ page }, 
   await page.waitForTimeout(200);
   expect(Math.abs((await page.evaluate(() => scrollY)) - y)).toBeLessThan(5);
 });
+
+test("phones: a line above the court says how many steps are left and takes you to them; not on a PC", async ({ page }, testInfo) => {
+  await open(page, "personal", { tab: "team" });
+  const line = page.locator("#tmSteps");
+  if (!isPhone(testInfo)) { await expect(line).toBeHidden(); return; }
+  const n = (await page.locator("#tmTodo h2 small").innerText()).trim();     // «6 βήματα»
+  await expect(line).toContainText(n);
+  const [l, c] = [await line.boundingBox(), await page.locator(C).boundingBox()];
+  expect(l.y).toBeLessThan(c.y);
+  await line.click();
+  await expect.poll(() => page.locator("#tmTodo").evaluate((el) => Math.round(el.getBoundingClientRect().top))).toBeLessThan(40);
+  await checkLayout(page, "steps line");
+});

@@ -380,14 +380,14 @@
         ${t.game || WIDE() ? "" : `<div class="tm-morewrap"><button class="tm-more" id="tmMore" aria-haspopup="menu">⋯ Επιλογές</button><div id="tmMenu"></div></div>`}</header>
       ${!t.game && WIDE() ? '<div id="tmTools"></div>' : ""}
       <div class="tm-cols"><div class="tm-colL">
-      <div class="card"><h2>Τι κάνω τώρα <small class="muted">${items.length ? `${items.length} ${items.length === 1 ? "βήμα" : "βήματα"}` : ""}</small></h2>
+      <div class="card" id="tmTodo"><h2>Τι κάνω τώρα <small class="muted">${items.length ? `${items.length} ${items.length === 1 ? "βήμα" : "βήματα"}` : ""}</small></h2>
         ${done ? `<div class="tm-ready">✅ Έτοιμος για το round</div>` : `<ul class="tm-list">${confirm}${list}</ul>`}
         ${pl.tradesNow ? keptLine : ""}
         ${turnPlan ? `<ul class="plan">${turnPlan}</ul>` : ""}
         <p class="tm-hint">${hint}
         ${pl.inRound ? "Μέσα στο round: όποιος έπαιξε μπορεί μόνο να βγει στον πάγκο· το x2 μόνο σε παίκτη που δεν έχει παίξει." : ""}</p></div>
       ${nextTrades}</div>
-      <div class="tm-colR"><div class="card tm-courtcard"><h2>${t.game ? (t.fromGame ? "Στο παιχνίδι τώρα" : "Η πρόταση") : "Η πεντάδα σου"} <small class="muted">${t.game ? (t.fromGame ? "διακεκομμένο = αλλάζει με την πρόταση" : "δεν διαβάστηκε η πεντάδα του παιχνιδιού") : "σύρε έναν παίκτη πάνω σε άλλον για αλλαγή θέσης"}</small></h2>
+      <div class="tm-colR">${items.length && !done ? `<button class="tm-steps" id="tmSteps" type="button">📋 <b>${items.length} ${items.length === 1 ? "βήμα" : "βήματα"}</b> για το Round ${pl.ti.round} <span aria-hidden="true">↓</span></button>` : ""}<div class="card tm-courtcard"><h2>${t.game ? (t.fromGame ? "Στο παιχνίδι τώρα" : "Η πρόταση") : "Η πεντάδα σου"} <small class="muted">${t.game ? (t.fromGame ? "διακεκομμένο = αλλάζει με την πρόταση" : "δεν διαβάστηκε η πεντάδα του παιχνιδιού") : "σύρε έναν παίκτη πάνω σε άλλον για αλλαγή θέσης"}</small></h2>
         ${courtHtml(t, rows, t.game ? pl : null)}<p class="tm-hint">${t.game ? "Πάτα έναν παίκτη για στατιστικά και επόμενα παιχνίδια." : "Πάτα έναν παίκτη για αρχηγό, αντικατάσταση ή στατιστικά."}</p></div></div></div>
       ${bestCard(best)}`;
   }
@@ -679,6 +679,7 @@
       $("#team").innerHTML = mainView(g, best);
       if (Math.abs(window.scrollY - y) > 2) window.scrollTo({ top: y });
       bindKeep(g, best);
+      bindSteps();
       document.querySelectorAll("#team .chip[data-fid]").forEach((el) => el.onclick = (e) => {
         if (e.target.closest("[data-info]")) return;
         playerSheet(g, Number(el.dataset.fid));
@@ -726,7 +727,13 @@
     if (document.getElementById("tmTools")) menu(t, best, true);
     on("tmEdit", () => { setup = { players: t.players.map((x) => ({ ...x })) }; mode = "setup"; render(best); });
     bindKeep(t, best);
+    bindSteps();
     bindCourt(t);
+  }
+  // phones: the court comes first, this line says there are steps to do below it and takes you there
+  function bindSteps() {
+    const b = document.getElementById("tmSteps"), to = document.getElementById("tmTodo");
+    if (b && to) b.onclick = () => window.scrollTo({ top: to.getBoundingClientRect().top + window.scrollY - 8, behavior: "smooth" });
   }
   // «Δεν θέλω να διώξω αυτόν τον παίκτη αυτή την αγωνιστική» and its undo: re-plan the trades
   function bindKeep(t, best) {
@@ -752,6 +759,7 @@
   // styles for this screen
   const css = document.createElement("style");
   css.textContent = `
+  .tm-steps { display: none; }   /* phones only (below) */
   .tm-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin: 2px 0 12px; }
   /* not the page's header: it scrolls with the page (the global header rule made it sticky and covered the court); above the court for the options menu */
   #team header.tm-top { position: relative; z-index: 3; background: none; border: 0; padding: 0; transform: none; transition: none; }
@@ -840,6 +848,10 @@
     /* «Η ομάδα μου»: the court first, then the to-do list; the whole squad in one screen (header hidden) */
     .tm-cols { display: flex; flex-direction: column; }
     .tm-cols > .tm-colR { order: -1; }
+    .tm-cols .tm-steps { display: flex; align-items: center; gap: 6px; width: calc(100% + 32px); margin: 0 -16px 10px; padding: 9px 14px;
+      border: 0; border-block: 1px solid color-mix(in srgb, var(--accent) 35%, transparent); background: color-mix(in srgb, var(--accent) 12%, var(--surface-1));
+      color: var(--text-primary); font: inherit; font-size: 14px; text-align: left; cursor: pointer; }
+    .tm-cols .tm-steps span { margin-left: auto; color: var(--accent); font-weight: 700; }
     .tm-cols .tm-courtcard > h2 { font-size: 15px; margin-bottom: 6px; } .tm-cols .tm-courtcard > h2 small { font-size: 11px; }
     .tm-cols .tm-floor .court.lined { aspect-ratio: 15 / 12; padding-top: 12px; padding-bottom: calc(12% + 4px); }
     .tm-cols .tm-floor .court.lined > .crow { margin-bottom: 4px; }
