@@ -65,9 +65,6 @@ round,source,stance,person_id,name,team,model_xpts
 2,EuroLeague Fantasy Tips (official),pick,008192,"TUBELIS, AZUOLAS",ZAL,19.29
 2,EuroLeague Fantasy Tips (official),pick,007230,"SEDEKERSKIS, TADAS",BAS,10.75
 2,EuroLeague Fantasy Tips (official),pick,014168,"KEY, BRAXTON",ULK,15.79
-2,EuroLeague Fantasy Tips (official),pick,007866,"MITOGLOU, KONSTANTINOS",PAN,10.09
-2,EuroLeague Fantasy Tips (official),pick,007975,"FRANCISCO, SYLVAIN",PAN,19.81
-2,EuroLeague Fantasy Tips (official),pick,013369,"JONES, CARLIK",PAR,25.11
 2,EuroLeague Fantasy Tips (official),pick,006661,"WILBEKIN, SCOTTIE",BES,9.24
 2,EuroLeague Fantasy Tips (official),pick,015161,"FODZO DADA, MARC-OWEN",ASV,15.99
 2,EuroLeague Fantasy Tips (official),pick,007513,"GIEDRAITIS, DOVYDAS",ZAL,0.84
@@ -75,20 +72,11 @@ round,source,stance,person_id,name,team,model_xpts
 2,EuroBallin (Substack),pick,007027,"MALEDON, THEO",MAD,13.68
 2,EuroBallin (Substack),pick,011205,"HALL, DEVON",MIL,13.27
 2,EuroBallin (Substack),pick,007032,"LO, MAODO",ZAL,5.81
-2,EuroBallin (Substack),pick,015161,"FODZO DADA, MARC-OWEN",ASV,15.99
-2,EuroBallin (Substack),pick,011217,"TAYLOR, KAMERON",PAM,17.29
 2,EuroBallin (Substack),pick,008829,"PETERS, ALEC",MIL,16.64
 2,EuroBallin (Substack),pick,014416,"EDWARDS, KESSLER",VIR,7.92
-2,EuroBallin (Substack),captain,003842,"LESSORT, MATHIAS",PAN,21.8
-2,EuroBallin (Substack),pick,007553,"BALCEROWSKI, OLEK",BAR,13.65
 2,EuroBallin (Substack),pick,011214,"RIVERO, JASIEL",PAM,8.2
 2,Basketball Sphere – Fantasy,pick,009846,"BRYANT, ELIJAH",HTA,15.6
 2,Basketball Sphere – Fantasy,pick,013250,"DEJULIUS, DAVID",BES,6.05
 2,Basketball Sphere – Fantasy,pick,011052,"MADAR, YAM",TEL,9.94
 2,Basketball Sphere – Fantasy,pick,010106,"NUNEZ, JUAN",BAR,0.0
-2,Basketball Sphere – Fantasy,pick,003469,"VEZENKOV, SASHA",OLY,25.45
 2,Basketball Sphere – Fantasy,pick,010357,"YABUSELE, GUERSCHON",PAN,14.08
-2,Basketball Sphere – Fantasy,pick,014107,"JOKSIMOVIC, STEFAN",BAS,0.0
-2,Basketball Sphere – Fantasy,pick,000898,"VALANCIUNAS, JONAS",ZAL,23.2
-2,Eurohoops,pick,008829,"PETERS, ALEC",MIL,16.64
-2,Eurohoops,pick,006661,"WILBEKIN, SCOTTIE",BES,9.24
