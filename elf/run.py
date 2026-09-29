@@ -253,13 +253,17 @@ def fantasy_state(clubs: pd.DataFrame, roster: pd.DataFrame, season: int) -> dic
             # the owner's points of the finished matchday (for the autopilot comparison; the game
             # gives no managers' average, checked: only this team's own numbers)
             prev = cfg.get("previous_matchday") or {}
-            if len(out["my_teams"]) == 1:
-                _rank_probe(t, prev)
             if prev.get("id") and len(out["my_teams"]) == 1:
                 try:
                     p_info = fantasy.team_matchday(t["id"], prev["id"])
                     if _num(p_info.get("pts")) is not None:
                         out["my_points"] = {str(prev["number"]): _num(p_info["pts"])}
+                    # the general classification after that matchday: the autopilot's rank in it
+                    ov = fantasy.overall_tournament(t["id"])
+                    if ov:
+                        out["overall"] = {"id": ov["id"], "teams": int(ov["num_fantasy_teams"]),
+                                          "matchday_id": prev["id"], "round": int(prev["number"]),
+                                          "my_total": _num(p_info.get("total_pts"))}
                 except Exception:  # noqa: BLE001 - an extra, never breaks the run
                     pass
     except fantasy.TokenError as e:
@@ -275,37 +279,6 @@ def _num(v, default=None):
         return float(v)
     except (TypeError, ValueError):
         return default
-
-
-def _rank_probe(team: dict, prev: dict) -> None:
-    """TEMPORARY (autopilot rank): cursor paging of /tournaments/{id}/standings, as the game's app does
-    (params matchday, cursor; reply {data, meta: {next_cursor}}). Logs positions, points and the cursor."""
-    import base64
-    import requests
-    tid = team.get("id")
-    try:
-        ts = fantasy.get(f"/fantasy-teams/{tid}/tournaments")
-        t = max(ts, key=lambda x: x.get("num_fantasy_teams") or 0)["id"]
-        head = {"Accept": "application/json", "Authorization": f"Bearer {fantasy._token()}"}
-        url = f"{fantasy.FANTASY_API}/tournaments/{t}/standings"
-        for md in (prev.get("id"), None):
-            cursor = None
-            for page in range(3):
-                params = {k: v for k, v in (("matchday", md), ("cursor", cursor)) if v is not None}
-                body = requests.get(url, params=params, headers=head, timeout=30).json()
-                rows = body.get("data", []) if isinstance(body, dict) else body
-                cursor = (body.get("meta") or {}).get("next_cursor") if isinstance(body, dict) else None
-                try:
-                    dec = base64.urlsafe_b64decode(cursor + "=" * (-len(cursor) % 4)).decode()[:200] if cursor else None
-                except Exception:  # noqa: BLE001
-                    dec = "not base64"
-                print("RANK_PROBE md", md, "page", page, len(rows),
-                      [(r.get("position"), r.get("total_pts")) for r in rows[:1] + rows[-1:]],
-                      "cursor", cursor, "decoded", dec)
-                if not cursor:
-                    break
-    except Exception as e:  # noqa: BLE001 - a probe never breaks the run
-        print("RANK_PROBE ERR", str(e)[:80])
 
 
 def _shape(o, depth: int = 0):
@@ -927,7 +900,7 @@ def build(offline: bool = False) -> dict:
             autopilot.update(CURRENT_SEASON, rnd, trade_rnd, _opt_rows(ap_pool), ap_pool,
                              max_trades=11 if trade_rnd == 1 or (trade_rnd - 1) in UNLIMITED_AFTER else 4,
                              min_gain=MIN_GAIN_PER_TRADE * sum(horizon_weights(trade_rnd)) / sum(HORIZON_WEIGHTS),
-                             my_points=fs.get("my_points"))
+                             my_points=fs.get("my_points"), overall=fs.get("overall"))
         except Exception as e:  # noqa: BLE001 - never breaks the update
             health.append(f"autopilot: {type(e).__name__}: {e}")
     try:

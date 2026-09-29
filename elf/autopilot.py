@@ -21,7 +21,7 @@ from datetime import datetime, timezone
 
 import pandas as pd
 
-from . import history, optimize
+from . import fantasy, history, optimize
 from .config import BENCH_MULTIPLIER, BUDGET, CAPTAIN_MULTIPLIER, PUBLIC
 from .tracking import _coach_points, actual_points
 
@@ -131,8 +131,28 @@ def average_manager(rnd: int, fp: pd.Series, margin: dict) -> float | None:
     return round(11 * float((pr["popularity"] * pts).sum()) / float(pr["popularity"].sum()), 1)
 
 
+def _rank(done: list[dict], overall: dict) -> None:
+    """The position the autopilot's season total would have in the game's general classification after
+    the round just finished (overall: {id, teams, matchday_id, round, my_total} of that round), and the
+    owner's for comparison (my_rank: personal edition only). Once per round; the game's standings of a
+    past matchday are fixed, so an earlier round is never ranked again."""
+    total = 0.0
+    for e in done:
+        total += e["pts"]
+        if e["round"] != overall.get("round") or e.get("rank") is not None:
+            continue
+        try:
+            e["rank"] = fantasy.rank_of(total, overall["id"], overall["matchday_id"], overall["teams"])
+            e["teams"] = overall["teams"]
+            if overall.get("my_total") is not None:
+                e["my_rank"] = fantasy.rank_of(overall["my_total"], overall["id"], overall["matchday_id"],
+                                               overall["teams"])
+        except Exception:  # noqa: BLE001 - the rank is an extra; next run tries again
+            e.pop("rank", None)
+
+
 def update(season: int, rnd: int, trade_rnd: int, rows: list[dict], table: pd.DataFrame,
-           max_trades: int, min_gain: float, my_points: dict | None = None) -> dict:
+           max_trades: int, min_gain: float, my_points: dict | None = None, overall: dict | None = None) -> dict:
     """Decide the coming round (until its tip-off), score the finished ones."""
     state = load()
     seed = _seed()
@@ -161,6 +181,8 @@ def update(season: int, rnd: int, trade_rnd: int, rows: list[dict], table: pd.Da
         if my_points and str(e["round"]) in my_points:
             e["my_pts"] = my_points[str(e["round"])]
     done = [e for e in state["rounds"] if e.get("pts") is not None]
+    if overall:
+        _rank(done, overall)
     state["total"] = {"rounds": len(done), "pts": round(sum(e["pts"] for e in done), 1),
                       "raw": round(sum(e["raw"] for e in done), 1),
                       "avg_raw": round(sum(e["avg_raw"] for e in done if e.get("avg_raw") is not None), 1)

@@ -104,6 +104,42 @@ def team_matchday(fantasy_team_id: int, matchday_id: int) -> dict:
     return get(f"/fantasy-teams/{fantasy_team_id}/matchdays/{matchday_id}")
 
 
+def overall_tournament(fantasy_team_id: int) -> dict | None:
+    """The general classification: the team's tournament with the most teams. {id, position, num_fantasy_teams}."""
+    ts = get(f"/fantasy-teams/{fantasy_team_id}/tournaments")
+    ts = [t for t in (ts if isinstance(ts, list) else []) if t.get("num_fantasy_teams")]
+    return max(ts, key=lambda t: t["num_fantasy_teams"]) if ts else None
+
+
+def standings_after(tournament_id: int, position: int, matchday_id: int) -> list[tuple[int, float]]:
+    """(position, total points) of the 25 teams after `position` in a tournament's standings at a matchday.
+    The app pages with a cursor that is base64 JSON of the last position shown, so any position can be
+    reached directly. Only numbers are kept (the rows also carry the managers' names)."""
+    cur = base64.b64encode(json.dumps({"tms.position": int(position), "_pointsToNextItems": True},
+                                      separators=(",", ":")).encode()).decode()
+    rows = get(f"/tournaments/{tournament_id}/standings",
+               {"matchday": matchday_id, **({"cursor": cur} if position > 0 else {})})
+    return [(int(r["position"]), float(r["total_pts"])) for r in rows
+            if r.get("position") is not None and r.get("total_pts") is not None]
+
+
+def rank_of(total: float, tournament_id: int, matchday_id: int, teams: int) -> int:
+    """The position a team with `total` points would have: 1 + the teams with more points (binary search
+    on positions, ~20 requests)."""
+    lo, hi = 0, max(int(teams), 1)                 # invariant: teams at positions <= lo have more points
+    while hi - lo > 25:
+        mid = (lo + hi) // 2
+        rows = standings_after(tournament_id, mid, matchday_id)
+        if not rows:
+            hi = mid
+        elif rows[0][1] > total:
+            lo = rows[0][0]
+        else:
+            hi = mid
+    rows = standings_after(tournament_id, lo, matchday_id)
+    return lo + 1 + sum(1 for _, p in rows if p > total)
+
+
 def roster(fantasy_team_id: int, matchday_id: int) -> dict:
     return get(f"/fantasy-teams/{fantasy_team_id}/matchdays/{matchday_id}/roster")
 

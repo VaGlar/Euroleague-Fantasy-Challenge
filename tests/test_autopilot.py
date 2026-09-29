@@ -74,10 +74,11 @@ def test_average_manager_from_pop(pub):
 
 
 def test_public_edition_drops_the_owners_points(pub, tmp_path):
-    (pub / "autopilot.json").write_text(json.dumps({"rounds": [{"round": 3, "pts": 150.0, "my_pts": 170.0}]}))
+    (pub / "autopilot.json").write_text(json.dumps({"rounds": [{"round": 3, "pts": 150.0, "my_pts": 170.0,
+                                                                 "rank": 900, "teams": 1000, "my_rank": 12}]}))
     publish.bundle(tmp_path / "site", src=pub)
     out = json.loads((tmp_path / "site" / "data" / "autopilot.json").read_text())
-    assert out["rounds"] == [{"round": 3, "pts": 150.0}]
+    assert out["rounds"] == [{"round": 3, "pts": 150.0, "rank": 900, "teams": 1000}]
 
 
 def test_starts_from_the_seed_of_the_rounds_before_it(pub, monkeypatch):
@@ -101,3 +102,42 @@ def test_starts_from_the_seed_of_the_rounds_before_it(pub, monkeypatch):
     assert [e["round"] for e in s["rounds"]] == [1, 2, 3] and s["start_round"] == 1
     assert s["rounds"][:2] == [r1, r2]
     assert s["rounds"][2]["trades"] <= 4                           # round 3 goes on from the seed's squad
+
+
+def fake_standings(monkeypatch, totals):
+    """The game's standings endpoint over a list of totals (sorted high to low), paged by the base64
+    cursor as the app does; records the requests."""
+    import base64
+    calls = []
+
+    def get(path, params=None, **k):
+        calls.append((path, dict(params or {})))
+        assert path == "/tournaments/7/standings" and params["matchday"] == 55
+        pos = json.loads(base64.b64decode(params["cursor"]))["tms.position"] if "cursor" in params else 0
+        return [{"position": i + 1, "total_pts": totals[i], "name": "x", "user": {"first_name": "y"}}
+                for i in range(pos, min(pos + 25, len(totals)))]
+    monkeypatch.setattr(autopilot.fantasy, "get", get)
+    return calls
+
+
+def test_rank_is_found_by_binary_search_over_the_cursor(monkeypatch):
+    totals = [300.0 - i * 0.01 for i in range(20000)]              # 300.00, 299.99, ...
+    calls = fake_standings(monkeypatch, totals)
+    assert autopilot.fantasy.rank_of(250.005, 7, 55, 20000) == 5001     # 300.00 .. 250.01: 5000 teams above
+    assert len(calls) <= 12                                          # log2(20000/25) + 1, not 800 pages
+    assert autopilot.fantasy.rank_of(999.0, 7, 55, 20000) == 1
+    assert autopilot.fantasy.rank_of(0.0, 7, 55, 20000) == 20001
+
+
+def test_ranks_the_round_just_finished_once(monkeypatch):
+    totals = [300.0 - i for i in range(300)]
+    calls = fake_standings(monkeypatch, totals)
+    done = [{"round": 1, "pts": 100.0}, {"round": 2, "pts": 150.5}]
+    ov = {"id": 7, "teams": 300, "matchday_id": 55, "round": 2, "my_total": 280.0}
+    autopilot._rank(done, ov)
+    assert "rank" not in done[0]                                     # only the round just finished
+    assert done[1]["rank"] == 51 and done[1]["teams"] == 300         # 250.5: 50 teams above (300..251)
+    assert done[1]["my_rank"] == 21
+    n = len(calls)
+    autopilot._rank(done, ov)
+    assert len(calls) == n                                           # never ranked again
