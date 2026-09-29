@@ -168,3 +168,25 @@ def test_between_turns_swaps_a_flop_for_a_later_player_and_moves_the_armband():
     before = json.dumps(entry)
     autopilot.between_turns(entry, rows, turn=2)                          # nothing left to change
     assert json.dumps(entry) == before
+
+
+def test_a_rebuilt_seed_replaces_its_rounds_once(pub, monkeypatch):
+    """A new seed (e.g. with the T1 -> T2 changes) replaces the rounds it covers, which are scored
+    again; later rounds stay. The same seed never resets them again (live changes are kept)."""
+    monkeypatch.setattr(autopilot, "actual_points", lambda s: (pd.DataFrame(columns=["round", "gamecode", "person_id", "fp"]), None))
+    monkeypatch.setattr(autopilot.history, "load", lambda *a, **k: pd.DataFrame())
+    rows, table = pool()
+    r1 = {"round": 1, "trades": 0, "bank": 1.0, "x_total": 1.0,
+          "squad": [{**{k: r[k] for k in ("id", "price", "position", "name", "team")}, "person_id": f"p{r['id']}",
+                     "role": "5άδα", "captain": False, "x_now": 1.0}
+                    for r in rows if r["id"] in (1, 2, 3, 4, 9, 10, 11, 12, 17, 18, 21)]}
+    old = {**r1, "pts": 115.2, "rank": 214928}
+    (pub / "autopilot.json").write_text(json.dumps({"rounds": [old], "start_round": 1}))   # built from an old seed
+    (pub.parent / "autopilot_seed.json").write_text(json.dumps({"rounds": [{**r1, "moves": {"2": {"in": [1], "out": [2], "captain": None}}}]}))
+    s = autopilot.update(2026, rnd=2, trade_rnd=2, rows=rows, table=table, max_trades=4, min_gain=0.5)
+    assert s["rounds"][0].get("pts") is None and "rank" not in s["rounds"][0]      # to be scored again
+    assert s["rounds"][0]["moves"] and [e["round"] for e in s["rounds"]] == [1, 2]
+    s["rounds"][1]["moves"] = {"2": "live"}                                          # a live change of round 2
+    (pub / "autopilot.json").write_text(json.dumps(s))
+    s = autopilot.update(2026, rnd=2, trade_rnd=3, rows=rows, table=table, max_trades=4, min_gain=0.5)
+    assert s["rounds"][1]["moves"] == {"2": "live"}                                   # same seed: kept

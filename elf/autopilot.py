@@ -16,6 +16,7 @@ File: data/public/autopilot.json
 """
 from __future__ import annotations
 
+import hashlib
 import json
 from datetime import datetime, timezone
 
@@ -197,8 +198,14 @@ def update(season: int, rnd: int, trade_rnd: int, rows: list[dict], table: pd.Da
     """Decide the coming round (until its tip-off), score the finished ones."""
     state = load()
     seed = _seed()
-    if seed and (not state["rounds"] or state["rounds"][0]["round"] > seed[0]["round"]):
-        state = {"rounds": [dict(e) for e in seed]}                   # start from round 1, as a real manager
+    sid = hashlib.sha1(json.dumps(seed, sort_keys=True).encode()).hexdigest()[:12] if seed else None
+    if seed and (not state["rounds"] or state["rounds"][0]["round"] > seed[0]["round"]
+                 or state.get("seed_id") != sid):
+        # start from round 1, as a real manager; a rebuilt seed replaces its rounds (scored again)
+        last = seed[-1]["round"]
+        state = {"rounds": [dict(e) for e in seed] + [e for e in state["rounds"] if e["round"] > last]}
+    if sid:
+        state["seed_id"] = sid
     kept = [r for r in state["rounds"] if r["round"] < trade_rnd]      # frozen: already under way or done
     state["rounds"] = kept
     entry = decide(state, trade_rnd, rows, table, max_trades, min_gain)
