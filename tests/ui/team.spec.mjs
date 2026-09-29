@@ -188,6 +188,26 @@ test.describe("public edition", () => {
     await expect(header(page)).toContainText("Trades 0/4");
   });
 
+  test("«Αλλαγή ομάδας» after trades: the count starts again, but undo still brings back the round's team", async ({ page }) => {
+    await savedTeam(page);
+    await page.locator("#tmConfirm").click();
+    const before = await stored(page);
+    await tradeRows(page).first().locator(".tm-done").click();
+    await tradeRows(page).first().locator(".tm-done").click();
+    await expect(header(page)).toContainText("Trades 2/4");
+
+    await option(page, "mEdit");                                   // edit the team, save it as it is
+    await expect(page.locator("#team .tm-h")).toHaveText("Αλλαγή ομάδας");
+    await page.locator("#tmFinish").click();
+    await expect(header(page)).toContainText("Trades 0/4");        // not binding: the count starts again
+
+    await option(page, "mUsed");                                   // …but the undo is still there
+    await expect(page.locator("#sheet")).toContainText("Αναίρεση των αλλαγών");
+    await page.locator("#tmUndoOk").click();
+    const after = await stored(page);
+    for (const k of ["players", "bank"]) expect(after[k]).toEqual(before[k]);
+  });
+
   test("all the proposed trades together fit in the credits left", async ({ page }) => {
     await savedTeam(page);
     await page.locator("#tmConfirm").click();

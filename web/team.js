@@ -159,11 +159,16 @@
   }
   // trades already made for the round the proposal is for (so a done trade isn't re-proposed)
   const usedTrades = (t, ti) => (t.used && t.used.round === ti.round ? t.used.n : 0);
+  // the team as it was before this round's first change (trade or «Αλλαγή ομάδας»), if it differs from now
+  const roundStart = (t, ti) => (t.used && t.used.round === ti.round && t.used.before ? t.used.before : null);
+  const sameTeam = (a, b) => a.players.map((x) => x.id).sort().join() === b.players.map((x) => x.id).sort().join()
+    && Number(a.bank) === Number(b.bank);
+  const canUndo = (t, ti) => usedTrades(t, ti) > 0 || (!!roundStart(t, ti) && !sameTeam(t, roundStart(t, ti)));
   function countTrade(t) {
     const ti = P.trade_info || { round: P.round };
     const n = usedTrades(t, ti);
     // before the round's first trade, keep the team as it was, so the trades can be undone
-    const before = n ? t.used.before : JSON.parse(JSON.stringify({ players: t.players, bank: t.bank,
+    const before = roundStart(t, ti) || JSON.parse(JSON.stringify({ players: t.players, bank: t.bank,
       roles: t.roles || null, captain: t.captain ?? null, confirmed: !!t.confirmed }));
     t.used = { round: ti.round, n: n + 1, before };
   }
@@ -533,7 +538,9 @@
       <button id="mBackup">🔗 Αντίγραφο ασφαλείας (σύνδεσμος)</button>
       <button id="mEdit">✏️ Αλλαγή ομάδας</button>
       <button id="mBank">💰 Διόρθωση credits</button>
-      ${usedTrades(t, P.trade_info || {}) ? `<button id="mUsed">↩️ Αναίρεση των μεταγραφών που έκανες (${usedTrades(t, P.trade_info || {})})</button>` : ""}
+      ${canUndo(t, P.trade_info || {}) ? `<button id="mUsed">↩️ ${usedTrades(t, P.trade_info || {})
+        ? `Αναίρεση των μεταγραφών που έκανες (${usedTrades(t, P.trade_info || {})})`
+        : "Αναίρεση των αλλαγών: η ομάδα όπως ήταν στην αρχή της αγωνιστικής"}</button>` : ""}
       ${inline ? "" : `<button id="mInstall">📱 Βάλ' το στην οθόνη σου</button>`}
       <button id="mMail">✉️ Ιδέα ή πρόβλημα; Αντιγραφή του email μας</button>
       <button id="mDel" class="tm-danger">🗑 Διαγραφή ομάδας</button></div>`;
@@ -558,8 +565,8 @@
     if ($("#mUsed")) $("#mUsed").onclick = () => {
       close();
       const n = usedTrades(t, P.trade_info || {}), snap = !!t.used.before;
-      sheet(`<div class="sh"><h2>Αναίρεση ${n === 1 ? "της μεταγραφής" : `των ${n} μεταγραφών`};</h2><button class="x" onclick="closePlayer()">×</button></div>
-        <p class="muted">${snap ? "Η ομάδα, το υπόλοιπο, οι θέσεις και ο αρχηγός γυρίζουν όπως ήταν πριν την πρώτη μεταγραφή αυτής της αγωνιστικής."
+      sheet(`<div class="sh"><h2>Αναίρεση ${n === 0 ? "των αλλαγών" : n === 1 ? "της μεταγραφής" : `των ${n} μεταγραφών`};</h2><button class="x" onclick="closePlayer()">×</button></div>
+        <p class="muted">${snap ? "Η ομάδα, το υπόλοιπο, οι θέσεις και ο αρχηγός γυρίζουν όπως ήταν πριν την πρώτη αλλαγή αυτής της αγωνιστικής."
           : "Αυτές οι μεταγραφές έγιναν πριν υπάρξει η αναίρεση, οπότε μηδενίζεται μόνο ο μετρητής· τους παίκτες τους αλλάζεις από την «Αλλαγή ομάδας»."}</p>
         <button class="tm-primary" id="tmUndoOk">Αναίρεση</button>`);
       $("#tmUndoOk").onclick = () => { const ok = undoTrades(t); save(t); closePlayer(); render(best);
@@ -661,6 +668,10 @@
       t.roles = Object.fromEntries(res.team.map((p) => [p.id, p.role]));
       t.captain = res.team.find((p) => p.captain)?.id ?? null;
     }
+    // «Αλλαγή ομάδας» after trades: the count starts again (nothing here is binding), but the team as it was
+    // at the start of the round stays, so «Αναίρεση» still brings it back
+    const ti = P.trade_info || { round: P.round };
+    if (old && roundStart(old, ti)) t.used = { round: ti.round, n: 0, before: old.used.before };
     save(t); setup = null; mode = null;
   }
 
