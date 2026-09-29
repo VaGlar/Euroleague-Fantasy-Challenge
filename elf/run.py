@@ -253,6 +253,8 @@ def fantasy_state(clubs: pd.DataFrame, roster: pd.DataFrame, season: int) -> dic
             # the owner's points of the finished matchday (for the autopilot comparison; the game
             # gives no managers' average, checked: only this team's own numbers)
             prev = cfg.get("previous_matchday") or {}
+            if len(out["my_teams"]) == 1:
+                _rank_probe(t, prev)
             if prev.get("id") and len(out["my_teams"]) == 1:
                 try:
                     p_info = fantasy.team_matchday(t["id"], prev["id"])
@@ -273,6 +275,37 @@ def _num(v, default=None):
         return float(v)
     except (TypeError, ValueError):
         return default
+
+
+def _rank_probe(team: dict, prev: dict) -> None:
+    """TEMPORARY (autopilot rank): cursor paging of /tournaments/{id}/standings, as the game's app does
+    (params matchday, cursor; reply {data, meta: {next_cursor}}). Logs positions, points and the cursor."""
+    import base64
+    import requests
+    tid = team.get("id")
+    try:
+        ts = fantasy.get(f"/fantasy-teams/{tid}/tournaments")
+        t = max(ts, key=lambda x: x.get("num_fantasy_teams") or 0)["id"]
+        head = {"Accept": "application/json", "Authorization": f"Bearer {fantasy._token()}"}
+        url = f"{fantasy.FANTASY_API}/tournaments/{t}/standings"
+        for md in (prev.get("id"), None):
+            cursor = None
+            for page in range(3):
+                params = {k: v for k, v in (("matchday", md), ("cursor", cursor)) if v is not None}
+                body = requests.get(url, params=params, headers=head, timeout=30).json()
+                rows = body.get("data", []) if isinstance(body, dict) else body
+                cursor = (body.get("meta") or {}).get("next_cursor") if isinstance(body, dict) else None
+                try:
+                    dec = base64.urlsafe_b64decode(cursor + "=" * (-len(cursor) % 4)).decode()[:200] if cursor else None
+                except Exception:  # noqa: BLE001
+                    dec = "not base64"
+                print("RANK_PROBE md", md, "page", page, len(rows),
+                      [(r.get("position"), r.get("total_pts")) for r in rows[:1] + rows[-1:]],
+                      "cursor", cursor, "decoded", dec)
+                if not cursor:
+                    break
+    except Exception as e:  # noqa: BLE001 - a probe never breaks the run
+        print("RANK_PROBE ERR", str(e)[:80])
 
 
 def _shape(o, depth: int = 0):
