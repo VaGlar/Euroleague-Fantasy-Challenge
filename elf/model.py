@@ -198,8 +198,10 @@ def participation(cur_players: pd.DataFrame, prev_players: pd.DataFrame, cur_gam
         elif not whole:
             return 0, 0
         flags = [(pid, team, c) in on for c in codes["gamecode"]]
+        # an injury is a run of missed games that ended with him back; a run still going on counts
+        # as left out (if he is hurt now, the game's own list already sets him to 0)
         injured, run = 0, 0
-        for x in flags + [True]:
+        for x in flags:
             if x:
                 injured += run if run >= streak else 0
                 run = 0
