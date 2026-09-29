@@ -2,7 +2,7 @@
 
 Προσωπικό εργαλείο για το [EuroLeague Fantasy Challenge](https://euroleaguefantasy.euroleaguebasketball.net/10):
 κατάταξη παικτών με βάση δεδομένα, νέα και γνώμες ειδικών, προτάσεις για αλλαγές και αρχηγό,
-ειδοποίηση στο Telegram στις 11:00 κάθε μέρας αγώνων. Κόστος: 0 €.
+ειδοποίηση στο Telegram στις 10:05 κάθε μέρας αγώνων. Κόστος: 0 €.
 
 > **Δημόσια έκδοση:** το σχέδιο προϊόντος (δύο εκδόσεις από το ίδιο engine, συνδρομές, ασφάλεια) βρίσκεται στο [`docs/PRODUCT.md`](docs/PRODUCT.md).
 >
@@ -59,8 +59,10 @@ flowchart LR
 |---|---|---|
 | `elf/` (Python) | GitHub Actions (από το bot, 3–4×/μέρα) | στατιστικά EuroLeague, τιμές fantasy, νέα, xPIR, report |
 | `web/` | Cloudflare Pages | dashboard (PWA: «Προσθήκη στην αρχική οθόνη» στο iPhone) |
-| `worker/` | Cloudflare Workers | ωριαίο cron (report ~10:10, update 3 ώρες και υπενθύμιση 2 ώρες πριν τον 1ο αγώνα) + εντολές bot |
+| `worker/` | Cloudflare Workers | ωριαίο cron (update 07:05, report 10:05, update 3 ώρες και έλεγχος 2 ώρες πριν τον 1ο αγώνα, update μετά τους αγώνες) + εντολές bot· ανεβαίνει μόνο του σε κάθε αλλαγή του `worker/` στο `main` |
 | `sources.yaml` | — | λίστα πηγών νέων (πρόσθεσε RSS feeds εδώ) |
+
+**Κωδικοί ομάδων:** τα δεδομένα κρατούν τους κωδικούς του API της EuroLeague (IST, MUN, MAD, PAM…)· ό,τι διαβάζει ο χρήστης (site, report, Telegram) δείχνει τους κωδικούς του παιχνιδιού (EFS, BAY, RMB, VBC…), δηλαδή τα «TV codes» του `clubs.json` (`tc()` στο `web/`, `tv()` στο `elf/run.py`).
 
 ## Μοντέλο
 
@@ -80,7 +82,7 @@ xPIR = base × (1 + calib + pos·pos_dev + pace·pace_dev + margin·m/10 + blowo
    `TELEGRAM_BOT_TOKEN`, `GEMINI_API_KEY`, `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`,
    `FANTASY_TOKEN`, και αργότερα `TELEGRAM_CHAT_ID`.
 2. Merge στο `main` (τα scheduled workflows τρέχουν μόνο από το default branch).
-3. Actions → **Deploy Telegram bot** → Run workflow.
+3. Actions → **Deploy Telegram bot** → Run workflow. Μετά ανεβαίνει μόνο του σε κάθε αλλαγή του `worker/` στο `main`· χειροκίνητα χρειάζεται μόνο όταν αλλάξει κάποιο secret.
 4. Στείλε `/start` στο bot → σου απαντά το chat ID → βάλ' το στο secret `TELEGRAM_CHAT_ID`
    → ξανατρέξε το **Deploy Telegram bot**.
 5. Actions → **Update data & dashboard** → Run workflow (το πρώτο τρέχει και το backtest).
@@ -171,6 +173,8 @@ UI tests (Playwright, PC + iPhone + δύο Android, και οι δύο εκδό�
   **preview**: ανεβαίνει στο `https://dev.elf-dashboard.pages.dev` και στο `https://dev.<δημόσιο project>.pages.dev`,
   δεν γράφει δεδομένα και δεν στέλνει τίποτα στο Telegram.
 - Όταν μαζευτούν αλλαγές: **PR προς `main`** → τρέχουν όλα τα tests (Python + UI) → merge μόνο αν είναι πράσινα.
+  Με το merge ανεβαίνει μόνο του και το bot, αν άλλαξε το `worker/`· για νέα δεδομένα στο live τρέχει ένα update από το `main`.
+- Το `main` προχωράει μόνο του (κάθε update γράφει δεδομένα), οπότε το branch εργασίας συγχρονίζεται με το `main` πριν από κάθε νέα αλλαγή.
 - Επείγον (π.χ. λάθος στις μεταγραφές πριν κλείσει η αγωνιστική): μικρή διόρθωση απευθείας στο `main`.
 
 ## Τοπικά
