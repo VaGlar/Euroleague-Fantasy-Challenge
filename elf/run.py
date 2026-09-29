@@ -253,6 +253,8 @@ def fantasy_state(clubs: pd.DataFrame, roster: pd.DataFrame, season: int) -> dic
             # the owner's points of the finished matchday (for the autopilot comparison; the game
             # gives no managers' average, checked: only this team's own numbers)
             prev = cfg.get("previous_matchday") or {}
+            if len(out["my_teams"]) == 1:
+                _rank_probe(t, prev)
             if prev.get("id") and len(out["my_teams"]) == 1:
                 try:
                     p_info = fantasy.team_matchday(t["id"], prev["id"])
@@ -273,6 +275,36 @@ def _num(v, default=None):
         return float(v)
     except (TypeError, ValueError):
         return default
+
+
+def _numbers(o, depth: int = 0):
+    """Field names and numbers only (no names or text): for probing the game's API safely."""
+    if depth > 4:
+        return "…"
+    if isinstance(o, dict):
+        return {k: _numbers(v, depth + 1) for k, v in list(o.items())[:40]}
+    if isinstance(o, list):
+        return [_numbers(o[0], depth + 1), f"×{len(o)}"] if o else []
+    if o is None or isinstance(o, (bool, int, float)):
+        return o
+    return type(o).__name__
+
+
+def _rank_probe(team: dict, prev: dict) -> None:
+    """TEMPORARY (autopilot rank): where does the game give a ranking? GET only, logs shapes."""
+    tid, md = team.get("id"), prev.get("id")
+    print("RANK_PROBE team", json.dumps(_numbers(team))[:1500])
+    for path, params in ((f"/fantasy-teams/{tid}/rankings", None), (f"/fantasy-teams/{tid}/ranking", None),
+                         (f"/fantasy-teams/{tid}/leagues", None), (f"/fantasy-teams/{tid}/tournaments", None),
+                         ("/user/tournaments", {"league": fantasy.FANTASY_LEAGUE_ID, "game_mode": 1}),
+                         (f"/leagues/{fantasy.FANTASY_LEAGUE_ID}/rankings", {"game_mode": 1}),
+                         (f"/leagues/{fantasy.FANTASY_LEAGUE_ID}/matchdays/{md}/rankings", {"game_mode": 1}),
+                         (f"/fantasy-teams/{tid}/matchdays/{md}/rankings", None)):
+        try:
+            d = fantasy.get(path, params)
+            print("RANK_PROBE OK ", path, json.dumps(_numbers(d))[:1500])
+        except Exception as e:  # noqa: BLE001 - a probe never breaks the run
+            print("RANK_PROBE ERR", path, str(e)[:60])
 
 
 def _shape(o, depth: int = 0):
