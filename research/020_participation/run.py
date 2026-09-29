@@ -35,8 +35,9 @@ from elf.config import MODEL  # noqa: E402
 
 LIVE = json.loads((_lib.ROOT / "data/public/model_params.json").read_text())["params"]
 P = {**copy.deepcopy(MODEL), **{k: LIVE[k] for k in ("w_last3", "w_season", "w_prev", "coef")}}
-STREAKS = [2, 3]
-KS = [3, 6, 12]
+STREAKS = [3]
+KS = [3, 6]
+P0S = [None, 0.95, 1.0]      # the shrinkage target: the position's rate, or "no evidence = on the sheet"
 MODES = ["this", "both"]
 FAR = pd.Timestamp("2100-01-01", tz="UTC")
 
@@ -123,13 +124,13 @@ def participation(df: pd.DataFrame, season: int) -> dict:
     return res
 
 
-def factor(d: pd.DataFrame, k: float, mode: str, pos_rate: dict) -> pd.Series:
+def factor(d: pd.DataFrame, k: float, mode: str, pos_rate: dict, p0_fixed: float | None = None) -> pd.Series:
     app, avail = d["app"].astype(float), d["avail"].astype(float)
     if mode == "both":
         same = d["same_team"].fillna(False)
         app = app + d["prev_app"].fillna(0).where(same, 0)
         avail = avail + d["prev_avail"].fillna(0).where(same, 0)
-    p0 = d["position"].map(pos_rate).fillna(0.85)
+    p0 = d["position"].map(pos_rate).fillna(0.85) if p0_fixed is None else p0_fixed
     return ((app + k * p0) / (avail + k)).clip(0, 1)
 
 
@@ -161,8 +162,9 @@ def main():
                 for k in KS:
                     rate = {pos: float(g["app"].sum() / max(g["avail"].sum(), 1))
                             for pos, g in d.groupby("position")}
-                    f = factor(d, k, mode, rate)
-                    r[f"S{s}_{mode}_k{k}"] = metrics(d, base * f.fillna(1.0))
+                    for p0 in P0S:
+                        f = factor(d, k, mode, rate, p0)
+                        r[f"S{s}_{mode}_k{k}_p{p0 or 'pos'}"] = metrics(d, base * f.fillna(1.0))
         res["seasons"][season] = r
         print(season, json.dumps(r, indent=1))
     res["out_of_sample"] = {}
