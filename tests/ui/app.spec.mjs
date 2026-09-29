@@ -190,8 +190,15 @@ test("Μοντέλο: the autopilot card (points vs the average manager; the own
     await expect(card).toContainText("164.5");
     await expect(card).toContainText("+18.4");                      // 151.2 raw vs 132.8 average manager
     await expect(card).toContainText("Για το Round");
-    if (edition === "personal") await expect(card).toContainText("138.8");
-    else await expect(card).not.toContainText("Εσύ");
+    await expect(card).toContainText("#45.123");                    // its rank in the game's standings
+    await expect(card).toContainText("top 13% από 336.908");
+    if (edition === "personal") {
+      await expect(card).toContainText("138.8");
+      await expect(card).toContainText("εσύ #98.803");
+    } else {
+      await expect(card).not.toContainText("Εσύ");
+      await expect(card).not.toContainText("εσύ #");
+    }
     await checkLayout(page, `autopilot ${edition}`);
   }
 });

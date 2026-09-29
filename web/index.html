@@ -183,10 +183,10 @@ footer.fb .fbcopy { margin-left: 6px; font: inherit; font-size: 12px; padding: 4
 .sheet .x { border: 0; background: var(--surface-1); color: var(--text-primary); font-size: 20px; width: 36px; height: 36px;
   border-radius: 50%; cursor: pointer; flex: none; }
 .sheet h3 { font-size: 13px; text-transform: uppercase; letter-spacing: .04em; color: var(--text-secondary); margin: 16px 0 6px; }
-.kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
+.kpis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
 .kpi { background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px; padding: 8px; text-align: center; }
 .kpi b { display: block; font-size: 22px; font-variant-numeric: tabular-nums; }
-.kpi span { font-size: 12px; color: var(--text-muted); }
+.kpi span { font-size: 12px; color: var(--text-muted); overflow-wrap: anywhere; }
 .why { list-style: none; padding: 0; margin: 0; font-size: 14px; }
 .why li { padding: 5px 0; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; gap: 10px; }
 .why li span:last-child { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
@@ -1151,21 +1151,28 @@ function autopilotCard(ap) {
   const diff = vs.reduce((a, r) => a + (r.raw - r.avg_raw), 0);
   const sgn = (x) => `${x >= 0 ? "+" : "−"}${f1(Math.abs(x))}`;
   const who = (p) => `${esc(nm(p.name || ""))}${p.captain ? " <b>(C)</b>" : ""}`;
+  const num = (x) => Number(x).toLocaleString("el-GR");
+  const top = (r, n) => { const x = (100 * r) / n; return x < 1 ? x.toFixed(2) : x < 10 ? x.toFixed(1) : Math.round(x); };
+  const ranked = done.filter((r) => r.rank != null).slice(-1)[0];
+  const ranks = done.some((r) => r.rank != null);
   let h = `<div class="card"><h2>Autopilot: μια ομάδα που κάνει μόνο ό,τι προτείνουμε</h2>
     <p class="muted" style="margin-top:0">Ξεκίνησε στο Round ${ap.start_round} με 100 credits. Κάθε αγωνιστική κάνει τις μεταγραφές, την πεντάδα και τον αρχηγό
     που προτείνει η εφαρμογή (η τελευταία πρόταση πριν το τζάμπολ), με τους κανόνες του παιχνιδιού.</p>`;
   if (done.length) {
     h += `<div class="kpis"><div class="kpi"><b>${f1(ap.total.pts)}</b><span>πόντοι σε ${done.length} ${done.length === 1 ? "αγωνιστική" : "αγωνιστικές"}</span></div>
+      ${ranked ? `<div class="kpi"><b>#${num(ranked.rank)}</b><span>θέση στη γενική κατάταξη (top ${top(ranked.rank, ranked.teams)}% από ${num(ranked.teams)})${mine && ranked.my_rank ? ` · εσύ #${num(ranked.my_rank)}` : ""}</span></div>` : ""}
       ${vs.length ? `<div class="kpi"><b class="${diff >= 0 ? "up" : "down"}">${sgn(diff / vs.length)}</b><span>ανά αγωνιστική vs μέσο manager</span></div>` : ""}
       ${mine ? `<div class="kpi"><b>${f1(done.reduce((a, r) => a + (r.my_pts ?? 0), 0))}</b><span>η ομάδα σου</span></div>` : ""}</div>
       <div class="tablewrap"><table class="fit"><thead><tr><th>Αγων.</th><th class="num">Πόντοι</th><th class="num">11 παίκτες</th>
-        <th class="num">Μέσος manager</th><th class="num">Διαφορά</th>${mine ? '<th class="num">Εσύ</th>' : ""}</tr></thead><tbody>
+        <th class="num">Μέσος manager</th><th class="num">Διαφορά</th>${ranks ? '<th class="num">Θέση</th>' : ""}${mine ? '<th class="num">Εσύ</th>' : ""}</tr></thead><tbody>
       ${done.map((r) => `<tr><td>R${r.round}</td><td class="num"><b>${f1(r.pts)}</b></td><td class="num">${f1(r.raw)}</td>
         <td class="num">${r.avg_raw != null ? f1(r.avg_raw) : "–"}</td>
         <td class="num ${r.avg_raw == null ? "" : r.raw >= r.avg_raw ? "up" : "down"}">${r.avg_raw != null ? sgn(r.raw - r.avg_raw) : "–"}</td>
+        ${ranks ? `<td class="num">${r.rank != null ? `#${num(r.rank)}` : "–"}</td>` : ""}
         ${mine ? `<td class="num">${r.my_pts != null ? f1(r.my_pts) : "–"}</td>` : ""}</tr>`).join("")}</tbody></table></div>
       <p class="muted">«Πόντοι»: με τους κανόνες του παιχνιδιού (πάγκος 50%, αρχηγός ×2, coach). «11 παίκτες»: οι πόντοι όλης της ομάδας χωρίς πάγκο/αρχηγό,
       για να συγκρίνεται με τον <b>μέσο manager</b>, που είναι εκτίμηση από το POP (πόσοι έχουν κάθε παίκτη): ακριβής για το ποιους έχουν, όχι για το ποιον βάζουν αρχηγό.
+      «Θέση»: όπου θα ήταν με το σύνολο των πόντων του στη γενική κατάταξη του παιχνιδιού μετά από εκείνη την αγωνιστική.
       Μία αγωνιστική δεν λέει τίποτα· κρίνεται σε 5–10.</p>`;
   } else {
     h += `<p class="muted">Η πρώτη του αγωνιστική βαθμολογείται μόλις ολοκληρωθεί.</p>`;

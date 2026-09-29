@@ -258,6 +258,12 @@ def fantasy_state(clubs: pd.DataFrame, roster: pd.DataFrame, season: int) -> dic
                     p_info = fantasy.team_matchday(t["id"], prev["id"])
                     if _num(p_info.get("pts")) is not None:
                         out["my_points"] = {str(prev["number"]): _num(p_info["pts"])}
+                    # the general classification after that matchday: the autopilot's rank in it
+                    ov = fantasy.overall_tournament(t["id"])
+                    if ov:
+                        out["overall"] = {"id": ov["id"], "teams": int(ov["num_fantasy_teams"]),
+                                          "matchday_id": prev["id"], "round": int(prev["number"]),
+                                          "my_total": _num(p_info.get("total_pts"))}
                 except Exception:  # noqa: BLE001 - an extra, never breaks the run
                     pass
     except fantasy.TokenError as e:
@@ -894,7 +900,7 @@ def build(offline: bool = False) -> dict:
             autopilot.update(CURRENT_SEASON, rnd, trade_rnd, _opt_rows(ap_pool), ap_pool,
                              max_trades=11 if trade_rnd == 1 or (trade_rnd - 1) in UNLIMITED_AFTER else 4,
                              min_gain=MIN_GAIN_PER_TRADE * sum(horizon_weights(trade_rnd)) / sum(HORIZON_WEIGHTS),
-                             my_points=fs.get("my_points"))
+                             my_points=fs.get("my_points"), overall=fs.get("overall"))
         except Exception as e:  # noqa: BLE001 - never breaks the update
             health.append(f"autopilot: {type(e).__name__}: {e}")
     try:
