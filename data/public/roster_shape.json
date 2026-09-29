@@ -41,7 +41,7 @@
    },
    "quotation": "float",
    "is_on_fire": "NoneType",
-   "pts": "int",
+   "pts": "float",
    "is_injured": "bool",
    "probability_of_playing": "int",
    "jersey": "str",

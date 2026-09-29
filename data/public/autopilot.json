@@ -12,7 +12,7 @@
      "person_id": "001518",
      "name": "RICCI, GIAMPAOLO",
      "team": "MIL",
-     "role": "πάγκος",
+     "role": "5άδα",
      "captain": false,
      "x_now": 4.4
     },
@@ -23,7 +23,7 @@
      "person_id": "001844",
      "name": "HACKETT, DANIEL",
      "team": "VIR",
-     "role": "πάγκος",
+     "role": "6ος",
      "captain": false,
      "x_now": 4.0
     },
@@ -67,7 +67,7 @@
      "person_id": "010781",
      "name": "LUNDBERG, IFFE",
      "team": "TEL",
-     "role": "6ος",
+     "role": "πάγκος",
      "captain": false,
      "x_now": 13.1
     },
@@ -89,7 +89,7 @@
      "person_id": "012731",
      "name": "NDIAYE, MBAYE",
      "team": "OLY",
-     "role": "5άδα",
+     "role": "πάγκος",
      "captain": false,
      "x_now": 10.2
     },
@@ -128,12 +128,25 @@
     }
    ],
    "x_total": 144.7,
-   "pts": 115.2,
+   "moves": {
+    "2": {
+     "in": [
+      4012,
+      3886
+     ],
+     "out": [
+      3905,
+      3948
+     ],
+     "captain": null
+    }
+   },
+   "pts": 119.1,
    "raw": 85.7,
    "avg_raw": null,
    "my_pts": 138.75,
-   "rank": 214928,
-   "teams": 337417,
+   "rank": 203985,
+   "teams": 338115,
    "my_rank": 98682
   },
   {
@@ -395,12 +408,13 @@
    "x_total": 169.3
   }
  ],
+ "seed_id": "8749e56f0015",
  "start_round": 1,
  "total": {
   "rounds": 1,
-  "pts": 115.2,
+  "pts": 119.1,
   "raw": 85.7,
   "avg_raw": null
  },
- "generated": "2026-09-29T18:11:08.789392+00:00"
+ "generated": "2026-09-29T18:52:57.307776+00:00"
 }
