@@ -42,8 +42,6 @@ def test_normal_report_is_valid_telegram_html():
         assert telegram_html_ok(t), t
 
 
-@pytest.mark.xfail(strict=True, reason="BUG: σύνοψη/σημειώσεις Gemini και μηνύματα σφαλμάτων "
-                   "(health) μπαίνουν στο report χωρίς html.escape — ένα '<' σκοτώνει όλο το μήνυμα")
 @pytest.mark.parametrize("where", ["summary", "note", "health"])
 def test_free_text_is_escaped(where):
     bad = "παίζει <20 λεπτά"
@@ -51,4 +49,13 @@ def test_free_text_is_escaped(where):
            "availability": [{"player": "Vezenkov, Sasha", "status": "out",
                              "note": bad if where == "note" else "ok"}], "expert": []}
     health = ["βελτιστοποίηση ομάδας: KeyError: <NA>"] if where == "health" else []
-    assert all(telegram_html_ok(t) for t in texts(dig, health))
+    out = texts(dig, health)
+    assert all(telegram_html_ok(t) for t in out)
+    shown = "&lt;NA&gt;" if where == "health" else "παίζει &lt;20 λεπτά"
+    assert shown in out[0], "το κείμενο φαίνεται (escaped), δεν χάνεται"
+
+
+def test_tags_of_the_report_itself_are_not_escaped():
+    t = texts({"summary_el": "a & b", "availability": [], "expert": []}, [])[0]
+    assert "<b>Round 3 — Turn 1</b>" in t and "Ειδικοί &amp; νέα" in t and "a &amp; b" in t
+    assert "&amp;amp;" not in t, "όχι διπλό escape"

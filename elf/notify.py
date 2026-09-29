@@ -11,6 +11,7 @@ import json
 import os
 import sys
 from datetime import datetime, timezone
+from html import escape
 from zoneinfo import ZoneInfo
 
 import requests
@@ -24,14 +25,26 @@ def today() -> str:
     return datetime.now(ZoneInfo(TIMEZONE)).date().isoformat()
 
 
+def _pieces(line: str, limit: int):
+    """A line longer than the limit, cut at spaces where possible."""
+    while len(line) > limit:
+        cut = line.rfind(" ", 0, limit)
+        cut = cut if cut > 0 else limit
+        yield line[:cut]
+        line = line[cut:].lstrip(" ")
+    yield line
+
+
 def chunks(text: str, limit: int = 3800) -> list[str]:
-    """Telegram allows 4096 chars per message: split on line boundaries."""
+    """Telegram allows 4096 chars per message: split on line boundaries (and inside a
+    line only when that line alone is too long)."""
     out, cur = [], ""
-    for line in text.split("\n"):
-        if cur and len(cur) + len(line) + 1 > limit:
-            out.append(cur)
-            cur = ""
-        cur += line + "\n"
+    for raw in text.split("\n"):
+        for line in _pieces(raw, limit - 1):
+            if cur and len(cur) + len(line) + 1 > limit:
+                out.append(cur)
+                cur = ""
+            cur += line + "\n"
     if cur.strip():
         out.append(cur)
     return out
@@ -75,18 +88,20 @@ def health() -> str | None:
     now = sorted(set(pred.get("health") or []))
     path = PUBLIC / "health_last.json"
     before = sorted(set(json.loads(path.read_text()))) if path.exists() else []
-    path.write_text(json.dumps(now, ensure_ascii=False))
     if now == before:
         return None
     new = [h for h in now if h not in before]
     if now:
         text = "⚠️ <b>Προβλήματα στο update</b> (δεν φαίνονται στη δημόσια έκδοση):\n" + \
-            "\n".join(f"• {h}" for h in now)
+            "\n".join(f"• {escape(h, quote=False)}" for h in now)
         if not new:
-            text = "✅ Λύθηκαν κάποια προβλήματα. Απομένουν:\n" + "\n".join(f"• {h}" for h in now)
+            text = "✅ Λύθηκαν κάποια προβλήματα. Απομένουν:\n" + \
+                "\n".join(f"• {escape(h, quote=False)}" for h in now)
     else:
         text = "✅ Όλα λειτουργούν ξανά κανονικά."
     send(text)
+    # only once it was delivered: if Telegram failed, the next run tries again
+    path.write_text(json.dumps(now, ensure_ascii=False))
     return text
 
 

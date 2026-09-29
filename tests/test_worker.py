@@ -273,3 +273,24 @@ def test_schedule_error_is_reported_only_at_seven_and_ten():
     (sent,) = tg(res)
     assert "Πρόβλημα στο πρόγραμμα" in sent["text"]
     assert tg(at(f"{DAY}T12:05:00Z", data={})) == [], "όχι spam κάθε ώρα"
+
+
+# ------------------------------------------------------------------ HTML safety
+
+def test_one_overlong_line_is_split_without_empty_messages():
+    d = data()
+    words = [f"w{i}" for i in range(2000)]
+    d["report.json"]["messages"][0]["text"] = "head\n" + " ".join(words)
+    sent = tg(one(data=d, event=msg("/report")))
+    assert len(sent) >= 3 and all(0 < len(s["text"]) <= 4096 for s in sent)
+    assert " ".join(s["text"] for s in sent).split() == ["head"] + words
+
+
+def test_health_and_errors_are_escaped():
+    d = data()
+    d["predictions.json"]["health"] = ["πηγή: <html> & co"]
+    (sent,) = tg(one(data=d, event=msg("/health")))
+    assert "&lt;html&gt; &amp; co" in sent["text"] and "<html>" not in sent["text"]
+    d["predictions.json"]["players"][0]["name"] = "O<Neil, A&B"
+    (sent,) = tg(one(data=d, event=msg("/top")))
+    assert "O&lt;Neil, A&amp;B" in sent["text"] and "<b>20.5</b>" in sent["text"]

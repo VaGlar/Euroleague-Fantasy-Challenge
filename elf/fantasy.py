@@ -48,10 +48,14 @@ def token_expiry(data: bool = False) -> dict:
         return {"kind": "opaque", "days_left": None}
     try:
         pad = parts[1] + "=" * (-len(parts[1]) % 4)
-        exp = json.loads(base64.urlsafe_b64decode(pad)).get("exp")
+        payload = json.loads(base64.urlsafe_b64decode(pad))
     except (ValueError, json.JSONDecodeError):
         return {"kind": "opaque", "days_left": None}
-    days = None if exp is None else round((exp - time.time()) / 86400, 2)
+    if not isinstance(payload, dict):
+        return {"kind": "opaque", "days_left": None}
+    exp = payload.get("exp")
+    ok = isinstance(exp, (int, float)) and not isinstance(exp, bool)
+    days = round((exp - time.time()) / 86400, 2) if ok else None
     return {"kind": "jwt", "days_left": days}
 
 

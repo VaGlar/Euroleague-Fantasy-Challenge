@@ -17,6 +17,7 @@ from __future__ import annotations
 import hashlib
 import json
 import sys
+from html import escape
 
 from . import fantasy, notify, optimize
 from .config import PUBLIC
@@ -250,15 +251,20 @@ def check():
         say(head + "\n".join(notes) + "✅ Η πεντάδα σου στο παιχνίδι είναι ήδη η προτεινόμενη.")
 
 
-if __name__ == "__main__":
-    mode = sys.argv[1] if len(sys.argv) > 1 else "preview"
+def main(argv: list[str]) -> int:
+    mode = argv[0] if argv else "preview"
     try:
         if mode == "apply":
-            apply(sys.argv[2])
+            apply(argv[1])
         elif mode == "check":
             check()
         else:
             preview()
     except (Abort, fantasy.TokenError) as e:
-        say(f"⛔ /lineup: {e}")
-        sys.exit(0 if isinstance(e, Abort) else 1)
+        say(f"⛔ /lineup: {escape(str(e), quote=False)}")   # may quote the game's HTML error page
+        return 0 if isinstance(e, Abort) else 1
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

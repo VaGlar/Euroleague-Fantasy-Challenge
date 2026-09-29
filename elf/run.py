@@ -9,6 +9,7 @@ import argparse
 import json
 import os
 import unicodedata
+from html import escape
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 
@@ -913,15 +914,20 @@ def build(offline: bool = False) -> dict:
     return {"round": rnd, "messages": msgs}
 
 
+def _e(s) -> str:
+    """Text for a Telegram HTML message: a stray '<' or '&' makes Telegram reject it all."""
+    return escape(str(s), quote=False)
+
+
 def _fmt(r) -> str:
     ha = "🏠" if r.get("home") else "✈️"
     dollar = " $" if r.get("price_trend") == "up" else ""
-    return (f"{r['name'].split(',')[0].title()} ({r['team']}) {ha} vs {r.get('opp')} — "
+    return (f"{_e(r['name'].split(',')[0].title())} ({_e(r['team'])}) {ha} vs {_e(r.get('opp'))} — "
             f"<b>{r['x_now']:.1f}</b>{dollar}")
 
 
 def _short(r) -> str:
-    return f"{str(r['name']).split(',')[0].title()} ({r['team']})"
+    return _e(f"{str(r['name']).split(',')[0].title()} ({r['team']})")
 
 
 def in_round_squad(my: dict | None) -> list[dict]:
@@ -1097,11 +1103,12 @@ def messages(rnd, trn, table, my, dig, health, dash: str | None = None) -> list[
             inj = [a for a in dig.get("availability", []) if a.get("status") != "available"]
             if inj:
                 lines += ["", "🏥 <b>Διαθεσιμότητα</b>"]
-                lines += [f"• {a['player']}: {a['status']} — {a.get('note', '')}" for a in inj[:8]]
+                lines += [f"• {_e(a['player'])}: {_e(a['status'])} — {_e(a.get('note', ''))}"
+                          for a in inj[:8]]
             if dig.get("summary_el") and tu["turn"] == 1:
-                lines += ["", "📰 <b>Ειδικοί & νέα</b>", dig["summary_el"]]
+                lines += ["", "📰 <b>Ειδικοί &amp; νέα</b>", _e(dig["summary_el"])]
         if health:
-            lines += ["", "⚠️ " + " | ".join(health[:4])]
+            lines += ["", "⚠️ " + _e(" | ".join(health[:4]))]
         if dash:
             lines += ["", f'🔗 <a href="{dash}">Dashboard</a>']
         msgs.append({"date": tu["date"], "turn": tu["turn"],

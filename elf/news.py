@@ -94,6 +94,9 @@ def _substack_api(src: dict) -> list[dict]:
                             FULL_TEXT if src.get("fantasy") else EXCERPT)} for p in r.json()]
 
 
+ATOM = "{http://www.w3.org/2005/Atom}"
+
+
 def fetch_rss(src: dict) -> list[dict]:
     try:
         content = _get_feed(src["url"])
@@ -114,6 +117,16 @@ def fetch_rss(src: dict) -> list[dict]:
             "date": _date(it.findtext("pubDate")),
             "text": _clean(it.findtext("{http://purl.org/rss/1.0/modules/content/}encoded")
                            or it.findtext("description"), limit),
+        })
+    for it in root.iter(f"{ATOM}entry"):
+        links = it.findall(f"{ATOM}link")
+        link = next((x for x in links if x.get("rel", "alternate") == "alternate"),
+                    links[0] if links else None)
+        items.append({
+            "title": _clean(it.findtext(f"{ATOM}title"), 200),
+            "url": link.get("href") if link is not None else None,
+            "date": _date(it.findtext(f"{ATOM}published") or it.findtext(f"{ATOM}updated")),
+            "text": _clean(it.findtext(f"{ATOM}content") or it.findtext(f"{ATOM}summary"), limit),
         })
     return items
 
