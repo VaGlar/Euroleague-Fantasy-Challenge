@@ -38,17 +38,7 @@ round,source,stance,person_id,name,team,model_xpts
 1,EuroLeague Fantasy Tips (official),pick,008084,"MANTZOUKAS, ELEFTHERIOS",PAN,13.25
 1,EuroLeague Fantasy Tips (official),pick,007982,"WILLIAMS-GOSS, NIGEL",ZAL,9.83
 1,EuroLeague Fantasy Tips (official),pick,011706,"SAINT-SUPERY, MARIO",PAM,0.0
-2,Basketball Sphere – Fantasy,pick,012608,"SHORTS, TJ",PAM,15.86
-2,Basketball Sphere – Fantasy,pick,007975,"FRANCISCO, SYLVAIN",PAN,19.81
-2,Basketball Sphere – Fantasy,pick,013369,"JONES, CARLIK",PAR,25.11
-2,Basketball Sphere – Fantasy,pick,014734,"LAWSON, A.J.",BAS,15.14
-2,Basketball Sphere – Fantasy,pick,010781,"LUNDBERG, IFFE",TEL,4.75
-2,Basketball Sphere – Fantasy,pick,011706,"SAINT-SUPERY, MARIO",PAM,11.24
-2,Basketball Sphere – Fantasy,captain,003469,"VEZENKOV, SASHA",OLY,25.45
-2,Basketball Sphere – Fantasy,pick,011217,"TAYLOR, KAMERON",PAM,17.29
-2,Basketball Sphere – Fantasy,pick,014207,"OMORUYI, EUGENE",BES,12.99
-2,Basketball Sphere – Fantasy,pick,014009,"STEVENS, LAMAR",PAR,11.31
-2,Basketball Sphere – Fantasy,pick,015140,"NKAMHOUA, OLIVIER",BAR,5.68
+2,EuroLeague Fantasy Tips (official),captain,003842,"LESSORT, MATHIAS",PAN,21.8
 2,EuroLeague Fantasy Tips (official),pick,003842,"LESSORT, MATHIAS",PAN,21.8
 2,EuroLeague Fantasy Tips (official),pick,012788,"OTURU, DAN",HTA,23.71
 2,EuroLeague Fantasy Tips (official),pick,007553,"BALCEROWSKI, OLEK",BAR,13.65
@@ -59,6 +49,8 @@ round,source,stance,person_id,name,team,model_xpts
 2,EuroLeague Fantasy Tips (official),pick,007230,"SEDEKERSKIS, TADAS",BAS,10.75
 2,EuroLeague Fantasy Tips (official),pick,014168,"KEY, BRAXTON",ULK,15.79
 2,EuroLeague Fantasy Tips (official),pick,007866,"MITOGLOU, KONSTANTINOS",PAN,10.09
+2,EuroLeague Fantasy Tips (official),pick,007975,"FRANCISCO, SYLVAIN",PAN,19.81
+2,EuroLeague Fantasy Tips (official),pick,013369,"JONES, CARLIK",PAR,25.11
 2,EuroLeague Fantasy Tips (official),pick,006661,"WILBEKIN, SCOTTIE",BES,9.24
 2,EuroLeague Fantasy Tips (official),pick,015161,"FODZO DADA, MARC-OWEN",ASV,15.99
 2,EuroLeague Fantasy Tips (official),pick,007513,"GIEDRAITIS, DOVYDAS",ZAL,0.84
@@ -66,7 +58,12 @@ round,source,stance,person_id,name,team,model_xpts
 2,EuroBallin (Substack),pick,007027,"MALEDON, THEO",MAD,13.68
 2,EuroBallin (Substack),pick,011205,"HALL, DEVON",MIL,13.27
 2,EuroBallin (Substack),pick,007032,"LO, MAODO",ZAL,5.81
+2,EuroBallin (Substack),pick,015161,"FODZO DADA, MARC-OWEN",ASV,15.99
+2,EuroBallin (Substack),pick,011217,"TAYLOR, KAMERON",PAM,17.29
 2,EuroBallin (Substack),pick,008829,"PETERS, ALEC",MIL,16.64
 2,EuroBallin (Substack),pick,014416,"EDWARDS, KESSLER",VIR,7.92
+2,EuroBallin (Substack),pick,007866,"MITOGLOU, KONSTANTINOS",PAN,10.09
 2,EuroBallin (Substack),captain,003842,"LESSORT, MATHIAS",PAN,21.8
+2,EuroBallin (Substack),pick,007553,"BALCEROWSKI, OLEK",BAR,13.65
 2,EuroBallin (Substack),pick,011214,"RIVERO, JASIEL",PAM,8.2
+2,Eurohoops,pick,008829,"PETERS, ALEC",MIL,16.64
