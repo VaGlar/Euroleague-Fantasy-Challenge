@@ -208,6 +208,25 @@ test.describe("public edition", () => {
     for (const k of ["players", "bank"]) expect(after[k]).toEqual(before[k]);
   });
 
+  test("trades left can be declared (the game counts more than the app saw): the proposals follow", async ({ page }) => {
+    await savedTeam(page);
+    await expect(page.locator("#tmLeft")).toHaveValue("4");        // at the «same team?» step
+    await page.locator("#tmLeft").selectOption("1");
+    await expect(header(page)).toContainText("Trades 3/4");
+    await page.locator("#tmConfirm").click();
+    expect(await tradeRows(page).count()).toBeLessThanOrEqual(1);   // not 4 again
+
+    await option(page, "mLeft");                                    // and later, from the options
+    await page.locator('#sheet [data-left="0"]').click();
+    await expect(header(page)).toContainText("Trades 4/4");
+    await expect(tradeRows(page)).toHaveCount(0);
+    await option(page, "mLeft");
+    await page.locator('#sheet [data-left="4"]').click();
+    await expect(header(page)).toContainText("Trades 0/4");
+    await expect(tradeRows(page).first()).toBeVisible();
+    await checkLayout(page, "trades left");
+  });
+
   test("all the proposed trades together fit in the credits left", async ({ page }) => {
     await savedTeam(page);
     await page.locator("#tmConfirm").click();
