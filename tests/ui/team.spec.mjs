@@ -188,6 +188,45 @@ test.describe("public edition", () => {
     await expect(header(page)).toContainText("Trades 0/4");
   });
 
+  test("«Αλλαγή ομάδας» after trades: the count starts again, but undo still brings back the round's team", async ({ page }) => {
+    await savedTeam(page);
+    await page.locator("#tmConfirm").click();
+    const before = await stored(page);
+    await tradeRows(page).first().locator(".tm-done").click();
+    await tradeRows(page).first().locator(".tm-done").click();
+    await expect(header(page)).toContainText("Trades 2/4");
+
+    await option(page, "mEdit");                                   // edit the team, save it as it is
+    await expect(page.locator("#team .tm-h")).toHaveText("Αλλαγή ομάδας");
+    await page.locator("#tmFinish").click();
+    await expect(header(page)).toContainText("Trades 0/4");        // not binding: the count starts again
+
+    await option(page, "mUsed");                                   // …but the undo is still there
+    await expect(page.locator("#sheet")).toContainText("Αναίρεση των αλλαγών");
+    await page.locator("#tmUndoOk").click();
+    const after = await stored(page);
+    for (const k of ["players", "bank"]) expect(after[k]).toEqual(before[k]);
+  });
+
+  test("trades left can be declared (the game counts more than the app saw): the proposals follow", async ({ page }) => {
+    await savedTeam(page);
+    await expect(page.locator("#tmLeft")).toHaveValue("4");        // at the «same team?» step
+    await page.locator("#tmLeft").selectOption("1");
+    await expect(header(page)).toContainText("Trades 3/4");
+    await page.locator("#tmConfirm").click();
+    expect(await tradeRows(page).count()).toBeLessThanOrEqual(1);   // not 4 again
+
+    await option(page, "mLeft");                                    // and later, from the options
+    await page.locator('#sheet [data-left="0"]').click();
+    await expect(header(page)).toContainText("Trades 4/4");
+    await expect(tradeRows(page)).toHaveCount(0);
+    await option(page, "mLeft");
+    await page.locator('#sheet [data-left="4"]').click();
+    await expect(header(page)).toContainText("Trades 0/4");
+    await expect(tradeRows(page).first()).toBeVisible();
+    await checkLayout(page, "trades left");
+  });
+
   test("all the proposed trades together fit in the credits left", async ({ page }) => {
     await savedTeam(page);
     await page.locator("#tmConfirm").click();

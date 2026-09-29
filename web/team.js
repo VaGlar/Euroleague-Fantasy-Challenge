@@ -159,11 +159,26 @@
   }
   // trades already made for the round the proposal is for (so a done trade isn't re-proposed)
   const usedTrades = (t, ti) => (t.used && t.used.round === ti.round ? t.used.n : 0);
+  // the team as it was before this round's first change (trade or «Αλλαγή ομάδας»), if it differs from now
+  const roundStart = (t, ti) => (t.used && t.used.round === ti.round && t.used.before ? t.used.before : null);
+  const sameTeam = (a, b) => a.players.map((x) => x.id).sort().join() === b.players.map((x) => x.id).sort().join()
+    && Number(a.bank) === Number(b.bank);
+  const canUndo = (t, ti) => usedTrades(t, ti) > 0 || (!!roundStart(t, ti) && !sameTeam(t, roundStart(t, ti)));
+  // «μου μένουν N μεταγραφές»: the game counts every change of the round, the app only what it saw
+  const tradesLeft = (t, ti) => Math.max(0, (ti.max_trades ?? 4) - usedTrades(t, ti));
+  function setTradesLeft(t, left) {
+    const ti = P.trade_info || { round: P.round };
+    const n = Math.max(0, (ti.max_trades ?? 4) - left);
+    t.used = { round: ti.round, n, before: roundStart(t, ti) };
+  }
+  const leftPicker = (t, ti, id) => ti.max_trades > 4 ? "" : `<label class="tm-left">Μεταγραφές που σου μένουν:
+      <select id="${id}">${Array.from({ length: ti.max_trades + 1 }, (_, i) => ti.max_trades - i)
+        .map((v) => `<option value="${v}"${v === tradesLeft(t, ti) ? " selected" : ""}>${v}</option>`).join("")}</select></label>`;
   function countTrade(t) {
     const ti = P.trade_info || { round: P.round };
     const n = usedTrades(t, ti);
     // before the round's first trade, keep the team as it was, so the trades can be undone
-    const before = n ? t.used.before : JSON.parse(JSON.stringify({ players: t.players, bank: t.bank,
+    const before = roundStart(t, ti) || JSON.parse(JSON.stringify({ players: t.players, bank: t.bank,
       roles: t.roles || null, captain: t.captain ?? null, confirmed: !!t.confirmed }));
     t.used = { round: ti.round, n: n + 1, before };
   }
@@ -348,7 +363,8 @@
       ? `⏱ Round ${P.round}${turnNow()} σε εξέλιξη`
       : `⏱ Round ${P.round}${turnNow()} · κλείνει ${deadline()}`;
     const confirm = !t.confirmed ? `<li class="tm-item"><span class="tm-kind">👀</span><span class="tm-what"><b>Έλεγξε την πεντάδα σου</b>
-        <span class="tm-why">Βάλαμε ρόλους με βάση την πρόταση. Αν στο παιχνίδι είναι αλλιώς, σύρε τους παίκτες όπως είναι εκεί.</span></span>
+        <span class="tm-why">Βάλαμε ρόλους με βάση την πρόταση. Αν στο παιχνίδι είναι αλλιώς, σύρε τους παίκτες όπως είναι εκεί.</span>
+        ${t.game ? "" : leftPicker(t, pl.ti, "tmLeft")}</span>
         <button class="tm-done" id="tmConfirm">✓ Είναι ίδια</button></li>` : "";
     const keepBtn = (o) => `<button class="tm-keep" data-keep="${o.id}">🔒 Κράτα τον ${esc(sur(o.name))} αυτή την αγωνιστική</button>`;
     const avoidBtn = (n) => n ? `<button class="tm-keep" data-avoid="${n.fantasy_id ?? n.id}">🚫 Όχι τον ${esc(sur(n.name))}, πρότεινε άλλον</button>` : "";
@@ -533,7 +549,10 @@
       <button id="mBackup">🔗 Αντίγραφο ασφαλείας (σύνδεσμος)</button>
       <button id="mEdit">✏️ Αλλαγή ομάδας</button>
       <button id="mBank">💰 Διόρθωση credits</button>
-      ${usedTrades(t, P.trade_info || {}) ? `<button id="mUsed">↩️ Αναίρεση των μεταγραφών που έκανες (${usedTrades(t, P.trade_info || {})})</button>` : ""}
+      ${(P.trade_info || {}).max_trades > 4 ? "" : `<button id="mLeft">🔁 Μεταγραφές που μένουν (${tradesLeft(t, P.trade_info || {})})</button>`}
+      ${canUndo(t, P.trade_info || {}) ? `<button id="mUsed">↩️ ${usedTrades(t, P.trade_info || {})
+        ? `Αναίρεση των μεταγραφών που έκανες (${usedTrades(t, P.trade_info || {})})`
+        : "Αναίρεση των αλλαγών: η ομάδα όπως ήταν στην αρχή της αγωνιστικής"}</button>` : ""}
       ${inline ? "" : `<button id="mInstall">📱 Βάλ' το στην οθόνη σου</button>`}
       <button id="mMail">✉️ Ιδέα ή πρόβλημα; Αντιγραφή του email μας</button>
       <button id="mDel" class="tm-danger">🗑 Διαγραφή ομάδας</button></div>`;
@@ -555,12 +574,23 @@
         if (isNaN(v) || v < 0) { toast("Γράψε ένα ποσό, π.χ. 3,5"); return; }
         t.bank = v; save(t); closePlayer(); render(best); };
     };
+    if ($("#mLeft")) $("#mLeft").onclick = () => {
+      close();
+      const ti = P.trade_info || {};
+      sheet(`<div class="sh"><div><h2>Μεταγραφές που μένουν</h2><div class="muted">Όσες δείχνει το παιχνίδι για το Round ${ti.round} (π.χ. αν άλλαξες ομάδα κι εκεί)</div></div>
+          <button class="x" onclick="closePlayer()">×</button></div>
+        <div class="tm-acts">${Array.from({ length: ti.max_trades + 1 }, (_, i) => ti.max_trades - i).map((v) =>
+          `<button class="tm-act" data-left="${v}"><span>${v}</span><div>${v === 1 ? "1 μεταγραφή" : `${v} μεταγραφές`}${v === tradesLeft(t, ti) ? " <small>τώρα</small>" : ""}</div></button>`).join("")}</div>`);
+      document.querySelectorAll("#sheet [data-left]").forEach((b) => b.onclick = () => {
+        setTradesLeft(t, Number(b.dataset.left)); save(t); closePlayer(); render(best);
+        toast(`Μένουν ${b.dataset.left} μεταγραφές· οι προτάσεις προσαρμόστηκαν`); });
+    };
     if ($("#mUsed")) $("#mUsed").onclick = () => {
       close();
       const n = usedTrades(t, P.trade_info || {}), snap = !!t.used.before;
-      sheet(`<div class="sh"><h2>Αναίρεση ${n === 1 ? "της μεταγραφής" : `των ${n} μεταγραφών`};</h2><button class="x" onclick="closePlayer()">×</button></div>
-        <p class="muted">${snap ? "Η ομάδα, το υπόλοιπο, οι θέσεις και ο αρχηγός γυρίζουν όπως ήταν πριν την πρώτη μεταγραφή αυτής της αγωνιστικής."
-          : "Αυτές οι μεταγραφές έγιναν πριν υπάρξει η αναίρεση, οπότε μηδενίζεται μόνο ο μετρητής· τους παίκτες τους αλλάζεις από την «Αλλαγή ομάδας»."}</p>
+      sheet(`<div class="sh"><h2>Αναίρεση ${n === 0 ? "των αλλαγών" : n === 1 ? "της μεταγραφής" : `των ${n} μεταγραφών`};</h2><button class="x" onclick="closePlayer()">×</button></div>
+        <p class="muted">${snap ? "Η ομάδα, το υπόλοιπο, οι θέσεις και ο αρχηγός γυρίζουν όπως ήταν πριν την πρώτη αλλαγή αυτής της αγωνιστικής."
+          : "Δεν υπάρχει αποθηκευμένη η ομάδα της αρχής της αγωνιστικής, οπότε μηδενίζεται μόνο ο μετρητής· τους παίκτες τους αλλάζεις από την «Αλλαγή ομάδας»."}</p>
         <button class="tm-primary" id="tmUndoOk">Αναίρεση</button>`);
       $("#tmUndoOk").onclick = () => { const ok = undoTrades(t); save(t); closePlayer(); render(best);
         toast(ok ? "Η ομάδα γύρισε όπως ήταν" : "Ο μετρητής μηδενίστηκε"); };
@@ -661,6 +691,10 @@
       t.roles = Object.fromEntries(res.team.map((p) => [p.id, p.role]));
       t.captain = res.team.find((p) => p.captain)?.id ?? null;
     }
+    // «Αλλαγή ομάδας» after trades: the count starts again (nothing here is binding), but the team as it was
+    // at the start of the round stays, so «Αναίρεση» still brings it back
+    const ti = P.trade_info || { round: P.round };
+    if (old && roundStart(old, ti)) t.used = { round: ti.round, n: 0, before: old.used.before };
     save(t); setup = null; mode = null;
   }
 
@@ -725,6 +759,9 @@
     });
     const on = (i, fn) => { const el = document.getElementById(i); if (el) el.onclick = fn; };
     on("tmConfirm", () => { t.confirmed = true; save(t); render(best); });
+    const lp = document.getElementById("tmLeft");
+    if (lp) lp.onchange = () => { setTradesLeft(t, Number(lp.value)); save(t); render(best);
+      toast(`Μένουν ${lp.value} μεταγραφές· οι προτάσεις προσαρμόστηκαν`); };
     on("tmMore", (e) => { e.stopPropagation(); menu(t, best); });
     if (document.getElementById("tmTools")) menu(t, best, true);
     on("tmEdit", () => { setup = { players: t.players.map((x) => ({ ...x })) }; mode = "setup"; render(best); });
@@ -874,6 +911,8 @@
     .tm-cols .tm-floor .lanes .lane.bench { margin-top: 10px; }
     .tm-cols .tm-courtcard > .tm-hint { margin-top: 6px; font-size: 11px; }
   }
+  .tm-left { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: 13px; color: var(--text-secondary); }
+  .tm-left select { font: inherit; padding: 4px 8px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface-1); color: var(--text-primary); }
   .tm-keep { display: block; margin-top: 6px; padding: 0; border: 0; background: none; color: var(--series-1); font: inherit; font-size: 13px;
     text-align: left; cursor: pointer; }
   .tm-kept { font-size: 14px; margin: 10px 0 0; }
