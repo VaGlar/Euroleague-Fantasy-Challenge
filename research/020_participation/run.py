@@ -36,9 +36,9 @@ from elf.config import MODEL  # noqa: E402
 LIVE = json.loads((_lib.ROOT / "data/public/model_params.json").read_text())["params"]
 P = {**copy.deepcopy(MODEL), **{k: LIVE[k] for k in ("w_last3", "w_season", "w_prev", "coef")}}
 STREAKS = [3]
-KS = [3, 6]
-P0S = [None, 0.95, 1.0]      # the shrinkage target: the position's rate, or "no evidence = on the sheet"
-MODES = ["this", "both"]
+KS = [6]
+P0S = [0.95]      # the shrinkage target: the position's rate, or "no evidence = on the sheet"
+MODES = ["this"]
 FAR = pd.Timestamp("2100-01-01", tz="UTC")
 
 
@@ -87,7 +87,7 @@ def counts(tl, before, streak: int) -> tuple[int, int]:
     past = [x for x in tl if x[1] < before]
     app = sum(1 for x in past if x[2])
     injured, cur = 0, 0
-    for _, _, on in past + [(None, None, True)]:
+    for _, _, on in past:          # as live: only a run that ended with him back is an injury
         if on:
             injured += cur if cur >= streak else 0
             cur = 0
