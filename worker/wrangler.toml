@@ -3,8 +3,8 @@ main = "src/index.js"
 compatibility_date = "2026-09-01"
 
 [triggers]
-# Hourly at xx:05 UTC; the handler decides in Athens time (10:05 update + report,
-# 11:05 fallback, pre-deadline check 2h before the first tip-off).
+# Hourly at xx:05 UTC; the handler decides in Athens time (07:05 update, 10:05 report,
+# update 3h and lineup check 2h before the first tip-off, update after the last game).
 crons = ["5 * * * *"]
 
 [vars]
