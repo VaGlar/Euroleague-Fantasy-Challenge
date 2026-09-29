@@ -18,7 +18,7 @@ import numpy as np
 import pandas as pd
 import yaml
 
-from . import archive, el_api, fantasy, history, model, news, optimize, prices, tracking
+from . import archive, autopilot, el_api, fantasy, history, model, news, optimize, prices, tracking
 from .config import BUDGET, COACH_POINTS, CURRENT_SEASON, PUBLIC, ROOT, TIMEZONE, WIN_BONUS
 
 ATH = ZoneInfo(TIMEZONE)
@@ -250,6 +250,16 @@ def fantasy_state(clubs: pd.DataFrame, roster: pd.DataFrame, season: int) -> dic
                 info = {}
             out["my_teams"].append({"id": t["id"], "name": t.get("name"), "raw": ros, "info": info})
             _write("roster_shape.json", _shape(ros))  # structure only, for debugging
+            # the owner's points of the finished matchday (for the autopilot comparison; the game
+            # gives no managers' average, checked: only this team's own numbers)
+            prev = cfg.get("previous_matchday") or {}
+            if prev.get("id") and len(out["my_teams"]) == 1:
+                try:
+                    p_info = fantasy.team_matchday(t["id"], prev["id"])
+                    if _num(p_info.get("pts")) is not None:
+                        out["my_points"] = {str(prev["number"]): _num(p_info["pts"])}
+                except Exception:  # noqa: BLE001 - an extra, never breaks the run
+                    pass
     except fantasy.TokenError as e:
         out["error"] = f"token: {e}"
     except Exception as e:  # noqa: BLE001
@@ -878,6 +888,15 @@ def build(offline: bool = False) -> dict:
         tracking.update(ctx, CURRENT_SEASON, my, rnd, md_num, started)
     except Exception as e:  # noqa: BLE001
         health.append(f"tracking: {type(e).__name__}: {e}")
+    if fs.get("ok"):
+        try:  # a team that only follows the proposals, scored like a real manager (vs the average one)
+            ap_pool = table.dropna(subset=["price", "fantasy_id"])
+            autopilot.update(CURRENT_SEASON, rnd, trade_rnd, _opt_rows(ap_pool), ap_pool,
+                             max_trades=11 if trade_rnd == 1 or (trade_rnd - 1) in UNLIMITED_AFTER else 4,
+                             min_gain=MIN_GAIN_PER_TRADE * sum(horizon_weights(trade_rnd)) / sum(HORIZON_WEIGHTS),
+                             my_points=fs.get("my_points"))
+        except Exception as e:  # noqa: BLE001 - never breaks the update
+            health.append(f"autopilot: {type(e).__name__}: {e}")
     try:
         det = player_details(CURRENT_SEASON, ctx, pr["fixtures"], set(table.loc[table["x_now"].notna(), "person_id"]))
         hist = price_history()

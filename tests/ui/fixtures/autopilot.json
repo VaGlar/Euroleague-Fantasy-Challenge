@@ -1,0 +1,274 @@
+{
+ "generated": "2026-09-28T16:25:12.714575+00:00",
+ "start_round": 1,
+ "rounds": [
+  {
+   "round": 1,
+   "trades": 0,
+   "bank": 1.3,
+   "squad": [
+    {
+     "id": 3791.0,
+     "price": 14.5,
+     "position": "Guard",
+     "person_id": "013369",
+     "name": "JONES, CARLIK",
+     "team": "PAR",
+     "role": "5άδα",
+     "captain": true,
+     "x_now": 26.4
+    },
+    {
+     "id": 3765.0,
+     "price": 16.3,
+     "position": "Guard",
+     "person_id": "005985",
+     "name": "JAMES, MIKE",
+     "team": "IST",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 22.1
+    },
+    {
+     "id": 3874.0,
+     "price": 13.3,
+     "position": "Guard",
+     "person_id": "009849",
+     "name": "DORSEY, TYLER",
+     "team": "OLY",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 20.9
+    },
+    {
+     "id": 3887.0,
+     "price": 14.9,
+     "position": "Guard",
+     "person_id": "007975",
+     "name": "FRANCISCO, SYLVAIN",
+     "team": "PAN",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 20.8
+    },
+    {
+     "id": 11487.0,
+     "price": 14.9,
+     "position": "Forward",
+     "person_id": "003112",
+     "name": "SARIC, DARIO",
+     "team": "IST",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 28.0
+    },
+    {
+     "id": 3766.0,
+     "price": 17.6,
+     "position": "Forward",
+     "person_id": "003469",
+     "name": "VEZENKOV, SASHA",
+     "team": "OLY",
+     "role": "6ος",
+     "captain": false,
+     "x_now": 25.5
+    },
+    {
+     "id": 7201.0,
+     "price": 13.5,
+     "position": "Forward",
+     "person_id": "011286",
+     "name": "BACON, DWAYNE",
+     "team": "DUB",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 24.3
+    },
+    {
+     "id": 11516.0,
+     "price": 10.2,
+     "position": "Forward",
+     "person_id": "015166",
+     "name": "CROWDER, JAE",
+     "team": "ASV",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 21.9
+    },
+    {
+     "id": 3857.0,
+     "price": 14.9,
+     "position": "Center",
+     "person_id": "012788",
+     "name": "OTURU, DAN",
+     "team": "HTA",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 24.9
+    },
+    {
+     "id": 11549.0,
+     "price": 15.9,
+     "position": "Center",
+     "person_id": "000898",
+     "name": "VALANCIUNAS, JONAS",
+     "team": "ZAL",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 23.2
+    },
+    {
+     "id": 3868.0,
+     "price": 10.3,
+     "position": "Head Coach",
+     "person_id": "WBC",
+     "name": "OBRADOVIC, ZELJKO",
+     "team": "PAN",
+     "role": "coach",
+     "captain": false,
+     "x_now": 10.0
+    }
+   ],
+   "x_total": 178.4,
+   "pts": 164.5,
+   "raw": 151.2,
+   "avg_raw": 132.8,
+   "my_pts": 138.75
+  },
+  {
+   "round": 2,
+   "trades": 2,
+   "bank": 1.3,
+   "squad": [
+    {
+     "id": 3791.0,
+     "price": 14.5,
+     "position": "Guard",
+     "person_id": "013369",
+     "name": "JONES, CARLIK",
+     "team": "PAR",
+     "role": "5άδα",
+     "captain": true,
+     "x_now": 26.4
+    },
+    {
+     "id": 3765.0,
+     "price": 16.3,
+     "position": "Guard",
+     "person_id": "005985",
+     "name": "JAMES, MIKE",
+     "team": "IST",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 22.1
+    },
+    {
+     "id": 3874.0,
+     "price": 13.3,
+     "position": "Guard",
+     "person_id": "009849",
+     "name": "DORSEY, TYLER",
+     "team": "OLY",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 20.9
+    },
+    {
+     "id": 3887.0,
+     "price": 14.9,
+     "position": "Guard",
+     "person_id": "007975",
+     "name": "FRANCISCO, SYLVAIN",
+     "team": "PAN",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 20.8
+    },
+    {
+     "id": 11487.0,
+     "price": 14.9,
+     "position": "Forward",
+     "person_id": "003112",
+     "name": "SARIC, DARIO",
+     "team": "IST",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 28.0
+    },
+    {
+     "id": 3766.0,
+     "price": 17.6,
+     "position": "Forward",
+     "person_id": "003469",
+     "name": "VEZENKOV, SASHA",
+     "team": "OLY",
+     "role": "6ος",
+     "captain": false,
+     "x_now": 25.5
+    },
+    {
+     "id": 7201.0,
+     "price": 13.5,
+     "position": "Forward",
+     "person_id": "011286",
+     "name": "BACON, DWAYNE",
+     "team": "DUB",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 24.3
+    },
+    {
+     "id": 11516.0,
+     "price": 10.2,
+     "position": "Forward",
+     "person_id": "015166",
+     "name": "CROWDER, JAE",
+     "team": "ASV",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 21.9
+    },
+    {
+     "id": 3857.0,
+     "price": 14.9,
+     "position": "Center",
+     "person_id": "012788",
+     "name": "OTURU, DAN",
+     "team": "HTA",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 24.9
+    },
+    {
+     "id": 11549.0,
+     "price": 15.9,
+     "position": "Center",
+     "person_id": "000898",
+     "name": "VALANCIUNAS, JONAS",
+     "team": "ZAL",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 23.2
+    },
+    {
+     "id": 3868.0,
+     "price": 10.3,
+     "position": "Head Coach",
+     "person_id": "WBC",
+     "name": "OBRADOVIC, ZELJKO",
+     "team": "PAN",
+     "role": "coach",
+     "captain": false,
+     "x_now": 10.0
+    }
+   ],
+   "x_total": 178.4
+  }
+ ],
+ "total": {
+  "rounds": 1,
+  "pts": 164.5,
+  "raw": 151.2,
+  "avg_raw": 132.8
+ }
+}

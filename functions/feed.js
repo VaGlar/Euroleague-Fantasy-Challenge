@@ -1,8 +1,8 @@
-// Cloudflare Pages Function: /feed?u=<substack url>
-// Some sites (Substack) refuse requests from GitHub Actions' datacenter IPs; the
+// Cloudflare Pages Function: /feed?u=<substack or basketnews url>
+// Some sites (Substack, BasketNews) refuse requests from GitHub Actions' datacenter IPs; the
 // pipeline falls back to fetching them through this function. Allow-listed hosts
 // only, so it can't be used as an open proxy.
-const ALLOWED = [/\.substack\.com$/];
+const ALLOWED = [/\.substack\.com$/, /(^|\.)basketnews\.com$/];
 
 export async function onRequestGet({ request }) {
   const u = new URL(request.url).searchParams.get("u") || "";

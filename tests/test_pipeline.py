@@ -66,7 +66,7 @@ def _run(monkeypatch, public, digest=None, played=None):
     load = lambda n: json.loads((public / n).read_text(),  # noqa: E731
                                 parse_constant=lambda c: pytest.fail(f"{c} in {n}"))
     return {"res": res, "pred": load("predictions.json"), "report": load("report.json"),
-            "game": game, "details": load("players.json")}
+            "game": game, "details": load("players.json"), "autopilot": load("autopilot.json")}
 
 
 def test_outputs_are_valid_and_complete(pipeline):
@@ -223,3 +223,13 @@ def test_players_carry_the_returning_flag(pipeline):
     """The app shows «↩ επιστρέφει» from this flag: a real boolean on every player."""
     flags = [p.get("returning") for p in pipeline["pred"]["players"]]
     assert flags and all(isinstance(f, bool) for f in flags)
+
+
+def test_autopilot_runs_in_the_pipeline(pipeline):
+    """Every update decides the autopilot's coming round: a legal squad within its credits."""
+    ap = pipeline["autopilot"]
+    last = ap["rounds"][-1]
+    assert len(last["squad"]) == 11 and last["bank"] >= 0
+    assert sum(p["price"] for p in last["squad"]) <= 100.5
+    assert sum(p["captain"] for p in last["squad"]) == 1
+    assert {p["position"] for p in last["squad"]} == {"Guard", "Forward", "Center", "Head Coach"}

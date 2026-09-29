@@ -29,6 +29,9 @@ PUBLIC_FILES = {
     "model_params.json": None,
     "clubs.json": None,
     "tracking.json": lambda d: {**d, "lineups": []},
+    # the autopilot is public; the owner's own points are not
+    "autopilot.json": lambda d: {**d, "rounds": [{k: v for k, v in r.items() if k != "my_pts"}
+                                                 for r in d.get("rounds", [])]},
 }
 RENAME = {"report_public.json": "report.json"}
 

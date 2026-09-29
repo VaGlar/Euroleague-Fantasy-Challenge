@@ -10,7 +10,7 @@
 
 ## Αρχιτεκτονική
 
-Πώς ρέουν τα δεδομένα, από τις πηγές μέχρι το κινητό σου (το GitHub το δείχνει ως διάγραμμα). Εκτός διαγράμματος για να μένει καθαρό: `analytics.yml` (επισκεψιμότητα, 09:05 → Telegram), `functions/feed.js` (proxy όταν ένα Substack μπλοκάρει το GitHub), `tests.yml`.
+Πώς ρέουν τα δεδομένα, από τις πηγές μέχρι το κινητό σου (το GitHub το δείχνει ως διάγραμμα). Εκτός διαγράμματος για να μένει καθαρό: `analytics.yml` (επισκεψιμότητα, 09:05 → Telegram), `functions/feed.js` (proxy όταν ένα site — Substack, BasketNews — μπλοκάρει το GitHub), `tests.yml`.
 
 ```mermaid
 flowchart TB
@@ -60,7 +60,7 @@ flowchart LR
 | `elf/` (Python) | GitHub Actions (από το bot, 3–4×/μέρα) | στατιστικά EuroLeague, τιμές fantasy, νέα, xPIR, report |
 | `web/` | Cloudflare Pages | dashboard (PWA: «Προσθήκη στην αρχική οθόνη» στο iPhone) |
 | `worker/` | Cloudflare Workers | ωριαίο cron (update 07:05, report 10:05, update 3 ώρες και έλεγχος 2 ώρες πριν τον 1ο αγώνα, update μετά τους αγώνες) + εντολές bot· ανεβαίνει μόνο του σε κάθε αλλαγή του `worker/` στο `main` |
-| `sources.yaml` | — | λίστα πηγών νέων (πρόσθεσε RSS feeds εδώ) |
+| `sources.yaml` | — | λίστα πηγών νέων: RSS feeds, το CMS της EuroLeague και σελίδες που ενημερώνονται στη θέση τους (π.χ. το injury report του BasketNews) |
 
 **Κωδικοί ομάδων:** τα δεδομένα κρατούν τους κωδικούς του API της EuroLeague (IST, MUN, MAD, PAM…)· ό,τι διαβάζει ο χρήστης (site, report, Telegram) δείχνει τους κωδικούς του παιχνιδιού (EFS, BAY, RMB, VBC…), δηλαδή τα «TV codes» του `clubs.json` (`tc()` στο `web/`, `tv()` στο `elf/run.py`).
 

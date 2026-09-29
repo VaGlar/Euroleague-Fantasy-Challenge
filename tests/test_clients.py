@@ -139,7 +139,7 @@ def test_non_substack_failure_raises_without_proxy(monkeypatch):
                         lambda url, **k: urls.append(url) or Resp(500, content=b""))
     with pytest.raises(requests.HTTPError):
         news.fetch_rss({"url": "https://site.gr/rss"})
-    assert urls == ["https://site.gr/rss"], "το proxy είναι μόνο για Substack"
+    assert urls == ["https://site.gr/rss"], "το proxy είναι μόνο για τα sites που μας μπλοκάρουν"
 
 
 def test_incrowd_category_filter_and_fantasy_body(monkeypatch):
@@ -576,3 +576,51 @@ def test_health_alert_is_retried_if_telegram_failed(public, monkeypatch):
     monkeypatch.setattr(notify, "send", lambda text, buttons=None: sent.append(text))
     notify.health()
     assert sent and "Gemini: down" in sent[0]
+
+
+PAGE = """<html><head><meta property="og:title" content="EuroLeague Injury Report (updated daily)"/>
+<script type="application/ld+json">{"@type":"NewsArticle","dateModified":"2026-09-29T18:46:34+0300"}</script>
+<script>var ads = "Out | Nobody";</script></head><body><nav>Menu | Out of stock</nav>
+<div class="injury_reports mt-6"><table><tr><td>Zalgiris Kaunas</td><td>PG</td><td>Nigel Williams-Goss</td>
+<td>Out</td><td>Rounds 2-4</td><td>Hamstring</td></tr></table></div>
+<p>This comprehensive EuroLeague injury report ... related news, ads</p></body></html>"""
+
+
+def test_a_page_updated_in_place_is_read_whole_from_start_to_end(monkeypatch):
+    """An injury report «updated daily» at one URL: one item, only the table (no menus, scripts or
+    the text after it), dated by its last modification."""
+    monkeypatch.setattr(news.requests, "get", lambda url, **k: Resp(content=PAGE.encode()))
+    (it,) = news.fetch_page({"name": "BN", "url": "https://bn/x", "start": "injury_reports",
+                             "end": "This comprehensive EuroLeague injury report"})
+    assert it["title"] == "EuroLeague Injury Report (updated daily)" and it["url"] == "https://bn/x"
+    assert "Nigel Williams-Goss | Out | Rounds 2-4" in it["text"]
+    assert "Menu" not in it["text"] and "Nobody" not in it["text"] and "related news" not in it["text"]
+    assert it["date"] == datetime(2026, 9, 29, 15, 46, 34, tzinfo=timezone.utc)
+
+
+def test_basketnews_blocked_goes_through_the_proxy(monkeypatch):
+    """BasketNews answers 403 to GitHub Actions' IPs: the page comes through our /feed proxy."""
+    monkeypatch.setenv("DASHBOARD_URL", "https://dash.example")
+    calls = []
+
+    def get(url, params=None, **k):
+        calls.append((url, params))
+        if url == "https://dash.example/feed":
+            return Resp(content=PAGE.encode())
+        return Resp(403, content=b"blocked")
+    monkeypatch.setattr(news.requests, "get", get)
+    url = "https://basketnews.com/news-212393-euroleague-injury-report-updated.html"
+    (it,) = news.fetch_page({"name": "BN", "url": url, "start": "injury_reports"})
+    assert "Nigel Williams-Goss | Out" in it["text"]
+    assert calls[1] == ("https://dash.example/feed", {"u": url})
+
+
+def test_the_injury_report_reaches_the_summary_whole(gemini):
+    """News go in as a 500-character excerpt; an injury report goes in whole, marked as such."""
+    table = "Zalgiris Kaunas | PG | Nigel Williams-Goss | Out | Rounds 2-4 | " * 60      # ~3.9k chars
+    posts = gemini(gemini_ok({"summary_el": ["α"]}))
+    news.digest(ARTS + [{"title": "Injury Report", "url": "https://bn/x", "date": NOW.isoformat(),
+                         "text": table, "source": "BN", "fantasy": False, "report": True}], ["X (PAN)"])
+    prompt = posts[0][2]["contents"][0]["parts"][0]["text"]
+    assert "[INJURY REPORT | BN" in prompt and table in prompt
+    assert "Out -> \"out\"" in prompt                                  # the mapping of its statuses

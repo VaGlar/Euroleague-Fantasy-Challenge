@@ -293,3 +293,4 @@ def test_back_after_three_missed_games_is_scaled_down():
     early = model.player_base(_box([(1, "S", 30, 20), (2, "R", 20, 10)]), pd.DataFrame(), p)
     assert not early["returning"].any()                          # the team has played only 2
     assert 0.7 <= p["return_factor"] <= 0.85                     # between the two seasons' estimates
+

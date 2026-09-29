@@ -1140,9 +1140,46 @@ document.addEventListener("click", (e) => {
 });
 
 // ---------------------------------------------------------------- model tab
-function renderModel(mp, trk) {
+// the autopilot: a team that only follows the proposals, scored like a real manager (elf/autopilot.py)
+function autopilotCard(ap) {
+  const rounds = (ap && ap.rounds) || [];
+  if (!rounds.length) return "";
+  const done = rounds.filter((r) => r.pts != null);
+  const next = rounds.filter((r) => r.pts == null).slice(-1)[0];
+  const mine = P.edition !== "public" && done.some((r) => r.my_pts != null);
+  const vs = done.filter((r) => r.avg_raw != null);
+  const diff = vs.reduce((a, r) => a + (r.raw - r.avg_raw), 0);
+  const sgn = (x) => `${x >= 0 ? "+" : "−"}${f1(Math.abs(x))}`;
+  const who = (p) => `${esc(nm(p.name || ""))}${p.captain ? " <b>(C)</b>" : ""}`;
+  let h = `<div class="card"><h2>Autopilot: μια ομάδα που κάνει μόνο ό,τι προτείνουμε</h2>
+    <p class="muted" style="margin-top:0">Ξεκίνησε στο Round ${ap.start_round} με 100 credits. Κάθε αγωνιστική κάνει τις μεταγραφές, την πεντάδα και τον αρχηγό
+    που προτείνει η εφαρμογή (η τελευταία πρόταση πριν το τζάμπολ), με τους κανόνες του παιχνιδιού.</p>`;
+  if (done.length) {
+    h += `<div class="kpis"><div class="kpi"><b>${f1(ap.total.pts)}</b><span>πόντοι σε ${done.length} ${done.length === 1 ? "αγωνιστική" : "αγωνιστικές"}</span></div>
+      ${vs.length ? `<div class="kpi"><b class="${diff >= 0 ? "up" : "down"}">${sgn(diff / vs.length)}</b><span>ανά αγωνιστική vs μέσο manager</span></div>` : ""}
+      ${mine ? `<div class="kpi"><b>${f1(done.reduce((a, r) => a + (r.my_pts ?? 0), 0))}</b><span>η ομάδα σου</span></div>` : ""}</div>
+      <div class="tablewrap"><table class="fit"><thead><tr><th>Αγων.</th><th class="num">Πόντοι</th><th class="num">11 παίκτες</th>
+        <th class="num">Μέσος manager</th><th class="num">Διαφορά</th>${mine ? '<th class="num">Εσύ</th>' : ""}</tr></thead><tbody>
+      ${done.map((r) => `<tr><td>R${r.round}</td><td class="num"><b>${f1(r.pts)}</b></td><td class="num">${f1(r.raw)}</td>
+        <td class="num">${r.avg_raw != null ? f1(r.avg_raw) : "–"}</td>
+        <td class="num ${r.avg_raw == null ? "" : r.raw >= r.avg_raw ? "up" : "down"}">${r.avg_raw != null ? sgn(r.raw - r.avg_raw) : "–"}</td>
+        ${mine ? `<td class="num">${r.my_pts != null ? f1(r.my_pts) : "–"}</td>` : ""}</tr>`).join("")}</tbody></table></div>
+      <p class="muted">«Πόντοι»: με τους κανόνες του παιχνιδιού (πάγκος 50%, αρχηγός ×2, coach). «11 παίκτες»: οι πόντοι όλης της ομάδας χωρίς πάγκο/αρχηγό,
+      για να συγκρίνεται με τον <b>μέσο manager</b>, που είναι εκτίμηση από το POP (πόσοι έχουν κάθε παίκτη): ακριβής για το ποιους έχουν, όχι για το ποιον βάζουν αρχηγό.
+      Μία αγωνιστική δεν λέει τίποτα· κρίνεται σε 5–10.</p>`;
+  } else {
+    h += `<p class="muted">Η πρώτη του αγωνιστική βαθμολογείται μόλις ολοκληρωθεί.</p>`;
+  }
+  if (next) {
+    const five = next.squad.filter((p) => p.role === "5άδα").map(who).join(", ");
+    h += `<p><b>Για το Round ${next.round}</b>: ${next.trades ? `${next.trades} ${next.trades === 1 ? "μεταγραφή" : "μεταγραφές"}` : "καμία μεταγραφή"}
+      · υπόλοιπο ${f1(next.bank)} cr · xFPT ${f1(next.x_total)}<br><span class="muted">Πεντάδα: ${five}</span></p>`;
+  }
+  return h + "</div>";
+}
+function renderModel(mp, trk, ap) {
   const pctd = (a, b) => (a && b ? Math.round((1 - a / b) * 100) : null);
-  let html = "";
+  let html = autopilotCard(ap);
   // 1. this season
   const tot = trk?.total;
   html += `<div class="card"><h2>Φέτος: πρόβλεψη vs πραγματικότητα</h2>`;
@@ -1375,8 +1412,8 @@ setInterval(() => {
 }, 30000);
 
 (async () => {
-  const [p, rep, nw, mp, trk, cl] = await Promise.all([get("predictions.json"), get("report.json"), get("news.json"),
-    get("model_params.json"), get("tracking.json"), get("clubs.json")]);
+  const [p, rep, nw, mp, trk, cl, ap] = await Promise.all([get("predictions.json"), get("report.json"), get("news.json"),
+    get("model_params.json"), get("tracking.json"), get("clubs.json"), get("autopilot.json")]);
   if (Array.isArray(cl)) TV = Object.fromEntries(cl.filter((c) => c.tv).map((c) => [c.code, c.tv]));
   if (!p) { $("#updated").textContent = "Δεν υπάρχουν δεδομένα ακόμα."; return; }
   P = p; NW = nw;
@@ -1424,7 +1461,7 @@ setInterval(() => {
     + `<div class="card"><h2>Άρθρα</h2><ul class="news">${(nw?.articles || []).slice(0, 60).map((a) =>
       `<li><a href="${esc(a.url)}" target="_blank" rel="noopener">${esc(a.title)}</a><br><span class="muted">${esc(a.source)} · ${a.date ? new Date(a.date).toLocaleString("el-GR") : ""}</span></li>`).join("")}</ul></div>`;
 
-  renderModel(mp, trk);
+  renderModel(mp, trk, ap);
 })();
 </script>
 <script src="opt.js"></script>

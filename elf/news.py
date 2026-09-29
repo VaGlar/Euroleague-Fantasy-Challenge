@@ -74,21 +74,33 @@ def access_headers() -> dict:
     return {"CF-Access-Client-Id": cid, "CF-Access-Client-Secret": sec} if cid and sec else {}
 
 
+PROXIED = (".substack.com", "basketnews.com")   # hosts that block GitHub Actions' IPs (see functions/feed.js)
+
+
+def _via_proxy(url: str, errors: list[str]) -> bytes | None:
+    """Our Pages Function /feed fetches from Cloudflare instead; None if it can't (not allowed, down)."""
+    dash = os.environ.get("DASHBOARD_URL", "").rstrip("/")
+    if not dash or not any(h in url for h in PROXIED):
+        return None
+    p = requests.get(f"{dash}/feed", params={"u": url}, headers={**BROWSER, **access_headers()},
+                     timeout=30, allow_redirects=False)     # Access sends a login page via a redirect
+    if p.status_code == 200 and p.content.lstrip().startswith(b"<"):
+        return p.content
+    errors.append(f"proxy {p.status_code}")
+    return None
+
+
 def _get_feed(url: str) -> bytes:
-    """Direct, then (Substack only) its JSON API, then our Pages Function proxy.
+    """Direct, then (blocking hosts only) our Pages Function proxy.
     Substack blocks GitHub Actions' IPs; the proxy fetches from Cloudflare instead."""
     errors = []
     r = requests.get(url, headers=BROWSER, timeout=30)
     if r.status_code == 200:
         return r.content
     errors.append(f"direct {r.status_code}")
-    dash = os.environ.get("DASHBOARD_URL", "").rstrip("/")
-    if dash and ".substack.com" in url:
-        p = requests.get(f"{dash}/feed", params={"u": url}, headers={**BROWSER, **access_headers()},
-                         timeout=30, allow_redirects=False)     # Access sends a login page via a redirect
-        if p.status_code == 200 and p.content.lstrip().startswith(b"<"):
-            return p.content
-        errors.append(f"proxy {p.status_code}")
+    content = _via_proxy(url, errors)
+    if content is not None:
+        return content
     raise requests.HTTPError(", ".join(errors))
 
 
@@ -139,6 +151,27 @@ def fetch_rss(src: dict) -> list[dict]:
     return items
 
 
+REPORT_TEXT = 12000   # a whole injury table (every team) still fits
+
+
+def fetch_page(src: dict) -> list[dict]:
+    """A page that is rewritten in place (e.g. an injury report «updated daily»): one item, its text
+    from the `start` marker on (the table, not menus and ads), dated by its last modification."""
+    page = _get_feed(src["url"]).decode("utf-8", errors="replace")
+    body = re.sub(r"<script.*?</script>|<style.*?</style>", " ", page, flags=re.S | re.I)
+    i = body.find(src["start"]) if src.get("start") else -1
+    part = body[i:] if i >= 0 else body
+    j = part.find(src["end"]) if src.get("end") else -1
+    part = part[:j] if j > 0 else part
+    text = re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " | ", part)))
+    text = re.sub(r"(\|\s*)+", "| ", text).strip(" |")[:REPORT_TEXT]
+    modified = re.search(r'"dateModified"\s*:\s*"([^"]+)"', page)
+    title = re.search(r'<meta property="og:title" content="([^"]+)"', page)
+    date = _date(re.sub(r"([+-]\d\d)(\d\d)$", r"\1:\2", modified.group(1))) if modified else None
+    return [{"title": _clean(title.group(1) if title else src["name"], 200), "url": src["url"],
+             "date": date or datetime.now(timezone.utc), "text": text}]
+
+
 def fetch_incrowd(src: dict) -> list[dict]:
     r = requests.get(INCROWD, headers=UA, timeout=30, params={
         "clientId": "EUROLEAGUE", "categorySlug": src.get("category", "news"),
@@ -174,7 +207,8 @@ def collect(names: list[str], hours: int = 96) -> tuple[list[dict], list[str]]:
     # fantasy columns first so they claim their articles before a general feed does
     for src in sorted(cfg["sources"], key=lambda x: not x.get("fantasy")):
         try:
-            items = fetch_incrowd(src) if src["type"] == "incrowd" else fetch_rss(src)
+            items = (fetch_incrowd(src) if src["type"] == "incrowd" else fetch_page(src)
+                     if src["type"] == "page" else fetch_rss(src))
         except Exception as e:  # a dead source must not kill the run
             failed.append(f"{src['name']}: {type(e).__name__} {str(e)[:80]}")
             continue
@@ -191,7 +225,7 @@ def collect(names: list[str], hours: int = 96) -> tuple[list[dict], list[str]]:
             seen.add(it["url"])
             out.append({**it, "date": it["date"].isoformat() if it["date"] else None,
                         "source": src["name"], "weight": src.get("weight", 1),
-                        "fantasy": bool(src.get("fantasy"))})
+                        "fantasy": bool(src.get("fantasy")), "report": bool(src.get("report"))})
     # fantasy columns first (they carry the picks), then news by date
     out.sort(key=lambda x: (not x["fantasy"], -(datetime.fromisoformat(x["date"]).timestamp()
                                                  if x["date"] else 0)))
@@ -212,6 +246,11 @@ Return ONLY JSON with this schema:
  "summary_el": "<5-8 bullet points in Greek, formal-neutral, most fantasy-relevant first>"
 }
 Only include players explicitly discussed. Do not guess injuries that are not stated.
+Items marked INJURY REPORT are a table: team | position | player | status | round(s) | comment.
+Map status: Out -> "out", Doubtful -> "doubtful", Questionable / Game-time / Uncertain -> "questionable",
+Expected / Ready -> "available" (Uncertain is often a coach's decision for a bench player);
+use it only if the round(s) include the upcoming round («Indefinitely» does). It is newer and more
+complete than the news: when they disagree about the same player, prefer the report.
 "expert": from articles marked FANTASY only, list EVERY player (and head coach) the
 author recommends (stance "pick"), suggests as captain ("captain"), or advises against
 ("avoid"). One entry per player per source; use the article's source name exactly.
@@ -237,9 +276,12 @@ def digest(articles: list[dict], roster: list[str]) -> dict | None:
         if per.get(a["source"], 0) < 4:
             per[a["source"]] = per.get(a["source"], 0) + 1
             fan.append(a)
-    rest = [a for a in articles if not a.get("fantasy")][:60]
+    # injury reports go in whole (a table of every team); news are cut to an excerpt
+    reports = [a for a in articles if a.get("report")]
+    rest = [a for a in articles if not a.get("fantasy") and not a.get("report")][:60]
     arts = "\n\n".join(
-        [f"[FANTASY | {a['source']} | {a['date']}] {a['title']}\n{a['text']}" for a in fan]
+        [f"[INJURY REPORT | {a['source']} | {a['date']}] {a['title']}\n{a['text']}" for a in reports]
+        + [f"[FANTASY | {a['source']} | {a['date']}] {a['title']}\n{a['text']}" for a in fan]
         + [f"[NEWS | {a['source']} | {a['date']}] {a['title']}\n{a['text'][:500]}" for a in rest])
     body = {
         "contents": [{"parts": [{"text": PROMPT.replace("{roster}", "\n".join(roster))
