@@ -29,7 +29,9 @@ def pipeline(tmp_path_factory):
         yield _run(mp, public)
 
 
-def _run(monkeypatch, public):
+def _run(monkeypatch, public, digest=None, played=None):
+    """digest: replaces the fake Gemini; played(squad) -> {id: points} for players whose game
+    is already over (the round under way)."""
     seed_public(public, "prices.csv", "model_params.json", "news.json")
     pr = pd.read_csv(REPO / "data/public/prices.csv", dtype={"person_id": str})
     pr = pr[pr["matchday"] == pr["matchday"].max()]
@@ -44,7 +46,8 @@ def _run(monkeypatch, public):
     five += [p for p in court if p not in five][:2]
     roles = {p["id"]: "5άδα" if p in five else "πάγκος" for p in court}
     roles[next(p["id"] for p in court if p not in five)] = "6ος"
-    game = FakeGame(squad, roles, captain=five[0]["id"]).install(monkeypatch)
+    game = FakeGame(squad, roles, captain=five[0]["id"],
+                    played=played(squad) if played else None).install(monkeypatch)
     monkeypatch.setattr(fantasy, "players", lambda *a, **k: raw_players)
     monkeypatch.setattr(fantasy, "team_matchday", lambda *a, **k: {"credits": 101.2, "total_plus": 1.2, "trades": 0})
     monkeypatch.setattr(el_api, "clubs", lambda season: json.loads(
@@ -52,11 +55,11 @@ def _run(monkeypatch, public):
     monkeypatch.setattr(history, "update_season", lambda *a, **k: None)
     monkeypatch.setattr(news, "collect", lambda names, **k: ([], []))
 
-    def digest(arts, roster):  # a Gemini-like answer naming real players
+    def fake_digest(arts, roster):  # a Gemini-like answer naming real players
         a, b = roster[0].split(" (")[0], roster[1].split(" (")[0]
         return {"summary_el": "• δοκιμή", "availability": [{"player": a, "status": "out"}],
                 "expert": [{"player": b, "stance": "captain", "source": "Test"}]}
-    monkeypatch.setattr(news, "digest", digest)
+    monkeypatch.setattr(news, "digest", digest or fake_digest)
     res = run.build(offline=False)
     if not res:
         pytest.skip("κανένας επόμενος αγώνας στα δεδομένα (εκτός σεζόν)")

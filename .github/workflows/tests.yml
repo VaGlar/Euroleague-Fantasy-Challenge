@@ -16,9 +16,9 @@ jobs:
         with:
           python-version: "3.11"
           cache: pip
-      - run: pip install -r requirements.txt pytest
-      - name: Python tests (no network)
-        run: python -m pytest -q
+      - run: pip install -r requirements.txt pytest pytest-cov
+      - name: Python tests (no network) + coverage floor (.coveragerc)
+        run: python -m pytest -q --cov
       - name: JavaScript syntax (bot, feed proxy, dashboard)
         run: |
           node --check worker/src/index.js
