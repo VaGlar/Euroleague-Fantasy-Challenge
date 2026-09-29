@@ -1153,6 +1153,13 @@ function autopilotCard(ap) {
   const num = (x) => Number(x).toLocaleString("el-GR");
   const top = (r, n) => { const x = (100 * r) / n; return x < 1 ? x.toFixed(2) : x < 10 ? x.toFixed(1) : Math.round(x); };
   const ranked = done.filter((r) => r.rank != null).slice(-1)[0];
+  // ▲ green: up the standings since the last ranked round, ▼ red: down (a smaller rank is better)
+  const rankMove = (r, before) => {
+    const prev = before.filter((x) => x.rank != null).slice(-1)[0];
+    if (!prev || prev.rank === r.rank) return "";
+    const up = r.rank < prev.rank;
+    return ` <span class="${up ? "up" : "down"}" title="${up ? "άνοδος" : "πτώση"} ${num(Math.abs(prev.rank - r.rank))} θέσεων">${up ? "▲" : "▼"}</span>`;
+  };
   const ranks = done.some((r) => r.rank != null);
   let h = `<div class="card"><h2>Autopilot: μια ομάδα που κάνει μόνο ό,τι προτείνουμε</h2>
     <p class="muted" style="margin-top:0">Ξεκίνησε στο Round ${ap.start_round} με 100 credits. Κάθε αγωνιστική κάνει τις μεταγραφές, την πεντάδα και τον αρχηγό
@@ -1162,14 +1169,16 @@ function autopilotCard(ap) {
       ${ranked ? `<div class="kpi"><b>#${num(ranked.rank)}</b><span>θέση στη γενική κατάταξη (top ${top(ranked.rank, ranked.teams)}% από ${num(ranked.teams)})${mine && ranked.my_rank ? ` · εσύ #${num(ranked.my_rank)}` : ""}</span></div>` : ""}
       ${vs.length ? `<div class="kpi"><b class="${diff >= 0 ? "up" : "down"}">${sgn(diff / vs.length)}</b><span>ανά αγωνιστική vs μέσο manager</span></div>` : ""}
       ${mine ? `<div class="kpi"><b>${f1(done.reduce((a, r) => a + (r.my_pts ?? 0), 0))}</b><span>η ομάδα σου</span></div>` : ""}</div>
-      <div class="tablewrap"><table class="fit"><thead><tr><th>Αγων.</th><th class="num">Πόντοι</th><th class="num">11 παίκτες</th>
+      <div class="tablewrap"><table class="fit"><thead><tr><th>Αγων.</th><th class="num">xFPT</th><th class="num">Πόντοι</th><th class="num">11 παίκτες</th>
         <th class="num">Μέσος manager</th><th class="num">Διαφορά</th>${ranks ? '<th class="num">Θέση</th>' : ""}${mine ? '<th class="num">Εσύ</th>' : ""}</tr></thead><tbody>
-      ${done.map((r) => `<tr><td>R${r.round}</td><td class="num"><b>${f1(r.pts)}</b></td><td class="num">${f1(r.raw)}</td>
+      ${done.map((r, i) => `<tr><td>R${r.round}</td><td class="num">${r.x_total != null ? f1(r.x_total) : "–"}</td>
+        <td class="num"><b class="${r.x_total == null ? "" : r.pts >= r.x_total ? "up" : "down"}">${f1(r.pts)}</b></td><td class="num">${f1(r.raw)}</td>
         <td class="num">${r.avg_raw != null ? f1(r.avg_raw) : "–"}</td>
         <td class="num ${r.avg_raw == null ? "" : r.raw >= r.avg_raw ? "up" : "down"}">${r.avg_raw != null ? sgn(r.raw - r.avg_raw) : "–"}</td>
-        ${ranks ? `<td class="num">${r.rank != null ? `#${num(r.rank)}` : "–"}</td>` : ""}
+        ${ranks ? `<td class="num">${r.rank != null ? `#${num(r.rank)}${rankMove(r, done.slice(0, i))}` : "–"}</td>` : ""}
         ${mine ? `<td class="num">${r.my_pts != null ? f1(r.my_pts) : "–"}</td>` : ""}</tr>`).join("")}</tbody></table></div>
-      <p class="muted">«Πόντοι»: με τους κανόνες του παιχνιδιού (πάγκος 50%, αρχηγός ×2, coach). «11 παίκτες»: οι πόντοι όλης της ομάδας χωρίς πάγκο/αρχηγό,
+      <p class="muted">«xFPT»: τι περίμενε το μοντέλο από την ομάδα εκείνης της αγωνιστικής (με πάγκο 50% και αρχηγό ×2)· οι «Πόντοι» πράσινοι όταν το ξεπέρασαν.
+      «Πόντοι»: με τους κανόνες του παιχνιδιού (πάγκος 50%, αρχηγός ×2, coach). «11 παίκτες»: οι πόντοι όλης της ομάδας χωρίς πάγκο/αρχηγό,
       για να συγκρίνεται με τον <b>μέσο manager</b>, που είναι εκτίμηση από το POP (πόσοι έχουν κάθε παίκτη): ακριβής για το ποιους έχουν, όχι για το ποιον βάζουν αρχηγό.
       «Θέση»: όπου θα ήταν με το σύνολο των πόντων του στη γενική κατάταξη του παιχνιδιού μετά από εκείνη την αγωνιστική.
       Μία αγωνιστική δεν λέει τίποτα· κρίνεται σε 5–10.</p>`;

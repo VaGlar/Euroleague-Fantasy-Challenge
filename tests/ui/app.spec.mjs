@@ -194,6 +194,7 @@ test("Μοντέλο: the autopilot card (points vs the average manager; the own
     await expect(card.locator(".court .chip")).toHaveCount(5);
     await expect(card).toContainText("Πριν το T2: μπήκαν");          // the T1 -> T2 changes
     await expect(card).toContainText("#45.123");                    // its rank in the game's standings
+    await expect(card.locator("th", { hasText: "xFPT" })).toHaveCount(1);   // what the model expected, per round
     await expect(card).toContainText("top 13% από 336.908");
     if (edition === "personal") {
       await expect(card).toContainText("138.8");
