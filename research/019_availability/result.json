@@ -1,0 +1,223 @@
+{
+ "games": 10,
+ "rows": 331,
+ "hours_before_median": 4.1,
+ "calibration": {
+  "0.0": {
+   "n": 17,
+   "played": 0.0,
+   "n_relevant": 5,
+   "played_relevant": 0.0
+  },
+  "0.5": {
+   "n": 16,
+   "played": 0.5,
+   "n_relevant": 9,
+   "played_relevant": 0.667
+  },
+  "1.0": {
+   "n": 298,
+   "played": 0.732,
+   "n_relevant": 105,
+   "played_relevant": 0.962
+  }
+ },
+ "surprises": {
+  "n": 4,
+  "of_relevant_fit": 105,
+  "xfpt_counted": 47.5,
+  "list": [
+   {
+    "round": 1,
+    "name": "LEAF, TJ",
+    "team": "TEL",
+    "x_now": 12.3,
+    "status": "out",
+    "hours_before": 5.9
+   },
+   {
+    "round": 1,
+    "name": "NEBO, JOSH",
+    "team": "BAR",
+    "x_now": 14.6,
+    "status": "out",
+    "hours_before": 5.6
+   },
+   {
+    "round": 1,
+    "name": "COFFEY, AMIR",
+    "team": "HTA",
+    "x_now": 11.0,
+    "status": "out",
+    "hours_before": 3.1
+   },
+   {
+    "round": 1,
+    "name": "WASHINGTON, DUANE",
+    "team": "MUN",
+    "x_now": 9.7,
+    "status": "out",
+    "hours_before": 3.1
+   }
+  ]
+ },
+ "missed": {
+  "n": 0,
+  "of_out": 17,
+  "list": []
+ },
+ "half": {
+  "n": 16,
+  "list": [
+   {
+    "round": 1,
+    "name": "LARKIN, SHANE",
+    "team": "ULK",
+    "x_full": 16.1,
+    "status": "out"
+   },
+   {
+    "round": 1,
+    "name": "BINGHAM, MARCUS",
+    "team": "ULK",
+    "x_full": 9.3,
+    "status": "out"
+   },
+   {
+    "round": 1,
+    "name": "MIROTIC, NIKOLA",
+    "team": "PAM",
+    "x_full": 12.4,
+    "status": "played"
+   },
+   {
+    "round": 1,
+    "name": "SAKO, NEAL",
+    "team": "PAM",
+    "x_full": 6.0,
+    "status": "played"
+   },
+   {
+    "round": 1,
+    "name": "RIVERO, JASIEL",
+    "team": "PAM",
+    "x_full": 4.2,
+    "status": "played"
+   },
+   {
+    "round": 1,
+    "name": "CLARK III, JIMMY",
+    "team": "TEL",
+    "x_full": 8.7,
+    "status": "played"
+   },
+   {
+    "round": 1,
+    "name": "LAVI, GUR",
+    "team": "TEL",
+    "x_full": 2.1,
+    "status": "out"
+   },
+   {
+    "round": 1,
+    "name": "MILUTINOV, NIKOLA",
+    "team": "OLY",
+    "x_full": 18.7,
+    "status": "played"
+   },
+   {
+    "round": 1,
+    "name": "JAMES, MIKE",
+    "team": "IST",
+    "x_full": 17.4,
+    "status": "played"
+   },
+   {
+    "round": 1,
+    "name": "ROGKAVOPOULOS, NIKOLAOS",
+    "team": "PAN",
+    "x_full": 4.8,
+    "status": "dnp"
+   },
+   {
+    "round": 1,
+    "name": "OJELEYE, SEMI",
+    "team": "RED",
+    "x_full": 8.4,
+    "status": "played"
+   },
+   {
+    "round": 1,
+    "name": "LEE, SABEN",
+    "team": "ZAL",
+    "x_full": 6.3,
+    "status": "out"
+   },
+   {
+    "round": 1,
+    "name": "MUSA, DZANAN",
+    "team": "DUB",
+    "x_full": 16.6,
+    "status": "out"
+   },
+   {
+    "round": 1,
+    "name": "BACON, DWAYNE",
+    "team": "DUB",
+    "x_full": 14.4,
+    "status": "played"
+   },
+   {
+    "round": 1,
+    "name": "SMITH JR, NICK",
+    "team": "MAD",
+    "x_full": 6.3,
+    "status": "out"
+   },
+   {
+    "round": 1,
+    "name": "JAITEH, MAM",
+    "team": "DUB",
+    "x_full": 3.6,
+    "status": "out"
+   }
+  ]
+ },
+ "proposals": {
+  "best_team": {
+   "n": 5,
+   "not_played": 1,
+   "list": [
+    {
+     "round": 1,
+     "name": "DESSERT, BRICE",
+     "role": "πάγκος",
+     "status": "out"
+    }
+   ]
+  },
+  "my_lineup": {
+   "n": 10,
+   "not_played": 2,
+   "list": [
+    {
+     "round": 1,
+     "name": "AKELE, NICOLA",
+     "role": "πάγκος",
+     "status": "out"
+    },
+    {
+     "round": 1,
+     "name": "DESSERT, BRICE",
+     "role": "5άδα",
+     "status": "out"
+    }
+   ]
+  }
+ },
+ "news_names": {
+  "statuses": 67,
+  "applied_before": 34,
+  "applied_now": 67
+ }
+}

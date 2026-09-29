@@ -45,6 +45,19 @@ def _key(s: str) -> str:
     return "".join(c for c in s if c.isalnum() and unicodedata.category(c) != "Mn")
 
 
+NAME_SUFFIX = {"jr", "sr", "ii", "iii", "iv"}
+
+
+def _pkey(s: str) -> str:
+    """A player's name as a key whatever its order or suffix: the summary writes "Josh Nebo" or
+    "Marcus Bingham Jr." where the roster has "NEBO, JOSH" / "BINGHAM, MARCUS" (R&D 019: with the
+    plain key, every "out" written that way was silently ignored)."""
+    s = unicodedata.normalize("NFD", str(s).lower())
+    s = "".join(c for c in s if unicodedata.category(c) != "Mn")
+    words = [w for w in re.split(r"[^0-9a-z]+", s) if w and w not in NAME_SUFFIX]
+    return "".join(sorted(words))
+
+
 def _clean(o):
     """NaN/inf -> None recursively: browsers reject NaN in JSON."""
     if isinstance(o, float) and not np.isfinite(o):
@@ -427,7 +440,7 @@ def expert_votes(dig: dict | None) -> dict:
         stance = e.get("stance")
         if stance not in ("pick", "captain", "avoid") or not name:
             continue
-        d = out.setdefault(_key(name), {"pick": set(), "captain": set(), "avoid": set()})
+        d = out.setdefault(_pkey(name), {"pick": set(), "captain": set(), "avoid": set()})
         d[stance].add(e.get("source", "?"))
         if stance == "captain":
             d["pick"].add(e.get("source", "?"))
@@ -449,10 +462,10 @@ def log_experts(dig: dict, rnd: int, cur: pd.DataFrame) -> None:
     """Append this round's column picks with the model's own expectation, so their
     hit rate can be measured later (actual vs xFPT for picked vs not picked)."""
     path = PUBLIC / "expert_log.csv"
-    by_key = {_key(n): r for n, r in zip(cur["name"], cur.to_dict("records"))}
+    by_key = {_pkey(n): r for n, r in zip(cur["name"], cur.to_dict("records"))}
     rows = []
     for e in dig.get("expert", []):
-        r = by_key.get(_key(str(e.get("player", "")).split(" (")[0]))
+        r = by_key.get(_pkey(str(e.get("player", "")).split(" (")[0]))
         if r is None:
             continue
         rows.append({"round": rnd, "source": e.get("source"), "stance": e.get("stance"),
@@ -700,8 +713,8 @@ def build(offline: bool = False) -> dict:
     avail = {}
     for a in (dig or {}).get("availability", []):
         f = news.AVAILABILITY_FACTOR.get(a.get("status"), 1.0)
-        avail[_key(a.get("player", "").split(" (")[0])] = (f, a)
-    ctx["avail"] = ctx["name"].map(lambda n: avail.get(_key(n), (1.0, None))[0])
+        avail[_pkey(a.get("player", "").split(" (")[0])] = (f, a)
+    ctx["avail"] = ctx["name"].map(lambda n: avail.get(_pkey(n), (1.0, None))[0])
     ctx["xpir"] = ctx["xpir"] * ctx["avail"]
     _write("news.json", {"articles": arts[:120], "digest": dig, "digest_at": dig_at,
                          "failed": failed})
@@ -720,7 +733,7 @@ def build(offline: bool = False) -> dict:
     ex = expert_votes(dig)
     if ex:
         log_experts(dig, rnd, ctx[ctx["round"] == rnd])  # model's own view, before the nudge
-        k = ctx["name"].map(_key)
+        k = ctx["name"].map(_pkey)
         f_ex = k.map(lambda x: expert_factor(ex.get(x)))
         cur = ctx["round"] == rnd
         ctx.loc[cur, "xpir"] = ctx.loc[cur, "xpir"] * f_ex[cur]
