@@ -461,8 +461,9 @@ const inj = (r) => (r.avail_game != null && r.avail_game < 1
   ? ` <span class="pill">🚑 ${r.avail_game === 0 ? "εκτός" : Math.round(r.avail_game * 100) + "%"}</span>` : "");
 // new to the EuroLeague (no last season) with few games: the prediction rests on 1-4 games (R&D 015)
 const fewGames = (r) => r.position !== "Head Coach" && r.prev_pir == null && r.games >= 1 && r.games <= 4;
-const newb = (r) => (r.no_data && !r.prior ? ' <span class="pill">νέος</span>'
-  : fewGames(r) ? ` <span class="pill few" data-info="few">νέος · ${r.games} ${r.games === 1 ? "ματς" : "ματς"}</span>` : "");
+// info = false inside pick lists: the whole row picks the player, the mark is only a mark
+const newb = (r, info = true) => (r.no_data && !r.prior ? ' <span class="pill">νέος</span>'
+  : fewGames(r) ? ` <span class="pill few"${info ? ' data-info="few"' : ""}>νέος · ${r.games} ματς</span>` : "");
 const exb = (r) => (r.expert_pick > 0 ? ` <span class="pill" title="στήλες fantasy που τον προτείνουν">👍${r.expert_pick}${r.expert_cap ? "★" : ""}</span>` : "")
   + (r.expert_avoid > 0 ? ` <span class="pill" title="στήλη που προτείνει να τον αποφύγεις">👎</span>` : "")
   + (r.prior ? ` <span class="pill" title="χωρίς ιστορικό: εκτίμηση από την τιμή">≈τιμή</span>` : "");
@@ -953,6 +954,21 @@ const pct = (x) => (x == null ? "–" : `${Math.round(x)}%`);
 async function openPlayer(pid) {
   const r = P.players.find((x) => x.person_id === pid);
   if (!r) return;
+  const { head, body } = await playerParts(r);
+  $("#sheet").innerHTML = head + body;
+  bindPriceChart($("#sheet"));
+  $("#modal").classList.add("on");
+  document.body.classList.add("noscroll");
+  $("#sheet").scrollTop = 0;
+}
+// the popup in two parts: the header (name, KPIs) and the body (analysis, stats, games, price).
+// «Η ομάδα μου» shows its own header and actions, then the same body (playerBody).
+async function playerBody(pid) {
+  const r = P.players.find((x) => x.person_id === pid);
+  return r ? (await playerParts(r)).body : "";
+}
+async function playerParts(r) {
+  const pid = r.person_id;
   const all = await details();
   const missing = !DET;          // the details didn't load (network)
   const d = all[pid] || { stats: [], last: [], next: [] };
@@ -1002,13 +1018,13 @@ async function openPlayer(pid) {
       <div class="gv"><b>${f1(g.x)}</b><small>xFPT</small></div>
       <div class="gs">${esc(g.date || "")} · ${g.win}% πιθανότητα νίκης</div></div>`).join("")}</div>`
     : `<p class="muted">${missing ? "Δεν φορτώθηκαν τα στοιχεία — έλεγξε τη σύνδεση και άνοιξε ξανά τον παίκτη." : "Δεν υπάρχουν προγραμματισμένοι αγώνες στα δεδομένα."}</p>`;
-  $("#sheet").innerHTML = `<div class="sh"><div><h2>${esc(nm(r.name))}${inj(r)}${exb(r)}${dol(r)}</h2>
+  const head = `<div class="sh"><div><h2>${esc(nm(r.name))}${inj(r)}${exb(r)}${dol(r)}</h2>
       <div class="muted">${esc(r.team)} · ${esc(r.position || "")}${r.price != null ? ` · <b>${f1(r.price)} cr</b>` : ""}${pop(r) ? ` · POP ${pop(r)}` : ""}${newb(r)}${turn ? ` · Turn ${turn.turn} (${esc(turn.date.slice(8))}/${esc(turn.date.slice(5, 7))})` : ""}</div></div>
       <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
     <div class="kpis"><div class="kpi"><b>${r.actual != null ? f1(r.actual) : f1(r.x_now)}</b><span>${r.actual != null ? "πόντοι (έπαιξε)" : "xFPT αγωνιστικής"}</span></div>
       <div class="kpi"><b>${f1(r.x_h)}</b><span>xFPT3</span></div>
-      <div class="kpi"><b>${r.value == null ? "–" : r.value.toFixed(2)}</b><span>xFPT3 / cr</span></div></div>
-    <h3>Ανάλυση${g.label ? ` ${done ? "" : "· "}${g.label}` : ""}</h3>
+      <div class="kpi"><b>${r.value == null ? "–" : r.value.toFixed(2)}</b><span>xFPT3 / cr</span></div></div>`;
+  const body = `<h3>Ανάλυση${g.label ? ` ${done ? "" : "· "}${g.label}` : ""}</h3>
     <ul class="why">${why.map(([k, v]) => `<li><span>${k}</span><span>${v}</span></li>`).join("")}</ul>
     ${coach ? "" : `<h3>Στατιστικά (μ.ό. ανά αγώνα)</h3>${stats}`}
     ${coach ? "" : `<h3>Τελευταία 3 παιχνίδια</h3>${last}`}
@@ -1016,10 +1032,7 @@ async function openPlayer(pid) {
     ${r.price != null ? `<h3>Τιμή</h3>${(d.prices || []).length >= 2
       ? `<div class="pchart-sum"><span>Τώρα <b>${f1(r.price)} cr</b></span><span>Από την αρχή${chg(r.price_chg) || " 0.0"}</span><span>Τελευταία αλλαγή${chg(r.price_last_chg) || " 0.0"}</span>${dol(r)}</div>${priceChart(d.prices)}`
       : `<p class="muted">${f1(r.price)} cr. Το γράφημα εμφανίζεται από τη 2η αγωνιστική με τιμές.</p>`}` : ""}`;
-  bindPriceChart($("#sheet"));
-  $("#modal").classList.add("on");
-  document.body.classList.add("noscroll");
-  $("#sheet").scrollTop = 0;
+  return { head, body };
 }
 // price over the season: a step line (a price holds until the next matchday), one point per snapshot
 function priceChart(h) {
@@ -1101,6 +1114,16 @@ async function copyMail(btn) {
   return ok;
 }
 function closePlayer() { $("#modal").classList.remove("on"); document.body.classList.remove("noscroll"); }
+// a sheet keeps the page where it was: iPhones scroll the page under it (the keyboard, overflow: hidden), and a change
+// made in it redraws the tab — after it closes you are back at the same spot, not at the top
+(() => {
+  let y = null;
+  new MutationObserver(() => {
+    const locked = document.body.classList.contains("noscroll");
+    if (locked && y == null) y = window.scrollY;
+    else if (!locked && y != null) { const to = y; y = null; if (Math.abs(window.scrollY - to) > 2) window.scrollTo({ top: to }); }
+  }).observe(document.body, { attributes: true, attributeFilter: ["class"] });
+})();
 $("#modal").addEventListener("click", (e) => { if (e.target.id === "modal") closePlayer(); });
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") closePlayer(); });
 document.addEventListener("click", (e) => {

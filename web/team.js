@@ -313,7 +313,7 @@
     const cap = t && t.captain === r.id;
     return `<div class="chip${cap ? " cap" : ""} ${extraCls}" data-fid="${r.id}" tabindex="0" role="button" aria-label="${esc(nm(r.name))}">
       <div class="ct"><span>${LETTER[r.position] || ""}</span>${r.turn ? `<span class="tb t${r.turn > 1 ? 2 : 1}">T${r.turn}</span>` : ""}</div>
-      <div class="cn">${esc(sur(r.name))}${inj(r) ? " 🚑" : ""}${r.price_trend === "up" ? " $" : ""}${typeof fewGames === "function" && fewGames(r) ? ' <span class="few" title="νέος στη EuroLeague, λίγα ματς: αβέβαιη πρόβλεψη">🆕</span>' : ""}</div>
+      <div class="cn cnx"><span class="nm">${esc(sur(r.name))}</span>${inj(r) ? "<span>🚑</span>" : ""}${r.price_trend === "up" ? "<span>$</span>" : ""}${typeof fewGames === "function" && fewGames(r) ? '<span class="few" data-info="few" role="button" tabindex="0" aria-label="Τι σημαίνει νέος">🆕</span>' : ""}</div>
       <div class="cp${isPlayed ? " done" : ""}">${f1(isPlayed ? r.actual : r.x_now)}</div>
       <div class="cs">${r.opp ? `${r.home ? "🏠" : "✈️"} ${esc(r.opp)}` : ""}${r.price != null ? ` · ${f1(r.price)}${arrow(dPrice(r))}` : ""}</div></div>`;
   }
@@ -380,14 +380,14 @@
         ${t.game || WIDE() ? "" : `<div class="tm-morewrap"><button class="tm-more" id="tmMore" aria-haspopup="menu">⋯ Επιλογές</button><div id="tmMenu"></div></div>`}</header>
       ${!t.game && WIDE() ? '<div id="tmTools"></div>' : ""}
       <div class="tm-cols"><div class="tm-colL">
-      <div class="card"><h2>Τι κάνω τώρα <small class="muted">${items.length ? `${items.length} ${items.length === 1 ? "βήμα" : "βήματα"}` : ""}</small></h2>
+      <div class="card" id="tmTodo"><h2>Τι κάνω τώρα <small class="muted">${items.length ? `${items.length} ${items.length === 1 ? "βήμα" : "βήματα"}` : ""}</small></h2>
         ${done ? `<div class="tm-ready">✅ Έτοιμος για το round</div>` : `<ul class="tm-list">${confirm}${list}</ul>`}
         ${pl.tradesNow ? keptLine : ""}
         ${turnPlan ? `<ul class="plan">${turnPlan}</ul>` : ""}
         <p class="tm-hint">${hint}
         ${pl.inRound ? "Μέσα στο round: όποιος έπαιξε μπορεί μόνο να βγει στον πάγκο· το x2 μόνο σε παίκτη που δεν έχει παίξει." : ""}</p></div>
       ${nextTrades}</div>
-      <div class="tm-colR"><div class="card tm-courtcard"><h2>${t.game ? (t.fromGame ? "Στο παιχνίδι τώρα" : "Η πρόταση") : "Η πεντάδα σου"} <small class="muted">${t.game ? (t.fromGame ? "διακεκομμένο = αλλάζει με την πρόταση" : "δεν διαβάστηκε η πεντάδα του παιχνιδιού") : "σύρε έναν παίκτη πάνω σε άλλον για αλλαγή θέσης"}</small></h2>
+      <div class="tm-colR">${items.length && !done ? `<button class="tm-steps" id="tmSteps" type="button">📋 <b>${items.length} ${items.length === 1 ? "βήμα" : "βήματα"}</b> για το Round ${pl.ti.round} <span aria-hidden="true">↓</span></button>` : ""}<div class="card tm-courtcard"><h2>${t.game ? (t.fromGame ? "Στο παιχνίδι τώρα" : "Η πρόταση") : "Η πεντάδα σου"} <small class="muted">${t.game ? (t.fromGame ? "διακεκομμένο = αλλάζει με την πρόταση" : "δεν διαβάστηκε η πεντάδα του παιχνιδιού") : "σύρε έναν παίκτη πάνω σε άλλον για αλλαγή θέσης"}</small></h2>
         ${courtHtml(t, rows, t.game ? pl : null)}<p class="tm-hint">${t.game ? "Πάτα έναν παίκτη για στατιστικά και επόμενα παιχνίδια." : "Πάτα έναν παίκτη για αρχηγό, αντικατάσταση ή στατιστικά."}</p></div></div></div>
       ${bestCard(best)}`;
   }
@@ -405,11 +405,10 @@
       <div class="kpis"><div class="kpi"><b>${f1(played(r) ? r.actual : r.x_now)}</b><span>${played(r) ? "πόντοι" : "xFPT"}</span></div>
         <div class="kpi"><b>${f1(r.x_h)}</b><span>xFPT3</span></div><div class="kpi"><b>${r.value == null ? "–" : r.value.toFixed(2)}</b><span>xFPT3/cr</span></div></div>
       <div class="tm-acts">
-        ${r.position !== "Head Coach" ? `<button class="tm-act" id="aCap" ${canCap ? "" : "disabled"}><span>★</span><div>Κάν' τον αρχηγό<small>${capWhy}</small></div></button>
+        ${t.game ? "" : r.position !== "Head Coach" ? `<button class="tm-act" id="aCap" ${canCap ? "" : "disabled"}><span>★</span><div>Κάν' τον αρχηγό<small>${capWhy}</small></div></button>
         <button class="tm-act" id="aSwap"><span>⇄</span><div>Αλλαγή θέσης με…<small>ή σύρε τον πάνω σε άλλον παίκτη</small></div></button>` : ""}
-        <button class="tm-act" id="aRep"><span>🔁</span><div>Αντικατάσταση (μεταγραφή)<small>${NAME[r.position]} έως ${f1((Number(t.bank) || 0) + Number(r.price || 0))} cr</small></div></button>
-        <button class="tm-act" id="aPrice"><span>✎</span><div>Διόρθωση τιμής αγοράς<small>όσο τον πλήρωσες στο παιχνίδι (έχεις γράψει ${f1(r.buy ?? r.price)} cr)</small></div></button>
-        <button class="tm-act" id="aInfo"><span>📊</span><div>Στατιστικά και επόμενα παιχνίδια<small>η πλήρης καρτέλα του παίκτη</small></div></button>
+        <button class="tm-act" id="aRep"><span>🔁</span><div>${t.game ? "Ποιον να πάρω στη θέση του;" : "Αντικατάσταση (μεταγραφή)"}<small>${NAME[r.position]} έως ${f1((Number(t.bank) || 0) + Number(r.price || 0))} cr · μόνο όσοι χωράνε στο υπόλοιπο</small></div></button>
+        ${t.game ? "" : `<button class="tm-act" id="aPrice"><span>✎</span><div>Διόρθωση τιμής αγοράς<small>όσο τον πλήρωσες στο παιχνίδι (έχεις γράψει ${f1(r.buy ?? r.price)} cr)</small></div></button>`}
       </div>`);
     const on = (i, fn) => { const el = document.getElementById(i); if (el) el.onclick = fn; };
     on("aCap", () => { t.captain = id; save(t); closePlayer(); render(); flash(id); toast(`CAP: ${sur(r.name)}`); });
@@ -433,25 +432,41 @@
         t.players.find((x) => x.id === id).price = v; save(t); closePlayer(); render(); toast(`${sur(r.name)}: αγορά ${f1(v)} cr`);
       };
     });
-    on("aInfo", () => openPlayer(r.person_id));
+    // the player's analysis, stats, games and price under the actions (same as the players' popup)
+    if (typeof playerBody === "function") {
+      $("#sheet").insertAdjacentHTML("beforeend", `<div id="tmDetails" data-pid="${esc(r.person_id)}"><p class="muted">Φόρτωση στατιστικών…</p></div>`);
+      playerBody(r.person_id).then((html) => {
+        const box = document.getElementById("tmDetails");
+        if (!box || box.dataset.pid !== String(r.person_id)) return;   // closed or another player meanwhile
+        box.innerHTML = html;
+        if (typeof bindPriceChart === "function") bindPriceChart(box);
+      });
+    }
   }
   function replaceSheet(t, r) {
     const max = (Number(t.bank) || 0) + Number(r.price || 0);
     const have = new Set(t.players.map((x) => x.id));
-    const list = P.players.filter((p) => p.position === r.position && p.fantasy_id != null && p.price != null && !have.has(p.fantasy_id))
+    // only the players the credits allow (sold at today's price), the biggest gain over the next 3 rounds first
+    const list = P.players.filter((p) => p.position === r.position && p.fantasy_id != null && p.price != null
+        && p.price <= max + 1e-9 && !have.has(p.fantasy_id))
       .sort((a, b) => (b.x_h ?? 0) - (a.x_h ?? 0));
+    const gain = (p) => (p.x_h ?? 0) - (r.x_h ?? 0);
     const draw = (q) => {
       const k = key(q).trim();
-      $("#tmList").innerHTML = list.filter((p) => !k || key(p.name).includes(k)).slice(0, 40).map((p) => `<button class="tm-pick" data-n="${p.fantasy_id}" ${p.price > max ? "disabled" : ""}>
-          <span><b>${esc(nm(p.name))}</b></span><span class="tm-pv"><b>${f1(p.x_h)}</b><small>xFPT3</small></span>
-          <span class="muted tm-pm">${esc(p.team)} · ${f1(p.price)} cr${p.price > max ? " · δεν φτάνει το υπόλοιπο" : ""}</span></button>`).join("") || `<p class="muted">Κανένας ${NAME[r.position]} με αυτό το όνομα.</p>`;
+      $("#tmList").innerHTML = list.filter((p) => !k || key(p.name).includes(k)).slice(0, 40).map((p) => `<button class="tm-pick" data-n="${p.fantasy_id}">
+          <span><b>${esc(nm(p.name))}</b>${typeof newb === "function" ? newb(p, false) : ""}</span><span class="tm-pv"><b class="${gain(p) > 0 ? "tm-up" : "tm-down"}">${gain(p) > 0 ? "+" : "−"}${f1(Math.abs(gain(p)))}</b><small>xFPT3</small></span>
+          <span class="muted tm-pm">${esc(p.team)} · ${f1(p.price)} cr · xFPT3 ${f1(p.x_h)} · μένουν ${f1(max - p.price)} cr</span></button>`).join("")
+        || `<p class="muted">${k ? `Κανένας ${NAME[r.position]} με αυτό το όνομα μέσα στο υπόλοιπο.` : `Κανένας ${NAME[r.position]} δεν χωράει στο υπόλοιπο.`}</p>`;
       document.querySelectorAll("#tmList [data-n]").forEach((b) => b.onclick = () => {
         const n = row(Number(b.dataset.n));
+        if (t.game) {        // your game's team: trades are made in the game, this is the idea
+          closePlayer(); toast(`Στο παιχνίδι: ${sur(r.name)} ➜ ${sur(n.name)} (${f1(max - n.price)} cr μένουν)`); return;
+        }
         applyTrade(t, r.id, n.fantasy_id, n.price); save(t); closePlayer(); render(); flash(n.fantasy_id);
         toast(`${sur(r.name)} ➜ ${sur(n.name)} · υπόλοιπο ${f1(t.bank)} cr`);
       });
     };
-    sheet(`<div class="sh"><div><h2>Αντικατάσταση: ${esc(sur(r.name))}</h2><div class="muted">${NAME[r.position]} · έως ${f1(max)} cr · οι καλύτεροι σε xFPT3 πρώτα</div></div>
+    sheet(`<div class="sh"><div><h2>${t.game ? "Στη θέση του" : "Αντικατάσταση"}: ${esc(sur(r.name))}</h2><div class="muted">${NAME[r.position]} · ${list.length} χωράνε στα ${f1(max)} cr · το μεγαλύτερο κέρδος σε xFPT3 πρώτα</div></div>
         <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
       <input id="tmQ" class="tm-input" placeholder="Αναζήτηση ${NAME[r.position]}…" autocomplete="off"><div id="tmList"></div>`);
     draw(""); $("#tmQ").addEventListener("input", (e) => draw(e.target.value));
@@ -465,6 +480,7 @@
       el.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); playerSheet(t, id); } });
       el.addEventListener("pointerdown", (e) => {
         if (e.button !== 0) return;
+        if (e.target.closest("[data-info]")) return;          // 🆕 and co. explain themselves (index.html), no drag or sheet
         const sx = e.clientX, sy = e.clientY;
         let ghost = null, target = null, last = null, raf = 0;
         try { el.setPointerCapture(e.pointerId); } catch (err) {}
@@ -624,7 +640,8 @@
     sheet(`<div class="sh"><div><h2>Διάλεξε ${NAME[pos]}</h2><div class="muted">Γράψε μερικά γράμματα του ονόματος</div></div>
         <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
       <input id="tmQ" class="tm-input" placeholder="Αναζήτηση ${NAME[pos]}…" autocomplete="off"><div id="tmList"></div>`);
-    draw(""); setTimeout(() => $("#tmQ")?.focus(), 50); $("#tmQ").addEventListener("input", (e) => draw(e.target.value));
+    draw(""); if (matchMedia("(hover: hover)").matches) setTimeout(() => $("#tmQ")?.focus(), 50);   // not on phones: the keyboard would jump up
+    $("#tmQ").addEventListener("input", (e) => draw(e.target.value));
   }
   function finishSetup() {
     const old = load();
@@ -658,9 +675,15 @@
       const g = gameTeam();
       if (!g) { $("#team").innerHTML = `<div class="card warn"><h2>Η ομάδα δεν είναι διαθέσιμη</h2>
         <p>Χρειάζεται έγκυρο <code>FANTASY_TOKEN</code> στα GitHub Secrets.</p></div>${bestCard(best)}`; return; }
+      const y = window.scrollY;
       $("#team").innerHTML = mainView(g, best);
+      if (Math.abs(window.scrollY - y) > 2) window.scrollTo({ top: y });
       bindKeep(g, best);
-      document.querySelectorAll("#team .chip[data-fid]").forEach((el) => el.onclick = () => { const r = row(Number(el.dataset.fid)); if (r) openPlayer(r.person_id); });
+      bindSteps();
+      document.querySelectorAll("#team .chip[data-fid]").forEach((el) => el.onclick = (e) => {
+        if (e.target.closest("[data-info]")) return;
+        playerSheet(g, Number(el.dataset.fid));
+      });
       return;
     }
     const t = load();
@@ -686,8 +709,9 @@
       const res = ELFOPT.lineup(optRows(rowsOf(t), t, false));
       if (res) { t.roles = Object.fromEntries(res.team.map((p) => [p.id, p.role])); t.captain = res.team.find((p) => p.captain)?.id ?? null; t.confirmed = false; save(t); }
     }
-    const pl = mainView(t, best);
+    const pl = mainView(t, best), y = window.scrollY;
     $("#team").innerHTML = pl;
+    if (Math.abs(window.scrollY - y) > 2) window.scrollTo({ top: y });   // a change doesn't throw you to the top
     const p = plan(t);   // cached trades: cheap
     document.querySelectorAll("#team .tm-done[data-i]").forEach((b) => b.onclick = () => {
       const it = p.items[Number(b.dataset.i)]; if (!it) return;
@@ -703,7 +727,13 @@
     if (document.getElementById("tmTools")) menu(t, best, true);
     on("tmEdit", () => { setup = { players: t.players.map((x) => ({ ...x })) }; mode = "setup"; render(best); });
     bindKeep(t, best);
+    bindSteps();
     bindCourt(t);
+  }
+  // phones: the court comes first, this line says there are steps to do below it and takes you there
+  function bindSteps() {
+    const b = document.getElementById("tmSteps"), to = document.getElementById("tmTodo");
+    if (b && to) b.onclick = () => window.scrollTo({ top: to.getBoundingClientRect().top + window.scrollY - 8, behavior: "smooth" });
   }
   // «Δεν θέλω να διώξω αυτόν τον παίκτη αυτή την αγωνιστική» and its undo: re-plan the trades
   function bindKeep(t, best) {
@@ -729,7 +759,10 @@
   // styles for this screen
   const css = document.createElement("style");
   css.textContent = `
+  .tm-steps { display: none; }   /* phones only (below) */
   .tm-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin: 2px 0 12px; }
+  /* not the page's header: it scrolls with the page (the global header rule made it sticky and covered the court); above the court for the options menu */
+  #team header.tm-top { position: relative; z-index: 3; background: none; border: 0; padding: 0; transform: none; transition: none; }
   .tm-h { font-size: 20px; margin: 0; }
   .tm-dead { display: inline-block; font-size: 12px; font-weight: 600; color: var(--accent); margin-top: 4px;
     background: color-mix(in srgb, var(--accent) 12%, transparent); border-radius: 999px; padding: 2px 9px; }
@@ -784,12 +817,22 @@
     .tm-courtcard .tm-floor { overflow: visible; margin-left: 132px; margin-right: auto; }
     .tm-courtcard .tm-floor .lanes .pair { display: block; }
     .tm-courtcard .tm-floor .lane.coach, .tm-courtcard .tm-floor .lane.six { position: absolute; left: -132px; width: 120px; margin: 0; }
-    .tm-courtcard .tm-floor .lane.coach { top: -175px; }
-    .tm-courtcard .tm-floor .lane.six { top: 6px; }
+    /* anchored to the bottom of the floor, stacked upwards: the 6th, then the coach above him */
+    .tm-courtcard .tm-floor .lane.six { bottom: 8px; }
+    .tm-courtcard .tm-floor .lane.coach { bottom: 150px; }
+    .tm-courtcard .tm-floor:not(:has(.lane.six)) .lane.coach { bottom: 8px; }
     .tm-courtcard .tm-floor .lane.coach .chip, .tm-courtcard .tm-floor .lane.six .chip { width: 100%; max-width: none; }
     .tm-courtcard .tm-floor .lane.coach h3, .tm-courtcard .tm-floor .lane.six h3 { color: var(--text-secondary) !important; opacity: 1; }
     .tm-courtcard .tm-floor .lane.coach .tm-slot { width: 100%; max-width: none; border-color: var(--text-muted); color: var(--text-secondary);
       background: var(--surface-0); }
+  }
+  /* more room (a PC): the bench on the right sideline, the four stacked, so the floor is only the court */
+  @container (min-width: 580px) {
+    .tm-courtcard .tm-floor { margin-right: 132px; }
+    .tm-courtcard .tm-floor .lane.bench { position: absolute; right: -132px; bottom: 8px; width: 120px; margin: 0; }
+    .tm-courtcard .tm-floor .lane.bench .crow { flex-direction: column; flex-wrap: nowrap; gap: 6px; }
+    .tm-courtcard .tm-floor .lane.bench .chip { width: 100%; max-width: none; }
+    .tm-courtcard .tm-floor .lane.bench h3 { color: var(--text-secondary) !important; opacity: 1; }
   }
   /* set-up: the 4 forwards and 4 guards stand on the court too, four to a row */
   .tm-setcourt .crow > * { width: calc(25% - 5px); max-width: 128px; }
@@ -802,6 +845,32 @@
     .tm-courtcard > h2, .tm-courtcard > .tm-hint, .tm-courtcard > .tm-money, .tm-courtcard > button, .tm-courtcard > p { margin-left: 14px; margin-right: 14px; }
     .tm-courtcard > .tm-primary { width: calc(100% - 28px); }
     .tm-courtcard .tm-floor { border-radius: 0; border-left: 0; border-right: 0; }
+    /* «Η ομάδα μου»: the court first, then the to-do list; the whole squad in one screen (header hidden) */
+    .tm-cols { display: flex; flex-direction: column; }
+    .tm-cols > .tm-colR { order: -1; }
+    .tm-cols .tm-steps { display: flex; align-items: center; gap: 6px; width: calc(100% + 32px); margin: 0 -16px 10px; padding: 9px 14px;
+      border: 0; border-block: 1px solid color-mix(in srgb, var(--accent) 35%, transparent); background: color-mix(in srgb, var(--accent) 12%, var(--surface-1));
+      color: var(--text-primary); font: inherit; font-size: 14px; text-align: left; cursor: pointer; }
+    .tm-cols .tm-steps span { margin-left: auto; color: var(--accent); font-weight: 700; }
+    .tm-cols .tm-courtcard > h2 { font-size: 15px; margin-bottom: 6px; } .tm-cols .tm-courtcard > h2 small { font-size: 11px; }
+    .tm-cols .tm-floor .court.lined { aspect-ratio: 15 / 12; padding-top: 12px; padding-bottom: calc(12% + 4px); }
+    .tm-cols .tm-floor .court.lined > .crow { margin-bottom: 4px; }
+    .tm-cols .tm-floor .chip { padding: 3px 5px 4px; }
+    .tm-cols .tm-floor .chip .ct { font-size: 9px; line-height: 12px; }
+    .tm-cols .tm-floor .chip .cn { line-height: 1.2; }
+    .tm-cols .tm-floor .chip .cp { font-size: 18px; line-height: 1.1; }
+    .tm-cols .tm-floor .lanes { padding-top: calc(12% + 2px); gap: 4px; }
+    .tm-cols .tm-floor .lane h3 { font-size: 11px; margin-bottom: 3px; }
+    .tm-cols .tm-floor .lane.bench .crow { flex-wrap: nowrap; margin-bottom: 0; }
+    .tm-cols .tm-floor .lane.bench .chip { width: calc(25% - 5px); }
+    .tm-cols .tm-floor .pair .crow { margin-bottom: 0; }
+    /* the 6th and the coach stand either side of the centre circle, the bench below it */
+    .tm-cols .tm-floor .lanes { padding-top: 8px; grid-template-columns: minmax(0, 1fr); }
+    .tm-cols .tm-floor .lanes .pair { grid-template-columns: minmax(0, 1fr) 26% minmax(0, 1fr); }
+    .tm-cols .tm-floor .lanes .pair .lane.coach { grid-column: 3; }
+    .tm-cols .tm-floor .lanes .pair .lane.coach h3 { text-align: right; } .tm-cols .tm-floor .lanes .pair .lane.coach .crow { justify-content: flex-end; }
+    .tm-cols .tm-floor .lanes .lane.bench { margin-top: 10px; }
+    .tm-cols .tm-courtcard > .tm-hint { margin-top: 6px; font-size: 11px; }
   }
   .tm-keep { display: block; margin-top: 6px; padding: 0; border: 0; background: none; color: var(--series-1); font: inherit; font-size: 13px;
     text-align: left; cursor: pointer; }
@@ -809,7 +878,7 @@
   .tm-kept .linkbtn { font-size: 13px; }
   /* wide screens: the to-do list and the court side by side */
   @media (min-width: 1000px) {
-    .tm-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 14px; align-items: start; }
+    .tm-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.55fr); gap: 14px; align-items: start; }   /* the court has sidelines */
   }
   .sheet #tmQ { position: sticky; top: -14px; z-index: 1; box-shadow: 0 6px 8px -6px rgba(0,0,0,.25); }
   .tm-input { width: 100%; font: inherit; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--border);
@@ -828,6 +897,10 @@
   .tm-money { display: flex; justify-content: space-between; color: var(--text-secondary); font-size: 13px; margin-top: 10px; }
   .tm-up { color: var(--good, #1e8e3e); font-size: 10px; margin-left: 2px; } .tm-down { color: var(--critical); font-size: 10px; margin-left: 2px; }
   .tm-planned { color: var(--good); }
+  /* a long name is cut («Beauch…»), the marks after it (🚑 $ 🆕) always show */
+  .chip .cn.cnx { display: flex; justify-content: center; gap: 3px; }
+  .chip .cn.cnx > span { flex: none; } .chip .cn.cnx > .nm { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  .chip .few { cursor: help; padding: 2px; margin: -2px; }
   .tm-over { color: var(--critical); font-size: 13px; margin: 6px 2px 0; }
   .tm-slot { width: 31%; max-width: 128px; border: 2px dashed var(--court-line); border-radius: 10px; padding: 12px 4px;
     background: color-mix(in srgb, var(--surface-1) 55%, transparent); color: var(--text-secondary); font: inherit; font-size: 12px; cursor: pointer; }

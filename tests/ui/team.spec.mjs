@@ -240,7 +240,61 @@ test.describe("public edition", () => {
   });
 });
 
+test.describe("player sheet on the team screen", () => {
+  test("tapping a player shows the actions and, below them, his analysis and stats", async ({ page }) => {
+    await savedTeam(page);
+    await court(page).first().click();
+    await expect(page.locator("#aRep")).toBeVisible();
+    await expect(page.locator("#tmDetails")).toContainText("Ανάλυση");
+    await expect(page.locator("#tmDetails")).toContainText("Επόμενα 3 παιχνίδια");
+    await expect(page.locator("#tmDetails")).not.toContainText("Δεν υπάρχουν προγραμματισμένοι αγώνες");
+  });
+
+  test("replacement: only players the credits allow, biggest gain first, and the trade applies", async ({ page }) => {
+    await savedTeam(page);
+    const t = await stored(page);
+    const chip = court(page).first();
+    const id = Number(await chip.getAttribute("data-fid"));
+    await chip.click();
+    await page.locator("#aRep").click();
+    const max = await page.evaluate(([bank, id]) => bank + P.players.find((p) => p.fantasy_id === id).price, [t.bank, id]);
+    const prices = await page.locator("#tmList [data-n]").evaluateAll((els) => els.map((e) => P.players.find((p) => p.fantasy_id === Number(e.dataset.n)).price));
+    expect(prices.length).toBeGreaterThan(0);
+    for (const p of prices) expect(p).toBeLessThanOrEqual(max + 1e-9);
+    await expect(page.locator("#tmList [disabled]")).toHaveCount(0);
+    const pick = Number(await page.locator("#tmList [data-n]").first().getAttribute("data-n"));
+    await page.locator("#tmList [data-n]").first().click();
+    const after = await stored(page);
+    expect(after.players.some((x) => x.id === pick)).toBeTruthy();
+    expect(after.bank).toBeGreaterThanOrEqual(0);
+  });
+
+  test("tapping 🆕 on a chip explains it instead of opening the player", async ({ page }) => {
+    await savedTeam(page);
+    const few = page.locator(`${C} .chip .few`).first();
+    test.skip(!(await few.count()), "no newcomer in this team");
+    await few.click();
+    await expect(page.locator("#tip")).toContainText("Νέος στη EuroLeague");
+    await expect(page.locator("#modal")).not.toHaveClass(/\bon\b/);
+  });
+});
+
 test.describe("personal edition", () => {
+  test("the game's team: tapping a player shows his stats and who fits in his place (an idea, not a trade)", async ({ page }) => {
+    await open(page, "personal", { tab: "team" });
+    await court(page).first().click();
+    await expect(page.locator("#aCap")).toHaveCount(0);            // lineup and CAP go through /lineup
+    await expect(page.locator("#tmDetails")).toContainText("Ανάλυση");
+    await page.locator("#aRep").click();
+    await expect(page.locator("#sheet h2")).toContainText("Στη θέση του");
+    const n = await page.locator("#tmList [data-n]").count();
+    expect(n).toBeGreaterThan(0);
+    const before = await page.locator(`${C} .chip[data-fid]`).evaluateAll((els) => els.map((e) => e.dataset.fid));
+    await page.locator("#tmList [data-n]").first().click();
+    await expect(page.locator("#tmtoast")).toContainText("Στο παιχνίδι");
+    expect(await page.locator(`${C} .chip[data-fid]`).evaluateAll((els) => els.map((e) => e.dataset.fid))).toEqual(before);
+  });
+
   test("«Όχι τον X» on the game's team re-plans without him", async ({ page }) => {
     await open(page, "personal", { tab: "team" });
     const btn = page.locator("#team [data-avoid]").first();
@@ -276,4 +330,56 @@ test.describe("personal edition", () => {
     await expect(page.locator("#modal")).toHaveClass(/\bon\b/);
     expect(errors).toEqual([]);
   });
+});
+
+test("phones: the court comes before the to-do list and the whole squad fits in one screen; PC: HC/6th left, bench right", async ({ page }, testInfo) => {
+  await open(page, "personal", { tab: "team" });
+  const card = page.locator("#team .tm-courtcard");
+  const todo = page.locator("#team .tm-colL .card").first();
+  const [c, d] = [await card.boundingBox(), await todo.boundingBox()];
+  if (isPhone(testInfo)) {
+    expect(c.y, "το γήπεδο πριν από τις προτάσεις").toBeLessThan(d.y);
+    const room = await page.evaluate(() => innerHeight - document.querySelector("#bnav").getBoundingClientRect().height);
+    expect(c.height, "όλη η ομάδα σε μία οθόνη").toBeLessThanOrEqual(room);
+  } else {
+    const floor = await page.locator("#team .tm-courtcard .tm-floor").boundingBox();
+    for (const lane of ["six", "coach"]) expect((await page.locator(`${C} .tm-floor .lane.${lane}`).boundingBox()).x + 5).toBeLessThan(floor.x);
+    expect((await page.locator(`${C} .tm-floor .lane.bench`).boundingBox()).x).toBeGreaterThan(floor.x + floor.width - 5);
+  }
+  await checkLayout(page, "court first");
+  await checkNoOverlap(page, "#team .tm-courtcard .chip", "γήπεδο");
+  // the team's summary scrolls away with the page (it isn't the page's sticky header)
+  expect(await page.locator("#team .tm-top").evaluate((el) => getComputedStyle(el).position)).not.toBe("sticky");
+});
+
+test("a change doesn't throw you back to the top of the page", async ({ page }, testInfo) => {
+  await open(page, "public", { tab: "team" });
+  await buildTeam(page);
+  await page.locator("#tmFinish").click();
+  await expect(page.locator("#tmtoast")).not.toHaveClass(/\bon\b/, { timeout: 8000 });   // it would cover the chip
+  await page.locator("#team .tm-courtcard").scrollIntoViewIfNeeded();
+  await page.mouse.wheel(0, 150);
+  await page.waitForTimeout(300);
+  const chip = page.locator("#team .tm-courtcard .court .chip:not(.cap)").last();   // mid-screen: at an edge Playwright scrolls by itself
+  await chip.scrollIntoViewIfNeeded();
+  const y = await page.evaluate(() => scrollY);
+  expect(y).toBeGreaterThan(100);
+  await chip.click();
+  await page.locator("#aCap").click();
+  await expect(page.locator("#modal")).not.toHaveClass(/\bon\b/);
+  await page.waitForTimeout(200);
+  expect(Math.abs((await page.evaluate(() => scrollY)) - y)).toBeLessThan(5);
+});
+
+test("phones: a line above the court says how many steps are left and takes you to them; not on a PC", async ({ page }, testInfo) => {
+  await open(page, "personal", { tab: "team" });
+  const line = page.locator("#tmSteps");
+  if (!isPhone(testInfo)) { await expect(line).toBeHidden(); return; }
+  const n = (await page.locator("#tmTodo h2 small").innerText()).trim();     // «6 βήματα»
+  await expect(line).toContainText(n);
+  const [l, c] = [await line.boundingBox(), await page.locator(C).boundingBox()];
+  expect(l.y).toBeLessThan(c.y);
+  await line.click();
+  await expect.poll(() => page.locator("#tmTodo").evaluate((el) => Math.round(el.getBoundingClientRect().top))).toBeLessThan(40);
+  await checkLayout(page, "steps line");
 });
