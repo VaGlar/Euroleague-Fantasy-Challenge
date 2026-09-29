@@ -1,6 +1,9 @@
 # News & expert sources. Add a new source by appending an entry:
 #   type: rss      -> any RSS/Atom feed URL
 #   type: incrowd  -> EuroLeague official CMS API (categorySlug)
+#   type: page     -> one web page rewritten in place (e.g. a daily injury report); start: the text
+#                     where the useful part begins (skips menus), end: where it stops;
+#                     report: true -> passed whole to the summary
 # filter: true keeps only items that mention a EuroLeague team or player
 # (use it for general sports sites that also cover football etc.).
 # weight: how much the summariser should trust it (1 = normal, 2 = expert/fantasy).
@@ -10,6 +13,17 @@
 # hours: how far back to look (default 96).
 
 sources:
+  - name: BasketNews – Injury Report
+    type: page
+    url: https://basketnews.com/news-212393-euroleague-injury-report-updated.html
+    start: injury_reports
+    end: This comprehensive EuroLeague injury report
+    lang: en
+    weight: 2
+    filter: false
+    report: true
+    hours: 72
+
   - name: EuroLeague (official)
     type: incrowd
     category: news
