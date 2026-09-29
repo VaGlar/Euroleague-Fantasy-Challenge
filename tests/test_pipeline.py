@@ -233,3 +233,21 @@ def test_autopilot_runs_in_the_pipeline(pipeline):
     assert sum(p["price"] for p in last["squad"]) <= 100.5
     assert sum(p["captain"] for p in last["squad"]) == 1
     assert {p["position"] for p in last["squad"]} == {"Guard", "Forward", "Center", "Head Coach"}
+
+
+def test_an_out_from_the_news_applies_whatever_the_name_order(monkeypatch, tmp_path):
+    """The summary may write "Josh Nebo" where the roster has "NEBO, JOSH" (or add "Jr."): the player
+    must still be out (R&D 019: that way every news "out" of 25/9 was silently ignored)."""
+    block_network(monkeypatch)
+    public = use_public(monkeypatch, tmp_path / "public")
+    seen = {}
+
+    def digest(arts, roster):
+        name = next(r.split(" (")[0] for r in roster if ", " in r)
+        last, first = name.split(", ", 1)
+        seen["name"] = name
+        return {"summary_el": "• δοκιμή", "expert": [],
+                "availability": [{"player": f"{first.title()} {last.title()} Jr.", "status": "out"}]}
+    out = _run(monkeypatch, public, digest=digest)
+    row = next(p for p in out["pred"]["players"] if p["name"] == seen["name"])
+    assert row["x_now"] == 0
