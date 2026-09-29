@@ -294,3 +294,12 @@ def test_health_and_errors_are_escaped():
     d["predictions.json"]["players"][0]["name"] = "O<Neil, A&B"
     (sent,) = tg(one(data=d, event=msg("/top")))
     assert "O&lt;Neil, A&amp;B" in sent["text"] and "<b>20.5</b>" in sent["text"]
+
+
+def test_top_shows_the_games_club_codes():
+    d = data()
+    d["clubs.json"] = [{"code": "PAN", "tv": "PAO", "name": "Panathinaikos"}]
+    (sent,) = tg(one(data=d, event=msg("/top")))
+    assert "(PAO)" in sent["text"] and "(PAN)" not in sent["text"]
+    (sent,) = tg(one(event=msg("/top")))                 # no clubs.json: the code as it is, not an error
+    assert "(PAN)" in sent["text"]

@@ -8,6 +8,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import unicodedata
 from html import escape
 from datetime import datetime, timezone
@@ -653,6 +654,8 @@ def build(offline: bool = False) -> dict:
         history.update_season(season)
     clubs = pd.DataFrame(el_api.clubs(season))
     _write("clubs.json", clubs.to_dict("records"))
+    TV.clear()
+    TV.update({c: t for c, t in zip(clubs["code"], clubs["tv"]) if isinstance(t, str) and t})
     ppl = history.load("people", season)
     people_all = ppl[ppl["active"]].rename(columns={"club": "team"})[["person_id", "name", "team"]]
     fs = {"ok": False, "error": "offline"} if offline else fantasy_state(clubs, people_all, season)
@@ -783,7 +786,7 @@ def build(offline: bool = False) -> dict:
         if fs["unmatched"] > 40:  # a handful of unregistered bench players is normal
             health.append(f"{fs['unmatched']} παίκτες του fantasy λείπουν από τα ρόστερ EuroLeague")
         pool = table.dropna(subset=["price", "fantasy_id"]).copy()
-        pool["label"] = pool["name"] + " (" + pool["team"] + ")"
+        pool["label"] = pool["name"] + " (" + pool["team"].map(tv) + ")"
         prefs = _prefs()
         sur = pool["name"].str.split(",").str[0].map(_key)
         avoid_ids = set(pool.loc[sur.isin(prefs["avoid"]), "fantasy_id"])
@@ -796,7 +799,7 @@ def build(offline: bool = False) -> dict:
         for t in fs["my_teams"][:1]:
             ids, meta = parse_my_roster(t["raw"])
             mine = table[table["fantasy_id"].isin(ids)].copy()
-            mine["label"] = mine["name"] + " (" + mine["team"] + ")"
+            mine["label"] = mine["name"] + " (" + mine["team"].map(tv) + ")"
             info = t.get("info") or {}
             # the app's CREDITS 0/100.2: "credits" is the whole budget (100 + gain); left = budget - team value
             budget = _num(info.get("credits"))
@@ -914,6 +917,21 @@ def build(offline: bool = False) -> dict:
     return {"round": rnd, "messages": msgs}
 
 
+# the club codes the game shows (EFS, BAY, RMB, VBC…) are the EuroLeague "TV codes"; the data keep the API codes
+# (IST, MUN, MAD, PAM…). Only the text people read uses these. Filled by build() from clubs.json.
+TV: dict[str, str] = {}
+
+
+def tv(code) -> str:
+    return TV.get(code, code) if isinstance(code, str) else str(code)
+
+
+def _tv_games(g: str) -> str:
+    """'PRS-PAR 21:45' -> 'PBB-PAR 21:45'."""
+    m = re.match(r"^(\w+)-(\w+)(.*)$", str(g))
+    return f"{tv(m.group(1))}-{tv(m.group(2))}{m.group(3)}" if m else str(g)
+
+
 def _e(s) -> str:
     """Text for a Telegram HTML message: a stray '<' or '&' makes Telegram reject it all."""
     return escape(str(s), quote=False)
@@ -922,12 +940,12 @@ def _e(s) -> str:
 def _fmt(r) -> str:
     ha = "🏠" if r.get("home") else "✈️"
     dollar = " $" if r.get("price_trend") == "up" else ""
-    return (f"{_e(r['name'].split(',')[0].title())} ({_e(r['team'])}) {ha} vs {_e(r.get('opp'))} — "
+    return (f"{_e(r['name'].split(',')[0].title())} ({_e(tv(r['team']))}) {ha} vs {_e(tv(r.get('opp')))} — "
             f"<b>{r['x_now']:.1f}</b>{dollar}")
 
 
 def _short(r) -> str:
-    return _e(f"{str(r['name']).split(',')[0].title()} ({r['team']})")
+    return _e(f"{str(r['name']).split(',')[0].title()} ({tv(r['team'])})")
 
 
 def in_round_squad(my: dict | None) -> list[dict]:
@@ -999,7 +1017,7 @@ def messages(rnd, trn, table, my, dig, health, dash: str | None = None) -> list[
         playing = t[t["team"].isin(tu["teams"])]
         lines = [f"🏀 <b>Round {rnd} — Turn {tu['turn']}</b> "
                  f"({DAYS_EL[day.weekday()]} {day:%d/%m}, 1ο τζάμπολ {tu['first_tip']})", ""]
-        lines += ["📅 " + " · ".join(tu["games"]), ""]
+        lines += ["📅 " + " · ".join(_tv_games(g) for g in tu["games"]), ""]
         # captain candidates: my starting five if known, else the whole league
         lu = (my or {}).get("lineup")
         if lu:
@@ -1064,8 +1082,8 @@ def messages(rnd, trn, table, my, dig, health, dash: str | None = None) -> list[
             lines += turn_check(tu, table, my)
         if tu["turn"] == 1 and len(coaches):
             c = coaches.sort_values("x_now", ascending=False).iloc[0]
-            line = (f"🧑‍💼 <b>Καλύτερος coach αγωνιστικής</b>: {c['name'].split(',')[0].title()} ({c['team']}) "
-                    f"{'🏠' if c.get('home') else '✈️'} vs {c.get('opp')} — <b>{c['x_now']:.1f}</b>")
+            line = (f"🧑‍💼 <b>Καλύτερος coach αγωνιστικής</b>: {c['name'].split(',')[0].title()} ({tv(c['team'])}) "
+                    f"{'🏠' if c.get('home') else '✈️'} vs {tv(c.get('opp'))} — <b>{c['x_now']:.1f}</b>")
             if c.get("price") == c.get("price") and c.get("price") is not None:
                 line += f" · {c['price']}cr"
             lines += ["", line]
@@ -1075,7 +1093,7 @@ def messages(rnd, trn, table, my, dig, health, dash: str | None = None) -> list[
         if "value" in t and tu["turn"] == 1:
             v = t.dropna(subset=["value"]).sort_values("value", ascending=False).head(5)
             lines += ["", "💰 <b>Value (σταθμισμένα xFPT/credit)</b>"]
-            lines += [f"• {r['name'].split(',')[0].title()} ({r['team']}) {r['price']}cr — "
+            lines += [f"• {r['name'].split(',')[0].title()} ({tv(r['team'])}) {r['price']}cr — "
                       f"{r['value']:.2f}" for r in v.to_dict("records")]
         if tu["turn"] == 1 and "avail_game" in t:
             out_now = t_all[(t_all["avail_game"] < 1) & (t_all["base"].fillna(0) >= 8)] \
@@ -1085,7 +1103,7 @@ def messages(rnd, trn, table, my, dig, health, dash: str | None = None) -> list[
                 for r in out_now.to_dict("records"):
                     a = r["avail_game"]
                     state = "εκτός" if a == 0 else f"{a:.0%} να παίξει"
-                    lines.append(f"• {r['name'].split(',')[0].title()} ({r['team']}) — {state}")
+                    lines.append(f"• {r['name'].split(',')[0].title()} ({tv(r['team'])}) — {state}")
         if tu["turn"] == 1 and "expert_pick" in t_all:
             cons = t_all[t_all["expert_pick"] > 0].sort_values(["expert_pick", "x_now"],
                                                                ascending=False).head(8)
@@ -1095,7 +1113,7 @@ def messages(rnd, trn, table, my, dig, health, dash: str | None = None) -> list[
                     extra = " · ★ αρχηγός" if r.get("expert_cap") else ""
                     dollar = " $" if r.get("price_trend") == "up" else ""
                     price = f" · {r['price']}cr" if r.get("price") == r.get("price") and r.get("price") else ""
-                    lines.append(f"• {r['name'].split(',')[0].title()} ({r['team']}, "
+                    lines.append(f"• {r['name'].split(',')[0].title()} ({tv(r['team'])}, "
                                  f"{str(r['position'])[:1]}{price}) — "
                                  f"{int(r['expert_pick'])}/{n_fantasy_sources()}{extra} · "
                                  f"xFPT {r['x_now']:.1f}{dollar}")

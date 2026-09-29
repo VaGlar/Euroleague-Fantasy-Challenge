@@ -101,3 +101,18 @@ test("compare: pick two players, see them side by side", async ({ page }, testIn
   expect(names).toBe(2);
   await checkLayout(page, "compare");
 });
+
+test("club codes as in the game (EFS, BAY, RMB…), not the API's (IST, MUN, MAD…)", async ({ page }, testInfo) => {
+  await open(page, "public", { tab: "players" });
+  const list = page.locator(isPhone(testInfo) ? "#plist" : "#ptable tbody");
+  const text = await list.innerText();
+  expect(text).toMatch(/\b(EFS|BAY|RMB|VBC|FBT|PAO|BJK|CZV|PBB|MTA|KBA)\b/);
+  expect(text).not.toMatch(/\b(IST|MUN|MAD|PAM|ULK|PAN|BES|RED|PRS|TEL|BAS)\b/);
+  const opts = await page.locator("#fteam option").evaluateAll((os) => os.map((o) => o.textContent));   // hidden on phones until «Φίλτρα»
+  expect(opts).toContain("EFS");
+  expect(opts).not.toContain("IST");
+  if (isPhone(testInfo)) await page.locator("#fsum").click();
+  await page.locator("#fteam").selectOption({ label: "EFS" });           // the filter still works on the data's codes
+  await expect(list).toContainText("EFS");
+  expect(await list.innerText()).not.toMatch(/\b(BAY|RMB|ZAL|OLY)\b ·/);
+});

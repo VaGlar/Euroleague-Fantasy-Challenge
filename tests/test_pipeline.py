@@ -209,3 +209,11 @@ def test_game_credits_gain_and_popularity(pipeline):
     assert my["gain"] == 1.2 and my["bank"] == round(max(0.0, 101.2 - value), 1)   # credits = whole budget
     pops = {p.get("popularity") for p in pipeline["pred"]["players"] if p.get("fantasy_id") is not None}
     assert pops == {25.0}                                    # 0-1 from the API -> percent
+
+
+def test_report_uses_the_games_club_codes(pipeline):
+    """The text people read (report, Telegram) shows EFS/BAY/RMB…, as the game does, not the API's IST/MUN/MAD…"""
+    text = "\n".join(m["text"] for m in pipeline["report"]["messages"])
+    for api, game in (("IST", "EFS"), ("MUN", "BAY"), ("MAD", "RMB"), ("PAM", "VBC"), ("ULK", "FBT")):
+        assert f"({api})" not in text and f"vs {api} " not in text, api
+    assert any(f"({g})" in text for g in ("EFS", "BAY", "RMB", "VBC", "FBT", "PAO", "OLY", "ZAL"))

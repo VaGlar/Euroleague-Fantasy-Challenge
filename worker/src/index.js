@@ -234,8 +234,11 @@ export default {
       } else if (cmd === "/top") {
         const r = await fetch(`${env.DATA_URL}/predictions.json?t=${Date.now()}`);
         const p = await r.json();
+        // the game's club codes (EFS, BAY, RMB…), not the API's (IST, MUN, MAD…)
+        const clubs = await getJson(env, "clubs.json").catch(() => null);
+        const tv = Object.fromEntries((Array.isArray(clubs) ? clubs : []).filter((c) => c.tv).map((c) => [c.code, c.tv]));
         const rows = p.players.filter((x) => x.x_now != null).slice(0, 15)
-          .map((x, i) => `${i + 1}. ${esc(x.name)} (${esc(x.team)}) ${esc(x.position || "")} — <b>${x.x_now.toFixed(1)}</b>`
+          .map((x, i) => `${i + 1}. ${esc(x.name)} (${esc(tv[x.team] || x.team)}) ${esc(x.position || "")} — <b>${x.x_now.toFixed(1)}</b>`
             + (x.price ? ` · ${x.price}cr` : ""));
         await send(env, chat, `📈 <b>Top xFPT — Round ${p.round}</b>\n` + rows.join("\n"));
       } else if (cmd === "/lineup") {
