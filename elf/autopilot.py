@@ -101,6 +101,47 @@ def decide(state: dict, rnd: int, rows: list[dict], table: pd.DataFrame, max_tra
     }
 
 
+def between_turns(entry: dict, rows: list[dict], turn: int) -> None:
+    """Before a later turn of the round: the changes the app proposes for a squad (as for the owner's
+    team, optimize.lineup_in_round): a player who already played can only drop to the bench, the armband
+    moves only to one who hasn't. rows: this round's optimizer rows (turn, xFPT, real points so far).
+    The squad's roles become the new ones (the game scores the final roles); entry["moves"][turn] keeps
+    what changed. Rewritten on every run until that turn starts, like the round's own decision."""
+    by_id = {p["id"]: p for p in rows}
+    sq = []
+    for p in entry["squad"]:
+        r = by_id.get(p["id"]) or {}
+        t = r.get("turn")
+        played = p["position"] != "Head Coach" and t is not None and t < turn
+        sq.append({"id": p["id"], "position": p["position"], "price": 0.0, "turn": t, "played": played,
+                   "x_now": float(r.get("actual") or 0.0) if played else float(r.get("x_now") or 0.0),
+                   "cur_role": p["role"], "cur_captain": bool(p["captain"])})
+    court = [q for q in sq if q["position"] != "Head Coach"]
+    if not any(q["played"] for q in court) or all(q["played"] for q in court):
+        return
+    res = optimize.lineup_in_round(sq)
+    if not res:
+        return
+    new = {q["id"]: q for q in res["team"]}
+    start = ("5άδα", "6ος")
+    ins = [p["id"] for p in entry["squad"] if p["role"] == "πάγκος" and new[p["id"]]["role"] in start]
+    outs = [p["id"] for p in entry["squad"] if p["role"] in start and new[p["id"]]["role"] == "πάγκος"]
+    cap_old = next((p["id"] for p in entry["squad"] if p["captain"]), None)
+    cap_new = next((q["id"] for q in res["team"] if q["captain"]), None)
+    moves = entry.setdefault("moves", {})
+    if not ins and not outs and cap_new == cap_old:
+        return
+    for p in entry["squad"]:
+        p["role"], p["captain"] = new[p["id"]]["role"], bool(new[p["id"]]["captain"])
+    moves[str(turn)] = {"in": ins, "out": outs, "captain": cap_new if cap_new != cap_old else None}
+
+
+def _upcoming_turn(rows: list[dict], played_teams: set) -> int | None:
+    """The next turn of the round under way: the earliest turn of a team that hasn't played it yet."""
+    todo = [r["turn"] for r in rows if r.get("turn") and r.get("team") not in played_teams]
+    return min(todo) if todo else None
+
+
 def score(entry: dict, fp: pd.Series, margin: dict) -> tuple[float, float]:
     """(game points with the game's rules, raw roster points) of a squad for its round."""
     rnd, game, raw = entry["round"], 0.0, 0.0
@@ -168,6 +209,15 @@ def update(season: int, rnd: int, trade_rnd: int, rows: list[dict], table: pd.Da
     pts, _ = actual_points(season)
     games = history.load("games", season)
     fp = pts.groupby(["round", "person_id"])["fp"].sum() if not pts.empty else pd.Series(dtype=float)
+    cur = next((e for e in state["rounds"] if e["round"] == rnd and rnd < trade_rnd and e.get("pts") is None), None)
+    if cur is not None and not games.empty:                           # the round under way: T1 -> T2 ...
+        rg = games[games["round"] == rnd]
+        done = set(rg.loc[rg["played"], "home"]) | set(rg.loc[rg["played"], "away"])
+        turn = _upcoming_turn(rows, done)
+        tt = {r["team"] for r in rows if r.get("turn") == turn}
+        first = pd.to_datetime(rg.loc[rg["home"].isin(tt) | rg["away"].isin(tt), "utc"], utc=True).min()
+        if turn and pd.notna(first) and first > pd.Timestamp.now(tz="UTC"):    # frozen once it starts
+            between_turns(cur, rows, turn)
     for e in state["rounds"]:
         rg = games[games["round"] == e["round"]] if not games.empty else games
         if e.get("pts") is not None or rg.empty or not rg["played"].all():
@@ -199,16 +249,23 @@ def _rows(pred: dict) -> tuple[list[dict], pd.DataFrame]:
     t = t[t["position"].isin(["Guard", "Forward", "Center", "Head Coach"])]
     num = lambda v: float(v) if v == v and v is not None else 0.0          # noqa: E731
     rows = [{"id": int(r["fantasy_id"]), "position": r["position"], "price": float(r["price"]),
-             "x_h": num(r["x_h"]), "x_now": num(r["x_now"])} for r in t.to_dict("records")]
+             "x_h": num(r["x_h"]), "x_now": num(r["x_now"]), "team": r["team"],
+             "turn": int(r["turn"]) if r.get("turn") == r.get("turn") and r.get("turn") else None,
+             "actual": r.get("actual") if r.get("actual") == r.get("actual") else None}
+            for r in t.to_dict("records")]
     return rows, t
 
 
-def seed_rounds(snapshots: list[tuple[int, dict]], max_trades: int = 4, min_gain: float = 2.0) -> list[dict]:
+def seed_rounds(snapshots: list[tuple], max_trades: int = 4, min_gain: float = 2.0) -> list[dict]:
     """The autopilot's decisions for past rounds from the app's last predictions before each of them:
-    the first is the proposed squad from scratch (`best_team`, as shown), the rest are decide()."""
+    the first is the proposed squad from scratch (`best_team`, as shown), the rest are decide().
+    A snapshot (round, predictions, turn) is the last one before a later turn: its changes."""
     state = {"rounds": []}
-    for rnd, pred in snapshots:
+    for rnd, pred, *turn in snapshots:
         rows, table = _rows(pred)
+        if turn and turn[0]:
+            between_turns(next(e for e in state["rounds"] if e["round"] == rnd), rows, turn[0])
+            continue
         if not state["rounds"]:
             info, bt = _info(table), pred["best_team"]
             squad = [{"id": p["id"], "price": p["price"], "position": p["position"],
@@ -228,9 +285,13 @@ def seed_rounds(snapshots: list[tuple[int, dict]], max_trades: int = 4, min_gain
 
 
 if __name__ == "__main__":
-    # python -m elf.autopilot seed 1:<predictions.json before round 1> 2:<... before round 2> ...
+    # python -m elf.autopilot seed 1:<predictions before round 1> 1.2:<... before its turn 2> 2:<...> ...
     import sys
-    snaps = [(int(a.split(":", 1)[0]), json.loads(open(a.split(":", 1)[1]).read())) for a in sys.argv[2:]]
+    snaps = []
+    for a in sys.argv[2:]:
+        key, path = a.split(":", 1)
+        rnd, _, turn = key.partition(".")
+        snaps.append((int(rnd), json.loads(open(path).read()), int(turn) if turn else None))
     out = {"note": "decisions from the app's last predictions before each round (see autopilot._seed_path)",
            "rounds": seed_rounds(snaps)}
     _seed_path().write_text(json.dumps(out, ensure_ascii=False, indent=1))

@@ -141,3 +141,30 @@ def test_ranks_the_round_just_finished_once(monkeypatch):
     n = len(calls)
     autopilot._rank(done, ov)
     assert len(calls) == n                                           # never ranked again
+
+
+def test_between_turns_swaps_a_flop_for_a_later_player_and_moves_the_armband():
+    """T1 -> T2 as for the owner's team: a T1 starter who flopped drops to the bench for a T2 bench
+    player; the armband moves only to a player who hasn't played; the played can't come back in."""
+    sq = [("G1", "Guard", "5άδα", True, 1), ("G2", "Guard", "5άδα", False, 1), ("F1", "Forward", "5άδα", False, 1),
+          ("C1", "Center", "5άδα", False, 1), ("F2", "Forward", "5άδα", False, 1), ("G3", "Guard", "6ος", False, 1),
+          ("F3", "Forward", "πάγκος", False, 2), ("G4", "Guard", "πάγκος", False, 2), ("F4", "Forward", "πάγκος", False, 1),
+          ("C2", "Center", "πάγκος", False, 2), ("HC", "Head Coach", "coach", False, 2)]
+    entry = {"round": 4, "squad": [{"id": i, "name": n, "position": pos, "role": role, "captain": cap, "price": 5.0}
+                                   for i, (n, pos, role, cap, _) in enumerate(sq)]}
+    actual = {"G1": 2.0, "G2": 15.0, "F1": 12.0, "C1": 10.0, "F2": 9.0, "G3": 8.0, "F4": 30.0}
+    xnow = {"F3": 25.0, "G4": 6.0, "C2": 5.0, "HC": 8.0}
+    rows = [{"id": i, "turn": t, "team": "T", "x_now": xnow.get(n, 0.0), "actual": actual.get(n)}
+            for i, (n, _, _, _, t) in enumerate(sq)]
+    autopilot.between_turns(entry, rows, turn=2)
+    role = {p["name"]: p["role"] for p in entry["squad"]}
+    cap = [p["name"] for p in entry["squad"] if p["captain"]]
+    assert role["F3"] in ("5άδα", "6ος") and role["G1"] == "πάγκος"     # 2 points out, 25 xFPT in
+    assert role["F4"] == "πάγκος"                                          # played on the bench: stays there
+    assert cap == ["F3"]                                                   # the armband to an unplayed player
+    names = {p["id"]: p["name"] for p in entry["squad"]}
+    m = entry["moves"]["2"]
+    assert [names[i] for i in m["in"]] == ["F3"] and names[m["captain"]] == "F3"
+    before = json.dumps(entry)
+    autopilot.between_turns(entry, rows, turn=2)                          # nothing left to change
+    assert json.dumps(entry) == before
