@@ -99,14 +99,6 @@
     "team": "OLY",
     "position": "Forward",
     "role": "5άδα",
-    "captain": true
-   },
-   {
-    "id": 3934,
-    "person_id": "006760",
-    "team": "PAN",
-    "position": "Forward",
-    "role": "πάγκος",
     "captain": false
    },
    {
@@ -118,51 +110,27 @@
     "captain": false
    },
    {
-    "id": 4061,
-    "person_id": "008084",
-    "team": "PAN",
-    "position": "Forward",
+    "id": 11521,
+    "person_id": "015161",
+    "team": "ASV",
+    "position": "Guard",
     "role": "πάγκος",
     "captain": false
    },
    {
-    "id": 3915,
-    "person_id": "008173",
+    "id": 8727,
+    "person_id": "014168",
+    "team": "ULK",
+    "position": "Forward",
+    "role": "5άδα",
+    "captain": true
+   },
+   {
+    "id": 11512,
+    "person_id": "014734",
     "team": "BAS",
     "position": "Guard",
     "role": "5άδα",
-    "captain": false
-   },
-   {
-    "id": 4255,
-    "person_id": "009154",
-    "team": "PAM",
-    "position": "Head Coach",
-    "role": "coach",
-    "captain": false
-   },
-   {
-    "id": 7231,
-    "person_id": "010318",
-    "team": "IST",
-    "position": "Center",
-    "role": "6ος",
-    "captain": false
-   },
-   {
-    "id": 11540,
-    "person_id": "011706",
-    "team": "PAM",
-    "position": "Guard",
-    "role": "5άδα",
-    "captain": false
-   },
-   {
-    "id": 4016,
-    "person_id": "011816",
-    "team": "MIL",
-    "position": "Forward",
-    "role": "πάγκος",
     "captain": false
    },
    {
@@ -174,11 +142,43 @@
     "captain": false
    },
    {
-    "id": 3815,
-    "person_id": "013367",
-    "team": "ULK",
+    "id": 4061,
+    "person_id": "008084",
+    "team": "PAN",
+    "position": "Forward",
+    "role": "πάγκος",
+    "captain": false
+   },
+   {
+    "id": 4255,
+    "person_id": "009154",
+    "team": "PAM",
+    "position": "Head Coach",
+    "role": "coach",
+    "captain": false
+   },
+   {
+    "id": 11540,
+    "person_id": "011706",
+    "team": "PAM",
     "position": "Guard",
     "role": "5άδα",
+    "captain": false
+   },
+   {
+    "id": 3836,
+    "person_id": "007866",
+    "team": "PAN",
+    "position": "Forward",
+    "role": "πάγκος",
+    "captain": false
+   },
+   {
+    "id": 7231,
+    "person_id": "010318",
+    "team": "IST",
+    "position": "Center",
+    "role": "6ος",
     "captain": false
    }
   ],
