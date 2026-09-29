@@ -291,32 +291,26 @@ def _numbers(o, depth: int = 0):
 
 
 def _rank_probe(team: dict, prev: dict) -> None:
-    """TEMPORARY (autopilot rank): the standings of the overall tournament. GET only, logs shapes."""
-    tid, md = team.get("id"), prev.get("id")
+    """TEMPORARY (autopilot rank): how does /tournaments/{id}/standings page? Logs positions and points only."""
+    tid = team.get("id")
     try:
         ts = fantasy.get(f"/fantasy-teams/{tid}/tournaments")
         ts = ts.get("data", ts) if isinstance(ts, dict) else ts
-        big = max(ts, key=lambda t: t.get("num_fantasy_teams") or 0)
+        t = max(ts, key=lambda x: x.get("num_fantasy_teams") or 0)["id"]
     except Exception as e:  # noqa: BLE001
         print("RANK_PROBE ERR tournaments", str(e)[:60])
         return
-    print("RANK_PROBE big", json.dumps(_numbers(big))[:800])
-    t, L = big.get("id"), fantasy.FANTASY_LEAGUE_ID
-    for path, params in ((f"/tournaments/{t}", None), (f"/tournaments/{t}/rankings", None),
-                         (f"/tournaments/{t}/ranking", None), (f"/tournaments/{t}/standings", None),
-                         (f"/tournaments/{t}/leaderboard", None), (f"/tournaments/{t}/fantasy-teams", None),
-                         (f"/tournaments/{t}/rankings", {"page": 1000}),
-                         (f"/tournaments/{t}/rankings", {"offset": 100000, "limit": 5}),
-                         (f"/tournaments/{t}/matchdays/{md}/rankings", None),
-                         (f"/tournaments/{t}/fantasy-teams/{tid}", None),
-                         (f"/leagues/{L}/tournaments/{t}/rankings", None),
-                         (f"/leagues/{L}/tournaments/{t}", None),
-                         ("/tournaments", {"league": L}), ("/rankings", {"tournament": t})):
+    for params in (None, {"page": 2}, {"page": 4000}, {"offset": 100000}, {"start": 100000},
+                   {"from": 100000}, {"position": 100000}, {"limit": 100}, {"per_page": 100},
+                   {"page": 2, "limit": 100}, {"skip": 100000}, {"around": tid}, {"fantasy_team_id": tid}):
         try:
-            d = fantasy.get(path, params)
-            print("RANK_PROBE OK ", path, params, json.dumps(_numbers(d))[:1500])
+            d = fantasy.get(f"/tournaments/{t}/standings", params)
+            rows = d.get("data", d) if isinstance(d, dict) else d
+            pos = [(r.get("position"), r.get("total_pts")) for r in rows]
+            print("RANK_PROBE", params, len(rows), pos[:2], pos[-1:],
+                  list(d.keys()) if isinstance(d, dict) else "list")
         except Exception as e:  # noqa: BLE001 - a probe never breaks the run
-            print("RANK_PROBE ERR", path, params, str(e)[:60])
+            print("RANK_PROBE ERR", params, str(e)[:60])
 
 
 def _shape(o, depth: int = 0):
