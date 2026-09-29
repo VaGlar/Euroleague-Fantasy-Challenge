@@ -1,7 +1,8 @@
 // Cloudflare Worker: schedule (07:00 update, 10:00 report, pre-deadline update + check, post-game update) + Telegram bot.
 //
 // Secrets (wrangler secret put): TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, WEBHOOK_SECRET,
-//   GH_DISPATCH_TOKEN (optional: fine-grained PAT, Actions read/write on this repo only)
+//   GH_DISPATCH_TOKEN (optional: fine-grained PAT, Actions read/write on this repo only),
+//   CF_ACCESS_CLIENT_ID + CF_ACCESS_CLIENT_SECRET (optional: service token for Cloudflare Access)
 // Vars: DATA_URL (base URL of data/public), DASHBOARD_URL, GH_REPO, GH_REF
 //
 // One hourly cron (xx:05 UTC); the handler works in Athens time (DST-proof):
@@ -43,8 +44,21 @@ const esc = (s) => String(s ?? "").replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<"
 
 const LINEUP_BUTTON = [[{ text: "👥 Πρόταση πεντάδας (/lineup)", callback_data: "lu:preview" }]];
 
+// The personal site sits behind Cloudflare Access: the bot shows it a service token
+// (secrets CF_ACCESS_CLIENT_ID / CF_ACCESS_CLIENT_SECRET). Without them nothing extra is sent.
+function accessHeaders(env) {
+  return env.CF_ACCESS_CLIENT_ID && env.CF_ACCESS_CLIENT_SECRET
+    ? { "CF-Access-Client-Id": env.CF_ACCESS_CLIENT_ID, "CF-Access-Client-Secret": env.CF_ACCESS_CLIENT_SECRET }
+    : {};
+}
+
 async function getJson(env, name) {
-  const r = await fetch(`${env.DATA_URL}/${name}?t=${Date.now()}`, { cf: { cacheTtl: 0 } });
+  const r = await fetch(`${env.DATA_URL}/${name}?t=${Date.now()}`,
+    { headers: accessHeaders(env), redirect: "manual", cf: { cacheTtl: 0 } });
+  // Access answers a missing/wrong token with a redirect to its login page (or 401/403)
+  if ((r.status >= 300 && r.status < 400) || r.status === 401 || r.status === 403) {
+    throw new Error(`${name}: Cloudflare Access ${r.status} — έλεγξε το service token (CF_ACCESS_CLIENT_ID/SECRET)`);
+  }
   if (!r.ok) throw new Error(`${name} ${r.status}`);
   return r.json();
 }
@@ -232,8 +246,7 @@ export default {
         const msg = msgs.find((x) => x.date === today) || msgs.find((x) => x.date > today) || msgs[0];
         await send(env, chat, msg ? msg.text : "Δεν υπάρχει report ακόμα.", msg ? LINEUP_BUTTON : null);
       } else if (cmd === "/top") {
-        const r = await fetch(`${env.DATA_URL}/predictions.json?t=${Date.now()}`);
-        const p = await r.json();
+        const p = await getJson(env, "predictions.json");
         // the game's club codes (EFS, BAY, RMB…), not the API's (IST, MUN, MAD…)
         const clubs = await getJson(env, "clubs.json").catch(() => null);
         const tv = Object.fromEntries((Array.isArray(clubs) ? clubs : []).filter((c) => c.tv).map((c) => [c.code, c.tv]));
@@ -263,8 +276,7 @@ export default {
             : `⚠️ GitHub ${r.status}: ${esc((await r.text()).slice(0, 200))}`);
         }
       } else if (cmd === "/health") {
-        const r = await fetch(`${env.DATA_URL}/predictions.json?t=${Date.now()}`);
-        const p = await r.json();
+        const p = await getJson(env, "predictions.json");
         await send(env, chat, `Ενημέρωση: ${p.generated}\nFantasy: ${p.fantasy_ok ? "OK" : "ΟΧΙ"}\n`
           + (esc((p.health || []).join("\n")) || "Χωρίς προβλήματα"));
       } else {

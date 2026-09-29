@@ -94,6 +94,29 @@ def test_substack_blocked_goes_through_the_proxy(monkeypatch):
     assert calls[1] == ("https://dash.example/feed", {"u": "https://abc.substack.com/feed"})
 
 
+def test_the_proxy_behind_cloudflare_access_gets_the_service_token(monkeypatch):
+    """The personal site is behind Cloudflare Access: the pipeline shows its service token to the
+    /feed proxy and doesn't follow a redirect to the login page (read as a failed proxy instead)."""
+    monkeypatch.setenv("DASHBOARD_URL", "https://dash.example")
+    monkeypatch.setenv("CF_ACCESS_CLIENT_ID", "id.access")
+    monkeypatch.setenv("CF_ACCESS_CLIENT_SECRET", "sec")
+    seen = {}
+
+    def get(url, params=None, headers=None, allow_redirects=True, **k):
+        if url == "https://dash.example/feed":
+            seen.update(headers or {}, redirects=allow_redirects)
+            if (headers or {}).get("CF-Access-Client-Id") != "id.access":
+                return Resp(302, content=b"")
+            return Resp(content=rss(("T", "https://s/1", NOW, "d")))
+        return Resp(403, content=b"blocked")
+    monkeypatch.setattr(news.requests, "get", get)
+    (it,) = news.fetch_rss({"url": "https://abc.substack.com/feed"})
+    assert it["url"] == "https://s/1"
+    assert seen["CF-Access-Client-Secret"] == "sec" and seen["redirects"] is False
+    monkeypatch.delenv("CF_ACCESS_CLIENT_ID")                 # no token: no Access headers at all
+    assert news.access_headers() == {}
+
+
 def test_substack_proxy_html_error_page_falls_back_to_the_json_api(monkeypatch):
     monkeypatch.setenv("DASHBOARD_URL", "https://dash.example")
 

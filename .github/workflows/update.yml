@@ -59,6 +59,8 @@ jobs:
           GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
           DASHBOARD_URL: ${{ vars.DASHBOARD_URL || 'https://elf-dashboard.pages.dev' }}
           PUBLIC_URL: ${{ vars.PUBLIC_URL }}
+          CF_ACCESS_CLIENT_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}          # the feed proxy sits behind Cloudflare Access
+          CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
         run: python -m elf.run
 
       - name: Problems to the owner (Telegram)

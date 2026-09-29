@@ -303,3 +303,32 @@ def test_top_shows_the_games_club_codes():
     assert "(PAO)" in sent["text"] and "(PAN)" not in sent["text"]
     (sent,) = tg(one(event=msg("/top")))                 # no clubs.json: the code as it is, not an error
     assert "(PAN)" in sent["text"]
+
+
+ACCESS = {**ENV, "CF_ACCESS_CLIENT_ID": "id.access", "CF_ACCESS_CLIENT_SECRET": "sec"}
+
+
+def test_behind_cloudflare_access_the_bot_shows_its_service_token():
+    """The personal site is behind Cloudflare Access: every data read carries the service token
+    and doesn't follow Access's redirect to its login page."""
+    res = one(env=ACCESS, access="id.access", event=msg("/top"))
+    reads = [c for c in res["calls"] if c["kind"] == "data"]
+    assert reads and all(c["access"] == "id.access" and c["redirect"] == "manual" for c in reads)
+    (sent,) = tg(res)
+    assert "<b>20.5</b>" in sent["text"]
+    for cmd in ("/report", "/health"):
+        (sent,) = tg(one(env=ACCESS, access="id.access", event=msg(cmd)))
+        assert not sent["text"].startswith("⚠️"), cmd
+
+
+def test_without_the_token_access_blocks_and_the_owner_is_told_why():
+    for env in (ENV, {**ACCESS, "CF_ACCESS_CLIENT_ID": "wrong"}):
+        (sent,) = tg(one(env=env, access="id.access", event=msg("/report")))
+        assert sent["text"].startswith("⚠️") and "Cloudflare Access 302" in sent["text"]
+        assert "service token" in sent["text"]
+
+
+def test_no_access_no_token_headers():
+    """Before Access is switched on (no secrets), nothing extra is sent."""
+    res = one(event=msg("/top"))
+    assert all(c["access"] is None for c in res["calls"] if c["kind"] == "data")

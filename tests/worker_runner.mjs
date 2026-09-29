@@ -5,7 +5,8 @@
 //         dispatchStatus: 204, event: { kind: "scheduled" } | { kind: "fetch", method, path,
 //         headers, body } }
 // out:  { status, body, calls: [{ kind: "tg", method, body } | { kind: "dispatch", workflow,
-//         inputs } | { kind: "data", name }] }
+//         inputs } | { kind: "data", name, access, redirect }] }
+// c.access: behind Cloudflare Access, only this service token id gets the data (else a 302)
 const REAL_DATE = Date;
 let NOW = 0;
 globalThis.Date = class extends REAL_DATE {
@@ -38,7 +39,12 @@ for (const c of JSON.parse(buf)) {
     }
     if (c.env?.DATA_URL && url.startsWith(c.env.DATA_URL)) {
       const name = url.slice(c.env.DATA_URL.length + 1).split("?")[0];
-      calls.push({ kind: "data", name });
+      const h = opts.headers || {};
+      calls.push({ kind: "data", name, access: h["CF-Access-Client-Id"] ?? null, redirect: opts.redirect ?? null });
+      // c.access: the site is behind Cloudflare Access and only this service token id gets in
+      if (c.access && h["CF-Access-Client-Id"] !== c.access) {
+        return new Response(null, { status: 302, headers: { location: "https://team.cloudflareaccess.com/login" } });
+      }
       if (!(name in (c.data || {}))) return json({ error: "missing" }, 404);
       return json(c.data[name]);
     }
