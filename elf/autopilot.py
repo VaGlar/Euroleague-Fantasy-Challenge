@@ -274,10 +274,17 @@ def seed_rounds(snapshots: list[tuple], max_trades: int = 4, min_gain: float = 2
             between_turns(next(e for e in state["rounds"] if e["round"] == rnd), rows, turn[0])
             continue
         if not state["rounds"]:
+            # the proposed squad; its lineup by the game's rules, as for every later round: a T1 five
+            # (>= 1 per position, the best xFPT), later-turn players on the bench, captain x2
+            # (the saved proposal of round 1 predates the turn-aware lineup)
             info, bt = _info(table), pred["best_team"]
+            by_id = {p["id"]: p for p in rows}
+            lu = optimize.lineup([{**p, **{k: v for k, v in by_id.get(p["id"], {}).items()
+                                            if k in ("turn", "x_now", "x_h")}} for p in bt["team"]])
+            role = {p["id"]: (p["role"], bool(p["captain"])) for p in (lu or bt)["team"]}
             squad = [{"id": p["id"], "price": p["price"], "position": p["position"],
                       **{k: info.get(p["id"], {}).get(k) for k in ("person_id", "name", "team")},
-                      "role": p["role"], "captain": bool(p.get("captain")), "x_now": round(p["x_now"], 1)}
+                      "role": role[p["id"]][0], "captain": role[p["id"]][1], "x_now": round(p["x_now"], 1)}
                      for p in bt["team"]]
             x = sum(p["x_now"] * (BENCH_MULTIPLIER if p["role"] == "πάγκος" else 1.0)
                     * (CAPTAIN_MULTIPLIER if p["captain"] else 1) for p in squad)
