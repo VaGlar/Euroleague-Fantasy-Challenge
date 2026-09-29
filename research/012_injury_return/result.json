@@ -1,0 +1,134 @@
+{
+ "diag": {
+  "2024": {
+   "miss0_all": {
+    "n": 4717,
+    "pred": 8.82,
+    "actual": 9.67
+   },
+   "miss0_good": {
+    "n": 1652,
+    "pred": 14.25,
+    "actual": 15.05
+   },
+   "miss1_all": {
+    "n": 913,
+    "pred": 5.26,
+    "actual": 5.51
+   },
+   "miss1_good": {
+    "n": 139,
+    "pred": 13.49,
+    "actual": 13.44
+   },
+   "miss2_all": {
+    "n": 559,
+    "pred": 3.56,
+    "actual": 3.77
+   },
+   "miss2_good": {
+    "n": 44,
+    "pred": 14.13,
+    "actual": 12.45
+   },
+   "miss3_all": {
+    "n": 385,
+    "pred": 2.69,
+    "actual": 2.04
+   },
+   "miss3_good": {
+    "n": 34,
+    "pred": 13.45,
+    "actual": 9.46
+   }
+  },
+  "2025": {
+   "miss0_all": {
+    "n": 5904,
+    "pred": 9.1,
+    "actual": 9.71
+   },
+   "miss0_good": {
+    "n": 2327,
+    "pred": 13.85,
+    "actual": 13.9
+   },
+   "miss1_all": {
+    "n": 1124,
+    "pred": 5.92,
+    "actual": 5.81
+   },
+   "miss1_good": {
+    "n": 218,
+    "pred": 13.86,
+    "actual": 12.94
+   },
+   "miss2_all": {
+    "n": 681,
+    "pred": 4.24,
+    "actual": 4.4
+   },
+   "miss2_good": {
+    "n": 85,
+    "pred": 14.29,
+    "actual": 14.99
+   },
+   "miss3_all": {
+    "n": 505,
+    "pred": 2.61,
+    "actual": 2.24
+   },
+   "miss3_good": {
+    "n": 37,
+    "pred": 13.41,
+    "actual": 10.09
+   }
+  }
+ },
+ "fitted": {
+  "2024": {
+   "0": 1.0,
+   "1": 1.038,
+   "2": 1.025,
+   "3": 0.716
+  },
+  "2025": {
+   "0": 1.0,
+   "1": 0.972,
+   "2": 0.996,
+   "3": 0.816
+  }
+ },
+ "judged": {
+  "2025": {
+   "baseline": {
+    "mae_played": 5.609,
+    "mae_back": 4.32,
+    "n_back": 2310,
+    "squad": 5896.1
+   },
+   "corrected": {
+    "mae_played": 5.6,
+    "mae_back": 4.286,
+    "n_back": 2310,
+    "squad": 5903.7
+   },
+   "c_from": 2024
+  },
+  "2024": {
+   "baseline": {
+    "mae_played": 5.459,
+    "mae_back": 3.931,
+    "n_back": 1857,
+    "squad": 4966.6
+   },
+   "corrected": {
+    "mae_played": 5.446,
+    "mae_back": 3.885,
+    "n_back": 1857,
+    "squad": 4893.6
+   },
+   "c_from": 2025
+  }
+ }
+}
