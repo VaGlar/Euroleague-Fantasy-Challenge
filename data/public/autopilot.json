@@ -264,6 +264,135 @@
     }
    ],
    "x_total": 153.0
+  },
+  {
+   "round": 3,
+   "trades": 4,
+   "bank": -0.0,
+   "squad": [
+    {
+     "id": 3766,
+     "price": 17.6,
+     "position": "Forward",
+     "person_id": "003469",
+     "name": "VEZENKOV, SASHA",
+     "team": "OLY",
+     "role": "5άδα",
+     "captain": true,
+     "x_now": 27.5
+    },
+    {
+     "id": 3857,
+     "price": 14.9,
+     "position": "Center",
+     "person_id": "012788",
+     "name": "OTURU, DAN",
+     "team": "HTA",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 24.8
+    },
+    {
+     "id": 11516,
+     "price": 10.2,
+     "position": "Forward",
+     "person_id": "015166",
+     "name": "CROWDER, JAE",
+     "team": "ASV",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 21.9
+    },
+    {
+     "id": 4247,
+     "price": 12.6,
+     "position": "Guard",
+     "person_id": "010568",
+     "name": "JONES, CHRIS",
+     "team": "RED",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 20.9
+    },
+    {
+     "id": 11504,
+     "price": 11.0,
+     "position": "Center",
+     "person_id": "003958",
+     "name": "THIEMANN, JOHANNES",
+     "team": "MUN",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 18.4
+    },
+    {
+     "id": 11521,
+     "price": 5.3,
+     "position": "Guard",
+     "person_id": "015161",
+     "name": "FODZO DADA, MARC-OWEN",
+     "team": "ASV",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 16.8
+    },
+    {
+     "id": 11512,
+     "price": 9.1,
+     "position": "Guard",
+     "person_id": "014734",
+     "name": "LAWSON, A.J.",
+     "team": "BAS",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 15.9
+    },
+    {
+     "id": 11540,
+     "price": 4.9,
+     "position": "Guard",
+     "person_id": "011706",
+     "name": "SAINT-SUPERY, MARIO",
+     "team": "PAM",
+     "role": "6ος",
+     "captain": false,
+     "x_now": 11.8
+    },
+    {
+     "id": 4012,
+     "price": 4.5,
+     "position": "Forward",
+     "person_id": "001518",
+     "name": "RICCI, GIAMPAOLO",
+     "team": "MIL",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 5.8
+    },
+    {
+     "id": 4016,
+     "price": 4.0,
+     "position": "Forward",
+     "person_id": "011816",
+     "name": "AKELE, NICOLA",
+     "team": "MIL",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 3.3
+    },
+    {
+     "id": 3974,
+     "price": 5.1,
+     "position": "Head Coach",
+     "person_id": "001252",
+     "name": "GAVEL, ANTON",
+     "team": "MUN",
+     "role": "coach",
+     "captain": false,
+     "x_now": -3.4
+    }
+   ],
+   "x_total": 169.3
   }
  ],
  "start_round": 1,
@@ -273,5 +402,5 @@
   "raw": 85.7,
   "avg_raw": null
  },
- "generated": "2026-09-29T17:36:41.853821+00:00"
+ "generated": "2026-09-29T18:11:08.789392+00:00"
 }
