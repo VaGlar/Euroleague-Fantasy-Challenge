@@ -25,7 +25,7 @@ jobs:
       GH_REF: ${{ github.event.repository.default_branch }}
       DASHBOARD_URL: ${{ vars.DASHBOARD_URL || 'https://elf-dashboard.pages.dev' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Check required secrets
         run: |
@@ -47,7 +47,7 @@ jobs:
         id: deploy
         run: |
           set -o pipefail
-          npx --yes wrangler@3 deploy \
+          npx --yes wrangler@4 deploy \
             --var DATA_URL:"$DASHBOARD_URL/data" --var DASHBOARD_URL:"$DASHBOARD_URL" \
             --var GH_REPO:"$GH_REPO" --var GH_REF:"$GH_REF" 2>&1 | tee deploy.log
           url=$(grep -oE 'https://[a-zA-Z0-9.-]+\.workers\.dev' deploy.log | head -1)
@@ -61,18 +61,18 @@ jobs:
         run: |
           # Webhook secret derived from the bot token: stable, never stored anywhere.
           hook=$(printf '%s' "$TELEGRAM_BOT_TOKEN" | sha256sum | cut -c1-40)
-          printf '%s' "$TELEGRAM_BOT_TOKEN" | npx --yes wrangler@3 secret put TELEGRAM_BOT_TOKEN
-          printf '%s' "${TELEGRAM_CHAT_ID:-unset}" | npx --yes wrangler@3 secret put TELEGRAM_CHAT_ID
-          printf '%s' "$hook" | npx --yes wrangler@3 secret put WEBHOOK_SECRET
+          printf '%s' "$TELEGRAM_BOT_TOKEN" | npx --yes wrangler@4 secret put TELEGRAM_BOT_TOKEN
+          printf '%s' "${TELEGRAM_CHAT_ID:-unset}" | npx --yes wrangler@4 secret put TELEGRAM_CHAT_ID
+          printf '%s' "$hook" | npx --yes wrangler@4 secret put WEBHOOK_SECRET
           if [ -n "$GH_DISPATCH_TOKEN" ]; then
-            printf '%s' "$GH_DISPATCH_TOKEN" | npx --yes wrangler@3 secret put GH_DISPATCH_TOKEN
+            printf '%s' "$GH_DISPATCH_TOKEN" | npx --yes wrangler@4 secret put GH_DISPATCH_TOKEN
           else
             echo "::notice::GH_DISPATCH_TOKEN not set: /update will be disabled."
           fi
           # Cloudflare Access in front of the personal site: the bot reads its data with this service token
           if [ -n "$CF_ACCESS_CLIENT_ID" ] && [ -n "$CF_ACCESS_CLIENT_SECRET" ]; then
-            printf '%s' "$CF_ACCESS_CLIENT_ID" | npx --yes wrangler@3 secret put CF_ACCESS_CLIENT_ID
-            printf '%s' "$CF_ACCESS_CLIENT_SECRET" | npx --yes wrangler@3 secret put CF_ACCESS_CLIENT_SECRET
+            printf '%s' "$CF_ACCESS_CLIENT_ID" | npx --yes wrangler@4 secret put CF_ACCESS_CLIENT_ID
+            printf '%s' "$CF_ACCESS_CLIENT_SECRET" | npx --yes wrangler@4 secret put CF_ACCESS_CLIENT_SECRET
           else
             echo "::notice::CF_ACCESS_CLIENT_ID/SECRET not set: fine while the personal site has no Cloudflare Access."
           fi
