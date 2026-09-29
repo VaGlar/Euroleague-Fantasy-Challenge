@@ -1,0 +1,276 @@
+{
+ "A_fouls": {
+  "train_rows": 4677,
+  "share_fouled_out_last": 0.028,
+  "opp_pfd_range": [
+   -0.148,
+   0.325
+  ],
+  "minutes": {
+   "const": [
+    -0.273,
+    0.094
+   ],
+   "opp_pfd": [
+    0.348,
+    1.534
+   ],
+   "foul_x_opp_min": [
+    -0.599,
+    0.467
+   ],
+   "fouled_out": [
+    0.299,
+    0.561
+   ]
+  },
+  "opp_pfd": {
+   "coef": {
+    "const": [
+     0.338,
+     0.103
+    ],
+    "opp_pfd": [
+     -2.179,
+     1.71
+    ]
+   },
+   "2025 second half": {
+    "baseline": 5.334,
+    "with": 5.336,
+    "mae_change": 0.002
+   },
+   "2024 all": {
+    "baseline": 5.174,
+    "with": 5.172,
+    "mae_change": -0.002
+   }
+  },
+  "foul_x_opp": {
+   "coef": {
+    "const": [
+     0.338,
+     0.103
+    ],
+    "foul_x_opp": [
+     -0.428,
+     0.987
+    ]
+   },
+   "2025 second half": {
+    "baseline": 5.334,
+    "with": 5.333,
+    "mae_change": -0.001
+   },
+   "2024 all": {
+    "baseline": 5.174,
+    "with": 5.175,
+    "mae_change": 0.001
+   }
+  },
+  "fouled_out": {
+   "coef": {
+    "const": [
+     0.297,
+     0.105
+    ],
+    "fouled_out": [
+     1.441,
+     0.627
+    ]
+   },
+   "2025 second half": {
+    "baseline": 5.334,
+    "with": 5.332,
+    "mae_change": -0.002
+   },
+   "2024 all": {
+    "baseline": 5.174,
+    "with": 5.173,
+    "mae_change": -0.001
+   }
+  },
+  "all": {
+   "coef": {
+    "const": [
+     0.298,
+     0.105
+    ],
+    "opp_pfd": [
+     -2.32,
+     1.732
+    ],
+    "foul_x_opp": [
+     -0.636,
+     0.999
+    ],
+    "fouled_out": [
+     1.433,
+     0.627
+    ]
+   },
+   "2025 second half": {
+    "baseline": 5.334,
+    "with": 5.333,
+    "mae_change": -0.001
+   },
+   "2024 all": {
+    "baseline": 5.174,
+    "with": 5.171,
+    "mae_change": -0.003
+   }
+  },
+  "squad_points_second_half": {
+   "2025": {
+    "diff_per_round": -0.5,
+    "diff_se": 2.0
+   },
+   "2024": {
+    "diff_per_round": 0.9,
+    "diff_se": 1.4
+   }
+  }
+ },
+ "C_coach": {
+  "diagnostic": {
+   "2025": {
+    "changes": 14,
+    "points_at_change": 9,
+    "min_shift_at_change": 5.87,
+    "min_shift_elsewhere": 4.59,
+    "elsewhere_p90": 6.76
+   },
+   "2024": {
+    "changes": 5,
+    "points_at_change": 5,
+    "min_shift_at_change": 3.12,
+    "min_shift_elsewhere": 4.81,
+    "elsewhere_p90": 7.06
+   }
+  },
+  "seasons": {
+   "2025": {
+    "rows_after_change": 1342,
+    "baseline": {
+     "mae_affected": 5.555,
+     "mae_top_affected": 9.724,
+     "mae_all": 5.165,
+     "squad_rounds_affected": 4636.0
+    },
+    "0": {
+     "mae_affected": 5.178,
+     "mae_top_affected": 8.922,
+     "mae_all": 5.121,
+     "squad_rounds_affected": 4517.1
+    },
+    "2": {
+     "mae_affected": 5.243,
+     "mae_top_affected": 9.048,
+     "mae_all": 5.128,
+     "squad_rounds_affected": 4481.0
+    },
+    "4": {
+     "mae_affected": 5.301,
+     "mae_top_affected": 9.176,
+     "mae_all": 5.135,
+     "squad_rounds_affected": 4556.5
+    },
+    "8": {
+     "mae_affected": 5.364,
+     "mae_top_affected": 9.31,
+     "mae_all": 5.143,
+     "squad_rounds_affected": 4573.2
+    },
+    "16": {
+     "mae_affected": 5.426,
+     "mae_top_affected": 9.443,
+     "mae_all": 5.15,
+     "squad_rounds_affected": 4559.5
+    }
+   },
+   "2024": {
+    "rows_after_change": 624,
+    "baseline": {
+     "mae_affected": 5.192,
+     "mae_top_affected": 8.877,
+     "mae_all": 5.249,
+     "squad_rounds_affected": 2873.0
+    },
+    "0": {
+     "mae_affected": 5.045,
+     "mae_top_affected": 8.987,
+     "mae_all": 5.239,
+     "squad_rounds_affected": 2888.0
+    },
+    "2": {
+     "mae_affected": 5.035,
+     "mae_top_affected": 8.831,
+     "mae_all": 5.238,
+     "squad_rounds_affected": 2906.4
+    },
+    "4": {
+     "mae_affected": 5.056,
+     "mae_top_affected": 8.832,
+     "mae_all": 5.24,
+     "squad_rounds_affected": 2922.6
+    },
+    "8": {
+     "mae_affected": 5.085,
+     "mae_top_affected": 8.84,
+     "mae_all": 5.242,
+     "squad_rounds_affected": 2904.2
+    },
+    "16": {
+     "mae_affected": 5.116,
+     "mae_top_affected": 8.847,
+     "mae_all": 5.244,
+     "squad_rounds_affected": 2851.6
+    }
+   }
+  },
+  "placebo_mae_change": {
+   "2025": {
+    "0": -0.15,
+    "2": -0.161
+   },
+   "2024": {
+    "0": -0.188,
+    "2": -0.196
+   }
+  },
+  "out_of_sample": {
+   "2025": {
+    "k_from": 2024,
+    "k": "2",
+    "baseline": {
+     "mae_affected": 5.555,
+     "mae_top_affected": 9.724,
+     "mae_all": 5.165,
+     "squad_rounds_affected": 4636.0
+    },
+    "adjusted": {
+     "mae_affected": 5.243,
+     "mae_top_affected": 9.048,
+     "mae_all": 5.128,
+     "squad_rounds_affected": 4481.0
+    }
+   },
+   "2024": {
+    "k_from": 2025,
+    "k": "0",
+    "baseline": {
+     "mae_affected": 5.192,
+     "mae_top_affected": 8.877,
+     "mae_all": 5.249,
+     "squad_rounds_affected": 2873.0
+    },
+    "adjusted": {
+     "mae_affected": 5.045,
+     "mae_top_affected": 8.987,
+     "mae_all": 5.239,
+     "squad_rounds_affected": 2888.0
+    }
+   }
+  }
+ }
+}
