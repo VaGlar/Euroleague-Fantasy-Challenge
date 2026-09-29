@@ -1,6 +1,15 @@
 {
  "articles": [
   {
+   "title": "EuroLeague Fantasy Podcast LIVE: Catch Episode 2 at 14:00 CEST",
+   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/euroleague-fantasy-podcast-live-catch-episode-2-at-14-00-cest/",
+   "date": "2026-09-29T11:23:08.555000+00:00",
+   "text": "Episode 2 of the EuroLeague Fantasy Challenge Podcast goes live today at 14:00 CEST. You can watch it right here, but to join the live chat and send in your questions, [watch the episode on YouTube], where the fantasy experts will pick out the best ones to answer on air. The show's hosts, [Javier Gancedo] and [Frankie Sachs] of *EuroLeague.net* and [Vasiliki Karamouza] of *Sport24*, look back on what Round 1 revealed and get managers ready for this week's double round. With Rounds 2 and 3 packed into the same week, they'll break down which players are set to benefit from two games, how to handle the quick turnaround between rounds, and who deserves the captain's armband. With the [EuroLeague Fantasy Challenge] running as a single stage this season, every point counts from the opening round to the Championship Game, and a double-round week is a big chance to climb the standings. Tune in live at 14:00 CEST, or catch the episode on the channel afterward.",
+   "source": "EuroLeague Fantasy Tips (official)",
+   "weight": 2,
+   "fantasy": true
+  },
+  {
    "title": "EuroLeague Fantasy Round 2: Who to hold, buy, or sell",
    "url": "https://basketballsphere.com/en/euroleague-fantasy-26-27-hold-buy-sell/",
    "date": "2026-09-29T10:00:34+00:00",
@@ -91,11 +100,200 @@
    "fantasy": true
   },
   {
+   "title": "Σακίλ ενόψει Ζάλγκιρις-Ολυμπιακός: «Πολύ δυνατές οι ελληνικές ομάδες» - Τι είπε για Βαλαντσιούνας",
+   "url": "https://www.gazzetta.gr/basketball/euroleague/2573079/sakil-enopsei-zalgkiris-olympiakos-poly-dynates-oi-ellinikes-omades",
+   "date": "2026-09-29T15:07:40+02:00",
+   "text": "O Σακίλ Ο'Νίλ λίγο πριν βρεθεί στο ματς του Ολυμπιακού με τη Ζάλγκιρις, μίλησε για τις ελληνικές ομάδες.",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false
+  },
+  {
+   "title": "Kαλαϊτζάκης: «Μας έδωσε κίνητρο η ήττα από τον ΠΑΟΚ, δύσκολο να μας κερδίσουν εδώ μέσα»",
+   "url": "https://www.gazzetta.gr/basketball/euroleague/2573074/kalaitzakis-mas-edose-kinitro-i-itta-apo-ton-paok-dyskolo-na-mas",
+   "date": "2026-09-29T14:41:58+02:00",
+   "text": "Ο Παναγιώτης Καλαϊτζάκης μίλησε για το πόσο επηρέασε τον Παναθηναϊκό η ήττα από τον ΠΑΟΚ",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false
+  },
+  {
+   "title": "Κέβιν Ντουράντ: Ο «KD» σβήνει 38 κεράκια και συνεχίζει να γράφει ιστορία",
+   "url": "https://www.gazzetta.gr/basketball/nba/2573071/kebin-ntoyrant-o-kd-sbinei-38-kerakia-kai-synehizei-na-grafei-istoria",
+   "date": "2026-09-29T14:35:59+02:00",
+   "text": "Στις 29 Σεπτεμβρίου 1988 γεννήθηκε ο Κέβιν Ντουράντ, ο θρύλος του NBA και ο πρώτος σκόρερ της Team USA στην ιστορία των Ολυμπιακών Αγώνων.",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false
+  },
+  {
+   "title": "Ομπράντοβιτς: «Δεν θα κλάψουμε για τους παίκτες που είναι εκτός, σέβομαι τον Πάρκερ»",
+   "url": "https://www.gazzetta.gr/basketball/euroleague/2573068/omprantobits-den-tha-klapsoyme-gia-toys-paiktes-poy-einai-ektos",
+   "date": "2026-09-29T14:30:19+02:00",
+   "text": "O Zέλικο Ομπράντοβιτς μίλησε ενόψει του ματς με Βιλερμπάν (30/09, 21:15) και στάθηκε στα στοιχεία που θα φέρουν τη νίκη στην ομάδα του, αλλά και στις απουσίες.",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false
+  },
+  {
+   "title": "F1, Αλόνσο: Μένει και το 2027 και θα αγωνίζεται με την Aston Martin",
+   "url": "https://www.gazzetta.gr/gmotion/2573067/f1-alonso-menei-kai-2027-kai-tha-agonizetai-me-tin-aston-martin",
+   "date": "2026-09-29T14:21:17+02:00",
+   "text": "Η Aston Martin ανακοίνωσε πως ο Φερνάντο Αλόνσο θα συνεχίσει να οδηγεί το πράσινο μονοθέσιο στη Formula 1 και μαζί του θα βρίσκεται ο Λανς Στρολ.",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false
+  },
+  {
+   "title": "Παναθηναϊκός: Off ο Χουάντσο με Βιλερμπάν και Μακάμπι",
+   "url": "https://www.gazzetta.gr/basketball/euroleague/2573066/panathinaikos-o-hoyantso-me-bilermpan-kai-makampi",
+   "date": "2026-09-29T14:19:11+02:00",
+   "text": "Χωρίς τον Χουάντσο Ερνανγκόμεθ θα παραταχθεί ο Παναθηναϊκός στα ματς με Βιλερμπάν και Μακάμπι στη διαβολοβδομάδα της Euroleague.",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false
+  },
+  {
+   "title": "LIVE TV η συνέντευξη Τύπου του Σακίλ πριν το Ζάλγκιρις – Ολυμπιακός",
+   "url": "https://www.gazzetta.gr/basketball/euroleague/2573064/live-tv-i-synenteyxi-typoy-toy-sakil-prin-zalgkiris-olympiakos",
+   "date": "2026-09-29T14:12:42+02:00",
+   "text": "Δείτε σε live streaming τη συνέντευξη Τύπου του Σακίλ Ο'Νίλ, λίγες ώρες πριν το ματς της Ζάλγκιρις με τον Ολυμπιακό.",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false
+  },
+  {
+   "title": "Γιόκιτς για Euroleague με αναφορά στον Ολυμπιακό: «Εκεί να δεις πόση πίεση υπάρχει»",
+   "url": "https://www.gazzetta.gr/basketball/nba/2573062/giokits-gia-euroleague-me-anafora-ston-olympiako-ekei-na-deis-posi-piesi",
+   "date": "2026-09-29T14:07:01+02:00",
+   "text": "O Nίκολα Γιόκιτς στάθηκε στην πίεση που υπάρχει στην Ευρώπη και ευχήθηκε κάθε παίκτης του ΝΒΑ να πάει να αγωνιστεί εκεί.",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false
+  },
+  {
+   "title": "Καλαϊτζάκης: “Μας δίνει κίνητρο η ήττα από τον ΠΑΟΚ”",
+   "url": "https://www.eurohoops.net/el/euroleague-el-2/2013732/kalaitzakis-mas-dini-kinitro-i-itta-apo-ton-paok/",
+   "date": "2026-09-29T12:00:52+00:00",
+   "text": "Του Δημήτρη Μιναρετζή/ info@eurohoops.net Ο διεθνής Έλληνας φόργουορντ αναφέρθηκε στην ήττα/αποκλεισμό του Παναθηναϊκού από τον ΠΑΟΚ στον ημιτελικό του Stoiximan Super Cup, τις απουσίες της ομάδας του (Ναν, Χέιζ-Ντέιβις, Σλούκας, Χουάντσο και Φαλ) και πώς αυτές θα επηρεάσουν την απόδοση της ομάδας του. “Χάσαμε νοκ-άουτ ματς από τον ΠΑΟΚ και ήταν μία αναμέτρηση που σίγουρα θέλαμε να κερδίσουμε, διότι κρινόταν ένας τίτλος. Έχουμε όμως μία πολύ καλή αρχή στην Ευρωλίγκα με τη Παρί την προηγούμενη εβδομάδα και έτσι θέλουμε να συνεχίσουμε, με τον ίδιο ρυθμό και την ίδια ένταση στην άμυνα. Να τρέχουμ",
+   "source": "Eurohoops (GR)",
+   "weight": 1,
+   "fantasy": false
+  },
+  {
+   "title": "Shaquille O’Neal disses NBA standards: “They kinda chill out”",
+   "url": "https://www.eurohoops.net/en/nba-news/2013733/shaquille-oneal-compares-europe-and-nba-euroleague/",
+   "date": "2026-09-29T11:59:27+00:00",
+   "text": "By Johnny Askounis/ info@eurohoops.net Shaquille O’Neal compared the grind of European basketball to the NBA upon landing in Lithuania on Tuesday , immediately stirring the pot. The four-time NBA champion arrived in Vilnius as an ambassador for NordVPN. After a press conference in the capital, the former center is heading straight to Kaunas. He will sit courtside at Zalgirio Arena to watch Zalgiris host Olympiacos in Round 2 of the 2026–27 EuroLeague Regular Season. And he is hunting for an atmosphere he rarely enjoys back home. “I’ve only been at one game in Europe, and it was wild,” opened u",
+   "source": "Eurohoops",
+   "weight": 1,
+   "fantasy": false
+  },
+  {
+   "title": "Ομπράντοβιτς: “Οι απουσίες είναι πολλές αλλά δεν θα κλάψουμε για αυτές- Σεβασμός στον Τόνι Πάρκερ”",
+   "url": "https://www.eurohoops.net/el/euroleague-el-2/2013727/omprantovits-i-apousies-ine-polles-alla-den-tha-klapsoume-gia-aftes-sevasmos-ston-toni-parker/",
+   "date": "2026-09-29T11:40:58+00:00",
+   "text": "Του Δημήτρη Μιναρετζή/ info@eurohoops.net Οι δύο ομάδες ξεκίνησαν με το δεξί την Ευρωλίγκα, με τον Παναθηναϊκό να επικρατεί εύκολα της Παρί και τη Βιλερμπάν να πετυχαίνει μία μίνι-έκπληξη κατά της Μακάμπι Τελ Αβίβ στη Λυών. Ο Ζέλικο Ομπράντοβιτς αναφέρθηκε σε αυτήν τη νίκη της Βιλερμπάν, αλλά και στα πολλά προβλήματα τραυματισμών που ταλανίζουν την ομάδα του: “Πρέπει να παίξουμε καλά πρώτα απ’ όλα. Έπαιξαν πολύ καλά απέναντι στη Μακάμπι. Διαθέτουν αθλητικούς και έμπειρους παίκτες. Στην πρώτη αγωνιστική είχαν το καλύτερο ποσοστό στο τρίποντο (σ.σ. 47.1%). Πρέπει να προσέξουμε το παιχνίδι στο tr",
+   "source": "Eurohoops (GR)",
+   "weight": 1,
+   "fantasy": false
+  },
+  {
+   "title": "Καλαϊτζάκης: «Η ήττα από τον ΠΑΟΚ μας έδωσε κίνητρο»",
+   "url": "https://www.novasports.gr/sport/mpasket/event/euroleague/article/15140812/kalaitzakis-i-itta-apo-ton-paok-mas-edose-kinitro/",
+   "date": "2026-09-29T11:37:31+00:00",
+   "text": "Ο Έλληνας γκαρντ μίλησε για την αναμέτρηση με τη Βιλερμπάν και τόνισε πως μοναδικός στόχος του « τριφυλλιού » είναι η νίκη. Επίσης, αναφέρθηκε και στις απουσίες των «πράσινων». Αρχικά, ο Καλαϊτζάκης δήλωσε : «Χάσαμε το παιχνίδι με τον ΠΑΟΚ, θέλαμε να κερδίσουμε γιατί κρινόταν ένας τίτλος. Παρ’ όλα αυτά κάναμε μια πολύ καλή αρχή απέναντι στην Παρί στην Ευρωλίγκα και έτσι θέλουμε να συνεχίσουμε με την Βιλερμπάν. Να είμαστε πιεστικοί, να κερδίζουμε πόντους στο τρανζίσιον και να βάζουμε τον κόσμο στην εξίσωση, όπως κάνουμε πάντα. Το καλό είναι ότι έχουμε πολλά εντός έδρας παιχνίδια και θέλουμε να ",
+   "source": "Novasports",
+   "weight": 1,
+   "fantasy": false
+  },
+  {
+   "title": "Ομπράντοβιτς: «Δε θα κλάψουμε για τα προβλήματα»",
+   "url": "https://www.novasports.gr/sport/mpasket/event/euroleague/article/15140806/omprantovits-de-tha-klapsoume-gia-ta-provlimata/",
+   "date": "2026-09-29T11:30:30+00:00",
+   "text": "Ο Σέρβος κόουτς έχει στρέψει την προσοχή του στην επικείμενη αναμέτρηση με τη Βιλερμπάν στο ΟΑΚΑ , όπου θέλει η ομάδα του να πανηγυρίσει τη δεύτερη νίκη της στη φετινή Euroleague . Αρχικά, ο Σέρβος κόουτς δήλωσε : «Θα πρέπει να κάνουμε καλό παιχνίδι, πάντα είναι το ίδιο. Η Βιλερμπάν έπαιξε πολύ καλά απέναντι στη Μακάμπι, έχουν έμπειρους και αθλητικούς παίκτες, όπως ο Μιλς και ο Κράουντερ. Σε όλα τα παιχνίδια τους παίρνουν πολλά τρίποντα και πρέπει να αμυνθούμε απέναντι σε αυτό, όπως και στο τρανζίσιον τους, αλλά και στο ένας εναντίον ενός. Πρέπει να κάνουμε ό,τι χρειάζεται για να είμαστε στο ε",
+   "source": "Novasports",
+   "weight": 1,
+   "fantasy": false
+  },
+  {
+   "title": "Αγραπιδάκης: «Ευλογημένος που είμαι στον Παναθηναϊκό»",
+   "url": "https://www.novasports.gr/sport/bolei/event/volleyleague/article/15140749/agrapidakis-eylogimenos-pou-eimai-ston-panathinaiko/",
+   "date": "2026-09-29T11:28:00+00:00",
+   "text": "Ο γενικός αρχηγός των τμημάτων βόλεϊ δήλωσε πως ο Παναθηναϊκός είναι ότι καλύτερο στη ζωή του και συμπλήρωσε πως είναι μεγάλη υπόθεση, η συμμετοχή στο Champions League . Αναλυτικά, δήλωσε στη media day του Ερασιτέχνη : «Δεν μπορούσα να φανταστώ ότι μετά από τόσα χρόνια, θα μπορούσα να είμαι εδώ δίπλα στον Πρόεδρο, τον Σωτήρη Πανταλέων στη διοίκηση του Συλλόγου και είμαι πολύ χαρούμενος και είναι πολύ τιμητικό για μένα γιατί είμαι τόσα χρόνια στο Παναθηναϊκό. Είμαι ευλογημένος από τη στιγμή που ήρθα στο Παναθηναϊκό, προέρχομαι από τον Παναθηναϊκό, έχω παίξει και αισθάνομαι τόσο πολύ μεγάλη περη",
+   "source": "Novasports",
+   "weight": 1,
+   "fantasy": false
+  },
+  {
+   "title": "Χουάντσο: Νοκ άουτ για τις επόμενες δέκα μερες",
+   "url": "https://www.eurohoops.net/el/euroleague-el-2/2013724/chouantso-nok-aout-os-ke-deka-meres/",
+   "date": "2026-09-29T11:27:52+00:00",
+   "text": "Του Δημήτρη Μιναρετζή/ info@eurohoops.net Ίσως δε, χάσει κι άλλο παιχνίδι της Ευρωλίγκας την ερχόμενη εβδομάδα… Ο διεθνής Ισπανός φόργουορντ τραυματίστηκε στον ημιτελικό του Stoiximan Super Cup κατά του ΠΑΟΚ και η διάγνωση του ιατρικού τιμ ήταν σπασμοί στον δεξιό προσαγωγό. Ο Ζέλικο Ομπράντοβιτς έκανε update της κατάστασης του Χουάντσο και δήλωσε ότι ίσως μείνει εκτός αγωνιστικής δράσης για δέκα ημέρες. “Ο Χουάντσο Ερνανγκόμεθ θα είναι εκτός. Δεν ξέρω ακριβώς, ίσως δέκα ημέρες” είπε ο Σέρβος κόουτς. Αυτό σημαίνει ότι δεν θα παίξει σίγουρα με τη Βιλερμπάν αύριο (30/9) στο ΟΑΚΑ, με τη Μακάμπι τη",
+   "source": "Eurohoops (GR)",
+   "weight": 1,
+   "fantasy": false
+  },
+  {
+   "title": "Πράσινες τρελές ιστορίες & το απαιτητικό 2/2 για την ομάδα του Ζοτς |Q&A Παναθηναϊκού by Interwetten",
+   "url": "https://www.gazzetta.gr/football/superleague/2573056/prasines-treles-istories-apaititiko-22-gia-tin-omada-toy-zots-qa",
+   "date": "2026-09-29T13:27:42+02:00",
+   "text": "Ο Νίκος Αθανασίου και ο Γιώργος Κούβαρης απαντούν στις δικές σας ερωτήσεις για τον Παναθηναϊκό στο Q&A by Interwetten.",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false
+  },
+  {
+   "title": "Παναθηναϊκός: Οριστικά χωρίς τον Χουάντσο",
+   "url": "https://www.novasports.gr/sport/mpasket/event/euroleague/article/15140798/panathinaikos-oristika-xoris-ton-xouantso/",
+   "date": "2026-09-29T11:24:18+00:00",
+   "text": "Ο Ισπανός παίκτης δεν κατάφερε να ξεπεράσει τις ενοχλήσεις που τον ταλαιπώρησαν τις προηγούμενες ημέρες και δεν είναι σε θέση να αγωνιστεί στα δυο συγκεκριμένα ματς για την Euroleague . Ο Ερνάνγκομεθ είχε τραυματιστεί στον ημιτελικό του Super Cup με τον ΠΑΟΚ και ταλαιπωρείται από μυϊκό σπασμό. Τις τελευταίες ημέρες ακολουθεί πρόγραμμα θεραπείας και η κατάστασή του αξιολογείται μέρα με τη μέρα. Ο Ομπράντοβιτς δήλωσε για την κατάσταση του παίκτη του : «Ο Χουάντσο θα είναι εκτός, περίπου για 10 μέρες. Οι άλλοι τραυματίες ακολουθούν το δικό τους πρόγραμμα, δεν πιέζουμε κανέναν να επιστρέψει νωρίτε",
+   "source": "Novasports",
+   "weight": 1,
+   "fantasy": false
+  },
+  {
+   "title": "Ολυμπιακός: Το πηγαδάκι του Γουίλιαμς-Γκος με τους παλιούς συμπαίκτες του",
+   "url": "https://www.gazzetta.gr/basketball/euroleague/2573053/olympiakos-pigadaki-toy-goyiliams-gkos-me-toys-palioys-sympaiktes-toy",
+   "date": "2026-09-29T13:17:09+02:00",
+   "text": "O Nάιτζελ Γουίλιαμς-Γκος τα είπε με τους πρώην συμπαίκτες του στον Ολυμπιακός.",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false
+  },
+  {
+   "title": "Ολυμπιακός για Ουίλιαμς-Γκος: “Μερικοί δεσμοί δεν ξεθωριάζουν ποτέ” (Video)",
+   "url": "https://www.eurohoops.net/el/euroleague-el-2/2013714/olimpiakos-gia-ouiliams-gkos-meriki-desmi-den-xethoriazoun-pote-video/",
+   "date": "2026-09-29T10:54:00+00:00",
+   "text": "Του Δημήτρη Μιναρετζή/ info@eurohoops.net Ο έμπειρος Αμερικανός γκαρντ παίζει για δεύτερη σερί χρονιά στη Ζαλγκίρις Κάουνας, αλλά απόψε (20:00, Novasports Prime) δεν θα τεθεί αντιμέτωπος με την παλιά του – δύο φορές μάλιστα … – ομάδα, τον Ολυμπιακό. Ο Ουίλιαμς-Γκος είναι τραυματίας και έτσι δεν θα παίξει απόψε, αλλά το πρωί της Τρίτης επισκέφτηκε το γήπεδο της Ζαλγκίρις για θεραπεία και εκεί συνάντησε πολλούς, πρώην συμπαίκτες του. Βεζένκοφ, Παπανικολάου, Φουρνιέ και Πάπας μεταξύ άλλων χαιρετήθηκαν εγκάρδια με τον Νάιτζελ Ουίλιαμς-Γκος, με τον Ολυμπιακό να αναρτά το σχετικό βίντεο, γράφοντας: ",
+   "source": "Eurohoops (GR)",
+   "weight": 1,
+   "fantasy": false
+  },
+  {
+   "title": "Shaquille O’Neal touches down for Zalgiris EuroLeague home opener",
+   "url": "https://www.eurohoops.net/en/euroleague/2013705/shaquille-oneal-lands-in-lithuania-euroleague/",
+   "date": "2026-09-29T10:37:19+00:00",
+   "text": "By Johnny Askounis/ info@eurohoops.net Shaquille O’Neal has arrived in Lithuania. The towering NBA legend landed on Tuesday for a tour that stretches to the EuroLeague . Shaq is visiting the Baltic nation as the new global ambassador for NordVPN, the digital security app created by Nord Security. His first stop is the capital, Vilnius. There, company co-founders Tomas Okmanas and Eimantas Sabaliauskas will welcome him for an exclusive press conference . The visit highlights O’Neal’s massive transition from sports to global business. Beyond his Hall of Fame playing career, he is a Doctor of Edu",
+   "source": "Eurohoops",
+   "weight": 1,
+   "fantasy": false
+  },
+  {
    "title": "Μπασκόνια: Ενίσχυση στη ρακέτα με Μάρτσιο Σάντος",
    "url": "https://www.gazzetta.gr/basketball/euroleague/2573049/mpaskonia-enishysi-sti-raketa-me-martsio-santos",
    "date": "2026-09-29T12:32:52+02:00",
    "text": "Στη Μπασκόνια συνεχίζει την καριέρα του ο Μάρτσιο Σάντος που θα δώσει λύσεις στη frontline της.",
    "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false
+  },
+  {
+   "title": "Ολυμπιακός: Η συνάντηση με τον Γουίλιαμς-Γκος (video)",
+   "url": "https://www.novasports.gr/sport/mpasket/event/euroleague/article/15140755/olympiakos-i-synantisi-me-ton-gouiliams-gkos-video/",
+   "date": "2026-09-29T10:28:00+00:00",
+   "text": "Οι «ερυθρόλευκοι» θα αντιμετωπίσουν στο Κάουνας τη Ζαλγκίρις , στο πλαίσιο της δεύτερης αγωνιστικής της Euroleague και είχαν την ευκαιρία να τα πουν με τον πρώην παίκτη τους. Μάλιστα, ανέβασαν στα μέσα κοινωνικής δικτύωσης και το σχετικό βίντεο. Το σχόλιο που το συνοδεύει αναφέρει : «Γεια σου, Νάιτζελ Γουίλιαμς Γκος! Πάντα ευχαρίστηση να σε βλέπουμε. Κάποιοι δεσμοί δεν ξεθωριάζουν ποτέ». Το σχετικό βίντεο : Hey, @NigelWG5 ! Always a pleasure to see you. Some bonds never fade. #OlympiacosBC #WeAreOlympiacos #TogetherWeFight pic.twitter.com/7aXuuGpntw — Olympiacos B.C. (@Olympiacos_BC) September",
+   "source": "Novasports",
    "weight": 1,
    "fantasy": false
   },
@@ -136,6 +334,15 @@
    "fantasy": false
   },
   {
+   "title": "Real Madrid director backs NBA expansion to Europe: “The sooner, the better”",
+   "url": "https://www.eurohoops.net/en/euroleague/2013692/juan-carlos-sanchez-talks-real-madrid-nba-europe-euroleague/",
+   "date": "2026-09-29T10:09:06+00:00",
+   "text": "By Johnny Askounis/ info@eurohoops.net Real Madrid basketball director Juan Carlos Sanchez wants the NBA to expand into Europe, stating that a partnership between the two entities should happen ‘the sooner, the better’ . Speaking on Realmadrid TV on Monday, the 65-year-old executive confirmed an upcoming meeting in Italy, where Euroleague Basketball owners will gather to discuss an active proposal from the league based in North America . “We are eager for the NBA to come to Europe,” said Sanchez. “The NBA is the premier league in the world and would give basketball on the continent a massive l",
+   "source": "Eurohoops",
+   "weight": 1,
+   "fantasy": false
+  },
+  {
    "title": "Διπλή αγωνιστική στη Euroleague και πρεμιέρα στο EuroCup με αμέτρητες αγορές και «20 & Κάρφωσες»* από το ΠΑΜΕ ΣΤΟΙΧΗΜΑ",
    "url": "https://www.gazzetta.gr/2572861/dipli-agonistiki-sti-euroleague-kai-premiera-sto-eurocup-me-ametrites-agores-kai-20",
    "date": "2026-09-29T12:00:03+02:00",
@@ -150,24 +357,6 @@
    "date": "2026-09-29T09:36:08+00:00",
    "text": "Του Δημήτρη Μιναρετζή/ info@eurohoops.net Πιο Μπόμπαν Μαριάνοβιτς σκηνικό δεν γίνεται… Ο 38χρονος Σέρβος γίγαντας μας έχει προσφέρει άφθονες στιγμές γέλιου με τα καμώματα του, ωστόσο κάποτε ήταν ένας σπουδαίος σέντερ και στην Ευρωλίγκα με τον Ερυθρό Αστέρα έκανε πάταγο τη διετία 2013-15 και ειδικά τη δεύτερη χρονιά από αυτές (σεζόν 2014-15). Προπονητής του τότε ήταν ο Ντέγιαν Ράντονιτς και ο Μαριάνοβιτς θυμήθηκε ένα περιστατικό χαμένης προπόνησης, επειδή το προηγούμενο βράδυ έπαιζε … Candy Crush στο κινητό του και τον πήρε ο ύπνος… “Εκείνη την περίοδο έπαιζα Candy Crush. Ο χρόνος στο τηλέφωνο ",
    "source": "Eurohoops (GR)",
-   "weight": 1,
-   "fantasy": false
-  },
-  {
-   "title": "Ολυμπιακός: Αποκαλύψεις του προέδρου της Σανταντέρ για τη μεταγραφή του Πουέρτα",
-   "url": "https://www.gazzetta.gr/football/superleague/2573031/olympiakos-apokalypseis-toy-proedroy-tis-santanter-gia-ti-metagrafi",
-   "date": "2026-09-29T11:34:46+02:00",
-   "text": "Ο Κώστας Νικολακόπουλος καταγράφει στο blog του στο Gazzetta τις δηλώσεις του Ισπανού προέδρου για την παραχώρηση του Πουέρτα στον Ολυμπιακό.",
-   "source": "Gazzetta",
-   "weight": 1,
-   "fantasy": false
-  },
-  {
-   "title": "ΚΑΕ Ολυμπιακός: Προχωρά το λίφτινγκ στο ΣΕΦ - Τι περιλαμβάνει η ενεργειακή αναβάθμιση",
-   "url": "https://www.gazzetta.gr/2436947/boyliazoyn-10-ipeirotikoi-proorismoi-gia-pasha",
-   "date": "2026-09-29T11:17:00+02:00",
-   "text": "«Βγαίνει» ο ανάδοχος για την ενεργειακή αναβάθμιση του ΣΕΦ (ΚΑΕ Ολυμπιακός).",
-   "source": "Gazzetta",
    "weight": 1,
    "fantasy": false
   },
@@ -199,29 +388,11 @@
    "fantasy": false
   },
   {
-   "title": "Tο Super Cup των εκπλήξεων και η “καυτή” διαβολοβδομάδα | PullUp με τους Χρήστο Καούρη & Φώτη Κατσικάρη",
-   "url": "https://www.eurohoops.net/el/trademarks-el/2013645/ta-aponera-tou-super-cup-ke-i-kafti-diavoloevdomada-pullup-me-tous-christos-kaouris-fotis-katsikaris/",
-   "date": "2026-09-29T08:53:42+00:00",
-   "text": "Χρήστος Καούρης και Φώτης Κατσικάρης δίνουν ραντεβού κάθε Τρίτη στις 12:00 στο Eurohoops Greece, σε μία εκπομπή που τα έχει όλα! Αυτή τη φορά, στο επίκεντρο μπαίνει το ελληνικό Super Cup με νικητή τον Ολυμπιακό, αλλά και όσα θα ακολουθήσουν στην διπλή αγωνιστική της Ευρωλίγκας. Δείτε τα τελευταία νέα The post Tο Super Cup των εκπλήξεων και η “καυτή” διαβολοβδομάδα | PullUp με τους Χρήστο Καούρη & Φώτη Κατσικάρη appeared first on Eurohoops .",
-   "source": "Eurohoops (GR)",
-   "weight": 1,
-   "fantasy": false
-  },
-  {
    "title": "Key stars out to start double-game week in the EuroLeague",
    "url": "https://www.eurohoops.net/en/euroleague/2013646/injury-report-round-2-milutinov-does-not-travel-to-kaunas/",
    "date": "2026-09-29T08:30:50+00:00",
    "text": "By Johnny Askounis/ info@eurohoops.net Euroleague Basketball has released the injury report ahead of Round 2 in the 2026–27 EuroLeague Regular Season, revealing critical roster changes across multiple teams. Review the official updates on EuroleagueBasketball.net . Tuesday, September 29 Dubai Basketball vs. FC Barcelona (18:00 CEST) Dubai has not yet sent an injury report for its game against Barcelona on Tuesday. Dzanan Musa did not play during the Euroleague Basketball SuperCup, nor during Round 1. Barcelona Josh Nebo, Tosan Evbuomwan and Yoan Makoundou are not available for Tuesday’s game. ",
    "source": "Eurohoops",
-   "weight": 1,
-   "fantasy": false
-  },
-  {
-   "title": "Τι συνέβη με Ποντένσε, πού βρίσκεται και πόσο κοντά ήταν η επιστροφή του!",
-   "url": "https://www.gazzetta.gr/football/superleague/2572959/ti-synebi-me-pontense-poy-brisketai-kai-poso-konta-itan-i-epistrofi",
-   "date": "2026-09-29T10:30:00+02:00",
-   "text": "Το gazzetta.gr αποκαλύπτει το περίεργο καλοκαίρι του Ντάνιελ Ποντένσε, ο οποίος επί της ουσίας ποτέ δεν έφτασε κοντά στην επιστροφή του στον Ολυμπιακό για διάφορους λόγους.",
-   "source": "Gazzetta",
    "weight": 1,
    "fantasy": false
   },
@@ -244,15 +415,6 @@
    "fantasy": false
   },
   {
-   "title": "Τσαπατάκης στο Gazzetta: «Νίκη είναι όταν ο Έλληνας πολίτης προσπαθεί να αντιμετωπίσει τις αντιξοότητες της ζωής»",
-   "url": "https://www.gazzetta.gr/kolymbisi/2573015/tsapatakis-sto-gazzetta-niki-einai-otan-o-ellinas-politis-prospathei-na",
-   "date": "2026-09-29T10:15:00+02:00",
-   "text": "Ο Αντώνης Τσαπατάκης βρέθηκε στο Porto Carras Pro-Am 2026 και μιλάει στο Gazzetta για την παρουσία του στο τουρνουά, καθώς και για την καθημερινή νίκη της ζωής.",
-   "source": "Gazzetta",
-   "weight": 1,
-   "fantasy": false
-  },
-  {
    "title": "Μπασκόνια: Ενισχύθηκε με τον Μάρσιο Σάντος (pic)",
    "url": "https://www.novasports.gr/sport/mpasket/event/euroleague/article/15140635/mpaskonia-enisxythike-me-ton-marsio-santos-pic/",
    "date": "2026-09-29T08:15:00+00:00",
@@ -267,15 +429,6 @@
    "date": "2026-09-29T08:00:48+00:00",
    "text": "By Nikola Miloradovic/ info@eurohoops.net The BKT EuroCup has expanded to 32 teams, divided into four groups of eight. Each club will play 14 regular-season games, with the top four from every group advancing to the playoffs. The playoff format has also changed. Every knockout round, from the round of 16 through the Finals, will be decided in a best-of-three series. The expanded field creates opportunities for emerging projects, but the shorter regular season also leaves less room for slow starts. Ranking this field is particularly difficult. Several teams appear capable of challenging for the",
    "source": "Eurohoops",
-   "weight": 1,
-   "fantasy": false
-  },
-  {
-   "title": "Ακάθεκτος ο Ολυμπιακός και στο Κάουνας!",
-   "url": "https://www.gazzetta.gr/basketball/2572938/akathektos-o-olympiakos-kai-sto-kaoynas",
-   "date": "2026-09-29T10:00:00+02:00",
-   "text": "Ο Ολυμπιακός ταξιδεύει στο Κάουνας προκειμένου να αντιμετωπίσει τη Ζαλγκίρις στο πλαίσιο της 2ης αγωνιστικής της Euroleague.",
-   "source": "Gazzetta",
    "weight": 1,
    "fantasy": false
   },
@@ -298,7 +451,7 @@
    "fantasy": false
   },
   {
-   "title": "Σάσα Βεζένκοφ θυμάσαι τι έκανες στις 14 Νοεμβρίου του 2025;;;",
+   "title": "Σάσα Βεζένκοφ θυμάσαι τι έγινε στις 14 Νοεμβρίου του 2025;;;",
    "url": "https://www.eurohoops.net/el/euroleague-el-2/2013604/sasa-vezenkof-thimase-ti-ekanes-stis-14-noemvriou-tou-2025/",
    "date": "2026-09-29T07:32:49+00:00",
    "text": "Του Δημήτρη Μιναρετζή/ info@eurohoops.net Όχι κατ’ ανάγκη για τον καλύτερο λόγο. Θα μας πείτε, εδώ δεν θυμόμαστε τι φάγαμε χθες , θα θυμάται ο Σάσα Βεζένκοφ τι έκανε στις 14 Νοεμβρίου του 2025 , δηλαδή σχεδόν 11 μήνες πίσω;;; Ο σούπερ σταρ/πρώτος σκόρερ του Ολυμπιακού και MVP της Ευρωλίγκας για τη σεζόν 2025-26, μετράει 29 συνεχόμενα παιχνίδια με διψήφιο αριθμό πόντων στη διοργάνωση και στις 14/11/2025 ήταν η τελευταία φορά που δεν ξεπέρασε αυτό το όριο! Τότε στο Μιλάνο, ο Ολυμπιακός ηττήθηκε με 88-87 από την Αρμάνι, με τον Σάσα Βεζένκοφ να μένει στους έξι πόντους! Έκτοτε δεν είδε στη στατιστι",
@@ -325,29 +478,11 @@
    "fantasy": false
   },
   {
-   "title": "Gazz Floor by Novibet: Η Διαβολοβδομάδα ξεκινά με POST GAME για το Ζάλγκιρις- Ολυμπιακός",
-   "url": "https://www.gazzetta.gr/basketball/euroleague/2573010/gazz-floor-novibet-i-diabolobdomada-xekina-me-post-game-gia-zalgkiris",
-   "date": "2026-09-29T09:29:56+02:00",
-   "text": "Όλα τα νέα για το ελληνικό μπάσκετ, με ρεπορτάζ και αναλύσεις για Ολυμπιακό, Παναθηναϊκό, Άρη και ΠΑΟΚ, αλλά και τις εξελίξεις στο μπάσκετ γυναικών στο Gazz Floor by Novibet.",
-   "source": "Gazzetta",
-   "weight": 1,
-   "fantasy": false
-  },
-  {
    "title": "Lock in Alec Peters, gamble on Scottie Wilbekin in EuroLeague Fantasy",
    "url": "https://www.eurohoops.net/en/trademarks/2013603/alec-peters-scottie-wilbekin-euroleague-fantasy-tips/",
    "date": "2026-09-29T07:19:59+00:00",
    "text": "By Dimitris Minaretzis/ info@eurohoops.net Before we get to Alec Peters, we invite you to play with us in the Eurohoops league, which is named Eurohoops-League, highly original, right? Already, 514 managers have joined forces with our editors’ teams and are competing for the unofficial title. Come on in. Just like Peters is coming into our team. His cost in EuroLeague Fantasy? We find him at the bargain price of 12 credits, and we think he is worth every single fantasy euro we spend on him. In the season opener in Belgrade against Partizan Mozzart Bet, the Armani Olimpia Milan forward was the ",
    "source": "Eurohoops",
-   "weight": 1,
-   "fantasy": false
-  },
-  {
-   "title": "Ολυμπιακός: Το έργο των Χολ - Τζόουνς στο Κάουνας",
-   "url": "https://www.gazzetta.gr/basketball/euroleague/2572949/olympiakos-ergo-ton-hol-tzooyns-sto-kaoynas",
-   "date": "2026-09-29T09:15:00+02:00",
-   "text": "Ο Ολυμπιακός έχει μία πολύ δύσκολη εκτός έδρας αποστολή για τη δεύτερη αγωνιστική της EuroLeague, καθώς θα φιλοξενηθεί από τη Ζάλγκιρις στο Κάουνας.",
-   "source": "Gazzetta",
    "weight": 1,
    "fantasy": false
   },
@@ -487,74 +622,11 @@
    "fantasy": false
   },
   {
-   "title": "Γιόργκιτς: «Υψηλού επιπέδου όλοι οι αθλητές στην ελληνική Α1»",
-   "url": "https://www.novasports.gr/sport/alla-spor/event/europi-alla-spor/article/15139634/giorgkits-ypsilou-epipedou-oloi-oi-athlites-stin-elliniki-a1/",
-   "date": "2026-09-28T21:38:00+00:00",
-   "text": "Είναι περίπου μία δεκαετία τώρα, που η κορυφαία εθνική διοργάνωση συγκεντρώνει τοπ ονόματα, αθλητές κι αθλήτριες με μεγάλες περγαμηνές στην ευρωπαϊκή ή και την παγκόσμια σκηνή και ο Σλοβένος άσος δεδομένα έγινε αυτό το Σαββατοκύριακο στην Ελευσίνα η ατραξιόν του πρώτου αγωνιστικού διημέρου. Μεταξύ άλλων διακρίσεων, ο νεοαποκτηθείς του Ολυμπιακού αθλητής είναι τρεις φορές νικητής του Ευρωπαϊκού Τοπ 16, πρωταθλητής σε δύο World Table Tennis Contender, δευτεραθλητής Ευρώπης στο απλό ανδρών, στις θέσεις 5-8 των Ολυμπιακών Αγώνων Τόκιο 2020 στο ίδιο αγώνισμα. Σήμερα φιγουράρει στο νούμερο 12 της πα",
-   "source": "Novasports",
-   "weight": 1,
-   "fantasy": false
-  },
-  {
-   "title": "Μετά το «σοκ» από την Ελλάδα: Άδεια καθίσματα στο Μόναχο για το επόμενο παιχνίδι της Γερμανίας!",
-   "url": "https://www.novasports.gr/sport/podosfairo/event/nations-league/article/15140049/meta-to-sok-apo-tin-ellada-adeia-kathismata-sto-monaxo-gia-to-epomeno-paixnidi-tis-germanias/",
-   "date": "2026-09-28T20:50:43+00:00",
-   "text": "Η σπουδαία επικράτηση του αντιπροσωπευτικού μας συγκροτήματος με 1-0 , με το γκολ του Δημήτρη Κουρμπέλη, υποχρέωσε τον Γιούργκεν Κλοπ σε μια ανώμαλη προσγείωση στο πρώτο του παιχνίδι στον πάγκο της Γερμανίας μπροστά στο κοινό της πατρίδας του. Καρέτσας για τη ντρίπλα στον Μπούρκαρντ: «Δεν κατάλαβα καν τι έκανα» (video) Μετά το φινάλε της αναμέτρησης, καταγράφηκαν μεμονωμένες αποδοκιμασίες από την εξέδρα για την εικόνα των γηπεδούχων, με τον 59χρονο τεχνικό να σχολιάζει τα σφυρίγματα με το δικό του καυστικό ύφος: «Ίσως κάποιος από αυτούς είχε άσθμα» . Εθνική: Αναχωρεί για Θεσσαλονίκη (video, ph",
-   "source": "Novasports",
-   "weight": 1,
-   "fantasy": false
-  },
-  {
-   "title": "Ολυμπιακός: Επιστρέφει ο Νταβίντ Φουστέρ!",
-   "url": "https://www.novasports.gr/sport/podosfairo/event/super-league-1/article/15140020/olympiakos-epistrefei-o-ntavint-fouster/",
-   "date": "2026-09-28T20:21:54+00:00",
-   "text": "Ο αγαπημένος της «ερυθρόλευκης» εξέδρας, Νταβίντ Φουστέρ , βρίσκεται σύμφωνα με πληροφορίες στην Ελλάδα και βρίσκεται σε ανοιχτή γραμμή με τον Ολυμπιακό προκειμένου να επιστρέψει στην ομάδα αναλαμβάνοντας διοικητικό ή τεχνικό πόστο. O 44χρονος βετεράνος μεσοεπιθετικός έχει ταξιδέψει στη χώρα μας για να συζητήσει το ενδεχόμενο να αναλάβει κάποια θέση μέσα στον σύλλογο . Το όνομά του, άλλωστε, είχε πέσει και στο παρελθόν στο τραπέζι για διάφορα πόστα στο οργανόγραμμα των Πειραιωτών. Πλέον, φαίνεται πως οι επαφές είναι σε πλήρη εξέλιξη, με τον Ισπανό να εξετάζει σοβαρά την προοπτική να υπηρετήσει",
-   "source": "Novasports",
-   "weight": 1,
-   "fantasy": false
-  },
-  {
-   "title": "Μαρτίνεθ: «Η Εφές έχει παίκτες με εξαιρετική ικανότητα στο ένας-ένας, είναι πολύ δύσκολο παιχνίδι»",
-   "url": "https://www.novasports.gr/sport/mpasket/event/euroleague/article/15139746/martineth-i-efes-exei-paiktes-me-eksairetiki-ikanotita-sto-enas-enas-einai-poly-dyskolo-paixnidi/",
-   "date": "2026-09-28T20:09:00+00:00",
-   "text": "Αναλυτικά οι δηλώσεις του Πέδρο Μαρτίνεθ στην τελευταία προπόνηση της Ρεάλ πριν το ματς με την Εφές (29/09, 20:00, Novasports 5HD): «Περιμένουμε ένα πολύ δύσκολο παιχνίδι. Η Εφές είναι μια πολύ ταλαντούχα ομάδα, παίζει πολύ γρήγορο μπάσκετ και έχει παίκτες με εξαιρετική ικανότητα στο ένας εναντίον ενός. Έχουν επίσης καλό σουτ από μακριά. Αμυντικά είναι ψηλοί και αθλητικοί, και έχουν πολλές επιλογές, με σέντερ που παίζουν στην περιφέρεια και σέντερ που είναι στο ζωγραφιστό αλλά είναι πολύ καλοί ρολίστες. Είναι ένα πολύ δύσκολο παιχνίδι, αλλά κάθε παιχνίδι στην Euroleague είναι δύσκολο.» Αναλυτι",
-   "source": "Novasports",
-   "weight": 1,
-   "fantasy": false
-  },
-  {
-   "title": "Φίγκο στους οπαδούς της Ρεάλ: «Χρειάζεται χρόνο ο Ντιομαντέ»!",
-   "url": "https://www.novasports.gr/sport/podosfairo/event/laliga-division/article/15139967/figko-stous-opadous-tis-real-xreiazetai-xrono-o-ntiomante/",
-   "date": "2026-09-28T19:59:42+00:00",
-   "text": "Το τέλος της περασμένης σεζόν έφερε αλλαγές στον πάγκο της Ρεάλ Μαδρίτης, με τον Ζοσέ Μουρίνιο να αναλαμβάνει τα ηνία ως νέος προπονητής. Τα συναισθήματα από την αρχή της σεζόν είναι… ανάμεικτα στο Μπερναμπέου, καθώς η «Βασίλισσα» μετράει έξι νίκες στα πρώτα οκτώ παιχνίδια. Ωστόσο, εξακολουθούν να υπάρχουν αμφιβολίες για το αρχικό σχήμα, ειδικά όσον αφορά τη γραμμή κρούσης, η οποία, παρά την αφθονία ταλέντου, δεν αποδίδει στο μέγιστο των δυνατοτήτων της. Ένας από τους μεγαλύτερους «πονοκεφάλους» επιλογής για τον Special One είναι ο Γιαν Ντιομαντέ. Η ακριβότερη μεταγραφή στην ιστορία του συλλόγ",
-   "source": "Novasports",
-   "weight": 1,
-   "fantasy": false
-  },
-  {
-   "title": "Nikola Jokić addresses his contract situation: “I’m going to sign next year… if they want me”",
-   "url": "https://www.eurohoops.net/en/nba-news/2013543/nikola-jokic-addresses-his-contract-situation-im-going-to-sign-next-year-if-they-want-me/",
-   "date": "2026-09-28T19:12:22+00:00",
-   "text": "By Eurohoops team / info@eurohoops.net div:has([data-free-thinking-preview-answer=true])+:is(.text-message,.relative:has(>.text-message))]:-mt-2 grow\"> Denver Nuggets superstar Nikola Jokić addressed his contract situation during NBA Media Day on Monday, offering a brief but intriguing response that has drawn attention to his future with the franchise. The three-time NBA Most Valuable Player expressed his intention to sign a new deal next summer, but added a pointed qualification. Nikola Jokic on his potential extension: “I’m gonna sign next year …………… if they want me.” pic.twitter.com/Z5rk3L0",
-   "source": "Eurohoops",
-   "weight": 1,
-   "fantasy": false
-  },
-  {
    "title": "Χουάντσο: Ξανά εκτός προπόνησης, αλλά έσβησε κεράκια στο ΟΑΚΑ",
    "url": "https://www.eurohoops.net/el/euroleague-el-2/2013526/chouantso-xana-ektos-proponisis-alla-esvise-kerakia-sto-oaka/",
    "date": "2026-09-28T17:59:20+00:00",
    "text": "Του Κώστα Παρασκευόπουλου / info@ eurohoops. net Πολύ δύσκολο είναι πλέον το ενδεχόμενο να καταφέρει ο Χουάντσο Ερνανγκόμεθ να αγωνιστεί στο προσεχές ματς του Παναθηναϊκού με αντίπαλο τη Βιλερμπάν στο ΟΑΚΑ την Τετάρτη (30/9, 21:15). Ο διεθνής Ισπανός πάουερ φόργουορντ δεν έκανε προπόνηση ούτε τη Δευτέρα (28/9), οπότε το πιθανότερο είναι ότι δεν προλαβαίνει να παίξει απέναντι στη γαλλική ομάδα για τη 2η αγωνιστική της Ευρωλίγκας . Ο Παναθηναϊκός έχει δύο σερί ματς στο ΟΑΚΑ στη «διαβολοβδομάδα», αφού θα ακολουθήσει και αυτό κόντρα στη Μακάμπι Τελ Αβίβ την Παρασκευή (2/10, 21:15). Γενέθλια στο πα",
    "source": "Eurohoops (GR)",
-   "weight": 1,
-   "fantasy": false
-  },
-  {
-   "title": "LeBron James makes his mission clear: “I didn’t leave my family to lose in the second round”",
-   "url": "https://www.eurohoops.net/en/nba-news/2013514/lebron-james-makes-his-mission-clear-i-didnt-leave-my-family-to-lose-in-the-second-round/",
-   "date": "2026-09-28T17:39:09+00:00",
-   "text": "By Eurohoops team / info@eurohoops.net LeBron James has made one thing clear ahead of his debut with the Philadelphia 76ers: he is not joining the franchise just to make another playoff appearance. At 41, the NBA legend is chasing another championship, and he has no intention of settling for anything less than a serious title run. “I didn’t leave my family to lose in the second round,” James said Monday during the Sixers’ media day, delivering a message that reflects the expectations surrounding his arrival in Philadelphia. James joins a team determined to overcome its recent postseason disapp",
-   "source": "Eurohoops",
    "weight": 1,
    "fantasy": false
   },
@@ -568,56 +640,11 @@
    "fantasy": false
   },
   {
-   "title": "EuroCup: Με Οσμάν στην κορυφή το Top-10 των μεταγραφών",
-   "url": "https://www.eurohoops.net/el/eurocup-el/2013486/eurocup-me-osman-stin-korifi-to-top-10-ton-metagrafon/",
-   "date": "2026-09-28T16:36:42+00:00",
-   "text": "Του Κώστα Παρασκευόπουλου / info@ eurohoops. net Στην ιστοσελίδα του EuroCup έγινε μία παρουσίαση με το Top-10 των μεταγραφών για τη σεζόν που αρχίζει το προσεχές διήμερο (28-29/9). Όπως αναμενόταν, ο Τσέντι Οσμάν βρίσκεται στην κορυφή της συγκεκριμένης λίστας, αφού ήταν η πιο «ηχηρή» κίνηση και την έκανε ο ΠΑΟΚ με την απόκτηση του βασικού σμολ φόργουορντ της περσινής ομάδας του Παναθηναϊκού . Στη δεύτερη θέση της σχετικής λίστας, βρέθηκε ο πρώην παίκτης του Ολυμπιακού , Κίναν Έβανς , που πλέον αγωνίζεται στους Λόντον Λάιονς , ενώ την πρώτη τριάδα κλείνει ο Ματ Μόργκαν , που ήρθε στον Άρη από ",
-   "source": "Eurohoops (GR)",
-   "weight": 1,
-   "fantasy": false
-  },
-  {
-   "title": "Kristaps Porzingis sidelined indefinitely due to health issue",
-   "url": "https://www.eurohoops.net/en/nba-news/2013477/kristaps-porzingis-sidelined-indefinitely-due-to-health-issue/",
-   "date": "2026-09-28T15:39:57+00:00",
-   "text": "By Eurohoops team/ info@eurohoops.net The Golden State Warriors have suffered an early setback ahead of the new NBA season, as Kristaps Porzingis has been ruled out indefinitely due to a health issue, according to ESPN reporter Anthony Slater. Porzingis will miss the opening of training camp and will not travel with the team to Hawaii, adding uncertainty to the Warriors’ preparations and creating another challenge for their roster depth. Warriors general manager Mike Dunleavy revealed that the situation developed unexpectedly. Porzingis had been on the court the previous week and had received ",
-   "source": "Eurohoops",
-   "weight": 1,
-   "fantasy": false
-  },
-  {
-   "title": "Αιώνιο Podcast: Κόκκινες μεταγραφές αεροδρομίου, πράσινοι τραυματισμοί και ψηλός",
-   "url": "https://www.eurohoops.net/el/trademarks-el/2013461/eonio-podcast-kokkines-metagrafes-aerodromiou-prasini-travmatismi-ke-psilos/",
-   "date": "2026-09-28T15:29:09+00:00",
-   "text": "Της Eurohoops Team/ info@eurohoops.net Το “ Αιώνιο Podcast ” επιστρέφει με το δεύτερο επεισόδιο της σεζόν, τον απόηχο του Stoiximan Super Cup και τη “διαβολοβδομάδα” που ακολουθεί για Παναθηναϊκό και Ολυμπιακό . O Γιαν Μοντέρο που θα κάνει όλα και συμφέρει, η προσφορά των Ντόντα Χολ και Ταϊρίκ Τζόουνς όταν λείπει ο Νίκολα Μιλουτίνοφ και οι μεταγραφές αεροδρομίου που έκανε ο Ολυμπιακός! Παράλληλα, ανάλυση και κουβέντα για τα λάθη και τα νεκρά διαστήματα στην αμύνα των Πειραιωτών. Όσο για τον Παναθηναϊκό; Ο Λευτέρης Μαντζούκας που δίνει vibes… Στράτου Περπέρογλου , ο ηγετικός Σιλβέν Φρανσίσκο, α",
-   "source": "Eurohoops (GR)",
-   "weight": 1,
-   "fantasy": false
-  },
-  {
-   "title": "Ολυμπιακός: Η “παρακάμερα” για τον πρώτο τίτλο της σεζόν! (video)",
-   "url": "https://www.eurohoops.net/el/heba-el/2013463/olimpiakos-o-erithrolefkos-protos-titlos-tis-chronias-stin-ellada-video/",
-   "date": "2026-09-28T15:17:15+00:00",
-   "text": "Του Κώστα Παρασκευόπουλου / info@ eurohoops. net Ο Ολυμπιακός βρήκε μεγάλη αντίσταση από τον ΠΑΟΚ στον τελικό που έγινε στο Περιστέρι , αλλά κατάφερε να κατακτήσει το τρόπαιο του Super Cup. Η ομάδα του Γιώργου Μπαρτζώκα πήρε έτσι τον πρώτο τίτλο της σεζόν, όσον αφορά στις ελληνικές διοργανώσεις. Στο κανάλι του Ολυμπιακού στο YouTube δημοσιεύτηκε η παρακάμερα από τον τελικό, με πολλά ενδιαφέροντα στιγμιότυπα. Όπως πάντα σε τέτοιες περιπτώσεις, το ενδιαφέρον είναι μεγάλο, όχι μόνο σε όσα έγιναν εντός παρκέ, αλλά και σε όσα συνέβησαν έξω από αυτό. Στο video περιλαμβάνονται μεταξύ άλλων, στιγμές π",
-   "source": "Eurohoops (GR)",
-   "weight": 1,
-   "fantasy": false
-  },
-  {
    "title": "Injury-hit Partizan brings back Bandja Sy",
    "url": "https://www.euroleaguebasketball.net/en/euroleague/news/injury-hit-partizan-brings-back-bandja-sy/",
    "date": "2026-09-28T14:20:56.055000+00:00",
    "text": "The 36-year-old rejoins Partizan to bolster its frontcourt amid injury concerns",
    "source": "EuroLeague (official)",
-   "weight": 1,
-   "fantasy": false
-  },
-  {
-   "title": "Παρτιζάν: Επέστρεψε ο Μπάντζα Σι με προσωρινό συμβόλαιο",
-   "url": "https://www.eurohoops.net/el/euroleague-el-2/2013442/partizan-epestrepse-o-bantza-si-me-prosorino-simvoleo/",
-   "date": "2026-09-28T14:20:18+00:00",
-   "text": "Του Κώστα Παρασκευόπουλου / info@ eurohoops. net Σε προσθήκη παίκτη προχώρησε η Παρτιζάν , που ανακοίνωσε την απόκτηση του Μπάντζα Σι , με προσωρινό συμβόλαιο. Ο 36χρονος Γάλλος φόργουορντ/σέντερ (σ.σ. με καταγωγή από το Μάλι ) επιστρέφει στην ομάδα του Βελιγραδίου , στην οποία είχε παίξει ξανά για μιάμιση σεζόν, από τον Ιανουάριο του 2018 μέχρι και το τέλος της σεζόν 2018-19. Η ανακοίνωση της Παρτιζάν: « Ο Μπάντζα Σι επέστρεψε! Ο 36χρονος φόργουορντ που γεννήθηκε στο Παρίσι, υπέγραψε βραχυπρόθεσμο συμβόλαιο με την Παρτιζάν και θα είναι στη διάθεση του προπονητή Πενιαρόγια ήδη από σήμερα (28/9",
-   "source": "Eurohoops (GR)",
    "weight": 1,
    "fantasy": false
   },
@@ -769,264 +796,402 @@
  "digest": {
   "availability": [
    {
+    "player": "HERNANGOMEZ, JUANCHO",
+    "status": "out",
+    "note": "Εκτός για περίπου 10 ημέρες λόγω σπασμών στον δεξιό προσαγωγό.",
+    "source": "Gazzetta"
+   },
+   {
     "player": "MILUTINOV, NIKOLA",
     "status": "out",
-    "note": "Τενοντίτιδα, εκτός αποστολής με Ζάλγκιρις",
+    "note": "Εκτός αποστολής λόγω τενοντίτιδας.",
     "source": "Novasports"
    },
    {
-    "player": "HERNANGOMEZ, JUANCHO",
-    "status": "doubtful",
-    "note": "Πρόβλημα στη βουβωνική χώρα, αμφίβολος για τη διπλή αγωνιστική",
-    "source": "Basketball Sphere – Fantasy"
+    "player": "WILLIAMS-GOSS, NIGEL",
+    "status": "out",
+    "note": "Τραυματίας, έχασε τη συνάντηση με τον Ολυμπιακό.",
+    "source": "Eurohoops (GR)"
    }
   ],
   "expert": [
    {
     "player": "WRIGHT, MOSES",
     "stance": "pick",
-    "note": "Βασικός πυλώνας της Μιλάνο, διατηρήστε τον",
+    "note": "Παραμένει ο κεντρικός πυλώνας της Μιλάνο, διατηρείται για τη 2η αγωνιστική.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "PARRA, JOEL",
     "stance": "pick",
-    "note": "Εξαιρετική επιλογή μπάτζετ για τη Μπαρτσελόνα",
+    "note": "Κορυφαία επιλογή value range στη Μπαρτσελόνα, να κρατηθεί.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "LAKIC, ARIJAN",
     "stance": "pick",
-    "note": "Απαραίτητος στα 4.0 credits λόγω χρόνου συμμετοχής",
+    "note": "Απαραίτητος στα 4.0 credits με σταθερό ρόλο 20 λεπτών.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "SHORTS, TJ",
     "stance": "pick",
-    "note": "Ηγετικός ρόλος στη Βαλένθια με ευνοϊκό πρόγραμμα",
+    "note": "Ηγετικός ρόλος στη Βαλένθια σε ευνοϊκό πρόγραμμα.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "MITOGLOU, KONSTANTINOS",
     "stance": "pick",
-    "note": "Εξαιρετική value επιλογή στη χαμηλή τιμή",
+    "note": "Εξαιρετική value επιλογή στα 5.9 credits λόγω απουσιών.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "SAINT-SUPERY, MARIO",
     "stance": "pick",
-    "note": "Αξιόπιστη λύση από τον πάγκο για τη Βαλένθια",
+    "note": "Αξιόπιστος budget guard με σταθερό χρόνο συμμετοχής.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "VALANCIUNAS, JONAS",
     "stance": "avoid",
-    "note": "Προτείνεται η πώλησή του λόγω δύσκολου προγράμματος και κούρασης",
+    "note": "Προτείναμε πώληση λόγω κούρασης και δύσκολου ρυθμού.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "BOLOMBOY, JOEL",
     "stance": "avoid",
-    "note": "Χαμηλή επιθετική συμμετοχή, καλύτερα να πωληθεί",
+    "note": "Χαμηλή επιθετική συμμετοχή, πωλείται.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "FERNANDO, BRUNO",
     "stance": "avoid",
-    "note": "Χαμηλή απόδοση και δύσκολο πρόγραμμα για την Εφές",
+    "note": "Χαμηλό usage και δύσκολο πρόγραμμα στην Εφές.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "SHORTS, TJ",
+    "stance": "pick",
+    "note": "Ιδανικός για το γρήγορο τέμπο της Βαλένθια.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "FRANCISCO, SYLVAIN",
     "stance": "pick",
-    "note": "Premium επιλογή με έξτρα κίνητρο κόντρα στη Βιλερμπάν",
+    "note": "Υψηλό κίνητρο απέναντι στη Βιλερμπάν.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "JONES, CARLIK",
     "stance": "pick",
-    "note": "Κορυφαίος οργανωτής, ιδανικός για υψηλά σκορ",
+    "note": "MVP της 1ης αγωνιστικής, κορυφαία επιλογή.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "LAWSON, A.J.",
     "stance": "pick",
-    "note": "Αθλητικός σκόρερ με θετική προοπτική",
+    "note": "Εξαιρετικός αθλητικός σκόρερ με προοπτική.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "LUNDBERG, IFFE",
     "stance": "pick",
-    "note": "Ευκαιρία αγοράς σε χαμηλή τιμή (buy-low)",
+    "note": "Ευκαιρία buy-low στα 7.8 credits.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "SAINT-SUPERY, MARIO",
+    "stance": "pick",
+    "note": "Ο κορυφαίος φθηνός γκαρντ για το rotation.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "VEZENKOV, SASHA",
     "stance": "captain",
-    "note": "Αναντικατάστατος πυλώνας και σίγουρη επιλογή αρχηγού",
+    "note": "Αδιαμφισβήτητος ηγέτης και κορυφαίος υποψήφιος για αρχηγός.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "TAYLOR, KAMERON",
     "stance": "pick",
-    "note": "Σταθερός πυλώνας στη ⱽαλένθια",
+    "note": "Σταθερός πυλώνας στηforward γραμμή της Βαλένθια.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "OMORUYI, EUGENE",
     "stance": "pick",
-    "note": "Δυνατός κοντά στο καλάθι για τη Μπεσίκτας",
+    "note": "Εσωτερική δύναμη για την Μπεσίκτας με καλή τιμή.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "STEVENS, LAMAR",
     "stance": "pick",
-    "note": "Αυξημένος χρόνος συμμετοχής λόγω απουσιών",
+    "note": "Αυξημένος χρόνος συμμετοχής λόγω απουσιών στην Παρτιζάν.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "NKAMHOUA, OLIVIER",
     "stance": "pick",
-    "note": "Ευκαιρία για περισσότερο χρόνο λόγω τραυματισμών",
+    "note": "Ωφελημένος από τους τραυματισμούς στη Μπαρτσελόνα.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "LESSORT, MATHIAS",
-    "stance": "captain",
-    "note": "Κορυφαία επιλογή για αρχηγός και σίγουρο ψηλό ταβάνι",
+    "stance": "pick",
+    "note": "Εξαιρετική επιλογή με υψηλότατο floor.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "OTURU, DAN",
     "stance": "pick",
-    "note": "Κεντρική επιλογή στα σέντερ για τη Χαποέλ",
+    "note": "Βασική επιλογή του κόουτς Ιτούδη στη ρακέτα.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "BALCEROWSKI, OLEK",
     "stance": "pick",
-    "note": "Οικονομική λύση σέντερ λόγω απουσίας του Νέμπο",
+    "note": "Οικονομική λύση λόγω της απουσίας του Νέμπο.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "VOIGTMANN, JOHANNES",
     "stance": "pick",
-    "note": "Αξιόπιστος και οικονομικός ψηλός",
+    "note": "Πολύτιμος και εύστοχος, σε καλή τιμή.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "HAYES, KEVARRIUS",
     "stance": "pick",
-    "note": "Αυξημένος χρόνος και καλός στατιστικός απολογισμός",
+    "note": "Επωφελείται από την απουσία του Λοβέρν.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "SARIC, DARIO",
     "stance": "pick",
-    "note": "Εξαιρετική επιστροφή στην Ευρωλίγκα με ηγετικό ρόλο",
+    "note": "Εντυπωσιακή επιστροφή στην EuroLeague με την Εφές.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "TUBELIS, AZUOLAS",
     "stance": "pick",
-    "note": "Εξαιρετική φόρμα και εξαιρετική τιμή",
+    "note": "Εξαιρετική συνέχεια από τη φετινή σεζόν στη Ζαλγκίρις.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "SEDEKERSKIS, TADAS",
     "stance": "pick",
-    "note": "Σταθερή απόδοση σε ριμπάουντ και άμυνα",
+    "note": "Υγιής και αποδοτικός σε ριμπάουντ και άμυνα.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "KEY, BRAXTON",
     "stance": "pick",
-    "note": "Value for money επιλογή για τα φόργουορντ",
+    "note": "Εξαιρετικό bargain pick από τη Φενέρμπαχτσε.",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "MITOGLOU, KONSTANTINOS",
+    "stance": "pick",
+    "note": "Απαραίτητος στα 5.5 credits.",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "FRANCISCO, SYLVAIN",
+    "stance": "pick",
+    "note": "Σημαντικός παίκτης Τ2 για τον Παναθηναϊκό.",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "JONES, CARLIK",
+    "stance": "pick",
+    "note": "Must-have παίκτης για κάθε ομάδα.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "WILBEKIN, SCOTTIE",
     "stance": "pick",
-    "note": "Ελκυστική τιμή για παίκτη της κλάσης του",
+    "note": "Εξαιρετική αξία στα 7.7 credits κόντρα στη Μακάμπι.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "FODZO DADA, MARC-OWEN",
     "stance": "pick",
-    "note": "Απρόσμενη ευκαιρία σε εξαιρετικά χαμηλή τιμή",
+    "note": "Απρόσμενη αποκάλυψη σε χαμηλή τιμή.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "GIEDRAITIS, DOVYDAS",
     "stance": "pick",
-    "note": "Φτηνή λύση για την κάλυψη απουσιών",
+    "note": "Φθηνή λύση λόγω της απουσίας του Ουίλιαμς-Γκος.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "JONES, CHRIS",
     "stance": "pick",
-    "note": "Ανεβασμένος οργανωτικά και εκτελεστικά",
+    "note": "Αυξανόμενος ηγετικός ρόλος στον Ερυθρό Αστέρα.",
     "source": "EuroBallin (Substack)"
    },
    {
     "player": "MALEDON, THEO",
     "stance": "pick",
-    "note": "Βασικός πρωταγωνιστής στην αρχή της σεζόν",
+    "note": "Εξαιρετική φόρμα υπό τον Πέδρο Μαρτίνεθ.",
     "source": "EuroBallin (Substack)"
    },
    {
     "player": "HALL, DEVON",
     "stance": "pick",
-    "note": "Ασφαλής επιλογή με σταθερή συνεισφορά",
+    "note": "Ασφαλής επιλογή με σταθερή συνεισφορά.",
     "source": "EuroBallin (Substack)"
    },
    {
     "player": "LO, MAODO",
     "stance": "pick",
-    "note": "Ιδανικός αντικαταστάτης για λεπτά και οργάνωση",
+    "note": "Άμεσος αντικαταστάτης του τραυματία Ουίλιαμς-Γκος.",
+    "source": "EuroBallin (Substack)"
+   },
+   {
+    "player": "FODZO DADA, MARC-OWEN",
+    "stance": "pick",
+    "note": "Εξαιρετική επιλογή για το Turn 2.",
+    "source": "EuroBallin (Substack)"
+   },
+   {
+    "player": "TAYLOR, KAMERON",
+    "stance": "pick",
+    "note": "Ανοδική πορεία και υψηλό ταβάνι στη Βαλένθια.",
     "source": "EuroBallin (Substack)"
    },
    {
     "player": "PETERS, ALEC",
     "stance": "pick",
-    "note": "Εξαιρετική επιλογή φόργουορντ σε προνομιακή τιμή",
+    "note": "Εξαιρετική τιμή στα 12 credits όσο απουσιάζει ο Μάθιους.",
     "source": "EuroBallin (Substack)"
    },
    {
     "player": "EDWARDS, KESSLER",
     "stance": "pick",
-    "note": "Πολύπλευρος πάουερ φόργουορντ με υψηλή αποτελεσματικότητα",
+    "note": "Πολύπλευρος φόργουορντ με συνεισφορά εκτός σκοραρίσματος.",
+    "source": "EuroBallin (Substack)"
+   },
+   {
+    "player": "MITOGLOU, DINOS",
+    "stance": "pick",
+    "note": "Οικονομικός και σε εξαιρετική φόρμα.",
+    "source": "EuroBallin (Substack)"
+   },
+   {
+    "player": "LESSORT, MATHIAS",
+    "stance": "captain",
+    "note": "Ιδανική επιλογή αρχηγού για το Turn 2.",
+    "source": "EuroBallin (Substack)"
+   },
+   {
+    "player": "BALCEROWSKI, OLEK",
+    "stance": "pick",
+    "note": "Εξαιρετική mid-price επιλογή στη ρακέτα.",
     "source": "EuroBallin (Substack)"
    },
    {
     "player": "RIVERO, JASIEL",
     "stance": "pick",
-    "note": "Ευνοϊκός αντίπαλος κάτω από τη ρακέτα",
+    "note": "Ευνοϊκό πρόγραμμα απέναντι σε αδύναμες ρακέτες.",
     "source": "EuroBallin (Substack)"
    },
    {
     "player": "BRYANT, ELIJAH",
     "stance": "pick",
-    "note": "Κεντρικός αστέρας και βασικός επιθετικός πυλώνας",
+    "note": "Κεντρικός αστέρας για τη Χαπόελ με καλές προϋποθέσεις.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "FRANCISCO, SYLVAIN",
+    "stance": "pick",
+    "note": "Αυξημένος χρόνος και ρόλος στην πρεμιέρα.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "JONES, CARLIK",
+    "stance": "pick",
+    "note": "Βασικός πυλώνας δημιουργίας της Παρτιζάν.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "DEJULIUS, DAVID",
+    "stance": "pick",
+    "note": "Value επιλογή με πλεονέκτημα μεγέθους.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "MADAR, YAM",
     "stance": "pick",
-    "note": "Αυξημένος ρόλος και καλές προοπτικές απόδοσης",
+    "note": "Αυξημένος ηγετικός ρόλος στη Μακάμπι.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "NUNEZ, JUAN",
     "stance": "pick",
-    "note": "Φθηνή λύση πλέι μέικερ με προοπτική χρόνου",
+    "note": "Φθηνός πλέι μέικερ με προοπτική για λίγα λεπτά.",
     "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "VEZENKOV, SASHA",
+    "stance": "pick",
+    "note": "Αδιαφισβήτητη κορυφαία επιλογή για κάθε ομάδα.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "YABUSELE, GUERSCHON",
+    "stance": "pick",
+    "note": "Αυξημένος χρόνος λόγω απουσιών στον Παναθηναϊκό.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "OMORUYI, EUGENE",
+    "stance": "pick",
+    "note": "Σημαντικός παίκτης για το πρόγραμμα της Μπεσίκτας.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "STEVENS, LAMAR",
+    "stance": "pick",
+    "note": "Value επιλογή στα 8.0 credits.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "PARRA, JOEL",
+    "stance": "pick",
+    "note": "Εξαιρετικό steal στην τιμή του για τη Μπαρτσελόνα.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "JOKSIMOVIC, STEFAN",
+    "stance": "pick",
+    "note": "Εναλλακτική λύση μηδενικού ρίσκου στο ελάχιστο κόστος.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "VALANCIUNAS, JONAS",
+    "stance": "pick",
+    "note": "Κορυφαία επιλογή στους σέντερ για την 1η αγωνιστική.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "PETERS, ALEC",
+    "stance": "pick",
+    "note": "Εξαιρετική επένδυση στα 12 credits.",
+    "source": "Eurohoops"
+   },
+   {
+    "player": "WILBEKIN, SCOTTIE",
+    "stance": "pick",
+    "note": "Ρίσκο με θετικές προοπτικές.",
+    "source": "Eurohoops"
    }
   ],
   "round": 2,
-  "summary_el": "Ξεκινάει η πρώτη «διαβολοβδομάδα» της σεζόν στην Ευρωλίγκα με κρίσιμες αναμετρήσεις για τη 2η αγωνιστική. Οι παίκτες καλούνται να αξιοποιήσουν σωστά τις τέσσερις διαθέσιμες αλλαγές τους. Ο Σάσα Βεζένκοφ και ο Ματίας Λεσόρ παραμένουν κορυφαίες επιλογές για τη θέση του αρχηγού. Αρκετές ομάδες, όπως ο Παναθηναϊκός και η Βαλένθια, διαθέτουν ευνοϊκό πρόγραμμα που ευνοεί τις επενδύσεις σε παίκτες τους. Αντίθετα, παίκτες υψηλού κόστους όπως ο Τζόνας Βαλαντσιούνας προτείνονται για πώληση λόγω δύσκολου προγράμματος. Σημαντικές απουσίες, όπως αυτή του Νίκολα Μιλουτίνοφ για τον Ολυμπιακό, αναδιαμορφώνουν τα αγωνιστικά πλάνα των ομάδων.",
+  "summary_el": "• Ξεκινάει η πρώτη διαβολοβδομάδα της σεζόν στην EuroLeague με κρίσιμες αναμετρήσεις για τη 2η αγωνιστική.\n• Ο Παναθηναϊκός αντιμετωπίζει τη Βιλερμπάν στο ΟΑΚΑ χωρίς τους τραυματίες Χουάντσο Ερνανγκόμεθ και Ντίνο Μήτογλου (αμφίβολος/εκτός), ενώ εκτός είναι και ο Νίκοςλα Μιλουτίνοφ για τον Ολυμπιακό.\n• Ο Σάσα Βεζένκοφ παραμένει ο απόλυτος πυλώνας και κορυφαία επιλογή αρχηγού στο Fantasy.\n• Παίκτες όπως οι Τ.Τζ. Σορτς, Ματίας Λεσόρ και Κάρλικ Τζόουνς συγκεντρώνουν υψηλές προτιμήσεις από τους ειδικούς για την captaincy και τις αγορές.\n• Αρκετές ευκαιρίες σε χαμηλές τιμές όπως οι Αριγιάν Λάκιτς, Μάριο Σαιντ-Συπερί και Ολέκ Μπαλτσερόφσκι προσφέρουν οικονομική ευελιξία για μεταγραφές.\n• Η Μπασκόνια ενίσχυσε τη γραμμή των ψηλών της με την απόκτηση του Μάρσιο Σάντος.",
   "_model": "gemini-3.5-flash-lite"
  },
- "digest_at": "2026-09-29T10:10:24.266978+00:00",
+ "digest_at": "2026-09-29T12:25:51.293597+00:00",
  "failed": []
 }
