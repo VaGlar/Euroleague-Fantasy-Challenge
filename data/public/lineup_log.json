@@ -99,7 +99,7 @@
     "team": "OLY",
     "position": "Forward",
     "role": "5άδα",
-    "captain": true
+    "captain": false
    },
    {
     "id": 3887,
@@ -123,7 +123,7 @@
     "team": "ULK",
     "position": "Forward",
     "role": "5άδα",
-    "captain": false
+    "captain": true
    },
    {
     "id": 11512,
