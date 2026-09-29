@@ -217,3 +217,9 @@ def test_report_uses_the_games_club_codes(pipeline):
     for api, game in (("IST", "EFS"), ("MUN", "BAY"), ("MAD", "RMB"), ("PAM", "VBC"), ("ULK", "FBT")):
         assert f"({api})" not in text and f"vs {api} " not in text, api
     assert any(f"({g})" in text for g in ("EFS", "BAY", "RMB", "VBC", "FBT", "PAO", "OLY", "ZAL"))
+
+
+def test_players_carry_the_returning_flag(pipeline):
+    """The app shows «↩ επιστρέφει» from this flag: a real boolean on every player."""
+    flags = [p.get("returning") for p in pipeline["pred"]["players"]]
+    assert flags and all(isinstance(f, bool) for f in flags)

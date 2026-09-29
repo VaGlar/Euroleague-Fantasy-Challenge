@@ -30,6 +30,9 @@ MODEL = {
     "w_season": 0.3,
     "w_prev": 0.2,
     "prev_decay_k": 5,        # prev-season weight *= k / (k + games_this_season)
+    # back after sitting out all of his team's last 3 games: he plays, but less (R&D 012c:
+    # 25-30% below the form in 2024 and 2025; 0.8 sits between the two estimates, 0.72 / 0.82)
+    "return_factor": 0.8,
     # team ratings
     "team_prev_regress": 0.67,  # keep 2/3 of last season's net rating (roster churn)
     "team_blend_k": 8,          # games before current season outweighs prior

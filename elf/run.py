@@ -104,11 +104,12 @@ def predictions(season: int, extra: pd.DataFrame | None = None):
                & (games["phase"] == upcoming["phase"].iloc[0])]
     ctx = model.context_rows(fx, roster, ratings, pdev)
     ctx = ctx.merge(base[["base", "last3_pir", "season_pir", "prev_pir", "games", "season_min",
-                          "prev_min"]] if "prev_min" in base else base,
+                          "prev_min", "returning"]] if "prev_min" in base else base,
                     left_on="person_id", right_index=True, how="left")
     ctx = ctx.merge(roster[["person_id", "name"]], on="person_id", how="left")
     ctx["no_data"] = ctx["base"].isna()
     ctx["base"] = ctx["base"].fillna(0)
+    ctx["returning"] = ctx.get("returning", pd.Series(False, index=ctx.index)).fillna(False).astype(bool)
     ctx["xpir"] = model.xpir(ctx, p).clip(lower=0)
     ctx["xpir"] = model.fantasy_points(ctx["xpir"], ctx["margin"])  # +10% win bonus
     coaches = coach_rows(fx, people, ratings)
@@ -730,7 +731,8 @@ def build(offline: bool = False) -> dict:
         x_h=("xpir_w", "sum"), x_first=("xpir_first", "sum"),
         base=("base", "first"), no_data=("no_data", "first"),
         season_pir=("season_pir", "first"), prev_pir=("prev_pir", "first"),
-        season_min=("season_min", "first"), games=("games", "first"))
+        season_min=("season_min", "first"), games=("games", "first"),
+        returning=("returning", "first"))
     nr = now_round.groupby("person_id").agg(x_now=("xpir", "sum"), opp=("opp", "first"),
                                             home=("is_home", "first"), margin=("margin", "first"),
                                             pos_dev=("pos_dev", "first"))
@@ -888,7 +890,8 @@ def build(offline: bool = False) -> dict:
     _write("predictions.json", {
         "generated": datetime.now(timezone.utc).isoformat(), "season": CURRENT_SEASON,
         "round": rnd, "turns": trn,
-        "players": table.replace({np.nan: None}).to_dict("records"),
+        "players": table.assign(returning=table["returning"].fillna(False).astype(bool))
+                        .replace({np.nan: None}).to_dict("records"),
         "team_ratings": ratings.round(2).to_dict("records"),
         "fixtures": [{"round": int(f.round), "home": f.home, "away": f.away,
                       "utc": f.utc.isoformat(), "played": bool(f.played)}
