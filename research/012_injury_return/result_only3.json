@@ -1,0 +1,68 @@
+{
+ "2025": {
+  "c3": 0.716,
+  "baseline": {
+   "mae_played": 5.609,
+   "mae_back": 4.32,
+   "n_back": 2310,
+   "squad": 5896.1
+  },
+  "only_miss3": {
+   "mae_played": 5.594,
+   "mae_back": 4.263,
+   "n_back": 2310,
+   "squad": 5898.9
+  },
+  "fixed_0.9": {
+   "mae_played": 5.602,
+   "mae_back": 4.295,
+   "n_back": 2310,
+   "squad": 5896.7
+  },
+  "fixed_0.8": {
+   "mae_played": 5.597,
+   "mae_back": 4.276,
+   "n_back": 2310,
+   "squad": 5896.7
+  },
+  "fixed_0.7": {
+   "mae_played": 5.593,
+   "mae_back": 4.261,
+   "n_back": 2310,
+   "squad": 5903.3
+  }
+ },
+ "2024": {
+  "c3": 0.816,
+  "baseline": {
+   "mae_played": 5.459,
+   "mae_back": 3.931,
+   "n_back": 1857,
+   "squad": 4966.6
+  },
+  "only_miss3": {
+   "mae_played": 5.448,
+   "mae_back": 3.892,
+   "n_back": 1857,
+   "squad": 4979.3
+  },
+  "fixed_0.9": {
+   "mae_played": 5.452,
+   "mae_back": 3.907,
+   "n_back": 1857,
+   "squad": 4979.3
+  },
+  "fixed_0.8": {
+   "mae_played": 5.447,
+   "mae_back": 3.889,
+   "n_back": 1857,
+   "squad": 4979.3
+  },
+  "fixed_0.7": {
+   "mae_played": 5.444,
+   "mae_back": 3.876,
+   "n_back": 1857,
+   "squad": 4995.5
+  }
+ }
+}
