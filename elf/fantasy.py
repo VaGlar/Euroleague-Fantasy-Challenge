@@ -136,8 +136,17 @@ def rank_of(total: float, tournament_id: int, matchday_id: int, teams: int) -> i
             lo = rows[0][0]
         else:
             hi = mid
-    rows = standings_after(tournament_id, lo, matchday_id)
-    return lo + 1 + sum(1 for _, p in rows if p > total)
+    # the first team with <= total points gives the position; page on until it shows up, so the
+    # answer doesn't depend on the page size (hi - lo can be up to 25) and ties keep their position
+    pos = lo
+    while True:
+        rows = standings_after(tournament_id, pos, matchday_id)
+        for p, pts in rows:
+            if pts <= total:
+                return p
+        if not rows or rows[-1][0] <= pos:          # past the last team (or a page that doesn't move on)
+            return (rows[-1][0] if rows else pos) + 1
+        pos = rows[-1][0]
 
 
 def roster(fantasy_team_id: int, matchday_id: int) -> dict:

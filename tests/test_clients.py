@@ -624,3 +624,17 @@ def test_the_injury_report_reaches_the_summary_whole(gemini):
     prompt = posts[0][2]["contents"][0]["parts"][0]["text"]
     assert "[INJURY REPORT | BN" in prompt and table in prompt
     assert "Out -> \"out\"" in prompt                                  # the mapping of its statuses
+
+
+def test_a_redesigned_page_fails_as_a_source_instead_of_feeding_menus_to_the_summary(
+        tmp_path, monkeypatch):
+    """Without its start marker the page is a failed source (the owner sees it in health), not a
+    «trusted injury report» made of menus, ads and related news."""
+    redesigned = PAGE.replace("injury_reports", "something_else")
+    monkeypatch.setattr(news.requests, "get", lambda url, **k: Resp(content=redesigned.encode()))
+    with pytest.raises(ValueError, match="injury_reports"):
+        news.fetch_page({"name": "BN", "url": "https://bn/x", "start": "injury_reports"})
+    write_sources(tmp_path, monkeypatch, [{"name": "BN report", "type": "page", "url": "https://bn/x",
+                                           "start": "injury_reports", "report": True}])
+    out, failed = news.collect([])
+    assert out == [] and failed and failed[0].startswith("BN report: ValueError")
