@@ -93,7 +93,10 @@ def test_starts_from_the_seed_of_the_rounds_before_it(pub, monkeypatch):
     pred = {"players": [{**r, "fantasy_id": r["id"], "person_id": f"p{r['id']}"} for r in rows], "best_team": best}
     r1, r2 = autopilot.seed_rounds([(1, pred), (2, pred)], max_trades=4, min_gain=0.5)
     assert r1["bank"] == 40.0 and [p["id"] for p in r1["squad"]] == first
-    assert r1["squad"][2]["captain"] and r1["squad"][0]["person_id"] == "p1"
+    assert r1["squad"][0]["person_id"] == "p1"
+    five = [q for q in r1["squad"] if q["role"] == "5άδα"]                 # the lineup by the game's rules
+    assert len(five) == 5 and {q["position"] for q in five} == {"Guard", "Forward", "Center"}
+    assert [q["captain"] for q in r1["squad"]].count(True) == 1 and any(q["captain"] for q in five)
     assert 0 < r2["trades"] <= 4                                   # better players were affordable
     (pub.parent / "autopilot_seed.json").write_text(json.dumps({"rounds": [r1, r2]}))
 
@@ -190,3 +193,20 @@ def test_a_rebuilt_seed_replaces_its_rounds_once(pub, monkeypatch):
     (pub / "autopilot.json").write_text(json.dumps(s))
     s = autopilot.update(2026, rnd=2, trade_rnd=3, rows=rows, table=table, max_trades=4, min_gain=0.5)
     assert s["rounds"][1]["moves"] == {"2": "live"}                                   # same seed: kept
+
+
+def test_the_seed_lineup_starts_t1_players_and_benches_t2(pub):
+    """Round 1 of the seed: the proposed squad, but its lineup by the game's rules: the five from
+    T1 players (the best xFPT, >= 1 per position), T2 players wait on the bench."""
+    rows, _ = pool()
+    first = [1, 2, 3, 4, 9, 10, 11, 12, 17, 18, 21]
+    t2 = {3, 4, 12}                                                      # two guards and a forward play T2
+    rows = [{**r, "turn": 2 if r["id"] in t2 else 1} for r in rows]
+    best = {"cost": 60.0, "team": [{"id": r["id"], "price": r["price"], "position": r["position"], "x_now": r["x_now"],
+                                    "role": "5άδα" if r["id"] in t2 else "πάγκος", "captain": r["id"] == 4}
+                                   for r in rows if r["id"] in first]}
+    pred = {"players": [{**r, "fantasy_id": r["id"], "person_id": f"p{r['id']}"} for r in rows], "best_team": best}
+    (r1,) = autopilot.seed_rounds([(1, pred)])
+    role = {q["id"]: q["role"] for q in r1["squad"]}
+    assert all(role[i] == "πάγκος" for i in t2)                          # T2 players wait
+    assert sum(role[i] == "5άδα" for i in first if i not in t2) == 5
