@@ -37,7 +37,8 @@ LIVE = json.loads((_lib.ROOT / "data/public/model_params.json").read_text())["pa
 P = {**copy.deepcopy(MODEL), **{k: LIVE[k] for k in ("w_last3", "w_season", "w_prev", "coef")}}
 STREAKS = [3]
 KS = [6]
-P0S = [0.95]      # the shrinkage target: the position's rate, or "no evidence = on the sheet"
+P0S = [0.95]
+CAPS = [None, 5.0, 5.5, 6.0]   # the factor only for players priced below (None = everyone)      # the shrinkage target: the position's rate, or "no evidence = on the sheet"
 MODES = ["this"]
 FAR = pd.Timestamp("2100-01-01", tz="UTC")
 
@@ -163,8 +164,10 @@ def main():
                     rate = {pos: float(g["app"].sum() / max(g["avail"].sum(), 1))
                             for pos, g in d.groupby("position")}
                     for p0 in P0S:
-                        f = factor(d, k, mode, rate, p0)
-                        r[f"S{s}_{mode}_k{k}_p{p0 or 'pos'}"] = metrics(d, base * f.fillna(1.0))
+                        f = factor(d, k, mode, rate, p0).fillna(1.0)
+                        for cap in CAPS:
+                            ff = f if cap is None else f.where(d["price"] < cap, 1.0)
+                            r[f"S{s}_{mode}_k{k}_p{p0 or 'pos'}_cap{cap or 'all'}"] = metrics(d, base * ff)
         res["seasons"][season] = r
         print(season, json.dumps(r, indent=1))
     res["out_of_sample"] = {}
