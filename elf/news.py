@@ -74,21 +74,33 @@ def access_headers() -> dict:
     return {"CF-Access-Client-Id": cid, "CF-Access-Client-Secret": sec} if cid and sec else {}
 
 
+PROXIED = (".substack.com", "basketnews.com")   # hosts that block GitHub Actions' IPs (see functions/feed.js)
+
+
+def _via_proxy(url: str, errors: list[str]) -> bytes | None:
+    """Our Pages Function /feed fetches from Cloudflare instead; None if it can't (not allowed, down)."""
+    dash = os.environ.get("DASHBOARD_URL", "").rstrip("/")
+    if not dash or not any(h in url for h in PROXIED):
+        return None
+    p = requests.get(f"{dash}/feed", params={"u": url}, headers={**BROWSER, **access_headers()},
+                     timeout=30, allow_redirects=False)     # Access sends a login page via a redirect
+    if p.status_code == 200 and p.content.lstrip().startswith(b"<"):
+        return p.content
+    errors.append(f"proxy {p.status_code}")
+    return None
+
+
 def _get_feed(url: str) -> bytes:
-    """Direct, then (Substack only) its JSON API, then our Pages Function proxy.
+    """Direct, then (blocking hosts only) our Pages Function proxy.
     Substack blocks GitHub Actions' IPs; the proxy fetches from Cloudflare instead."""
     errors = []
     r = requests.get(url, headers=BROWSER, timeout=30)
     if r.status_code == 200:
         return r.content
     errors.append(f"direct {r.status_code}")
-    dash = os.environ.get("DASHBOARD_URL", "").rstrip("/")
-    if dash and ".substack.com" in url:
-        p = requests.get(f"{dash}/feed", params={"u": url}, headers={**BROWSER, **access_headers()},
-                         timeout=30, allow_redirects=False)     # Access sends a login page via a redirect
-        if p.status_code == 200 and p.content.lstrip().startswith(b"<"):
-            return p.content
-        errors.append(f"proxy {p.status_code}")
+    content = _via_proxy(url, errors)
+    if content is not None:
+        return content
     raise requests.HTTPError(", ".join(errors))
 
 
@@ -145,9 +157,7 @@ REPORT_TEXT = 12000   # a whole injury table (every team) still fits
 def fetch_page(src: dict) -> list[dict]:
     """A page that is rewritten in place (e.g. an injury report «updated daily»): one item, its text
     from the `start` marker on (the table, not menus and ads), dated by its last modification."""
-    r = requests.get(src["url"], headers=BROWSER, timeout=30)
-    r.raise_for_status()
-    page = r.text
+    page = _get_feed(src["url"]).decode("utf-8", errors="replace")
     body = re.sub(r"<script.*?</script>|<style.*?</style>", " ", page, flags=re.S | re.I)
     i = body.find(src["start"]) if src.get("start") else -1
     part = body[i:] if i >= 0 else body

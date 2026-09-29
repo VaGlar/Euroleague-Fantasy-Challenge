@@ -139,7 +139,7 @@ def test_non_substack_failure_raises_without_proxy(monkeypatch):
                         lambda url, **k: urls.append(url) or Resp(500, content=b""))
     with pytest.raises(requests.HTTPError):
         news.fetch_rss({"url": "https://site.gr/rss"})
-    assert urls == ["https://site.gr/rss"], "το proxy είναι μόνο για Substack"
+    assert urls == ["https://site.gr/rss"], "το proxy είναι μόνο για τα sites που μας μπλοκάρουν"
 
 
 def test_incrowd_category_filter_and_fantasy_body(monkeypatch):
@@ -596,6 +596,23 @@ def test_a_page_updated_in_place_is_read_whole_from_start_to_end(monkeypatch):
     assert "Nigel Williams-Goss | Out | Rounds 2-4" in it["text"]
     assert "Menu" not in it["text"] and "Nobody" not in it["text"] and "related news" not in it["text"]
     assert it["date"] == datetime(2026, 9, 29, 15, 46, 34, tzinfo=timezone.utc)
+
+
+def test_basketnews_blocked_goes_through_the_proxy(monkeypatch):
+    """BasketNews answers 403 to GitHub Actions' IPs: the page comes through our /feed proxy."""
+    monkeypatch.setenv("DASHBOARD_URL", "https://dash.example")
+    calls = []
+
+    def get(url, params=None, **k):
+        calls.append((url, params))
+        if url == "https://dash.example/feed":
+            return Resp(content=PAGE.encode())
+        return Resp(403, content=b"blocked")
+    monkeypatch.setattr(news.requests, "get", get)
+    url = "https://basketnews.com/news-212393-euroleague-injury-report-updated.html"
+    (it,) = news.fetch_page({"name": "BN", "url": url, "start": "injury_reports"})
+    assert "Nigel Williams-Goss | Out" in it["text"]
+    assert calls[1] == ("https://dash.example/feed", {"u": url})
 
 
 def test_the_injury_report_reaches_the_summary_whole(gemini):

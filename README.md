@@ -10,7 +10,7 @@
 
 ## Αρχιτεκτονική
 
-Πώς ρέουν τα δεδομένα, από τις πηγές μέχρι το κινητό σου (το GitHub το δείχνει ως διάγραμμα). Εκτός διαγράμματος για να μένει καθαρό: `analytics.yml` (επισκεψιμότητα, 09:05 → Telegram), `functions/feed.js` (proxy όταν ένα Substack μπλοκάρει το GitHub), `tests.yml`.
+Πώς ρέουν τα δεδομένα, από τις πηγές μέχρι το κινητό σου (το GitHub το δείχνει ως διάγραμμα). Εκτός διαγράμματος για να μένει καθαρό: `analytics.yml` (επισκεψιμότητα, 09:05 → Telegram), `functions/feed.js` (proxy όταν ένα site — Substack, BasketNews — μπλοκάρει το GitHub), `tests.yml`.
 
 ```mermaid
 flowchart TB
