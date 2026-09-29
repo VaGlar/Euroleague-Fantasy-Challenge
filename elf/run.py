@@ -250,6 +250,17 @@ def fantasy_state(clubs: pd.DataFrame, roster: pd.DataFrame, season: int) -> dic
                 info = {}
             out["my_teams"].append({"id": t["id"], "name": t.get("name"), "raw": ros, "info": info})
             _write("roster_shape.json", _shape(ros))  # structure only, for debugging
+            # probe: does the game give the managers' average for a finished matchday? (the
+            # «HoopsLab vs the average manager» number needs it). Field names and numbers only.
+            prev = cfg.get("previous_matchday") or {}
+            if prev.get("id") and len(out["my_teams"]) == 1:
+                try:
+                    probe = {"current": _probe(info),
+                             "previous": _probe(fantasy.team_matchday(t["id"], prev["id"]))}
+                    _write("matchday_probe.json", probe)
+                    print("MATCHDAY_PROBE", json.dumps(probe, ensure_ascii=False)[:4000])
+                except Exception as e:  # noqa: BLE001 - a probe never breaks the run
+                    print("MATCHDAY_PROBE failed:", type(e).__name__, e)
     except fantasy.TokenError as e:
         out["error"] = f"token: {e}"
     except Exception as e:  # noqa: BLE001
@@ -263,6 +274,21 @@ def _num(v, default=None):
         return float(v)
     except (TypeError, ValueError):
         return default
+
+
+def _probe(o, depth: int = 0):
+    """Like _shape, but keeps numbers (points, averages, ranks): no names, no free text."""
+    if depth > 3:
+        return "…"
+    if isinstance(o, dict):
+        return {k: _probe(v, depth + 1) for k, v in o.items()}
+    if isinstance(o, list):
+        return [_probe(o[0], depth + 1), f"×{len(o)}"] if o else []
+    if isinstance(o, bool) or o is None:
+        return o
+    if isinstance(o, (int, float)):
+        return o
+    return type(o).__name__
 
 
 def _shape(o, depth: int = 0):
