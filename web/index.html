@@ -461,8 +461,9 @@ const inj = (r) => (r.avail_game != null && r.avail_game < 1
   ? ` <span class="pill">🚑 ${r.avail_game === 0 ? "εκτός" : Math.round(r.avail_game * 100) + "%"}</span>` : "");
 // new to the EuroLeague (no last season) with few games: the prediction rests on 1-4 games (R&D 015)
 const fewGames = (r) => r.position !== "Head Coach" && r.prev_pir == null && r.games >= 1 && r.games <= 4;
-const newb = (r) => (r.no_data && !r.prior ? ' <span class="pill">νέος</span>'
-  : fewGames(r) ? ` <span class="pill few" data-info="few">νέος · ${r.games} ${r.games === 1 ? "ματς" : "ματς"}</span>` : "");
+// info = false inside pick lists: the whole row picks the player, the mark is only a mark
+const newb = (r, info = true) => (r.no_data && !r.prior ? ' <span class="pill">νέος</span>'
+  : fewGames(r) ? ` <span class="pill few"${info ? ' data-info="few"' : ""}>νέος · ${r.games} ματς</span>` : "");
 const exb = (r) => (r.expert_pick > 0 ? ` <span class="pill" title="στήλες fantasy που τον προτείνουν">👍${r.expert_pick}${r.expert_cap ? "★" : ""}</span>` : "")
   + (r.expert_avoid > 0 ? ` <span class="pill" title="στήλη που προτείνει να τον αποφύγεις">👎</span>` : "")
   + (r.prior ? ` <span class="pill" title="χωρίς ιστορικό: εκτίμηση από την τιμή">≈τιμή</span>` : "");
@@ -1113,6 +1114,16 @@ async function copyMail(btn) {
   return ok;
 }
 function closePlayer() { $("#modal").classList.remove("on"); document.body.classList.remove("noscroll"); }
+// a sheet keeps the page where it was: iPhones scroll the page under it (the keyboard, overflow: hidden), and a change
+// made in it redraws the tab — after it closes you are back at the same spot, not at the top
+(() => {
+  let y = null;
+  new MutationObserver(() => {
+    const locked = document.body.classList.contains("noscroll");
+    if (locked && y == null) y = window.scrollY;
+    else if (!locked && y != null) { const to = y; y = null; if (Math.abs(window.scrollY - to) > 2) window.scrollTo({ top: to }); }
+  }).observe(document.body, { attributes: true, attributeFilter: ["class"] });
+})();
 $("#modal").addEventListener("click", (e) => { if (e.target.id === "modal") closePlayer(); });
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") closePlayer(); });
 document.addEventListener("click", (e) => {
