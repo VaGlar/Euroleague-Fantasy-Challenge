@@ -153,6 +153,72 @@ def absent_last3(cur_players: pd.DataFrame) -> pd.Series:
                             else np.nan) for pid, t in team_now.items()}, dtype=float)
 
 
+def participation(cur_players: pd.DataFrame, prev_players: pd.DataFrame, cur_games: pd.DataFrame,
+                  prev_games: pd.DataFrame, team_now: pd.Series, p: dict | None = None) -> pd.Series:
+    """Per player: the chance he is on the team sheet at all (R&D 020). A player left out of the twelve
+    isn't on the box score, so his form only sees his appearances (Dessert: 4.9 PIR a game in 19 of
+    ~38 games, then 0 of 1 this season). Shrunk towards the league's rate:
+
+        p = (appearances + k * p0) / (available games + k)        k = 6, p0 = 0.95
+
+    available = his team's games this season (since his first appearance with it; all of them if he
+    hasn't appeared yet) minus absence runs of >= `part_streak` games (an injury: known live from the
+    game's list and the news, so not "left out"). p0 = 0.95: no evidence of being left out = on the
+    sheet (a league-wide rate would cut every newcomer ~18%). This season only (last season's rate
+    didn't help, 020), except for a player with no appearance yet: then last season at the same team
+    is all there is. team_now: person_id -> current team."""
+    p = p or params()
+    streak, k, p0 = int(p.get("part_streak", 3)), float(p.get("part_k", 6)), float(p.get("part_p0", 0.95))
+
+    def sheet(games, box):
+        if games.empty or box.empty:
+            return None
+        g = games[games["played"]].copy()
+        g["utc"] = pd.to_datetime(g["utc"], utc=True)
+        tg = pd.concat([g[["gamecode", "utc", "home"]].rename(columns={"home": "team"}),
+                        g[["gamecode", "utc", "away"]].rename(columns={"away": "team"})]).sort_values("utc")
+        b = box.assign(person_id=box["person_id"].astype(str))
+        on = set(zip(b["person_id"], b["team"], b["gamecode"]))
+        when = dict(zip(zip(tg["gamecode"], tg["team"]), tg["utc"]))
+        first = {}
+        for pid, team, code in on:
+            t = when.get((code, team))
+            if t is None:
+                continue
+            if (pid, team) not in first or t < first[(pid, team)]:
+                first[(pid, team)] = t
+        return tg, on, first, b.sort_values("gamecode").groupby("person_id")["team"].last()
+
+    def counts(sh, pid, team, whole: bool) -> tuple[int, int]:
+        tg, on, first, _ = sh
+        codes = tg[tg["team"] == team]
+        f = first.get((pid, team))
+        if f is not None:
+            codes = codes[codes["utc"] >= f]
+        elif not whole:
+            return 0, 0
+        flags = [(pid, team, c) in on for c in codes["gamecode"]]
+        injured, run = 0, 0
+        for x in flags + [True]:
+            if x:
+                injured += run if run >= streak else 0
+                run = 0
+            else:
+                run += 1
+        return sum(flags), len(flags) - injured
+
+    cur, prev = sheet(cur_games, cur_players), sheet(prev_games, prev_players)
+    rows = {}
+    for pid, team in team_now.items():
+        pid = str(pid)
+        a, n = counts(cur, pid, team, whole=True) if cur else (0, 0)
+        if a == 0 and prev is not None and prev[3].get(pid) == team:
+            pa, pn = counts(prev, pid, team, whole=False)
+            a, n = a + pa, n + pn
+        rows[pid] = (a, n)
+    return pd.Series({pid: min(1.0, (a + k * p0) / (n + k)) for pid, (a, n) in rows.items()}, dtype=float)
+
+
 def player_base(cur_players: pd.DataFrame, prev_players: pd.DataFrame,
                 p: dict | None = None) -> pd.DataFrame:
     """Per-player form blend. DNP rows count as 0 (that's what the game scores)."""

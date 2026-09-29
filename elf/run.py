@@ -125,6 +125,11 @@ def predictions(season: int, extra: pd.DataFrame | None = None):
     ctx["returning"] = ctx.get("returning", pd.Series(False, index=ctx.index)).fillna(False).astype(bool)
     ctx["xpir"] = model.xpir(ctx, p).clip(lower=0)
     ctx["xpir"] = model.fantasy_points(ctx["xpir"], ctx["margin"])  # +10% win bonus
+    # the chance he is in the twelve at all (R&D 020): a player often left out is expected lower
+    part = model.participation(cur_p, prev_p, games, history.load("games", season - 1),
+                               roster.drop_duplicates("person_id").set_index("person_id")["team"], p)
+    ctx["part"] = ctx["person_id"].astype(str).map(part).fillna(1.0)
+    ctx["xpir"] = ctx["xpir"] * ctx["part"]
     coaches = coach_rows(fx, people, ratings)
     return {"round": first, "fixtures": fx, "ctx": ctx, "ratings": ratings, "roster": roster,
             "pdev": pdev,
