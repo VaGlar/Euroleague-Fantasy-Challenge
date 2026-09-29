@@ -139,6 +139,20 @@ def position_allowed(cur_players: pd.DataFrame, prev_players: pd.DataFrame,
 
 # -------------------------------------------------------------- players
 
+def absent_last3(cur_players: pd.DataFrame) -> pd.Series:
+    """Per player: of his current team's last 3 games, how many he wasn't on the floor for
+    (no minutes). NaN while the team has played fewer than 3."""
+    if cur_players.empty:
+        return pd.Series(dtype=float)
+    c = cur_players.sort_values("gamecode")
+    last3 = c.groupby("team")["gamecode"].apply(lambda s: list(dict.fromkeys(s))[-3:])
+    played = c[c["min"] > 0]
+    on_floor = set(zip(played["gamecode"], played["person_id"]))
+    team_now = c.groupby("person_id")["team"].last()
+    return pd.Series({pid: (sum((g, pid) not in on_floor for g in last3[t]) if t in last3 and len(last3[t]) == 3
+                            else np.nan) for pid, t in team_now.items()}, dtype=float)
+
+
 def player_base(cur_players: pd.DataFrame, prev_players: pd.DataFrame,
                 p: dict | None = None) -> pd.DataFrame:
     """Per-player form blend. DNP rows count as 0 (that's what the game scores)."""
@@ -175,7 +189,10 @@ def player_base(cur_players: pd.DataFrame, prev_players: pd.DataFrame,
     for col in ("prev_pir", "prev_min"):
         if col not in b:
             b[col] = np.nan
-    b["base"] = blend(b, p)
+    # back after sitting out the team's last 3 games: he plays, but less (R&D 012c)
+    b["miss3"] = absent_last3(cur_players) if not cur_players.empty else np.nan
+    b["returning"] = b["miss3"].fillna(0) >= 3
+    b["base"] = blend(b, p) * np.where(b["returning"], p.get("return_factor", 1.0), 1.0)
     return b
 
 

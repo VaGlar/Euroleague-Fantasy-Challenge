@@ -74,6 +74,7 @@ xPIR = base × (1 + calib + pos·pos_dev + pace·pace_dev + margin·m/10 + blowo
 - **pos_dev**: PIR που δίνει ο αντίπαλος στη θέση του παίκτη vs μέσος όρος.
 - **m**: αναμενόμενη διαφορά σκορ (ratings + έδρα) → blowouts κόβουν λεπτά.
 - **availability**: από τα νέα (Gemini) — out ×0, doubtful ×0.4, questionable ×0.8.
+- **επιστροφή από απουσία**: όποιος δεν έπαιξε σε κανένα από τα 3 τελευταία ματς της ομάδας του → βάση ×0.8 και σήμα «↩ επιστρέφει» (`research/012_injury_return`).
 - Τα βάρη **δεν είναι με το μάτι**: `python -m elf.backtest 2025 --save` τα ρυθμίζει με walk-forward backtest.
 
 ## Setup (μία φορά)

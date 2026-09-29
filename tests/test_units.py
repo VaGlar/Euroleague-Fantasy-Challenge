@@ -271,3 +271,25 @@ def test_price_history_and_moves(tmp_path, monkeypatch):
     t = run.price_moves(pd.DataFrame({"person_id": ["A", "B", "C"]}), h)
     assert t.loc[0, ["price_start", "price_chg", "price_last_chg"]].tolist() == [10.0, 0.3, -0.1]
     assert t.loc[1, "price_chg"] == 0.0 and pd.isna(t.loc[2, "price_start"])
+
+
+def _box(rows):
+    return pd.DataFrame([dict(gamecode=g, team="A", person_id=pid, min=m, pir=pir, player=pid)
+                         for g, pid, m, pir in rows])
+
+
+def test_back_after_three_missed_games_is_scaled_down():
+    """R&D 012(c): a player who sat out all of his team's last 3 games plays less when he's back.
+    Missing 1-2 of them changes nothing; fewer than 3 team games: no judgement yet."""
+    cur = _box([(1, "S", 30, 20), (1, "R", 20, 10),            # S: star, out for games 2-4
+                (2, "R", 20, 10), (3, "R", 20, 10), (3, "S", 0, 0), (4, "R", 20, 10),
+                (3, "M", 12, 6), (4, "M", 0, 0)])               # M: missed 2 of the last 3
+    p = model.params()
+    b = model.player_base(cur, pd.DataFrame(), p)
+    assert b.loc["S", "miss3"] == 3 and b.loc["S", "returning"]
+    assert b.loc["S", "base"] == pytest.approx(model.blend(b, p)["S"] * p["return_factor"])
+    assert b.loc["M", "miss3"] == 2 and not b.loc["M", "returning"]
+    assert not b.loc["R", "returning"] and b.loc["R", "base"] == pytest.approx(10)
+    early = model.player_base(_box([(1, "S", 30, 20), (2, "R", 20, 10)]), pd.DataFrame(), p)
+    assert not early["returning"].any()                          # the team has played only 2
+    assert 0.7 <= p["return_factor"] <= 0.85                     # between the two seasons' estimates
