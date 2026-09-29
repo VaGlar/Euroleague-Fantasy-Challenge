@@ -138,3 +138,27 @@ def test_locked_league_gives_clear_message(monkeypatch, public):
     with pytest.raises(lineup_cmd.Abort, match="🔒"):
         lineup_cmd.apply(pr["nonce"])
     assert g.lineup()[1] == 10, "τίποτα δεν άλλαξε"
+
+
+def test_game_error_page_reaches_telegram_escaped(monkeypatch, public):
+    """The game (or a proxy in front of it) may answer with an HTML error page: quoted raw,
+    Telegram would reject the ⛔ message and the user would never hear the apply failed."""
+    game(monkeypatch, public, BAD, captain=10, status=502,
+         reply="<html><body>502 Bad Gateway</body></html>")
+    said = []
+    monkeypatch.setattr(lineup_cmd, "say", lambda text, buttons=None: said.append(text))
+    pr = lineup_cmd.propose(lineup_cmd.load_state())
+    assert lineup_cmd.main(["apply", pr["nonce"]]) == 0
+    (text,) = said
+    assert text.startswith("⛔ /lineup:") and "<html>" not in text
+    assert "&lt;html&gt;" in text and "502" in text
+
+
+def test_main_token_error_exits_nonzero(monkeypatch):
+    said = []
+    monkeypatch.setattr(lineup_cmd, "say", lambda text, buttons=None: said.append(text))
+
+    def no_token():
+        raise lineup_cmd.fantasy.TokenError("FANTASY_TOKEN is not set")
+    monkeypatch.setattr(lineup_cmd, "load_state", no_token)
+    assert lineup_cmd.main(["preview", ""]) == 1 and "FANTASY_TOKEN" in said[0]

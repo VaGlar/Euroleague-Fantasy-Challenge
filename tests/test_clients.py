@@ -71,8 +71,6 @@ def test_fetch_rss_reads_items_and_full_text_for_fantasy_columns(monkeypatch):
     assert len(it["text"]) <= news.EXCERPT
 
 
-@pytest.mark.xfail(strict=True, reason="BUG: sources.yaml λέει «any RSS/Atom feed URL», αλλά "
-                   "το fetch_rss διαβάζει μόνο <item> — ένα Atom feed δίνει σιωπηλά 0 άρθρα")
 def test_fetch_rss_reads_atom_feeds(monkeypatch):
     atom = (b'<?xml version="1.0"?><feed xmlns="http://www.w3.org/2005/Atom"><entry>'
             b'<title>Atom T</title><link href="https://x/a"/><updated>2026-09-29T10:00:00Z'
@@ -486,9 +484,6 @@ def test_save_roster_without_token_never_calls(monkeypatch):
         fantasy.save_roster(1, 500, {})          # the data account must never write
 
 
-@pytest.mark.xfail(strict=True, raises=(AttributeError, TypeError),
-                   reason="BUG (μικρό): token_expiry σκάει σε JWT με payload που δεν είναι "
-                   "αντικείμενο ή με exp που δεν είναι αριθμός — καλείται χωρίς try στο run.build")
 @pytest.mark.parametrize("payload", [b"[1]", b'{"exp": "soon"}'])
 def test_token_expiry_never_crashes_on_odd_jwt_payloads(monkeypatch, payload):
     import base64
@@ -526,15 +521,26 @@ def test_send_raises_on_telegram_error(monkeypatch):
         notify.send("x")
 
 
-@pytest.mark.xfail(strict=True, reason="BUG: μία γραμμή > 4096 χαρακτήρες (π.χ. μεγάλη σύνοψη "
-                   "Gemini χωρίς αλλαγές γραμμής) μένει ολόκληρη → Telegram 400, δεν φεύγει το report")
 def test_chunks_split_a_single_overlong_line():
     parts = notify.chunks("a\n" + "x" * 5000 + "\nb")
     assert all(len(p) <= 4096 for p in parts)
 
 
-@pytest.mark.xfail(strict=True, reason="BUG: το health_last.json γράφεται πριν το send· αν το "
-                   "Telegram αποτύχει, το πρόβλημα θεωρείται «ειπωμένο» και δεν ξαναστέλνεται ποτέ")
+def test_health_alert_escapes_error_text(public, monkeypatch):
+    (public / "predictions.json").write_text(json.dumps({"health": ["πηγή: <html> & co"]}))
+    sent = []
+    monkeypatch.setattr(notify, "send", lambda text, buttons=None: sent.append(text))
+    notify.health()
+    assert "&lt;html&gt; &amp; co" in sent[0] and "<b>Προβλήματα" in sent[0]
+
+
+def test_chunks_cut_long_lines_at_spaces_and_keep_every_word():
+    words = [f"w{i}" for i in range(2000)]
+    parts = notify.chunks("start\n" + " ".join(words) + "\nend")
+    assert all(len(p) <= 3800 for p in parts) and len(parts) >= 3
+    assert " ".join(parts).split() == ["start"] + words + ["end"]
+
+
 def test_health_alert_is_retried_if_telegram_failed(public, monkeypatch):
     (public / "predictions.json").write_text(json.dumps({"health": ["Gemini: down"]}))
 

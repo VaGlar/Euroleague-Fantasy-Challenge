@@ -38,6 +38,9 @@ function athensClock(date, hm) {
 }
 const RESULTS_DELAY_MIN = 150;   // last tip-off + 2h30 ≈ games over and box scores in
 
+// Text inside an HTML-mode message: a stray "<" or "&" makes Telegram reject the whole message.
+const esc = (s) => String(s ?? "").replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+
 const LINEUP_BUTTON = [[{ text: "👥 Πρόταση πεντάδας (/lineup)", callback_data: "lu:preview" }]];
 
 async function getJson(env, name) {
@@ -56,11 +59,24 @@ async function tg(env, method, body) {
 }
 
 async function send(env, chatId, text, keyboard) {
-  // Telegram limit is 4096 chars; split on line boundaries.
+  // Telegram limit is 4096 chars; split on line boundaries (inside a line only when that
+  // line alone is too long, at a space where possible).
+  const LIMIT = 3800;
+  const pieces = (line) => {
+    const out = [];
+    while (line.length > LIMIT - 1) {
+      let cut = line.lastIndexOf(" ", LIMIT - 1);
+      if (cut <= 0) cut = LIMIT - 1;
+      out.push(line.slice(0, cut));
+      line = line.slice(cut).replace(/^ +/, "");
+    }
+    out.push(line);
+    return out;
+  };
   const chunks = [];
   let cur = "";
-  for (const line of text.split("\n")) {
-    if ((cur + line).length > 3800) { chunks.push(cur); cur = ""; }
+  for (const line of text.split("\n").flatMap(pieces)) {
+    if (cur && (cur + line).length + 1 > LIMIT) { chunks.push(cur); cur = ""; }
     cur += line + "\n";
   }
   if (cur.trim()) chunks.push(cur);
@@ -118,7 +134,7 @@ async function onCallback(env, cq) {
   } else if (action === "apply" && /^[a-f0-9]{12}$/.test(nonce || "")) {
     const r = await dispatch(env, "lineup.yml", { mode: "apply", nonce });
     await send(env, chat, r.status === 204 ? "⏳ Εφαρμογή στο παιχνίδι… (~1 λεπτό)"
-      : `⚠️ GitHub ${r.status}: ${(await r.text()).slice(0, 200)}`);
+      : `⚠️ GitHub ${r.status}: ${esc((await r.text()).slice(0, 200))}`);
   }
 }
 
@@ -129,7 +145,7 @@ async function startLineupPreview(env, chat) {
   }
   const r = await dispatch(env, "lineup.yml", { mode: "preview", nonce: "" });
   await send(env, chat, r.status === 204 ? "⏳ Διαβάζω την ομάδα σου και υπολογίζω… (~1 λεπτό)"
-    : `⚠️ GitHub ${r.status}: ${(await r.text()).slice(0, 200)}`);
+    : `⚠️ GitHub ${r.status}: ${esc((await r.text()).slice(0, 200))}`);
 }
 
 // Hourly: decide what (if anything) this hour is for. See the header comment.
@@ -179,7 +195,7 @@ export default {
       await hourly(env);
     } catch (e) {
       const h = athensNow().hour;
-      if (h === 7 || h === 10) await send(env, env.TELEGRAM_CHAT_ID, `⚠️ Πρόβλημα στο πρόγραμμα του bot: ${e.message}`);
+      if (h === 7 || h === 10) await send(env, env.TELEGRAM_CHAT_ID, `⚠️ Πρόβλημα στο πρόγραμμα του bot: ${esc(e.message)}`);
     }
   },
 
@@ -219,7 +235,7 @@ export default {
         const r = await fetch(`${env.DATA_URL}/predictions.json?t=${Date.now()}`);
         const p = await r.json();
         const rows = p.players.filter((x) => x.x_now != null).slice(0, 15)
-          .map((x, i) => `${i + 1}. ${x.name} (${x.team}) ${x.position || ""} — <b>${x.x_now.toFixed(1)}</b>`
+          .map((x, i) => `${i + 1}. ${esc(x.name)} (${esc(x.team)}) ${esc(x.position || "")} — <b>${x.x_now.toFixed(1)}</b>`
             + (x.price ? ` · ${x.price}cr` : ""));
         await send(env, chat, `📈 <b>Top xFPT — Round ${p.round}</b>\n` + rows.join("\n"));
       } else if (cmd === "/lineup") {
@@ -241,19 +257,19 @@ export default {
             });
           await send(env, chat, r.status === 204
             ? "⏳ Το update ξεκίνησε (~2–4 λεπτά). Θα σου γράψω όταν τελειώσει."
-            : `⚠️ GitHub ${r.status}: ${(await r.text()).slice(0, 200)}`);
+            : `⚠️ GitHub ${r.status}: ${esc((await r.text()).slice(0, 200))}`);
         }
       } else if (cmd === "/health") {
         const r = await fetch(`${env.DATA_URL}/predictions.json?t=${Date.now()}`);
         const p = await r.json();
         await send(env, chat, `Ενημέρωση: ${p.generated}\nFantasy: ${p.fantasy_ok ? "OK" : "ΟΧΙ"}\n`
-          + ((p.health || []).join("\n") || "Χωρίς προβλήματα"));
+          + (esc((p.health || []).join("\n")) || "Χωρίς προβλήματα"));
       } else {
         await send(env, chat, "/report — report ημέρας\n/top — top xFPT\n/lineup — πρόταση πεντάδας/αρχηγού με επιβεβαίωση\n/update — φρέσκα δεδομένα τώρα\n/health — κατάσταση\n"
           + (env.DASHBOARD_URL ? `\n${env.DASHBOARD_URL}` : ""));
       }
     } catch (e) {
-      await send(env, chat, `⚠️ ${e.message}`);
+      await send(env, chat, `⚠️ ${esc(e.message)}`);
     }
     return new Response("ok");
   },
