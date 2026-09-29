@@ -19,6 +19,8 @@ jobs:
       TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
       TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
       GH_DISPATCH_TOKEN: ${{ secrets.GH_DISPATCH_TOKEN }}
+      CF_ACCESS_CLIENT_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
+      CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
       GH_REPO: ${{ github.repository }}
       GH_REF: ${{ github.event.repository.default_branch }}
       DASHBOARD_URL: ${{ vars.DASHBOARD_URL || 'https://elf-dashboard.pages.dev' }}
@@ -66,6 +68,13 @@ jobs:
             printf '%s' "$GH_DISPATCH_TOKEN" | npx --yes wrangler@3 secret put GH_DISPATCH_TOKEN
           else
             echo "::notice::GH_DISPATCH_TOKEN not set: /update will be disabled."
+          fi
+          # Cloudflare Access in front of the personal site: the bot reads its data with this service token
+          if [ -n "$CF_ACCESS_CLIENT_ID" ] && [ -n "$CF_ACCESS_CLIENT_SECRET" ]; then
+            printf '%s' "$CF_ACCESS_CLIENT_ID" | npx --yes wrangler@3 secret put CF_ACCESS_CLIENT_ID
+            printf '%s' "$CF_ACCESS_CLIENT_SECRET" | npx --yes wrangler@3 secret put CF_ACCESS_CLIENT_SECRET
+          else
+            echo "::notice::CF_ACCESS_CLIENT_ID/SECRET not set: fine while the personal site has no Cloudflare Access."
           fi
 
       - name: Register Telegram webhook

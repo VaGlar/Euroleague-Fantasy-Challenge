@@ -130,6 +130,26 @@ xPIR = base × (1 + calib + pos·pos_dev + pace·pace_dev + margin·m/10 + blowo
 - Μετά την αποθήκευση ξαναδιαβάζει την ομάδα και επιβεβαιώνει κάθε θέση.
 - Χρειάζεται το `GH_DISPATCH_TOKEN` (ίδιο με το `/update`).
 
+### Cloudflare Access (κλείδωμα της προσωπικής σελίδας)
+Η `elf-dashboard.pages.dev` δείχνει την ομάδα σου και το report. Με το Access ανοίγει μόνο για σένα (email + κωδικός μίας χρήσης).
+Δύο «μηχανές» τη διαβάζουν χωρίς login, με ένα **service token**: το bot (όλα τα δεδομένα του) και το pipeline (το proxy `/feed`).
+Η δημόσια σελίδα (HoopsLab) δεν επηρεάζεται.
+
+**Η σειρά μετράει**, αλλιώς σταματά το bot:
+1. Cloudflare → **Zero Trust** (δωρεάν έως 50 χρήστες· την πρώτη φορά ζητάει όνομα ομάδας και πλάνο Free).
+2. **Access → Service credentials → Service Tokens → Create**: όνομα `elf-bot`, διάρκεια χωρίς λήξη.
+   Αντέγραψε **αμέσως** το Client ID και το Client Secret (το secret δεν ξαναφαίνεται).
+3. GitHub → Secrets: `CF_ACCESS_CLIENT_ID`, `CF_ACCESS_CLIENT_SECRET`.
+4. Actions → **Deploy Telegram bot** → Run workflow (περνάει το token στο bot).
+5. **Access → Applications → Add → Self-hosted**:
+   - domains `elf-dashboard.pages.dev` **και** `*.elf-dashboard.pages.dev` (τα previews, π.χ. `dev.`)·
+   - session duration 1 μήνας (για να μη ζητάει κωδικό συνέχεια το iPhone)·
+   - policy 1 — **Allow**, Include → Emails → το email σου·
+   - policy 2 — **Service Auth**, Include → Service Token → `elf-bot`.
+6. Έλεγχος: άνοιξε τη σελίδα σε ιδιωτικό παράθυρο (πρέπει να ζητήσει email), στείλε `/top` και `/health` στο bot (πρέπει να απαντήσουν κανονικά).
+   Αν το bot γράψει «Cloudflare Access 302», το token λείπει ή είναι λάθος: βήματα 3–4.
+7. Στο iPhone: άνοιξε μία φορά τη σελίδα από το εικονίδιο και κάνε login· μετά κρατάει για όσο είναι η session duration.
+
 ### Στήλες fantasy (ειδικοί)
 Στο `sources.yaml` οι πηγές με `fantasy: true` (επίσημα Fantasy Tips, Basketball Sphere, EuroBallin)
 διαβάζονται ολόκληρες. Το Gemini καταγράφει ποιον προτείνει κάθε στήλη (pick / captain / avoid).

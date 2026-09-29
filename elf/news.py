@@ -67,6 +67,13 @@ BROWSER = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/
            "Accept": "application/rss+xml, application/xml, text/xml, */*"}
 
 
+def access_headers() -> dict:
+    """The personal site (and its /feed proxy) sits behind Cloudflare Access: a service token gets in.
+    Without the secrets (no Access yet) nothing extra is sent."""
+    cid, sec = os.environ.get("CF_ACCESS_CLIENT_ID"), os.environ.get("CF_ACCESS_CLIENT_SECRET")
+    return {"CF-Access-Client-Id": cid, "CF-Access-Client-Secret": sec} if cid and sec else {}
+
+
 def _get_feed(url: str) -> bytes:
     """Direct, then (Substack only) its JSON API, then our Pages Function proxy.
     Substack blocks GitHub Actions' IPs; the proxy fetches from Cloudflare instead."""
@@ -77,7 +84,8 @@ def _get_feed(url: str) -> bytes:
     errors.append(f"direct {r.status_code}")
     dash = os.environ.get("DASHBOARD_URL", "").rstrip("/")
     if dash and ".substack.com" in url:
-        p = requests.get(f"{dash}/feed", params={"u": url}, headers=BROWSER, timeout=30)
+        p = requests.get(f"{dash}/feed", params={"u": url}, headers={**BROWSER, **access_headers()},
+                         timeout=30, allow_redirects=False)     # Access sends a login page via a redirect
         if p.status_code == 200 and p.content.lstrip().startswith(b"<"):
             return p.content
         errors.append(f"proxy {p.status_code}")
