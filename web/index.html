@@ -1150,7 +1150,6 @@ function autopilotCard(ap) {
   const vs = done.filter((r) => r.avg_raw != null);
   const diff = vs.reduce((a, r) => a + (r.raw - r.avg_raw), 0);
   const sgn = (x) => `${x >= 0 ? "+" : "−"}${f1(Math.abs(x))}`;
-  const who = (p) => `${esc(nm(p.name || ""))}${p.captain ? " <b>(C)</b>" : ""}`;
   const num = (x) => Number(x).toLocaleString("el-GR");
   const top = (r, n) => { const x = (100 * r) / n; return x < 1 ? x.toFixed(2) : x < 10 ? x.toFixed(1) : Math.round(x); };
   const ranked = done.filter((r) => r.rank != null).slice(-1)[0];
@@ -1177,10 +1176,23 @@ function autopilotCard(ap) {
   } else {
     h += `<p class="muted">Η πρώτη του αγωνιστική βαθμολογείται μόλις ολοκληρωθεί.</p>`;
   }
-  if (next) {
-    const five = next.squad.filter((p) => p.role === "5άδα").map(who).join(", ");
-    h += `<p><b>Για το Round ${next.round}</b>: ${next.trades ? `${next.trades} ${next.trades === 1 ? "μεταγραφή" : "μεταγραφές"}` : "καμία μεταγραφή"}
-      · υπόλοιπο ${f1(next.bank)} cr · xFPT ${f1(next.x_total)}<br><span class="muted">Πεντάδα: ${five}</span></p>`;
+  // the round's team on the court, as «Η ομάδα μου»: this round's live data (turn, opponent, real points)
+  const cur = rounds.find((r) => r.round === P.round) || next;
+  if (cur) {
+    const live = cur.round === P.round;
+    const list = cur.squad.map((p) => {
+      const r = live ? byFid(p.id) : null;
+      return { ...p, turn: r?.turn, opp: r?.opp, home: r?.home, actual: r?.actual ?? null, x_now: r?.x_now ?? p.x_now,
+               role: p.position === "Head Coach" ? "coach" : p.role };
+    });
+    const moves = Object.entries(cur.moves || {});
+    const moved = new Set(moves.flatMap(([, m]) => [...m.in, ...m.out]));
+    const ref = Object.fromEntries(list.map((p) => [p.id, moved.has(p.id) ? "" : p.role]));
+    const name = (id) => esc(nm(cur.squad.find((p) => p.id === id)?.name || ""));
+    h += `<p><b>Για το Round ${cur.round}</b>: ${cur.trades ? `${cur.trades} ${cur.trades === 1 ? "μεταγραφή" : "μεταγραφές"}` : "καμία μεταγραφή"}
+      · υπόλοιπο ${f1(cur.bank)} cr · xFPT ${f1(cur.x_total)}</p>${courtView(list, moved.size ? ref : null)}
+      ${moves.map(([t, m]) => `<p class="muted">Πριν το T${t}: ${m.in.length ? `μπήκαν ${m.in.map(name).join(", ")} — βγήκαν ${m.out.map(name).join(", ")}` : "ίδια πεντάδα"}${
+        m.captain ? ` · αρχηγός ο ${name(m.captain)}` : ""}.</p>`).join("")}`;
   }
   return h + "</div>";
 }

@@ -13,16 +13,18 @@
 # hours: how far back to look (default 96).
 
 sources:
-  - name: BasketNews – Injury Report
-    type: page
-    url: https://basketnews.com/news-212393-euroleague-injury-report-updated.html
-    start: injury_reports
-    end: This comprehensive EuroLeague injury report
-    lang: en
-    weight: 2
-    filter: false
-    report: true
-    hours: 72
+  # BasketNews blocks data centres (GitHub Actions and Cloudflare, i.e. our /feed proxy, both 403),
+  # checked 29/9. Kept here for when a path that works exists; `type: page` stays supported.
+  # - name: BasketNews – Injury Report
+  #   type: page
+  #   url: https://basketnews.com/news-212393-euroleague-injury-report-updated.html
+  #   start: injury_reports
+  #   end: This comprehensive EuroLeague injury report
+  #   lang: en
+  #   weight: 2
+  #   filter: false
+  #   report: true
+  #   hours: 72
 
   - name: EuroLeague (official)
     type: incrowd
