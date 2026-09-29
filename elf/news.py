@@ -160,6 +160,10 @@ def fetch_page(src: dict) -> list[dict]:
     page = _get_feed(src["url"]).decode("utf-8", errors="replace")
     body = re.sub(r"<script.*?</script>|<style.*?</style>", " ", page, flags=re.S | re.I)
     i = body.find(src["start"]) if src.get("start") else -1
+    if src.get("start") and i < 0:
+        # the page was redesigned: fail as a source (shown in health) rather than pass menus and ads
+        # to the summary as a trusted injury report
+        raise ValueError(f"δεν βρέθηκε το «{src['start']}» στη σελίδα — άλλαξε η μορφή της;")
     part = body[i:] if i >= 0 else body
     j = part.find(src["end"]) if src.get("end") else -1
     part = part[:j] if j > 0 else part
