@@ -1,0 +1,141 @@
+{
+ "rounds": [
+  {
+   "round": 2,
+   "trades": 0,
+   "bank": 0.1,
+   "squad": [
+    {
+     "id": 11487,
+     "price": 14.9,
+     "position": "Forward",
+     "person_id": "003112",
+     "name": "SARIC, DARIO",
+     "team": "IST",
+     "role": "5άδα",
+     "captain": true,
+     "x_now": 28.0
+    },
+    {
+     "id": 3791,
+     "price": 14.5,
+     "position": "Guard",
+     "person_id": "013369",
+     "name": "JONES, CARLIK",
+     "team": "PAR",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 26.4
+    },
+    {
+     "id": 3857,
+     "price": 14.9,
+     "position": "Center",
+     "person_id": "012788",
+     "name": "OTURU, DAN",
+     "team": "HTA",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 24.9
+    },
+    {
+     "id": 11516,
+     "price": 10.2,
+     "position": "Forward",
+     "person_id": "015166",
+     "name": "CROWDER, JAE",
+     "team": "ASV",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 21.9
+    },
+    {
+     "id": 11521,
+     "price": 5.3,
+     "position": "Guard",
+     "person_id": "015161",
+     "name": "FODZO DADA, MARC-OWEN",
+     "team": "ASV",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 16.8
+    },
+    {
+     "id": 11512,
+     "price": 9.1,
+     "position": "Guard",
+     "person_id": "014734",
+     "name": "LAWSON, A.J.",
+     "team": "BAS",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 15.9
+    },
+    {
+     "id": 3980,
+     "price": 8.3,
+     "position": "Center",
+     "person_id": "007553",
+     "name": "BALCEROWSKI, OLEK",
+     "team": "BAR",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 14.3
+    },
+    {
+     "id": 4061,
+     "price": 4.8,
+     "position": "Forward",
+     "person_id": "008084",
+     "name": "MANTZOUKAS, ELEFTHERIOS",
+     "team": "PAN",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 13.0
+    },
+    {
+     "id": 4255,
+     "price": 7.1,
+     "position": "Head Coach",
+     "person_id": "009154",
+     "name": "ALBERT, XAVIER",
+     "team": "PAM",
+     "role": "coach",
+     "captain": false,
+     "x_now": 12.8
+    },
+    {
+     "id": 11540,
+     "price": 4.9,
+     "position": "Guard",
+     "person_id": "011706",
+     "name": "SAINT-SUPERY, MARIO",
+     "team": "PAM",
+     "role": "6ος",
+     "captain": false,
+     "x_now": 11.8
+    },
+    {
+     "id": 3836,
+     "price": 5.9,
+     "position": "Forward",
+     "person_id": "007866",
+     "name": "MITOGLOU, KONSTANTINOS",
+     "team": "PAN",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 10.6
+    }
+   ],
+   "x_total": 195.2
+  }
+ ],
+ "start_round": 2,
+ "total": {
+  "rounds": 0,
+  "pts": 0,
+  "raw": 0,
+  "avg_raw": null
+ },
+ "generated": "2026-09-29T16:55:46.238494+00:00"
+}
