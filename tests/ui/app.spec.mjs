@@ -181,3 +181,17 @@ test("players new to the EuroLeague with few games are marked «νέος · N μ
   await goTab(page, testInfo, "today");
   await expect(page.locator("#today .note-early")).toContainText("Αρχή σεζόν");
 });
+
+test("Μοντέλο: the autopilot card (points vs the average manager; the owner's own points only in the personal edition)", async ({ page }, testInfo) => {
+  for (const edition of ["personal", "public"]) {
+    await open(page, edition, { tab: "model" });
+    const card = page.locator("#model .card").first();
+    await expect(card).toContainText("Autopilot");
+    await expect(card).toContainText("164.5");
+    await expect(card).toContainText("+18.4");                      // 151.2 raw vs 132.8 average manager
+    await expect(card).toContainText("Για το Round");
+    if (edition === "personal") await expect(card).toContainText("138.8");
+    else await expect(card).not.toContainText("Εσύ");
+    await checkLayout(page, `autopilot ${edition}`);
+  }
+});

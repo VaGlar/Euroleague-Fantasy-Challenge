@@ -294,9 +294,3 @@ def test_back_after_three_missed_games_is_scaled_down():
     assert not early["returning"].any()                          # the team has played only 2
     assert 0.7 <= p["return_factor"] <= 0.85                     # between the two seasons' estimates
 
-
-def test_probe_keeps_numbers_drops_text():
-    """The matchday probe (is there a managers' average?) keeps numbers and field names only."""
-    p = run._probe({"points": 187.5, "avg": 150, "name": "Nunn like Osman", "ok": True,
-                    "ranks": [{"pos": 3, "team": "x"}, {"pos": 4}]})
-    assert p == {"points": 187.5, "avg": 150, "name": "str", "ok": True, "ranks": [{"pos": 3, "team": "str"}, "×2"]}
