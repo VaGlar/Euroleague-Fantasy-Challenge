@@ -130,6 +130,12 @@ def predictions(season: int, extra: pd.DataFrame | None = None):
                                roster.drop_duplicates("person_id").set_index("person_id")["team"], p)
     ctx["part"] = ctx["person_id"].astype(str).map(part).fillna(1.0)
     ctx["xpir"] = ctx["xpir"] * ctx["part"]
+    # in the fantasy list but not (or no longer) registered with his EuroLeague club: he can't play.
+    # Safety net: anyone already on a box score this season counts as registered (a roster that lags)
+    reg = set(people.loc[(people["type"] == "player") & people["active"], "person_id"].astype(str))
+    reg |= set(cur_p["person_id"].astype(str)) if not cur_p.empty else set()
+    ctx["unregistered"] = ~ctx["person_id"].astype(str).isin(reg)
+    ctx.loc[ctx["unregistered"], "xpir"] = 0.0
     coaches = coach_rows(fx, people, ratings)
     return {"round": first, "fixtures": fx, "ctx": ctx, "ratings": ratings, "roster": roster,
             "pdev": pdev,
@@ -766,7 +772,7 @@ def build(offline: bool = False) -> dict:
         base=("base", "first"), no_data=("no_data", "first"),
         season_pir=("season_pir", "first"), prev_pir=("prev_pir", "first"),
         season_min=("season_min", "first"), games=("games", "first"),
-        returning=("returning", "first"))
+        returning=("returning", "first"), unregistered=("unregistered", "first"))
     nr = now_round.groupby("person_id").agg(x_now=("xpir", "sum"), opp=("opp", "first"),
                                             home=("is_home", "first"), margin=("margin", "first"),
                                             pos_dev=("pos_dev", "first"))
@@ -802,7 +808,7 @@ def build(offline: bool = False) -> dict:
         known = table[~table["no_data"].fillna(False) & table["price"].notna()
                       & (table["x_now"] > 0) & (table["position"] != "Head Coach")]
         nd = table["no_data"].fillna(False) & table["price"].notna() \
-            & (table["position"] != "Head Coach")
+            & (table["position"] != "Head Coach") & ~table["unregistered"].fillna(False).astype(bool)
         table["prior"] = None
         for pos, g in known.groupby("position"):
             if len(g) < 10:
@@ -933,7 +939,8 @@ def build(offline: bool = False) -> dict:
     _write("predictions.json", {
         "generated": datetime.now(timezone.utc).isoformat(), "season": CURRENT_SEASON,
         "round": rnd, "turns": trn,
-        "players": table.assign(returning=table["returning"].fillna(False).astype(bool))
+        "players": table.assign(returning=table["returning"].fillna(False).astype(bool),
+                                unregistered=table["unregistered"].fillna(False).astype(bool))
                         .replace({np.nan: None}).to_dict("records"),
         "team_ratings": ratings.round(2).to_dict("records"),
         "fixtures": [{"round": int(f.round), "home": f.home, "away": f.away,

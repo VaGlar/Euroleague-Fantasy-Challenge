@@ -457,7 +457,9 @@ const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const nm = (n) => { const [s, f] = String(n || "").split(","); return (f ? f.trim()[0] + ". " : "") + (s || "").toLowerCase().replace(/(^|[\s-])\S/g, (m) => m.toUpperCase()); };
 const f1 = (x) => (x == null ? "–" : Number(x).toFixed(1));
-const inj = (r) => (r.avail_game != null && r.avail_game < 1
+const inj = (r) => r.unregistered
+  ? ' <span class="pill" title="στη λίστα του fantasy, αλλά όχι δηλωμένος στο ρόστερ της EuroLeague: δεν μπορεί να αγωνιστεί">📋 εκτός ρόστερ</span>'
+  : (r.avail_game != null && r.avail_game < 1
   ? ` <span class="pill">🚑 ${r.avail_game === 0 ? "εκτός" : Math.round(r.avail_game * 100) + "%"}</span>` : "");
 // new to the EuroLeague (no last season) with few games: the prediction rests on 1-4 games (R&D 015)
 const fewGames = (r) => r.position !== "Head Coach" && r.prev_pir == null && r.games >= 1 && r.games <= 4;
