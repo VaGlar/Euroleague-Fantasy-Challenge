@@ -253,8 +253,6 @@ def fantasy_state(clubs: pd.DataFrame, roster: pd.DataFrame, season: int) -> dic
             # the owner's points of the finished matchday (for the autopilot comparison; the game
             # gives no managers' average, checked: only this team's own numbers)
             prev = cfg.get("previous_matchday") or {}
-            if len(out["my_teams"]) == 1:
-                _rank_probe(t, prev)
             if prev.get("id") and len(out["my_teams"]) == 1:
                 try:
                     p_info = fantasy.team_matchday(t["id"], prev["id"])
@@ -275,42 +273,6 @@ def _num(v, default=None):
         return float(v)
     except (TypeError, ValueError):
         return default
-
-
-def _numbers(o, depth: int = 0):
-    """Field names and numbers only (no names or text): for probing the game's API safely."""
-    if depth > 4:
-        return "…"
-    if isinstance(o, dict):
-        return {k: _numbers(v, depth + 1) for k, v in list(o.items())[:40]}
-    if isinstance(o, list):
-        return [_numbers(o[0], depth + 1), f"×{len(o)}"] if o else []
-    if o is None or isinstance(o, (bool, int, float)):
-        return o
-    return type(o).__name__
-
-
-def _rank_probe(team: dict, prev: dict) -> None:
-    """TEMPORARY (autopilot rank): how does /tournaments/{id}/standings page? Logs positions and points only."""
-    tid = team.get("id")
-    try:
-        ts = fantasy.get(f"/fantasy-teams/{tid}/tournaments")
-        ts = ts.get("data", ts) if isinstance(ts, dict) else ts
-        t = max(ts, key=lambda x: x.get("num_fantasy_teams") or 0)["id"]
-    except Exception as e:  # noqa: BLE001
-        print("RANK_PROBE ERR tournaments", str(e)[:60])
-        return
-    for params in (None, {"page": 2}, {"page": 4000}, {"offset": 100000}, {"start": 100000},
-                   {"from": 100000}, {"position": 100000}, {"limit": 100}, {"per_page": 100},
-                   {"page": 2, "limit": 100}, {"skip": 100000}, {"around": tid}, {"fantasy_team_id": tid}):
-        try:
-            d = fantasy.get(f"/tournaments/{t}/standings", params)
-            rows = d.get("data", d) if isinstance(d, dict) else d
-            pos = [(r.get("position"), r.get("total_pts")) for r in rows]
-            print("RANK_PROBE", params, len(rows), pos[:2], pos[-1:],
-                  list(d.keys()) if isinstance(d, dict) else "list")
-        except Exception as e:  # noqa: BLE001 - a probe never breaks the run
-            print("RANK_PROBE ERR", params, str(e)[:60])
 
 
 def _shape(o, depth: int = 0):
