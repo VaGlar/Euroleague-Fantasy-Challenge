@@ -1,0 +1,10 @@
+# Coverage of elf/ in CI (Tests -> tests): the run fails if it drops below fail_under, so new
+# code comes with its tests. backtest.py is the offline tuning tool, not part of the live update.
+[run]
+source = elf
+omit = elf/backtest.py
+
+[report]
+fail_under = 90
+skip_covered = true
+show_missing = true
