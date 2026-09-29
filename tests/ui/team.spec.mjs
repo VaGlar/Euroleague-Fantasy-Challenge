@@ -205,7 +205,7 @@ test.describe("public edition", () => {
     await page.locator("#tmConfirm").click();
     const first = tradeRows(page).first();
     const out = (await first.locator(".tm-what b").first().innerText()).trim();
-    await first.locator(".tm-keep").click();
+    await first.locator("[data-keep]").click();
     await expect(page.locator("#team .tm-kept")).toContainText(out);
     await expect(page.locator('#team li.tm-item:has-text("Trade:") .tm-what > b:first-child', { hasText: out })).toHaveCount(0);
     await page.locator("#team [data-unkeep]").first().click();
@@ -255,7 +255,7 @@ test.describe("personal edition", () => {
     const planned = () => header(page).locator(".tm-planned").innerText();
     const before = await planned();
     const trades = await page.locator("#team .tm-list").innerText();
-    await page.locator("#team .tm-keep").first().click();
+    await page.locator("#team [data-keep]").first().click();
     await expect(page.locator("#team .tm-kept")).toBeVisible();
     expect(await page.locator("#team .tm-list").innerText()).not.toEqual(trades);
     expect(await planned()).not.toEqual(before);
