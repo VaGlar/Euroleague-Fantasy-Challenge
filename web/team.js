@@ -752,7 +752,7 @@
     if (!best) return "";
     // same sideline layout as «Your Starting five» on a PC (head coach and 6th left, bench right)
     return `<details class="card"><summary><b>Καλύτερη ομάδα του Round (xFPT)</b> <span class="muted">· ${f1(best.cost)} cr</span></summary>
-      <div class="tm-courtcard">${courtView(best.team.map((p) => ({ ...p, actual: null })), null)}</div></details>`;
+      <div class="tm-sideline">${courtView(best.team.map((p) => ({ ...p, actual: null })), null)}</div></details>`;
   }
   function render(best) {
     best = best === undefined ? P.best_team : best;
@@ -901,27 +901,27 @@
   .tm-floor .lanes > * { position: relative; z-index: 1; }
   /* room beside the court (PC, tablet): the head coach and the 6th stand on the sideline, left of the floor,
      so the court card is shorter and the whole squad fits without scrolling. Phones keep them on the floor. */
-  .tm-courtcard { container-type: inline-size; }
+  :is(.tm-courtcard, .tm-sideline) { container-type: inline-size; }
   @container (min-width: 500px) {
-    .tm-courtcard .tm-floor { overflow: visible; margin-left: 132px; margin-right: auto; }
-    .tm-courtcard .tm-floor .lanes .pair { display: block; }
-    .tm-courtcard .tm-floor .lane.coach, .tm-courtcard .tm-floor .lane.six { position: absolute; left: -132px; width: 120px; margin: 0; }
+    :is(.tm-courtcard, .tm-sideline) .tm-floor { overflow: visible; margin-left: 132px; margin-right: auto; }
+    :is(.tm-courtcard, .tm-sideline) .tm-floor .lanes .pair { display: block; }
+    :is(.tm-courtcard, .tm-sideline) .tm-floor .lane.coach, :is(.tm-courtcard, .tm-sideline) .tm-floor .lane.six { position: absolute; left: -132px; width: 120px; margin: 0; }
     /* anchored to the top of the floor, stacked downwards: the coach, then the 6th below him */
-    .tm-courtcard .tm-floor .lane.coach { top: 0; }
-    .tm-courtcard .tm-floor .lane.six { top: 142px; }
-    .tm-courtcard .tm-floor:not(:has(.lane.coach)) .lane.six { top: 0; }
-    .tm-courtcard .tm-floor .lane.coach .chip, .tm-courtcard .tm-floor .lane.six .chip { width: 100%; max-width: none; }
-    .tm-courtcard .tm-floor .lane.coach h3, .tm-courtcard .tm-floor .lane.six h3 { color: var(--text-secondary) !important; opacity: 1; }
-    .tm-courtcard .tm-floor .lane.coach .tm-slot { width: 100%; max-width: none; border-color: var(--text-muted); color: var(--text-secondary);
+    :is(.tm-courtcard, .tm-sideline) .tm-floor .lane.coach { top: 0; }
+    :is(.tm-courtcard, .tm-sideline) .tm-floor .lane.six { top: 142px; }
+    :is(.tm-courtcard, .tm-sideline) .tm-floor:not(:has(.lane.coach)) .lane.six { top: 0; }
+    :is(.tm-courtcard, .tm-sideline) .tm-floor .lane.coach .chip, :is(.tm-courtcard, .tm-sideline) .tm-floor .lane.six .chip { width: 100%; max-width: none; }
+    :is(.tm-courtcard, .tm-sideline) .tm-floor .lane.coach h3, :is(.tm-courtcard, .tm-sideline) .tm-floor .lane.six h3 { color: var(--text-secondary) !important; opacity: 1; }
+    :is(.tm-courtcard, .tm-sideline) .tm-floor .lane.coach .tm-slot { width: 100%; max-width: none; border-color: var(--text-muted); color: var(--text-secondary);
       background: var(--surface-0); }
   }
   /* more room (a PC): the bench on the right sideline, the four stacked, so the floor is only the court */
   @container (min-width: 580px) {
-    .tm-courtcard .tm-floor { margin-right: 132px; }
-    .tm-courtcard .tm-floor .lane.bench { position: absolute; right: -132px; top: 0; width: 120px; margin: 0; }
-    .tm-courtcard .tm-floor .lane.bench .crow { flex-direction: column; flex-wrap: nowrap; gap: 6px; }
-    .tm-courtcard .tm-floor .lane.bench .chip { width: 100%; max-width: none; }
-    .tm-courtcard .tm-floor .lane.bench h3 { color: var(--text-secondary) !important; opacity: 1; }
+    :is(.tm-courtcard, .tm-sideline) .tm-floor { margin-right: 132px; }
+    :is(.tm-courtcard, .tm-sideline) .tm-floor .lane.bench { position: absolute; right: -132px; top: 0; width: 120px; margin: 0; }
+    :is(.tm-courtcard, .tm-sideline) .tm-floor .lane.bench .crow { flex-direction: column; flex-wrap: nowrap; gap: 6px; }
+    :is(.tm-courtcard, .tm-sideline) .tm-floor .lane.bench .chip { width: 100%; max-width: none; }
+    :is(.tm-courtcard, .tm-sideline) .tm-floor .lane.bench h3 { color: var(--text-secondary) !important; opacity: 1; }
   }
   /* set-up: the 4 forwards and 4 guards stand on the court too, four to a row */
   .tm-setcourt .crow > * { width: calc(25% - 5px); max-width: 128px; }
