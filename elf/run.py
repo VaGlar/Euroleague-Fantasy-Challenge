@@ -28,7 +28,7 @@ HORIZON = 3  # rounds used for transfer value
 HORIZON_WEIGHTS = (1.0, 0.6, 0.35)
 UNLIMITED_AFTER = {6, 13, 18, 23, 28, 34}  # trades unlimited before the next round
 MIN_GAIN_PER_TRADE = 2.0  # weighted xFPT a trade must add over the full 3-round horizon
-NEWCOMER_PRIOR_GAMES = 3   # a newcomer's price-based estimate weighs as 3 games of his own (fades as he plays)
+NEWCOMER_PRIOR_GAMES = 2   # a newcomer's price-based estimate weighs as 2 games of his own (fades as he plays); review after round 3
 NEWCOMER_MAX_GAMES = 10
 
 
