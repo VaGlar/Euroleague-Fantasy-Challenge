@@ -93,7 +93,10 @@ def test_starts_from_the_seed_of_the_rounds_before_it(pub, monkeypatch):
     pred = {"players": [{**r, "fantasy_id": r["id"], "person_id": f"p{r['id']}"} for r in rows], "best_team": best}
     r1, r2 = autopilot.seed_rounds([(1, pred), (2, pred)], max_trades=4, min_gain=0.5)
     assert r1["bank"] == 40.0 and [p["id"] for p in r1["squad"]] == first
-    assert r1["squad"][2]["captain"] and r1["squad"][0]["person_id"] == "p1"
+    assert r1["squad"][0]["person_id"] == "p1"
+    five = [q for q in r1["squad"] if q["role"] == "5άδα"]                 # the lineup by the game's rules
+    assert len(five) == 5 and {q["position"] for q in five} == {"Guard", "Forward", "Center"}
+    assert [q["captain"] for q in r1["squad"]].count(True) == 1 and any(q["captain"] for q in five)
     assert 0 < r2["trades"] <= 4                                   # better players were affordable
     (pub.parent / "autopilot_seed.json").write_text(json.dumps({"rounds": [r1, r2]}))
 
@@ -190,3 +193,72 @@ def test_a_rebuilt_seed_replaces_its_rounds_once(pub, monkeypatch):
     (pub / "autopilot.json").write_text(json.dumps(s))
     s = autopilot.update(2026, rnd=2, trade_rnd=3, rows=rows, table=table, max_trades=4, min_gain=0.5)
     assert s["rounds"][1]["moves"] == {"2": "live"}                                   # same seed: kept
+
+
+def test_the_seed_lineup_starts_t1_players_and_benches_t2(pub):
+    """Round 1 of the seed: the proposed squad, but its lineup by the game's rules: the five from
+    T1 players (the best xFPT, >= 1 per position), T2 players wait on the bench."""
+    rows, _ = pool()
+    first = [1, 2, 3, 4, 9, 10, 11, 12, 17, 18, 21]
+    t2 = {3, 4, 12}                                                      # two guards and a forward play T2
+    rows = [{**r, "turn": 2 if r["id"] in t2 else 1} for r in rows]
+    best = {"cost": 60.0, "team": [{"id": r["id"], "price": r["price"], "position": r["position"], "x_now": r["x_now"],
+                                    "role": "5άδα" if r["id"] in t2 else "πάγκος", "captain": r["id"] == 4}
+                                   for r in rows if r["id"] in first]}
+    pred = {"players": [{**r, "fantasy_id": r["id"], "person_id": f"p{r['id']}"} for r in rows], "best_team": best}
+    (r1,) = autopilot.seed_rounds([(1, pred)])
+    role = {q["id"]: q["role"] for q in r1["squad"]}
+    assert all(role[i] == "πάγκος" for i in t2)                          # T2 players wait
+    assert sum(role[i] == "5άδα" for i in first if i not in t2) == 5
+
+
+def test_update_makes_the_turn_2_changes_then_scores_and_ranks_the_round(pub, monkeypatch):
+    """Live flow: round 3 decided; T1 played (its starters flopped) and T2 still to come -> the T2
+    changes; then the round is over -> scored with the final roles, ranked, owner's points attached."""
+    now = pd.Timestamp.now(tz="UTC")
+    rows, table = pool()
+    rows = [{**r, "turn": 1 if r["team"] == "AAA" else 2} for r in rows]
+    games = pd.DataFrame([
+        {"round": 3, "gamecode": 1, "home": "AAA", "away": "X1", "played": True,
+         "utc": (now - pd.Timedelta(days=1)).isoformat(), "home_score": 80, "away_score": 70},
+        {"round": 3, "gamecode": 2, "home": "BBB", "away": "X2", "played": False,
+         "utc": (now + pd.Timedelta(days=1)).isoformat(), "home_score": 0, "away_score": 0}])
+    empty = pd.DataFrame(columns=["round", "gamecode", "person_id", "fp"])
+    monkeypatch.setattr(autopilot, "actual_points", lambda s: (empty, None))
+    monkeypatch.setattr(autopilot.history, "load", lambda *a, **k: games.copy())
+    autopilot.update(2026, rnd=3, trade_rnd=3, rows=rows, table=table, max_trades=4, min_gain=0.5)
+
+    # T1 done: every AAA player scored 0, BBB (T2) players still have their xFPT
+    live = [{**r, "actual": 0.0 if r["team"] == "AAA" else None} for r in rows]
+    s = autopilot.update(2026, rnd=3, trade_rnd=4, rows=live, table=table, max_trades=4, min_gain=0.5)
+    r3 = next(e for e in s["rounds"] if e["round"] == 3)
+    assert "2" in r3.get("moves", {}) and r3["moves"]["2"]["in"]         # T2 players came in for the flops
+    starters = [p for p in r3["squad"] if p["role"] in ("5άδα", "6ος")]
+    assert sum(p["captain"] for p in r3["squad"]) == 1 and len(starters) == 6
+
+    # the round is over: scored with the final roles, the owner's points, the rank in the standings
+    games.loc[1, ["played", "home_score", "away_score"]] = [True, 75, 70]
+    fp = pd.DataFrame([{"round": 3, "gamecode": 1 if p["team"] == "AAA" else 2, "person_id": p["person_id"],
+                        "fp": 10.0} for p in r3["squad"] if p["person_id"]])
+    monkeypatch.setattr(autopilot, "actual_points", lambda s: (fp, None))
+    monkeypatch.setattr(autopilot.fantasy, "rank_of", lambda total, *a: 1234)
+    s = autopilot.update(2026, rnd=4, trade_rnd=4, rows=rows, table=table, max_trades=4, min_gain=0.5,
+                         my_points={"3": 150.0},
+                         overall={"id": 7, "teams": 5000, "matchday_id": 55, "round": 3, "my_total": 150.0})
+    r3 = next(e for e in s["rounds"] if e["round"] == 3)
+    assert r3["pts"] > 0 and r3["my_pts"] == 150.0 and r3["rank"] == 1234 and r3["my_rank"] == 1234
+    assert s["total"]["rounds"] == 1 and s["total"]["pts"] == r3["pts"]
+
+
+def test_seed_command_writes_the_seed_file(pub, tmp_path, monkeypatch):
+    """python -m elf.autopilot seed 1:<predictions> ...: the seed file from saved predictions."""
+    rows, _ = pool()
+    first = [1, 2, 3, 4, 9, 10, 11, 12, 17, 18, 21]
+    best = {"cost": 60.0, "team": [{"id": r["id"], "price": r["price"], "position": r["position"], "x_now": r["x_now"],
+                                    "role": "5άδα", "captain": False} for r in rows if r["id"] in first]}
+    pred = {"players": [{**r, "fantasy_id": r["id"], "person_id": f"p{r['id']}"} for r in rows], "best_team": best}
+    f = tmp_path / "pred.json"
+    f.write_text(json.dumps(pred))
+    autopilot.main([f"1:{f}", f"1.2:{f}", f"2:{f}"])
+    seed = json.loads((pub.parent / "autopilot_seed.json").read_text())
+    assert [e["round"] for e in seed["rounds"]] == [1, 2]

@@ -6,7 +6,7 @@ import pandas as pd
 import pytest
 
 from elf import el_api, fantasy, history, news, optimize, run
-from elf.config import BUDGET
+from elf.config import BUDGET, CURRENT_SEASON
 
 from conftest import REPO, FakeGame, block_network, seed_public, use_public
 
@@ -251,3 +251,15 @@ def test_an_out_from_the_news_applies_whatever_the_name_order(monkeypatch, tmp_p
     out = _run(monkeypatch, public, digest=digest)
     row = next(p for p in out["pred"]["players"] if p["name"] == seen["name"])
     assert row["x_now"] == 0
+
+
+def test_a_player_not_registered_with_his_club_gets_zero(pipeline):
+    """In the fantasy list but not an active player of the EuroLeague roster: he can't play (xFPT 0,
+    marked). Nobody already on a box score this season is ever marked (a roster that lags)."""
+    players = pipeline["pred"]["players"]
+    out = [p for p in players if p.get("unregistered")]
+    assert out, "the fixture should include fantasy players missing from the EuroLeague rosters"
+    assert all((p["x_now"] or 0) == 0 and (p["x_h"] or 0) == 0 for p in out)
+    assert all(not p.get("prior") for p in out)                      # the price prior doesn't revive them
+    box = set(history.load("players", CURRENT_SEASON)["person_id"].astype(str))
+    assert not [p["name"] for p in out if str(p["person_id"]) in box]

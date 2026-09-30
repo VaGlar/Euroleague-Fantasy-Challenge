@@ -294,3 +294,23 @@ def test_back_after_three_missed_games_is_scaled_down():
     assert not early["returning"].any()                          # the team has played only 2
     assert 0.7 <= p["return_factor"] <= 0.85                     # between the two seasons' estimates
 
+
+
+def test_participation_counts_left_out_games_but_not_injuries():
+    """R&D 020: the chance of being on the sheet. A run of >= 3 missed games is an injury (known live,
+    not counted); a single miss is being left out; no evidence = ~on the sheet (p0 0.95, k 6)."""
+    import pandas as pd
+    codes = list(range(1, 9))
+    games = pd.DataFrame({"gamecode": codes, "utc": pd.date_range("2026-10-01", periods=8, freq="7D", tz="UTC"),
+                          "played": True, "home": "AAA", "away": [f"X{i}" for i in codes]})
+    on = {"regular": codes, "injured": [1, 2, 6, 7, 8],        # 3-5 missed in a row: injury, not counted
+          "benched": [1, 3, 5, 7]}                              # every other game: left out
+    box = pd.DataFrame([{"gamecode": c, "person_id": pid, "team": "AAA", "pir": 5, "min": 10}
+                        for pid, cs in on.items() for c in cs])
+    team = pd.Series({"regular": "AAA", "injured": "AAA", "benched": "AAA", "never": "AAA"})
+    p = model.participation(box, box.iloc[0:0], games, games.iloc[0:0], team,
+                            {"part_streak": 3, "part_k": 6, "part_p0": 0.95})
+    assert p["regular"] == pytest.approx((8 + 5.7) / 14)
+    assert p["injured"] == pytest.approx((5 + 5.7) / 11)       # 8 games minus the 3-game injury
+    assert p["benched"] == pytest.approx((4 + 5.7) / 14)       # 8 games, 4 single misses: left out
+    assert p["benched"] < p["injured"] < 1 and p["never"] == pytest.approx(5.7 / 14)

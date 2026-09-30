@@ -274,10 +274,17 @@ def seed_rounds(snapshots: list[tuple], max_trades: int = 4, min_gain: float = 2
             between_turns(next(e for e in state["rounds"] if e["round"] == rnd), rows, turn[0])
             continue
         if not state["rounds"]:
+            # the proposed squad; its lineup by the game's rules, as for every later round: a T1 five
+            # (>= 1 per position, the best xFPT), later-turn players on the bench, captain x2
+            # (the saved proposal of round 1 predates the turn-aware lineup)
             info, bt = _info(table), pred["best_team"]
+            by_id = {p["id"]: p for p in rows}
+            lu = optimize.lineup([{**p, **{k: v for k, v in by_id.get(p["id"], {}).items()
+                                            if k in ("turn", "x_now", "x_h")}} for p in bt["team"]])
+            role = {p["id"]: (p["role"], bool(p["captain"])) for p in (lu or bt)["team"]}
             squad = [{"id": p["id"], "price": p["price"], "position": p["position"],
                       **{k: info.get(p["id"], {}).get(k) for k in ("person_id", "name", "team")},
-                      "role": p["role"], "captain": bool(p.get("captain")), "x_now": round(p["x_now"], 1)}
+                      "role": role[p["id"]][0], "captain": role[p["id"]][1], "x_now": round(p["x_now"], 1)}
                      for p in bt["team"]]
             x = sum(p["x_now"] * (BENCH_MULTIPLIER if p["role"] == "πάγκος" else 1.0)
                     * (CAPTAIN_MULTIPLIER if p["captain"] else 1) for p in squad)
@@ -291,11 +298,10 @@ def seed_rounds(snapshots: list[tuple], max_trades: int = 4, min_gain: float = 2
     return state["rounds"]
 
 
-if __name__ == "__main__":
-    # python -m elf.autopilot seed 1:<predictions before round 1> 1.2:<... before its turn 2> 2:<...> ...
-    import sys
+def main(args: list[str]) -> dict:
+    """python -m elf.autopilot seed 1:<predictions before round 1> 1.2:<... before its turn 2> 2:<...> ..."""
     snaps = []
-    for a in sys.argv[2:]:
+    for a in args:
         key, path = a.split(":", 1)
         rnd, _, turn = key.partition(".")
         snaps.append((int(rnd), json.loads(open(path).read()), int(turn) if turn else None))
@@ -303,3 +309,9 @@ if __name__ == "__main__":
            "rounds": seed_rounds(snaps)}
     _seed_path().write_text(json.dumps(out, ensure_ascii=False, indent=1))
     print([(e["round"], e["trades"], e["bank"], e["x_total"]) for e in out["rounds"]])
+    return out
+
+
+if __name__ == "__main__":
+    import sys
+    main(sys.argv[2:])
