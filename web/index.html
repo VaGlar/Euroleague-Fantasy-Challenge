@@ -77,6 +77,7 @@ select, input { font: inherit; padding: 6px 8px; border-radius: 8px; border: 1px
   background: var(--surface-1); color: var(--text-primary); }
 .range input { width: 72px; }
 .chk { display: inline-flex; align-items: center; gap: 6px; color: var(--text-secondary); }
+.posbox { display: inline-flex; flex-wrap: wrap; gap: 4px 12px; }
 .linkbtn { border: 0; background: none; color: var(--series-1); font: inherit; cursor: pointer; padding: 6px 4px; }
 #fcount { font-size: 13px; margin: -4px 0 8px; }
 .tablewrap { overflow-x: auto; }
@@ -393,7 +394,7 @@ body > header nav button.on { color: var(--bar-fg); border-color: var(--bar-line
   <section id="players">
     <details class="fbox" id="fbox"><summary id="fsum">Φίλτρα</summary>
     <div class="filters">
-      <select id="fpos"><option value="">Όλες οι θέσεις</option><option>Guard</option><option>Forward</option><option>Center</option><option>Head Coach</option></select>
+      <span class="posbox" id="fpos" role="group" aria-label="Θέσεις"><label class="chk"><input type="checkbox" value="Guard"> Guard</label><label class="chk"><input type="checkbox" value="Forward"> Forward</label><label class="chk"><input type="checkbox" value="Center"> Center</label><label class="chk"><input type="checkbox" value="Head Coach"> Head Coach</label></span>
       <select id="fteam"><option value="">Όλες οι ομάδες</option></select>
       <select id="fturn"><option value="">Όλα τα turns</option></select>
       <input id="fsearch" placeholder="Αναζήτηση" size="12">
@@ -403,7 +404,7 @@ body > header nav button.on { color: var(--bar-fg); border-color: var(--bar-line
       <button id="freset" class="linkbtn" type="button">Καθαρισμός</button>
     </div></details>
     <div class="filters" id="fsortwrap"><label class="chk">Ταξινόμηση <select id="fsort">
-      <option value="x_now">xFPT</option><option value="x_h">xFPT3</option><option value="value">Value</option>
+      <option value="x_now">xFPT</option><option value="actual">Points (Round)</option><option value="x_h">xFPT3</option><option value="value">Value</option>
       <option value="price">Price</option><option value="price_chg">Άνοδος price</option><option value="price_last_chg">Τελευταία αλλαγή price</option><option value="popularity">POP (πόσοι τον έχουν)</option><option value="pos_dev">Ματσάρισμα</option><option value="season_pir">PIR φέτος</option>
     </select></label></div>
     <div class="muted" id="fcount"></div>
@@ -551,6 +552,7 @@ const INFO = {
   avail: "Διαθεσιμότητα από το παιχνίδι και τα νέα: εκτός, ή η πιθανότητα να παίξει. Ανανεώνεται και 3 ώρες πριν τον πρώτο αγώνα.",
   back: "Επιστρέφει μετά από απουσία: δεν έπαιξε σε κανένα από τα 3 τελευταία ματς της ομάδας του (τραυματισμός ή εκτός ροτάσιον). Όσοι γυρίζουν έτσι παίζουν συνήθως λιγότερα λεπτά: σε δύο σεζόν έφεραν 25–30% λιγότερα από τη φόρμα τους. Γι' αυτό η πρόβλεψή του είναι ήδη μειωμένη κατά 20%.",
   few: "Νέος στη EuroLeague: δεν έχει περσινή σεζόν εδώ, οπότε η πρόβλεψη στηρίζεται μόνο στα λίγα φετινά του ματς και είναι αβέβαιη. Ένα καλό ματς δεν είναι επίπεδο: σε παλιότερες σεζόν, τέτοιοι παίκτες με υψηλή πρόβλεψη έφεραν συχνά αρκετά λιγότερα. Η εικόνα καθαρίζει μετά από 4–5 ματς.",
+  pts: "Points: τα πραγματικά fantasy points του στο τρέχον Round (πράσινα αν ξεπέρασε το xFPT). «–»: δεν έχει παίξει ακόμα.",
   pop: "POP: τι ποσοστό των managers του παιχνιδιού τον έχει στην ομάδα του.",
   pchg: "Δ price: πόσο έχει αλλάξει το price του από το πρώτο Round της σεζόν.",
   pir: "PIR: η αξιολόγηση της EuroLeague (πόντοι, ριμπάουντ, ασίστ, κλεψίματα, κοψίματα, κερδισμένα φάουλ, μείον άστοχα, λάθη και φάουλ).",
@@ -593,10 +595,12 @@ function findPlayer(name) {
 // price boxes: accept "6,5" (Greek keyboard) as well as "6.5"
 const num = (v) => parseFloat(String(v).trim().replace(",", "."));
 const FILTERS = ["fpos", "fteam", "fturn", "fsearch", "fpmin", "fpmax", "fhealthy"];
+// positions: checkboxes, any number at once (none ticked = all)
+const posSel = () => [...document.querySelectorAll("#fpos input:checked")].map((i) => i.value);
 function saveFilters() {
   try {
     localStorage.setItem("filters", JSON.stringify(Object.fromEntries(FILTERS.map((id) =>
-      [id, $("#" + id).type === "checkbox" ? $("#" + id).checked : $("#" + id).value]))));
+      [id, id === "fpos" ? posSel() : $("#" + id).type === "checkbox" ? $("#" + id).checked : $("#" + id).value]))));
   } catch (e) {}
 }
 function loadFilters() {
@@ -605,17 +609,18 @@ function loadFilters() {
     for (const [id, v] of Object.entries(f)) {
       const el = $("#" + id);
       if (!el) continue;
-      if (el.type === "checkbox") el.checked = !!v;
+      if (id === "fpos") { const on = [].concat(v || []); el.querySelectorAll("input").forEach((i) => { i.checked = on.includes(i.value); }); }
+      else if (el.type === "checkbox") el.checked = !!v;
       else if (el.tagName !== "SELECT" || [...el.options].some((o) => o.value === v)) el.value = v;
     }
   } catch (e) {}
 }
 function renderPlayers() {
-  const pos = $("#fpos").value, team = $("#fteam").value, turn = $("#fturn").value, q = $("#fsearch").value.toLowerCase();
+  const pos = posSel(), team = $("#fteam").value, turn = $("#fturn").value, q = $("#fsearch").value.toLowerCase();
   const pmin = num($("#fpmin").value), pmax = num($("#fpmax").value), healthy = $("#fhealthy").checked;
   const turnTeams = turn ? P.turns.find((t) => String(t.turn) === turn).teams : null;
   let rows = P.players.filter((p) => p.x_now != null
-    && (!pos || p.position === pos) && (!team || p.team === team)
+    && (!pos.length || pos.includes(p.position)) && (!team || p.team === team)
     && (!turnTeams || turnTeams.includes(p.team)) && (!q || String(p.name).toLowerCase().includes(q))
     && (isNaN(pmin) || (p.price != null && p.price >= pmin))
     && (isNaN(pmax) || (p.price != null && p.price <= pmax))
@@ -625,7 +630,7 @@ function renderPlayers() {
   rows.sort((a, b) => ((a[sortKey] ?? -1e9) > (b[sortKey] ?? -1e9) ? 1 : -1) * sortDir);
   const max = Math.max(...rows.map((r) => r.x_now || 0), 1);
   const hasPrice = P.fantasy_ok;
-  const cols = [["name", "Παίκτης"], ["x_now", "xFPT" + ii("xpts"), 1], ["opp", "Αντ."], ["pos_dev", "Ματσάρ." + ii("matchup"), 1],
+  const cols = [["name", "Παίκτης"], ["x_now", "xFPT" + ii("xpts"), 1], ["actual", "Points" + ii("pts"), 1], ["opp", "Αντ."], ["pos_dev", "Ματσάρ." + ii("matchup"), 1],
     ["x_h", "xFPT3" + ii("xpts3"), 1], ["season_pir", "PIR φέτος" + ii("pir"), 1], ["prev_pir", "PIR πέρσι", 1]]
     .concat(hasPrice ? [["price", "Price", 1], ["price_chg", "Δ price" + ii("pchg"), 1], ["popularity", "POP" + ii("pop"), 1], ["value", "Value" + ii("value"), 1]] : []);
   $("#ptable").innerHTML = "<thead><tr>" + cols.map(([k, l, n]) =>
@@ -633,6 +638,7 @@ function renderPlayers() {
     + rows.slice(0, 250).map((r) => `<tr data-pid="${esc(r.person_id)}">
       <td>${cbox(r)}${esc(nm(r.name))}${newb(r)}${inj(r)}${exb(r)}${dol(r)}<br><span class="muted">${esc(tc(r.team))} · ${esc(r.position || "")}${r.price != null ? ` · <b>${f1(r.price)}cr</b>` : ""}</span></td>
       <td class="num"><span class="bar" style="width:${Math.max(2, 40 * (r.x_now || 0) / max)}px"></span><b>${f1(r.x_now)}</b></td>
+      <td class="num">${r.actual == null ? "–" : `<b class="${r.actual >= (r.x_now ?? 0) ? "up" : "down"}">${f1(r.actual)}</b>`}</td>
       <td>${gameOf(r)}</td><td class="num">${matchup(r.pos_dev)}</td>
       <td class="num">${f1(r.x_h)}</td><td class="num">${f1(r.season_pir)}</td><td class="num">${f1(r.prev_pir)}</td>
       ${hasPrice ? `<td class="num">${f1(r.price)}</td><td class="num">${chg(r.price_chg) || "–"}</td><td class="num">${pop(r) || "–"}</td><td class="num">${r.value == null ? "–" : r.value.toFixed(2)}</td>` : ""}</tr>`).join("") + "</tbody>";
@@ -641,10 +647,10 @@ function renderPlayers() {
   });
   $("#plist").innerHTML = rows.slice(0, 150).map((r) => `<div class="pcard" data-pid="${esc(r.person_id)}" style="${tcol(r.team)}">
     <div class="pn">${cbox(r)}${esc(nm(r.name))}${avb(r)}${newb(r)}${exb(r)}${dol(r)}</div>
-    <div class="px"><b>${f1(r.x_now)}</b><small>xFPT${ii("xpts")}</small><span class="h">${f1(r.x_h)} <small>xFPT3</small></span></div>
+    <div class="px"><b>${f1(r.x_now)}</b><small>xFPT${ii("xpts")}</small>${r.actual != null ? `<span class="h"><b class="${r.actual >= (r.x_now ?? 0) ? "up" : "down"}">${f1(r.actual)}</b> <small>points</small></span>` : ""}<span class="h">${f1(r.x_h)} <small>xFPT3</small></span></div>
     <div class="pm">${esc(tc(r.team))} · ${esc((r.position || "")[0] || "")}${r.price != null ? ` · <b>${f1(r.price)}cr</b>${chg(r.price_chg)}` : ""}${pop(r) ? ` · POP ${pop(r)}` : ""} · ${gameOf(r)} ${matchup(r.pos_dev)}</div>
   </div>`).join("") + (rows.length > 150 ? `<p class="muted">…και ${rows.length - 150} ακόμα — στένεψε τα φίλτρα.</p>` : "");
-  const active = FILTERS.filter((id) => { const el = $("#" + id); return el.type === "checkbox" ? el.checked : el.value; }).length;
+  const active = FILTERS.filter((id) => { const el = $("#" + id); return id === "fpos" ? posSel().length : el.type === "checkbox" ? el.checked : el.value; }).length;
   $("#fsum").textContent = active ? `Φίλτρα (${active} ενεργά)` : "Φίλτρα";
   $("#fsort").value = sortKey;
 }
@@ -1480,7 +1486,7 @@ setInterval(() => {
   $("#fsearch").addEventListener("focus", (e) => searchToTop(e.target));
   $("#fsort").addEventListener("input", () => { sortKey = $("#fsort").value; sortDir = -1; renderPlayers(); });
   $("#freset").onclick = () => {
-    FILTERS.forEach((id) => { const el = $("#" + id); if (el.type === "checkbox") el.checked = false; else el.value = ""; });
+    FILTERS.forEach((id) => { const el = $("#" + id); if (id === "fpos") el.querySelectorAll("input").forEach((i) => { i.checked = false; }); else if (el.type === "checkbox") el.checked = false; else el.value = ""; });
     sortKey = "x_now"; sortDir = -1; renderPlayers();
   };
   renderPlayers();
