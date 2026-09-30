@@ -200,10 +200,10 @@
     "captain": true
    },
    {
-    "id": 3887,
-    "person_id": "007975",
+    "id": 3836,
+    "person_id": "007866",
     "team": "PAN",
-    "position": "Guard",
+    "position": "Forward",
     "role": "5άδα",
     "captain": false
    },
@@ -216,18 +216,18 @@
     "captain": false
    },
    {
-    "id": 11521,
-    "person_id": "015161",
-    "team": "ASV",
+    "id": 3887,
+    "person_id": "007975",
+    "team": "PAN",
     "position": "Guard",
     "role": "5άδα",
     "captain": false
    },
    {
-    "id": 3836,
-    "person_id": "007866",
-    "team": "PAN",
-    "position": "Forward",
+    "id": 11521,
+    "person_id": "015161",
+    "team": "ASV",
+    "position": "Guard",
     "role": "6ος",
     "captain": false
    },

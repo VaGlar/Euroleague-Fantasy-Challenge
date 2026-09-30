@@ -293,7 +293,10 @@
      ],
      "captain": null
     }
-   }
+   },
+   "pts": 129.2,
+   "raw": 99.1,
+   "avg_raw": 115.9
   },
   {
    "round": 3,
@@ -309,7 +312,7 @@
      "team": "OLY",
      "role": "5άδα",
      "captain": true,
-     "x_now": 26.8
+     "x_now": 26.0
     },
     {
      "id": 3791,
@@ -320,7 +323,7 @@
      "team": "PAR",
      "role": "5άδα",
      "captain": false,
-     "x_now": 24.6
+     "x_now": 23.6
     },
     {
      "id": 3887,
@@ -329,20 +332,9 @@
      "person_id": "007975",
      "name": "FRANCISCO, SYLVAIN",
      "team": "PAN",
-     "role": "πάγκος",
+     "role": "5άδα",
      "captain": false,
-     "x_now": 19.7
-    },
-    {
-     "id": 4255,
-     "price": 7.1,
-     "position": "Head Coach",
-     "person_id": "009154",
-     "name": "ALBERT, XAVIER",
-     "team": "PAM",
-     "role": "coach",
-     "captain": false,
-     "x_now": 15.9
+     "x_now": 22.3
     },
     {
      "id": 8846,
@@ -351,9 +343,9 @@
      "person_id": "009733",
      "name": "JEKIRI, TONYE",
      "team": "PAR",
-     "role": "5άδα",
+     "role": "6ος",
      "captain": false,
-     "x_now": 15.2
+     "x_now": 13.9
     },
     {
      "id": 11516,
@@ -364,7 +356,7 @@
      "team": "ASV",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 13.2
+     "x_now": 12.3
     },
     {
      "id": 7424,
@@ -375,7 +367,18 @@
      "team": "VIR",
      "role": "5άδα",
      "captain": false,
-     "x_now": 11.1
+     "x_now": 10.5
+    },
+    {
+     "id": 4255,
+     "price": 7.1,
+     "position": "Head Coach",
+     "person_id": "009154",
+     "name": "ALBERT, XAVIER",
+     "team": "PAM",
+     "role": "coach",
+     "captain": false,
+     "x_now": 9.6
     },
     {
      "id": 11521,
@@ -386,7 +389,7 @@
      "team": "ASV",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 7.2
+     "x_now": 5.5
     },
     {
      "id": 4012,
@@ -395,9 +398,9 @@
      "person_id": "001518",
      "name": "RICCI, GIAMPAOLO",
      "team": "MIL",
-     "role": "5άδα",
+     "role": "πάγκος",
      "captain": false,
-     "x_now": 3.8
+     "x_now": 3.7
     },
     {
      "id": 4016,
@@ -406,7 +409,7 @@
      "person_id": "011816",
      "name": "AKELE, NICOLA",
      "team": "MIL",
-     "role": "6ος",
+     "role": "πάγκος",
      "captain": false,
      "x_now": 2.3
     },
@@ -417,21 +420,21 @@
      "person_id": "001844",
      "name": "HACKETT, DANIEL",
      "team": "VIR",
-     "role": "πάγκος",
+     "role": "5άδα",
      "captain": false,
      "x_now": 1.4
     }
    ],
-   "x_total": 149.4
+   "x_total": 145.7
   }
  ],
  "seed_id": "5a453a755a9b",
  "start_round": 1,
  "total": {
-  "rounds": 1,
-  "pts": 119.1,
-  "raw": 85.7,
-  "avg_raw": null
+  "rounds": 2,
+  "pts": 248.3,
+  "raw": 184.8,
+  "avg_raw": 115.9
  },
- "generated": "2026-09-30T15:06:49.960559+00:00"
+ "generated": "2026-09-30T21:08:06.615059+00:00"
 }
