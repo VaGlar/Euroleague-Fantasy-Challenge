@@ -393,7 +393,7 @@
       ? `⏱ Round ${P.round}${turnNow()} σε εξέλιξη`
       : `⏱ Round ${P.round}${turnNow()} · κλείνει ${deadline()}`;
     const confirm = !t.confirmed ? `<li class="tm-item"><span class="tm-kind">👀</span><span class="tm-what"><b>Έλεγξε το Starting five σου</b>
-        <span class="tm-why">Βάλαμε ρόλους με βάση την πρόταση. Αν στο παιχνίδι είναι αλλιώς, σύρε τους παίκτες όπως είναι εκεί.</span>
+        <span class="tm-why">Σύρε τους παίκτες όπως είναι στο παιχνίδι.</span>
         ${t.game ? "" : leftPicker(t, pl.ti, "tmLeft")}</span>
         <button class="tm-done" id="tmConfirm">✓ Είναι ίδια</button></li>` : "";
     const keepBtn = (o) => `<button class="tm-keep" data-keep="${o.id}">🔒 Κράτα τον ${esc(sur(o.name))} αυτό το Round</button>`;
@@ -410,7 +410,7 @@
       return `<li>🕐 <b>Πριν το T${x.bench.turn}</b>: αν ο ${esc(sur(s.name))} φέρει κάτω από ${Math.round(x.bench.x_now)}, βάλε τον ${esc(sur(b.name))}.</li>`; }).join("");
     // while the round is under way only swaps and the armband: next round's trades wait for it to end
     const nextTrades = pl.inRound ? "" : !pl.tradesNow && pl.trs.pairs.length ? `<div class="card"><h2>Trades για το Round ${pl.ti.round}
-        <small class="muted">(${pl.ti.max_trades > 4 ? "απεριόριστα" : `Trades ${usedTrades(t, pl.ti)}/${pl.ti.max_trades}`} · γίνονται όταν τελειώσει το τρέχον Round)</small></h2>
+        <small class="muted">(${pl.ti.max_trades > 4 ? "απεριόριστα" : `Trades ${usedTrades(t, pl.ti)}/${pl.ti.max_trades}`} · μετά το τρέχον Round)</small></h2>
         <ul class="tm-list">${pl.trs.pairs.map((pr, n) => { const o = rows.find((r) => r.id === pr.out.id), nn = row(pr.in.id);
           return `<li class="tm-item"><span class="tm-kind">🔁</span><span class="tm-what"><b>${esc(sur(o.name))}</b> ➜ <b>${esc(sur(nn.name))}</b>
             <span class="tm-why">${esc(tc(nn.team))} · ${f1(pr.out.price)} → ${f1(pr.in.price)} cr · +${f1((nn.x_h ?? 0) - (o.x_h ?? 0))} xFPT3${typeof fewGames === "function" && fewGames(nn) ? ` · 🆕 νέος, ${nn.games} ματς: αβέβαιο` : nn.returning ? " · ↩ επιστρέφει από απουσία" : ""}</span>${keepBtn(o)}${avoidBtn(nn)}</span>
@@ -419,12 +419,12 @@
     const done = !items.length && t.confirmed;
     const upd = P.generated ? new Date(P.generated).toLocaleString("el-GR", { weekday: "short", hour: "2-digit", minute: "2-digit" }) : "";
     const hint = t.game
-      ? `Starting five και Captain εφαρμόζονται με <b>/lineup</b> στο Telegram· τα Trades τα κάνεις στο παιχνίδι. Η ομάδα διαβάστηκε από το παιχνίδι ${esc(upd)}.`
-      : "Κάνε τις κινήσεις στο παιχνίδι και πάτα ✓ — η ομάδα σου εδώ ενημερώνεται μόνη της.";
+      ? `Starting five/Captain με <b>/lineup</b> · Trades στο παιχνίδι · ενημ. ${esc(upd)}`
+      : "Κάνε τις κινήσεις στο παιχνίδι και πάτα ✓.";
     return `<header class="tm-top"><div><h2 class="tm-h">${t.game ? esc(t.name || "Η ομάδα μου") : "Η ομάδα μου"}</h2>
         <div class="muted">Credits <b>${f1(t.bank)}/${f1(Number(t.bank) + value)}</b>${gain ? ` <span class="${gain > 0 ? "tm-up" : "tm-down"}">(${gain > 0 ? "+" : "−"}${f1(Math.abs(gain))} gain)</span>` : ""} · ${!t.game && pl.ti.max_trades <= 4 ? `<button class="tm-trades" id="tmTrades" type="button" title="Άλλαξε πόσα Trades σου μένουν">Trades <b>${usedTrades(t, pl.ti)}/${pl.ti.max_trades}</b> ✎</button>`
           : `Trades <b>${usedTrades(t, pl.ti)}/${pl.ti.max_trades > 4 ? "∞" : pl.ti.max_trades}</b>`}</div>
-        <div class="muted">Αναμενόμενα points <b>${f1(total)}</b>${Math.abs(pl.planned - total) >= 0.05
+        <div class="muted">xFPT <b>${f1(total)}</b>${Math.abs(pl.planned - total) >= 0.05
           ? ` → <b class="tm-planned">${f1(pl.planned)}</b> με το πλάνο` : ""}</div>
         <div class="tm-dead">${head}</div></div>
         ${t.game ? "" : `<div class="tm-morewrap"><button class="tm-more" id="tmMore" aria-haspopup="menu">⋯ Επιλογές</button><div id="tmMenu"></div></div>`}</header>
@@ -435,10 +435,10 @@
         ${pl.tradesNow ? keptLine : ""}
         ${turnPlan ? `<ul class="plan">${turnPlan}</ul>` : ""}
         <p class="tm-hint">${hint}
-        ${pl.inRound ? "Μέσα στο Round: όποιος έπαιξε μπορεί μόνο να βγει στο Bench· Captain μόνο παίκτης που δεν έχει παίξει." : ""}</p></div>
+        ${pl.inRound ? "Μέσα στο Round: όποιος έπαιξε πάει μόνο στο Bench· νέος Captain μόνο όποιος δεν έπαιξε." : ""}</p></div>
       ${nextTrades}</div>
-      <div class="tm-colR">${items.length && !done ? `<button class="tm-steps" id="tmSteps" type="button">📋 <b>${items.length} ${items.length === 1 ? "βήμα" : "βήματα"}</b> για το Round ${pl.ti.round} <span aria-hidden="true">↓</span></button>` : ""}<div class="card tm-courtcard"><h2>${t.game ? (t.fromGame ? "Στο παιχνίδι τώρα" : "Η πρόταση") : "Η πεντάδα σου"} <small class="muted">${t.game ? (t.fromGame ? "διακεκομμένο = αλλάζει με την πρόταση" : "δεν διαβάστηκε η πεντάδα του παιχνιδιού") : "σύρε έναν παίκτη πάνω σε άλλον για αλλαγή θέσης"}</small></h2>
-        ${courtHtml(t, rows, t.game ? pl : null)}<p class="tm-hint">${t.game ? "Πάτα έναν παίκτη για στατιστικά και επόμενα παιχνίδια." : "Πάτα έναν παίκτη για Captain, Trade ή στατιστικά."}</p></div></div></div>
+      <div class="tm-colR">${items.length && !done ? `<button class="tm-steps" id="tmSteps" type="button">📋 <b>${items.length} ${items.length === 1 ? "βήμα" : "βήματα"}</b> για το Round ${pl.ti.round} <span aria-hidden="true">↓</span></button>` : ""}<div class="card tm-courtcard"><h2>${t.game ? (t.fromGame ? "Στο παιχνίδι τώρα" : "Η πρόταση") : "Η ομάδα σου"}${t.game ? ` <small class="muted">${t.fromGame ? "διακεκομμένο = αλλάζει" : "δεν διαβάστηκε το Starting five"}</small>` : ""}</h2>
+        ${courtHtml(t, rows, t.game ? pl : null)}<p class="tm-hint">${t.game ? "Πάτα παίκτη για στατιστικά." : "Πάτα παίκτη: Captain, Trade, στατιστικά · σύρε πάνω σε άλλον για sub."}</p></div></div></div>
       ${bestCard(best)}`;
   }
 
@@ -573,7 +573,7 @@
   // «Trades που μένουν»: the game counts every change of the round, the app only what it saw
   function leftSheet(t, best) {
     const ti = P.trade_info || {};
-    sheet(`<div class="sh"><div><h2>Trades που μένουν</h2><div class="muted">Όσα δείχνει το παιχνίδι για το Round ${ti.round} (π.χ. αν άλλαξες ομάδα κι εκεί)</div></div>
+    sheet(`<div class="sh"><div><h2>Trades που μένουν</h2><div class="muted">Όσα δείχνει το παιχνίδι για το Round ${ti.round}</div></div>
         <button class="x" onclick="closePlayer()">×</button></div>
       <div class="tm-acts">${Array.from({ length: ti.max_trades + 1 }, (_, i) => ti.max_trades - i).map((v) =>
         `<button class="tm-act" data-left="${v}"><span>${v}</span><div>${v === 1 ? "1 Trade" : `${v} Trades`}${v === tradesLeft(t, ti) ? " <small>τώρα</small>" : ""}</div></button>`).join("")}</div>`);
@@ -586,8 +586,8 @@
   // the undo buttons stay on the screen (only when there is something to undo); the rest behind «⋯ Επιλογές»
   function undoBar(t) {
     const ti = P.trade_info || {}, n = undoSteps(t);
-    const b = (n ? `<button id="mUndoLast">↶ Αναίρεση κίνησης (${n})</button>` : "")
-      + (canUndo(t, ti) ? `<button id="mUsed">↩️ ${usedTrades(t, ti) ? `Αναίρεση Trades (${usedTrades(t, ti)})` : "Όπως στην αρχή του Round"}</button>` : "");
+    const b = (n ? `<button id="mUndoLast">↶ Undo (${n})</button>` : "")
+      + (canUndo(t, ti) ? `<button id="mUsed" title="Η ομάδα όπως στην αρχή του Round">⟲ Undo όλα</button>` : "");
     return b ? `<div class="tm-toolbar" role="toolbar">${b}</div>` : "";
   }
   function bindUndo(t, best) {
@@ -629,7 +629,7 @@
     $("#mEdit").onclick = () => { close(); setup = { players: t.players.map((x) => ({ ...x })) }; mode = "setup"; render(best); };
     $("#mBank").onclick = () => {
       close();
-      sheet(`<div class="sh"><div><h2>Credits</h2><div class="muted">Το υπόλοιπο, όπως φαίνεται στο παιχνίδι σου (το πρώτο νούμερο στο CREDITS)</div></div>
+      sheet(`<div class="sh"><div><h2>Credits</h2><div class="muted">Το πρώτο νούμερο στο CREDITS του παιχνιδιού</div></div>
           <button class="x" onclick="closePlayer()">×</button></div>
         <input id="tmBank" class="tm-input" inputmode="decimal" value="${f1(t.bank)}" autocomplete="off"><button class="tm-primary" id="tmBankOk">Αποθήκευση</button>`);
       $("#tmBankOk").onclick = () => { const v = parseFloat(String($("#tmBank").value).replace(",", "."));
