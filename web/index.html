@@ -481,7 +481,7 @@ const newb = (r, info = true) => (r.no_data && !r.prior ? ' <span class="pill">�
   : r.returning ? ` <span class="pill few"${info ? ' data-info="back"' : ""}>↩ επιστρέφει</span>` : "");
 const exb = (r) => (r.expert_pick > 0 ? ` <span class="pill" title="στήλες fantasy που τον προτείνουν">👍${r.expert_pick}${r.expert_cap ? "★" : ""}</span>` : "")
   + (r.expert_avoid > 0 ? ` <span class="pill" title="στήλη που προτείνει να τον αποφύγεις">👎</span>` : "")
-  + (r.prior ? ` <span class="pill" title="χωρίς ιστορικό: εκτίμηση από το price">≈price</span>` : "");
+  + (r.prior === "τιμή" ? ` <span class="pill" title="χωρίς ιστορικό: εκτίμηση από το price">≈price</span>` : "");
 const dol = (r) => (r.price_trend === "up"
   ? ` <span class="pill up" data-info="dollar" title="πιθανή άνοδος price μετά το Round${r.price_delta != null ? ` (~+${r.price_delta.toFixed(1)} cr)` : ""}">$</span>`
   : r.price_trend === "down" ? ` <span class="pill down" data-info="dollar" title="πιθανή πτώση price">↓$</span>` : "");

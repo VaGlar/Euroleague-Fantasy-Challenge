@@ -906,10 +906,10 @@
     .tm-courtcard .tm-floor { overflow: visible; margin-left: 132px; margin-right: auto; }
     .tm-courtcard .tm-floor .lanes .pair { display: block; }
     .tm-courtcard .tm-floor .lane.coach, .tm-courtcard .tm-floor .lane.six { position: absolute; left: -132px; width: 120px; margin: 0; }
-    /* anchored to the bottom of the floor, stacked upwards: the 6th, then the coach above him */
-    .tm-courtcard .tm-floor .lane.six { bottom: 8px; }
-    .tm-courtcard .tm-floor .lane.coach { bottom: 150px; }
-    .tm-courtcard .tm-floor:not(:has(.lane.six)) .lane.coach { bottom: 8px; }
+    /* anchored to the top of the floor, stacked downwards: the coach, then the 6th below him */
+    .tm-courtcard .tm-floor .lane.coach { top: 0; }
+    .tm-courtcard .tm-floor .lane.six { top: 142px; }
+    .tm-courtcard .tm-floor:not(:has(.lane.coach)) .lane.six { top: 0; }
     .tm-courtcard .tm-floor .lane.coach .chip, .tm-courtcard .tm-floor .lane.six .chip { width: 100%; max-width: none; }
     .tm-courtcard .tm-floor .lane.coach h3, .tm-courtcard .tm-floor .lane.six h3 { color: var(--text-secondary) !important; opacity: 1; }
     .tm-courtcard .tm-floor .lane.coach .tm-slot { width: 100%; max-width: none; border-color: var(--text-muted); color: var(--text-secondary);
@@ -918,7 +918,7 @@
   /* more room (a PC): the bench on the right sideline, the four stacked, so the floor is only the court */
   @container (min-width: 580px) {
     .tm-courtcard .tm-floor { margin-right: 132px; }
-    .tm-courtcard .tm-floor .lane.bench { position: absolute; right: -132px; bottom: 8px; width: 120px; margin: 0; }
+    .tm-courtcard .tm-floor .lane.bench { position: absolute; right: -132px; top: 0; width: 120px; margin: 0; }
     .tm-courtcard .tm-floor .lane.bench .crow { flex-direction: column; flex-wrap: nowrap; gap: 6px; }
     .tm-courtcard .tm-floor .lane.bench .chip { width: 100%; max-width: none; }
     .tm-courtcard .tm-floor .lane.bench h3 { color: var(--text-secondary) !important; opacity: 1; }
