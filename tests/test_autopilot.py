@@ -210,3 +210,55 @@ def test_the_seed_lineup_starts_t1_players_and_benches_t2(pub):
     role = {q["id"]: q["role"] for q in r1["squad"]}
     assert all(role[i] == "πάγκος" for i in t2)                          # T2 players wait
     assert sum(role[i] == "5άδα" for i in first if i not in t2) == 5
+
+
+def test_update_makes_the_turn_2_changes_then_scores_and_ranks_the_round(pub, monkeypatch):
+    """Live flow: round 3 decided; T1 played (its starters flopped) and T2 still to come -> the T2
+    changes; then the round is over -> scored with the final roles, ranked, owner's points attached."""
+    now = pd.Timestamp.now(tz="UTC")
+    rows, table = pool()
+    rows = [{**r, "turn": 1 if r["team"] == "AAA" else 2} for r in rows]
+    games = pd.DataFrame([
+        {"round": 3, "gamecode": 1, "home": "AAA", "away": "X1", "played": True,
+         "utc": (now - pd.Timedelta(days=1)).isoformat(), "home_score": 80, "away_score": 70},
+        {"round": 3, "gamecode": 2, "home": "BBB", "away": "X2", "played": False,
+         "utc": (now + pd.Timedelta(days=1)).isoformat(), "home_score": 0, "away_score": 0}])
+    empty = pd.DataFrame(columns=["round", "gamecode", "person_id", "fp"])
+    monkeypatch.setattr(autopilot, "actual_points", lambda s: (empty, None))
+    monkeypatch.setattr(autopilot.history, "load", lambda *a, **k: games.copy())
+    autopilot.update(2026, rnd=3, trade_rnd=3, rows=rows, table=table, max_trades=4, min_gain=0.5)
+
+    # T1 done: every AAA player scored 0, BBB (T2) players still have their xFPT
+    live = [{**r, "actual": 0.0 if r["team"] == "AAA" else None} for r in rows]
+    s = autopilot.update(2026, rnd=3, trade_rnd=4, rows=live, table=table, max_trades=4, min_gain=0.5)
+    r3 = next(e for e in s["rounds"] if e["round"] == 3)
+    assert "2" in r3.get("moves", {}) and r3["moves"]["2"]["in"]         # T2 players came in for the flops
+    starters = [p for p in r3["squad"] if p["role"] in ("5άδα", "6ος")]
+    assert sum(p["captain"] for p in r3["squad"]) == 1 and len(starters) == 6
+
+    # the round is over: scored with the final roles, the owner's points, the rank in the standings
+    games.loc[1, ["played", "home_score", "away_score"]] = [True, 75, 70]
+    fp = pd.DataFrame([{"round": 3, "gamecode": 1 if p["team"] == "AAA" else 2, "person_id": p["person_id"],
+                        "fp": 10.0} for p in r3["squad"] if p["person_id"]])
+    monkeypatch.setattr(autopilot, "actual_points", lambda s: (fp, None))
+    monkeypatch.setattr(autopilot.fantasy, "rank_of", lambda total, *a: 1234)
+    s = autopilot.update(2026, rnd=4, trade_rnd=4, rows=rows, table=table, max_trades=4, min_gain=0.5,
+                         my_points={"3": 150.0},
+                         overall={"id": 7, "teams": 5000, "matchday_id": 55, "round": 3, "my_total": 150.0})
+    r3 = next(e for e in s["rounds"] if e["round"] == 3)
+    assert r3["pts"] > 0 and r3["my_pts"] == 150.0 and r3["rank"] == 1234 and r3["my_rank"] == 1234
+    assert s["total"]["rounds"] == 1 and s["total"]["pts"] == r3["pts"]
+
+
+def test_seed_command_writes_the_seed_file(pub, tmp_path, monkeypatch):
+    """python -m elf.autopilot seed 1:<predictions> ...: the seed file from saved predictions."""
+    rows, _ = pool()
+    first = [1, 2, 3, 4, 9, 10, 11, 12, 17, 18, 21]
+    best = {"cost": 60.0, "team": [{"id": r["id"], "price": r["price"], "position": r["position"], "x_now": r["x_now"],
+                                    "role": "5άδα", "captain": False} for r in rows if r["id"] in first]}
+    pred = {"players": [{**r, "fantasy_id": r["id"], "person_id": f"p{r['id']}"} for r in rows], "best_team": best}
+    f = tmp_path / "pred.json"
+    f.write_text(json.dumps(pred))
+    autopilot.main([f"1:{f}", f"1.2:{f}", f"2:{f}"])
+    seed = json.loads((pub.parent / "autopilot_seed.json").read_text())
+    assert [e["round"] for e in seed["rounds"]] == [1, 2]

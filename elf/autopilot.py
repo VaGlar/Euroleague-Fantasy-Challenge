@@ -298,11 +298,10 @@ def seed_rounds(snapshots: list[tuple], max_trades: int = 4, min_gain: float = 2
     return state["rounds"]
 
 
-if __name__ == "__main__":
-    # python -m elf.autopilot seed 1:<predictions before round 1> 1.2:<... before its turn 2> 2:<...> ...
-    import sys
+def main(args: list[str]) -> dict:
+    """python -m elf.autopilot seed 1:<predictions before round 1> 1.2:<... before its turn 2> 2:<...> ..."""
     snaps = []
-    for a in sys.argv[2:]:
+    for a in args:
         key, path = a.split(":", 1)
         rnd, _, turn = key.partition(".")
         snaps.append((int(rnd), json.loads(open(path).read()), int(turn) if turn else None))
@@ -310,3 +309,9 @@ if __name__ == "__main__":
            "rounds": seed_rounds(snaps)}
     _seed_path().write_text(json.dumps(out, ensure_ascii=False, indent=1))
     print([(e["round"], e["trades"], e["bank"], e["x_total"]) for e in out["rounds"]])
+    return out
+
+
+if __name__ == "__main__":
+    import sys
+    main(sys.argv[2:])
