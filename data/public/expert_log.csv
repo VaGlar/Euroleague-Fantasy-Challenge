@@ -84,27 +84,25 @@ round,source,stance,person_id,name,team,model_xpts
 3,Basketball Sphere – Fantasy,avoid,000898,"VALANCIUNAS, JONAS",ZAL,23.46
 3,Basketball Sphere – Fantasy,avoid,009035,"BOLOMBOY, JOEL",ASV,6.66
 3,Basketball Sphere – Fantasy,avoid,013667,"FERNANDO, BRUNO",IST,7.18
-3,Basketball Sphere – Fantasy,pick,007975,"FRANCISCO, SYLVAIN",PAN,21.23
-3,Basketball Sphere – Fantasy,pick,013369,"JONES, CARLIK",PAR,22.46
-3,Basketball Sphere – Fantasy,pick,014734,"LAWSON, A.J.",BAS,14.86
-3,Basketball Sphere – Fantasy,pick,010781,"LUNDBERG, IFFE",TEL,6.69
-3,Basketball Sphere – Fantasy,captain,003469,"VEZENKOV, SASHA",OLY,24.11
-3,Basketball Sphere – Fantasy,pick,011217,"TAYLOR, KAMERON",PAM,14.12
-3,Basketball Sphere – Fantasy,pick,014207,"OMORUYI, EUGENE",BES,11.76
-3,Basketball Sphere – Fantasy,pick,014009,"STEVENS, LAMAR",PAR,9.67
-3,Basketball Sphere – Fantasy,pick,015140,"NKAMHOUA, OLIVIER",BAR,4.75
+3,EuroLeague Fantasy Tips (official),pick,007975,"FRANCISCO, SYLVAIN",PAN,21.23
+3,EuroLeague Fantasy Tips (official),pick,013369,"JONES, CARLIK",PAR,22.46
+3,EuroLeague Fantasy Tips (official),pick,006661,"WILBEKIN, SCOTTIE",BES,10.91
+3,EuroLeague Fantasy Tips (official),pick,015161,"FODZO DADA, MARC-OWEN",ASV,7.68
+3,EuroLeague Fantasy Tips (official),pick,007513,"GIEDRAITIS, DOVYDAS",ZAL,0.16
+3,EuroLeague Fantasy Tips (official),pick,003112,"SARIC, DARIO",IST,16.33
+3,EuroLeague Fantasy Tips (official),pick,008192,"TUBELIS, AZUOLAS",ZAL,17.19
+3,EuroLeague Fantasy Tips (official),pick,007230,"SEDEKERSKIS, TADAS",BAS,13.5
+3,EuroLeague Fantasy Tips (official),pick,014168,"KEY, BRAXTON",ULK,9.02
 3,EuroLeague Fantasy Tips (official),captain,003842,"LESSORT, MATHIAS",PAN,20.37
 3,EuroLeague Fantasy Tips (official),pick,012788,"OTURU, DAN",HTA,18.75
 3,EuroLeague Fantasy Tips (official),pick,007553,"BALCEROWSKI, OLEK",BAR,12.94
 3,EuroLeague Fantasy Tips (official),pick,007201,"VOIGTMANN, JOHANNES",MUN,9.43
 3,EuroLeague Fantasy Tips (official),pick,010390,"HAYES, KEVARRIUS",PAR,6.08
-3,EuroLeague Fantasy Tips (official),pick,003112,"SARIC, DARIO",IST,16.33
-3,EuroLeague Fantasy Tips (official),pick,008192,"TUBELIS, AZUOLAS",ZAL,17.19
-3,EuroLeague Fantasy Tips (official),pick,007230,"SEDEKERSKIS, TADAS",BAS,13.5
-3,EuroLeague Fantasy Tips (official),pick,014168,"KEY, BRAXTON",ULK,9.02
-3,EuroLeague Fantasy Tips (official),pick,006661,"WILBEKIN, SCOTTIE",BES,10.91
-3,EuroLeague Fantasy Tips (official),pick,015161,"FODZO DADA, MARC-OWEN",ASV,7.68
-3,EuroLeague Fantasy Tips (official),pick,007513,"GIEDRAITIS, DOVYDAS",ZAL,0.16
+3,Basketball Sphere – Fantasy,captain,003469,"VEZENKOV, SASHA",OLY,24.11
+3,Basketball Sphere – Fantasy,pick,011217,"TAYLOR, KAMERON",PAM,14.12
+3,Basketball Sphere – Fantasy,pick,014207,"OMORUYI, EUGENE",BES,11.76
+3,Basketball Sphere – Fantasy,pick,014009,"STEVENS, LAMAR",PAR,9.67
+3,Basketball Sphere – Fantasy,pick,015140,"NKAMHOUA, OLIVIER",BAR,4.75
 3,EuroBallin (Substack),pick,010568,"JONES, CHRIS",RED,14.49
 3,EuroBallin (Substack),pick,007027,"MALEDON, THEO",MAD,11.59
 3,EuroBallin (Substack),pick,011205,"HALL, DEVON",MIL,10.97

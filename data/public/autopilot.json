@@ -301,7 +301,7 @@
   {
    "round": 3,
    "trades": 4,
-   "bank": 1.3,
+   "bank": 0.2,
    "squad": [
     {
      "id": 3766,
@@ -312,7 +312,7 @@
      "team": "OLY",
      "role": "5άδα",
      "captain": true,
-     "x_now": 26.0
+     "x_now": 23.1
     },
     {
      "id": 3791,
@@ -323,7 +323,7 @@
      "team": "PAR",
      "role": "5άδα",
      "captain": false,
-     "x_now": 23.6
+     "x_now": 20.9
     },
     {
      "id": 3887,
@@ -334,40 +334,40 @@
      "team": "PAN",
      "role": "5άδα",
      "captain": false,
-     "x_now": 22.3
+     "x_now": 20.3
     },
     {
-     "id": 8846,
-     "price": 8.6,
-     "position": "Center",
-     "person_id": "009733",
-     "name": "JEKIRI, TONYE",
-     "team": "PAR",
-     "role": "6ος",
-     "captain": false,
-     "x_now": 13.9
-    },
-    {
-     "id": 11516,
-     "price": 10.2,
-     "position": "Forward",
-     "person_id": "015166",
-     "name": "CROWDER, JAE",
-     "team": "ASV",
-     "role": "πάγκος",
-     "captain": false,
-     "x_now": 12.3
-    },
-    {
-     "id": 7424,
-     "price": 6.6,
-     "position": "Center",
-     "person_id": "014108",
-     "name": "DIARRA, ALIOU",
-     "team": "VIR",
+     "id": 4180,
+     "price": 9.9,
+     "position": "Guard",
+     "person_id": "013285",
+     "name": "DOTSON, DEVON",
+     "team": "BES",
      "role": "5άδα",
      "captain": false,
-     "x_now": 10.5
+     "x_now": 15.1
+    },
+    {
+     "id": 11504,
+     "price": 11.0,
+     "position": "Center",
+     "person_id": "003958",
+     "name": "THIEMANN, JOHANNES",
+     "team": "MUN",
+     "role": "6ος",
+     "captain": false,
+     "x_now": 13.7
+    },
+    {
+     "id": 4061,
+     "price": 4.8,
+     "position": "Forward",
+     "person_id": "008084",
+     "name": "MANTZOUKAS, ELEFTHERIOS",
+     "team": "PAN",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 11.8
     },
     {
      "id": 4255,
@@ -389,7 +389,7 @@
      "team": "ASV",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 5.5
+     "x_now": 6.3
     },
     {
      "id": 4012,
@@ -400,7 +400,7 @@
      "team": "MIL",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 3.7
+     "x_now": 3.4
     },
     {
      "id": 4016,
@@ -414,18 +414,18 @@
      "x_now": 2.3
     },
     {
-     "id": 3886,
-     "price": 4.6,
-     "position": "Guard",
-     "person_id": "001844",
-     "name": "HACKETT, DANIEL",
-     "team": "VIR",
+     "id": 7231,
+     "price": 5.4,
+     "position": "Center",
+     "person_id": "010318",
+     "name": "DESSERT, BRICE",
+     "team": "IST",
      "role": "5άδα",
      "captain": false,
-     "x_now": 1.4
+     "x_now": 0.0
     }
    ],
-   "x_total": 145.7
+   "x_total": 138.3
   }
  ],
  "seed_id": "5a453a755a9b",
@@ -436,5 +436,5 @@
   "raw": 184.8,
   "avg_raw": 115.9
  },
- "generated": "2026-09-30T21:08:06.615059+00:00"
+ "generated": "2026-09-30T21:15:38.923645+00:00"
 }
