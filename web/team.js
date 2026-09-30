@@ -624,11 +624,11 @@
     const close = () => { host.innerHTML = ""; };
     if (host.innerHTML) { close(); return; }
     host.innerHTML = `<div class="tm-menu" role="menu">
-      <button id="mBackup">🔗 Αντίγραφο ασφαλείας (σύνδεσμος)</button>
+      <button id="mBackup">🔗 Αντίγραφο ασφαλείας</button>
       <button id="mEdit">✏️ Αλλαγή ομάδας</button>
       <button id="mBank">💰 Διόρθωση credits</button>
       ${WIDE() ? "" : `<button id="mInstall">📱 Βάλ' το στην οθόνη σου</button>`}
-      <button id="mMail">✉️ Ιδέα ή πρόβλημα; Αντιγραφή του email μας</button>
+      <button id="mMail">✉️ Ιδέα/Πρόβλημα</button>
       <button id="mDel" class="tm-danger">🗑 Διαγραφή ομάδας</button></div>`;
     $("#mBackup").onclick = async () => {
       close();
