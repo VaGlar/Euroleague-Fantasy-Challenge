@@ -450,7 +450,7 @@
         ${hint ? `<p class="tm-hint">${hint}</p>` : ""}</div>
       ${nextTrades}</div>
       <div class="tm-colR">${items.length && !done ? `<button class="tm-steps" id="tmSteps" type="button">📋 <b>${items.length} ${items.length === 1 ? "βήμα" : "βήματα"}</b> για το Round ${pl.ti.round} <span aria-hidden="true">↓</span></button>` : ""}<div class="card tm-courtcard"><h2>${t.game ? (t.fromGame ? "Στο παιχνίδι τώρα" : "Η πρόταση") : "Your Starting five"}${t.game ? ` <small class="muted">${t.fromGame ? "διακεκομμένο = αλλάζει" : "δεν διαβάστηκε το Starting five"}</small>` : ""}</h2>
-        ${courtHtml(t, rows, t.game ? pl : null)}<p class="tm-hint">${t.game ? "Πάτα παίκτη για στατιστικά." : "Πάτα παίκτη: Captain, Trade, στατιστικά · σύρε πάνω σε άλλον για sub."}</p></div></div></div>
+        ${courtHtml(t, rows, t.game ? pl : null)}</div></div></div>
       ${bestCard(best)}`;
   }
 
