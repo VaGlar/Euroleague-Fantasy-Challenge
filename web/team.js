@@ -775,7 +775,7 @@
     if (mode === "setup" || !t) {
       if (!setup) setup = { players: [] };
       mode = "setup";
-      $("#team").innerHTML = setupView();
+      $("#team").innerHTML = setupView(); sizeFloors();
       document.querySelectorAll("#team .tm-slot").forEach((b) => b.onclick = () => pickSheet(b.dataset.pos, best));
       document.querySelectorAll("#team [data-set]").forEach((c) => {
         const open = () => setupPlayerSheet(Number(c.dataset.set), best);
@@ -819,8 +819,19 @@
     bindSteps();
     bindCourt(t);
   }
+  // PC: the side columns (coach, 6th, bench) start level with the top of the court; they are placed from the
+  // row under the court, so they are lifted by the court's height (the centre circle stays where it is)
+  function sizeFloors() {
+    document.querySelectorAll("#team .tm-floor").forEach((f) => {
+      const c = f.querySelector(".court");
+      if (c && c.offsetHeight) f.style.setProperty("--court-h", c.offsetHeight + "px");
+    });
+  }
+  window.addEventListener("resize", sizeFloors);
+  document.addEventListener("toggle", sizeFloors, true);      // the best-team card opens
   // phones: the court comes first, this line says there are steps to do below it and takes you there
   function bindSteps() {
+    sizeFloors();
     const b = document.getElementById("tmSteps"), to = document.getElementById("tmTodo");
     if (b && to) b.onclick = () => window.scrollTo({ top: to.getBoundingClientRect().top + window.scrollY - 8, behavior: "smooth" });
   }
@@ -905,13 +916,13 @@
   @container (min-width: 500px) {
     :is(.tm-courtcard, .tm-sideline) .tm-floor { overflow: visible; margin-left: 132px; margin-right: auto; }
     :is(.tm-courtcard, .tm-sideline) .tm-floor .lanes .pair { display: block; }
-    /* measured from the top of the floor (not from the bench row under the court) */
-    :is(.tm-courtcard, .tm-sideline) .tm-floor .lanes, :is(.tm-courtcard, .tm-sideline) .tm-floor .lanes .pair { position: static; }
+    /* placed from the row under the court (.lanes), lifted by the court's height (--court-h, set in sizeFloors) */
+    :is(.tm-courtcard, .tm-sideline) .tm-floor .lanes .pair { position: static; }
     :is(.tm-courtcard, .tm-sideline) .tm-floor .lane.coach, :is(.tm-courtcard, .tm-sideline) .tm-floor .lane.six { position: absolute; left: -132px; width: 120px; margin: 0; }
     /* anchored to the top of the floor, stacked downwards: the coach, then the 6th below him */
-    :is(.tm-courtcard, .tm-sideline) .tm-floor .lane.coach { top: 0; }
-    :is(.tm-courtcard, .tm-sideline) .tm-floor .lane.six { top: 142px; }
-    :is(.tm-courtcard, .tm-sideline) .tm-floor:not(:has(.lane.coach)) .lane.six { top: 0; }
+    :is(.tm-courtcard, .tm-sideline) .tm-floor .lane.coach { top: calc(8px - var(--court-h, 0px)); }
+    :is(.tm-courtcard, .tm-sideline) .tm-floor .lane.six { top: calc(150px - var(--court-h, 0px)); }
+    :is(.tm-courtcard, .tm-sideline) .tm-floor:not(:has(.lane.coach)) .lane.six { top: calc(8px - var(--court-h, 0px)); }
     :is(.tm-courtcard, .tm-sideline) .tm-floor .lane.coach .chip, :is(.tm-courtcard, .tm-sideline) .tm-floor .lane.six .chip { width: 100%; max-width: none; }
     :is(.tm-courtcard, .tm-sideline) .tm-floor .lane.coach h3, :is(.tm-courtcard, .tm-sideline) .tm-floor .lane.six h3 { color: var(--text-secondary) !important; opacity: 1; }
     :is(.tm-courtcard, .tm-sideline) .tm-floor .lane.coach .tm-slot { width: 100%; max-width: none; border-color: var(--text-muted); color: var(--text-secondary);
@@ -920,7 +931,7 @@
   /* more room (a PC): the bench on the right sideline, the four stacked, so the floor is only the court */
   @container (min-width: 580px) {
     :is(.tm-courtcard, .tm-sideline) .tm-floor { margin-right: 132px; }
-    :is(.tm-courtcard, .tm-sideline) .tm-floor .lane.bench { position: absolute; right: -132px; top: 0; width: 120px; margin: 0; }
+    :is(.tm-courtcard, .tm-sideline) .tm-floor .lane.bench { position: absolute; right: -132px; top: calc(8px - var(--court-h, 0px)); width: 120px; margin: 0; }
     :is(.tm-courtcard, .tm-sideline) .tm-floor .lane.bench .crow { flex-direction: column; flex-wrap: nowrap; gap: 6px; }
     :is(.tm-courtcard, .tm-sideline) .tm-floor .lane.bench .chip { width: 100%; max-width: none; }
     :is(.tm-courtcard, .tm-sideline) .tm-floor .lane.bench h3 { color: var(--text-secondary) !important; opacity: 1; }
