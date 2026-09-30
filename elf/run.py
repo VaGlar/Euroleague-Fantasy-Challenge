@@ -28,8 +28,12 @@ HORIZON = 3  # rounds used for transfer value
 HORIZON_WEIGHTS = (1.0, 0.6, 0.35)
 UNLIMITED_AFTER = {6, 13, 18, 23, 28, 34}  # trades unlimited before the next round
 MIN_GAIN_PER_TRADE = 2.0  # weighted xFPT a trade must add over the full 3-round horizon
-PRICE_PRIOR_GAMES = 2   # with few games this season, the price-based estimate weighs as 2 games of his own (fades as he plays); review after round 3
-PRICE_PRIOR_MAX_GAMES = 10
+# the price-based estimate weighs as PRICE_PRIOR_GAMES games after a player's 1st game this season and
+# halves with each game after (share 67% → 33% → 14% → 6% → 3%): a bad start doesn't zero a 10-credit
+# player, and by his 4th-5th game only his own form counts. Rates by eye; tuned on the logged results
+PRICE_PRIOR_GAMES = 2
+PRICE_PRIOR_DECAY = 0.5
+PRICE_PRIOR_MAX_GAMES = 12   # past this the weight is < 0.1%: skipped
 
 
 def horizon_weights(rnd: int) -> list[float]:
@@ -828,14 +832,15 @@ def build(offline: bool = False) -> dict:
             table.loc[m, "x_now"] = est * f_game[m]
             table.loc[m, "x_h"] = est * sum(horizon_weights(trade_rnd))
             table.loc[m, "prior"] = "τιμή"
-            # few games this season (newcomer or not): the price keeps counting as PRICE_PRIOR_GAMES games and
-            # fades as his own games add up (one bad game shouldn't make a 10-credit player 0: Motley -13, 1).
+            # few games this season (newcomer or not): the price keeps counting for a few games and fades
+            # fast as his own games add up (one bad game shouldn't make a 10-credit player 0: Motley -13, 1).
             # Not backtestable (no past prices); re-checked with this season's prices at rounds 6-8 (R&D 015)
             nc = (~table["no_data"].fillna(False)
                   & table["games"].fillna(0).between(1, PRICE_PRIOR_MAX_GAMES) & table["price"].notna()
                   & (table["position"] == pos) & ~table["unregistered"].fillna(False).astype(bool))
             if nc.any():
-                g_, k_ = table.loc[nc, "games"].astype(float), float(PRICE_PRIOR_GAMES)
+                g_ = table.loc[nc, "games"].astype(float)
+                k_ = PRICE_PRIOR_GAMES * PRICE_PRIOR_DECAY ** (g_ - 1)
                 est_nc = (slope * table.loc[nc, "price"] + icpt).clip(lower=0)   # the market's estimate, no discount
                 table.loc[nc, "x_now"] = (g_ * table.loc[nc, "x_now"] + k_ * est_nc * f_game[nc]) / (g_ + k_)
                 table.loc[nc, "x_h"] = (g_ * table.loc[nc, "x_h"] + k_ * est_nc * sum(horizon_weights(trade_rnd))) / (g_ + k_)
