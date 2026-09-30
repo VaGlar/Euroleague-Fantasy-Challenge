@@ -955,7 +955,7 @@
     text-align: left; cursor: pointer; }
   .tm-kept { font-size: 14px; margin: 10px 0 0; }
   .tm-kept .linkbtn { font-size: 13px; }
-  .tm-trades { border: 0; background: none; padding: 0; font: inherit; color: inherit; cursor: pointer; text-decoration: underline dotted; }
+  .tm-trades { border: 0; background: none; padding: 0; font: inherit; color: inherit; cursor: pointer; }
   /* wide screens: the to-do list and the court side by side */
   @media (min-width: 1000px) {
     .tm-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.55fr); gap: 14px; align-items: start; }   /* the court has sidelines */

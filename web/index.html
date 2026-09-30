@@ -77,7 +77,14 @@ select, input { font: inherit; padding: 6px 8px; border-radius: 8px; border: 1px
   background: var(--surface-1); color: var(--text-primary); }
 .range input { width: 72px; }
 .chk { display: inline-flex; align-items: center; gap: 6px; color: var(--text-secondary); }
-.posbox { display: inline-flex; flex-wrap: wrap; gap: 4px 12px; }
+.posdd { position: relative; display: inline-block; }
+.posdd summary { list-style: none; cursor: pointer; border: 1px solid var(--border); border-radius: 10px; padding: 8px 30px 8px 12px;
+  background: var(--surface-1); color: var(--text-primary); position: relative; white-space: nowrap; }
+.posdd summary::-webkit-details-marker { display: none; }
+.posdd summary::after { content: "▾"; position: absolute; right: 10px; color: var(--text-secondary); }
+.posmenu { position: absolute; z-index: 6; top: calc(100% + 4px); left: 0; display: flex; flex-direction: column; gap: 2px; min-width: 100%;
+  background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px; padding: 6px 10px; box-shadow: 0 6px 20px rgba(0,0,0,.12); }
+.posmenu .chk { padding: 6px 0; white-space: nowrap; }
 .linkbtn { border: 0; background: none; color: var(--series-1); font: inherit; cursor: pointer; padding: 6px 4px; }
 #fcount { font-size: 13px; margin: -4px 0 8px; }
 .tablewrap { overflow-x: auto; }
@@ -394,7 +401,7 @@ body > header nav button.on { color: var(--bar-fg); border-color: var(--bar-line
   <section id="players">
     <details class="fbox" id="fbox"><summary id="fsum">Φίλτρα</summary>
     <div class="filters">
-      <span class="posbox" id="fpos" role="group" aria-label="Θέσεις"><label class="chk"><input type="checkbox" value="Guard"> Guard</label><label class="chk"><input type="checkbox" value="Forward"> Forward</label><label class="chk"><input type="checkbox" value="Center"> Center</label><label class="chk"><input type="checkbox" value="Head Coach"> Head Coach</label></span>
+      <details class="posdd" id="fposdd"><summary id="fpossum">Όλες οι θέσεις</summary><div class="posmenu" id="fpos" role="group" aria-label="Θέσεις"><label class="chk"><input type="checkbox" value="Guard"> Guard</label><label class="chk"><input type="checkbox" value="Forward"> Forward</label><label class="chk"><input type="checkbox" value="Center"> Center</label><label class="chk"><input type="checkbox" value="Head Coach"> Head Coach</label></div></details>
       <select id="fteam"><option value="">Όλες οι ομάδες</option></select>
       <select id="fturn"><option value="">Όλα τα turns</option></select>
       <input id="fsearch" placeholder="Αναζήτηση" size="12">
@@ -626,6 +633,7 @@ function renderPlayers() {
     && (isNaN(pmax) || (p.price != null && p.price <= pmax))
     && (!healthy || p.avail_game == null || p.avail_game >= 1));
   saveFilters();
+  $("#fpossum").textContent = pos.length ? pos.join(", ") : "Όλες οι θέσεις";
   $("#fcount").textContent = `${rows.length} ${rows.length === 1 ? "παίκτης" : "παίκτες"}`;
   rows.sort((a, b) => ((a[sortKey] ?? -1e9) > (b[sortKey] ?? -1e9) ? 1 : -1) * sortDir);
   const max = Math.max(...rows.map((r) => r.x_now || 0), 1);
@@ -1485,6 +1493,7 @@ setInterval(() => {
   FILTERS.forEach((id) => $("#" + id).addEventListener("input", renderPlayers));
   $("#fsearch").addEventListener("focus", (e) => searchToTop(e.target));
   $("#fsort").addEventListener("input", () => { sortKey = $("#fsort").value; sortDir = -1; renderPlayers(); });
+  document.addEventListener("click", (e) => { const d = $("#fposdd"); if (d && d.open && !d.contains(e.target)) d.open = false; });
   $("#freset").onclick = () => {
     FILTERS.forEach((id) => { const el = $("#" + id); if (id === "fpos") el.querySelectorAll("input").forEach((i) => { i.checked = false; }); else if (el.type === "checkbox") el.checked = false; else el.value = ""; });
     sortKey = "x_now"; sortDir = -1; renderPlayers();

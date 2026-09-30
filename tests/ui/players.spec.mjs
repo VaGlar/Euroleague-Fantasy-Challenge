@@ -33,7 +33,9 @@ test("filters: visible on PC, behind «Φίλτρα» on phones; search, positio
   await expect(rows(page, testInfo).first()).toContainText("Vezenkov");
   await page.locator("#fsearch").fill("");
 
+  await page.locator("#fpossum").click();
   await page.locator(`#fpos input[value="Center"]`).check();
+  await page.locator("#fpossum").click();                         // closes the dropdown
   await expect(page.locator("#fcount")).not.toHaveText(new RegExp(`^${all} `));
   const pos = await page.evaluate(() => [...document.querySelectorAll("#plist .pcard .pm, #ptable tbody tr td:first-child .muted")]
     .filter((e) => e.getBoundingClientRect().width).map((e) => e.textContent));
@@ -84,7 +86,9 @@ test("player popup: xFPT, POP, price chart section; closes with × and Escape", 
 test("a head coach's popup has upcoming games too", async ({ page }, testInfo) => {
   await open(page, "public", { tab: "players" });
   if (isPhone(testInfo)) await page.locator("#fsum").click();
+  await page.locator("#fpossum").click();
   await page.locator(`#fpos input[value="Head Coach"]`).check();
+  await page.locator("#fpossum").click();                         // closes the dropdown
   await rows(page, testInfo).first().click();
   await expect(page.locator("#sheet h3", { hasText: "Επόμενα 3 παιχνίδια" })).toBeVisible();
   await expect(page.locator("#sheet")).not.toContainText("Δεν υπάρχουν προγραμματισμένοι αγώνες");
