@@ -750,9 +750,9 @@
   // ------------------------------------------------------------ render
   function bestCard(best) {
     if (!best) return "";
-    return `<details class="card"><summary><b>Βέλτιστη ομάδα από το μηδέν</b> <span class="muted">· ${f1(best.cost)} cr</span></summary>
-      <p class="muted">Με απεριόριστα Trades (π.χ. μετά τα Rounds 6, 13, 18…).</p>
-      ${courtView(best.team.map((p) => ({ ...p, actual: null })), null)}</details>`;
+    // same sideline layout as «Your Starting five» on a PC (head coach and 6th left, bench right)
+    return `<details class="card"><summary><b>Καλύτερη ομάδα του Round</b> <span class="muted">· ${f1(best.cost)} cr</span></summary>
+      <div class="tm-courtcard">${courtView(best.team.map((p) => ({ ...p, actual: null })), null)}</div></details>`;
   }
   function render(best) {
     best = best === undefined ? P.best_team : best;
