@@ -12,7 +12,7 @@
      "person_id": "001518",
      "name": "RICCI, GIAMPAOLO",
      "team": "MIL",
-     "role": "πάγκος",
+     "role": "5άδα",
      "captain": false,
      "x_now": 4.4
     },
@@ -23,7 +23,7 @@
      "person_id": "001844",
      "name": "HACKETT, DANIEL",
      "team": "VIR",
-     "role": "πάγκος",
+     "role": "6ος",
      "captain": false,
      "x_now": 4.0
     },
@@ -67,7 +67,7 @@
      "person_id": "010781",
      "name": "LUNDBERG, IFFE",
      "team": "TEL",
-     "role": "6ος",
+     "role": "πάγκος",
      "captain": false,
      "x_now": 13.1
     },
@@ -89,7 +89,7 @@
      "person_id": "012731",
      "name": "NDIAYE, MBAYE",
      "team": "OLY",
-     "role": "5άδα",
+     "role": "πάγκος",
      "captain": false,
      "x_now": 10.2
     },
@@ -128,12 +128,25 @@
     }
    ],
    "x_total": 144.7,
-   "pts": 115.2,
+   "moves": {
+    "2": {
+     "in": [
+      4012,
+      3886
+     ],
+     "out": [
+      3905,
+      3948
+     ],
+     "captain": null
+    }
+   },
+   "pts": 119.1,
    "raw": 85.7,
    "avg_raw": null,
    "my_pts": 138.75,
-   "rank": 214928,
-   "teams": 337417,
+   "rank": 203985,
+   "teams": 338115,
    "my_rank": 98682
   },
   {
@@ -159,7 +172,7 @@
      "person_id": "015166",
      "name": "CROWDER, JAE",
      "team": "ASV",
-     "role": "πάγκος",
+     "role": "5άδα",
      "captain": false,
      "x_now": 21.9
     },
@@ -181,7 +194,7 @@
      "person_id": "007975",
      "name": "FRANCISCO, SYLVAIN",
      "team": "PAN",
-     "role": "πάγκος",
+     "role": "5άδα",
      "captain": false,
      "x_now": 20.8
     },
@@ -203,7 +216,7 @@
      "person_id": "015161",
      "name": "FODZO DADA, MARC-OWEN",
      "team": "ASV",
-     "role": "πάγκος",
+     "role": "6ος",
      "captain": false,
      "x_now": 16.8
     },
@@ -225,7 +238,7 @@
      "person_id": "001518",
      "name": "RICCI, GIAMPAOLO",
      "team": "MIL",
-     "role": "5άδα",
+     "role": "πάγκος",
      "captain": false,
      "x_now": 5.8
     },
@@ -236,7 +249,7 @@
      "person_id": "010318",
      "name": "DESSERT, BRICE",
      "team": "IST",
-     "role": "5άδα",
+     "role": "πάγκος",
      "captain": false,
      "x_now": 4.9
     },
@@ -247,7 +260,7 @@
      "person_id": "011816",
      "name": "AKELE, NICOLA",
      "team": "MIL",
-     "role": "6ος",
+     "role": "πάγκος",
      "captain": false,
      "x_now": 3.3
     },
@@ -263,7 +276,22 @@
      "x_now": 2.7
     }
    ],
-   "x_total": 153.0
+   "x_total": 153.0,
+   "moves": {
+    "2": {
+     "in": [
+      11516,
+      3887,
+      11521
+     ],
+     "out": [
+      4012,
+      7231,
+      4016
+     ],
+     "captain": null
+    }
+   }
   },
   {
    "round": 3,
@@ -279,18 +307,18 @@
      "team": "OLY",
      "role": "5άδα",
      "captain": true,
-     "x_now": 27.5
+     "x_now": 27.8
     },
     {
-     "id": 3857,
-     "price": 14.9,
-     "position": "Center",
-     "person_id": "012788",
-     "name": "OTURU, DAN",
-     "team": "HTA",
+     "id": 3791,
+     "price": 14.5,
+     "position": "Guard",
+     "person_id": "013369",
+     "name": "JONES, CARLIK",
+     "team": "PAR",
      "role": "5άδα",
      "captain": false,
-     "x_now": 24.8
+     "x_now": 25.6
     },
     {
      "id": 11516,
@@ -304,28 +332,6 @@
      "x_now": 21.9
     },
     {
-     "id": 4247,
-     "price": 12.6,
-     "position": "Guard",
-     "person_id": "010568",
-     "name": "JONES, CHRIS",
-     "team": "RED",
-     "role": "5άδα",
-     "captain": false,
-     "x_now": 20.9
-    },
-    {
-     "id": 11504,
-     "price": 11.0,
-     "position": "Center",
-     "person_id": "003958",
-     "name": "THIEMANN, JOHANNES",
-     "team": "MUN",
-     "role": "5άδα",
-     "captain": false,
-     "x_now": 18.4
-    },
-    {
      "id": 11521,
      "price": 5.3,
      "position": "Guard",
@@ -334,7 +340,7 @@
      "team": "ASV",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 16.8
+     "x_now": 16.6
     },
     {
      "id": 11512,
@@ -345,18 +351,62 @@
      "team": "BAS",
      "role": "5άδα",
      "captain": false,
-     "x_now": 15.9
+     "x_now": 14.5
     },
     {
-     "id": 11540,
-     "price": 4.9,
+     "id": 3897,
+     "price": 9.0,
+     "position": "Head Coach",
+     "person_id": "ADG",
+     "name": "JASIKEVICIUS, SARAS",
+     "team": "ULK",
+     "role": "coach",
+     "captain": false,
+     "x_now": 14.1
+    },
+    {
+     "id": 11504,
+     "price": 11.0,
+     "position": "Center",
+     "person_id": "003958",
+     "name": "THIEMANN, JOHANNES",
+     "team": "MUN",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 13.7
+    },
+    {
+     "id": 3824,
+     "price": 7.8,
      "position": "Guard",
-     "person_id": "011706",
-     "name": "SAINT-SUPERY, MARIO",
-     "team": "PAM",
+     "person_id": "007947",
+     "name": "VILDOZA, LUCA",
+     "team": "PAR",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 13.7
+    },
+    {
+     "id": 4061,
+     "price": 4.8,
+     "position": "Forward",
+     "person_id": "008084",
+     "name": "MANTZOUKAS, ELEFTHERIOS",
+     "team": "PAN",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 13.0
+    },
+    {
+     "id": 7231,
+     "price": 5.4,
+     "position": "Center",
+     "person_id": "010318",
+     "name": "DESSERT, BRICE",
+     "team": "IST",
      "role": "6ος",
      "captain": false,
-     "x_now": 11.8
+     "x_now": 5.1
     },
     {
      "id": 4012,
@@ -367,40 +417,19 @@
      "team": "MIL",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 5.8
-    },
-    {
-     "id": 4016,
-     "price": 4.0,
-     "position": "Forward",
-     "person_id": "011816",
-     "name": "AKELE, NICOLA",
-     "team": "MIL",
-     "role": "πάγκος",
-     "captain": false,
-     "x_now": 3.3
-    },
-    {
-     "id": 3974,
-     "price": 5.1,
-     "position": "Head Coach",
-     "person_id": "001252",
-     "name": "GAVEL, ANTON",
-     "team": "MUN",
-     "role": "coach",
-     "captain": false,
-     "x_now": -3.4
+     "x_now": 3.9
     }
    ],
-   "x_total": 169.3
+   "x_total": 172.8
   }
  ],
+ "seed_id": "8749e56f0015",
  "start_round": 1,
  "total": {
   "rounds": 1,
-  "pts": 115.2,
+  "pts": 119.1,
   "raw": 85.7,
   "avg_raw": null
  },
- "generated": "2026-09-29T18:11:08.789392+00:00"
+ "generated": "2026-09-30T04:07:53.380799+00:00"
 }
