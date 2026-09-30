@@ -417,7 +417,7 @@ body > header nav button.on { color: var(--bar-fg); border-color: var(--bar-line
     <div class="muted" id="fcount"></div>
     <div class="card tablewrap"><table id="ptable"></table></div>
     <div class="plist" id="plist"></div>
-    <p class="muted">xFPT: αναμενόμενα points fantasy του Round (PIR +10% αν κερδίσει η ομάδα· coach: βαθμολογία από τη διαφορά σκορ). xFPT3: xFPT των επόμενων 3 Rounds όπου γίνονται Trades (αφού ξεκινήσει το Round, από το επόμενο) με βάρη 1 / 0.6 / 0.35 (η επόμενη μετράει όσο οι άλλες δύο μαζί)· Rounds μετά από παράθυρο απεριόριστων Trades δεν μετράνε.
+    <p class="muted">xFPT: αναμενόμενα points του Round (PIR +10% αν κερδίσει η ομάδα· coach: βαθμολογία από τη διαφορά σκορ). xFPT3: xFPT των επόμενων 3 Rounds όπου γίνονται Trades (αφού ξεκινήσει το Round, από το επόμενο) με βάρη 1 / 0.6 / 0.35 (η επόμενη μετράει όσο οι άλλες δύο μαζί)· Rounds μετά από παράθυρο απεριόριστων Trades δεν μετράνε.
       Ματσάρισμα: πόσο περισσότερο/λιγότερο PIR δίνει ο αντίπαλος στη θέση (▲ ευνοϊκό).
       <b>$</b>: πιθανή άνοδος price μετά το Round (↓$ πτώση).</p>
   </section>
@@ -550,7 +550,7 @@ function moreSheet() {
 
 // ---------- ⓘ: one-line explanations of the fantasy terms
 const INFO = {
-  xpts: "xFPT: αναμενόμενα points fantasy (FPT) στο Round (PIR, +10% αν κερδίσει η ομάδα· για τον coach, από τη διαφορά σκορ).",
+  xpts: "xFPT: αναμενόμενα points στο Round (PIR, +10% αν κερδίσει η ομάδα· για τον coach, από τη διαφορά σκορ).",
   xpts3: "xFPT3: αναμενόμενα points των επόμενων 3 Rounds, με βάρη 1 / 0,6 / 0,35 (η επόμενη μετράει περισσότερο). Με αυτό διαλέγονται τα Trades.",
   value: "Value: xFPT3 ανά credit, πόσα points δίνει κάθε credit του price του.",
   dollar: "$: πιθανή άνοδος price μετά το Round. ↓$: πιθανή πτώση.",
@@ -559,7 +559,7 @@ const INFO = {
   avail: "Διαθεσιμότητα από το παιχνίδι και τα νέα: εκτός, ή η πιθανότητα να παίξει. Ανανεώνεται και 3 ώρες πριν τον πρώτο αγώνα.",
   back: "Επιστρέφει μετά από απουσία: δεν έπαιξε σε κανένα από τα 3 τελευταία ματς της ομάδας του (τραυματισμός ή εκτός ροτάσιον). Όσοι γυρίζουν έτσι παίζουν συνήθως λιγότερα λεπτά: σε δύο σεζόν έφεραν 25–30% λιγότερα από τη φόρμα τους. Γι' αυτό η πρόβλεψή του είναι ήδη μειωμένη κατά 20%.",
   few: "Νέος στη EuroLeague: δεν έχει περσινή σεζόν εδώ, οπότε η πρόβλεψη στηρίζεται μόνο στα λίγα φετινά του ματς και είναι αβέβαιη. Ένα καλό ματς δεν είναι επίπεδο: σε παλιότερες σεζόν, τέτοιοι παίκτες με υψηλή πρόβλεψη έφεραν συχνά αρκετά λιγότερα. Η εικόνα καθαρίζει μετά από 4–5 ματς.",
-  pts: "Points: τα πραγματικά fantasy points του στο τρέχον Round (πράσινα αν ξεπέρασε το xFPT). «–»: δεν έχει παίξει ακόμα.",
+  pts: "Points: τα πραγματικά points του στο τρέχον Round (πράσινα αν ξεπέρασε το xFPT). «–»: δεν έχει παίξει ακόμα.",
   pop: "POP: τι ποσοστό των managers του παιχνιδιού τον έχει στην ομάδα του.",
   pchg: "Δ price: πόσο έχει αλλάξει το price του από το πρώτο Round της σεζόν.",
   pir: "PIR: η αξιολόγηση της EuroLeague (πόντοι, ριμπάουντ, ασίστ, κλεψίματα, κοψίματα, κερδισμένα φάουλ, μείον άστοχα, λάθη και φάουλ).",
@@ -1035,7 +1035,7 @@ async function playerParts(r) {
       </tbody></table></div>` : `<p class="muted">Χωρίς αγώνες EuroLeague στα δεδομένα${r.prior ? " — εκτίμηση από το price του" : ""}.</p>`;
   const last = d.last.length ? `<div class="games">${d.last.map((g) => `<div class="game">
       <div>${g.home ? "🏠" : "✈️"} <b>${esc(tc(g.opp))}</b> <span class="${g.won ? "W" : "L"}">${g.won ? "Ν" : "Η"}</span> ${esc(g.score)}</div>
-      <div class="gv"><b>${f1(g.fp)}</b><small>fantasy</small></div>
+      <div class="gv"><b>${f1(g.fp)}</b><small>points</small></div>
       <div class="gs">R${g.round} · ${esc(g.date || "")} · ${g.min}' · ${g.pts}π ${g.reb}ρ ${g.ast}α · PIR ${g.pir}</div></div>`).join("")}</div>`
     : `<p class="muted">Κανένας αγώνας φέτος ακόμα.</p>`;
   const next = d.next.length ? `<div class="games">${d.next.map((g) => `<div class="game">
@@ -1049,7 +1049,7 @@ async function playerParts(r) {
     <div class="kpis"><div class="kpi"><b>${r.actual != null ? f1(r.actual) : f1(r.x_now)}</b><span>${r.actual != null ? "points (έπαιξε)" : "xFPT του Round"}</span></div>
       <div class="kpi"><b>${f1(r.x_h)}</b><span>xFPT3</span></div>
       <div class="kpi"><b>${r.value == null ? "–" : r.value.toFixed(2)}</b><span>xFPT3 / cr</span></div></div>`;
-  const body = `<h3>Ανάλυση${g.label ? ` ${done ? "" : "· "}${g.label}` : ""}</h3>
+  const body = `<h3>${done ? "Αγώνας" : "Επόμενος αγώνας"}${g.label ? ` ${done ? "" : "· "}${g.label}` : ""}</h3>
     <ul class="why">${why.map(([k, v]) => `<li><span>${k}</span><span>${v}</span></li>`).join("")}</ul>
     ${coach ? "" : `<h3>Στατιστικά (μ.ό. ανά αγώνα)</h3>${stats}`}
     ${coach ? "" : `<h3>Τελευταία 3 παιχνίδια</h3>${last}`}
@@ -1279,7 +1279,7 @@ function renderModel(mp, trk, ap) {
   html += ex.length ? `<div class="tablewrap"><table class="fit"><thead><tr><th>Στήλη</th><th class="num">Επιλογές</th><th class="num">Έφεραν</th><th class="num">Μοντέλο έλεγε</th><th class="num">Διαφορά</th></tr></thead><tbody>
       ${ex.map((e) => `<tr><td>${esc(e.source)}</td><td class="num">${e.n}</td><td class="num">${f1(e.actual)}</td><td class="num">${f1(e.model)}</td>
         <td class="num ${e.diff >= 0 ? "up" : "down"}"><b>${e.diff >= 0 ? "+" : ""}${f1(e.diff)}</b></td></tr>`).join("")}</tbody></table></div>
-      <p class="muted">Μέσα points fantasy των παικτών που πρότεινε κάθε στήλη, έναντι του xFPT που τους έδινε το μοντέλο. Σταθερά θετικό = η στήλη βλέπει κάτι που το μοντέλο δεν βλέπει (τότε αξίζει να της δώσουμε μεγαλύτερο βάρος). Με λίγες επιλογές, αγνόησέ το.</p>`
+      <p class="muted">Μέσα points των παικτών που πρότεινε κάθε στήλη, έναντι του xFPT που τους έδινε το μοντέλο. Σταθερά θετικό = η στήλη βλέπει κάτι που το μοντέλο δεν βλέπει (τότε αξίζει να της δώσουμε μεγαλύτερο βάρος). Με λίγες επιλογές, αγνόησέ το.</p>`
     : `<p class="muted">Εμφανίζεται μόλις ολοκληρωθεί ένα Round με καταγεγραμμένες προτάσεις στηλών.</p>`;
   html += `</div>`;
   // 4. last season's backtest

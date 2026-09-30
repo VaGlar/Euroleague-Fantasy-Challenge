@@ -5,7 +5,7 @@ import { open, checkLayout, checkNoOverlap, buildTeam, stored, option, isPhone }
 const C = "#team .tm-courtcard";                 // the user's court (the best-team card has another)
 const court = (page) => page.locator(`${C} .chip[data-fid]`);
 const header = (page) => page.locator("#team .tm-top");
-const tradeRows = (page) => page.locator('#team li.tm-item:has-text("Trade:")');
+const tradeRows = (page) => page.locator("#team li.tm-item.tm-trade");
 
 async function savedTeam(page) {
   await open(page, "public", { tab: "team" });
@@ -198,7 +198,6 @@ test.describe("public edition", () => {
     await savedTeam(page);
     await expect(page.locator("#team")).not.toContainText("Trades για το Round");
     await expect(tradeRows(page)).toHaveCount(0);
-    await expect(page.locator("#team .tm-hint").first()).toContainText("Μέσα στο Round");
   });
 
   test("«Αναίρεση τελευταίας κίνησης»: one step back at a time, down to the round's start", async ({ page }) => {
@@ -279,7 +278,7 @@ test.describe("public edition", () => {
     const out = (await first.locator(".tm-what b").first().innerText()).trim();
     await first.locator("[data-keep]").click();
     await expect(page.locator("#team .tm-kept")).toContainText(out);
-    await expect(page.locator('#team li.tm-item:has-text("Trade:") .tm-what > b:first-child', { hasText: out })).toHaveCount(0);
+    await expect(page.locator('#team li.tm-item.tm-trade .tm-what > b:first-child', { hasText: out })).toHaveCount(0);
     await page.locator("#team [data-unkeep]").first().click();
     await expect(page.locator("#team .tm-kept")).toHaveCount(0);
   });
@@ -317,7 +316,7 @@ test.describe("player sheet on the team screen", () => {
     await savedTeam(page);
     await court(page).first().click();
     await expect(page.locator("#aRep")).toBeVisible();
-    await expect(page.locator("#tmDetails")).toContainText("Ανάλυση");
+    await expect(page.locator("#tmDetails")).toContainText(/Επόμενος αγώνας|Αγώνας/);
     await expect(page.locator("#tmDetails")).toContainText("Επόμενα 3 παιχνίδια");
     await expect(page.locator("#tmDetails")).not.toContainText("Δεν υπάρχουν προγραμματισμένοι αγώνες");
   });
@@ -363,7 +362,7 @@ test.describe("personal edition", () => {
     await open(page, "personal", { tab: "team" });
     await court(page).first().click();
     await expect(page.locator("#aCap")).toHaveCount(0);            // lineup and CAP go through /lineup
-    await expect(page.locator("#tmDetails")).toContainText("Ανάλυση");
+    await expect(page.locator("#tmDetails")).toContainText(/Επόμενος αγώνας|Αγώνας/);
     await page.locator("#aRep").click();
     await expect(page.locator("#sheet h2")).toContainText("Στη θέση του");
     const n = await page.locator("#tmList [data-n]").count();
