@@ -18,7 +18,7 @@ import requests
 
 from .config import PUBLIC, TIMEZONE
 
-LINEUP_BUTTON = {"text": "👥 Πρόταση πεντάδας (/lineup)", "callback_data": "lu:preview"}
+LINEUP_BUTTON = {"text": "👥 Πρόταση Starting five (/lineup)", "callback_data": "lu:preview"}
 
 
 def today() -> str:

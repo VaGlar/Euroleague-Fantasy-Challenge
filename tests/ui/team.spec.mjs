@@ -63,7 +63,7 @@ test.describe("public edition", () => {
     await expect(header(page)).toContainText(/Credits \d+\.\d\/\d+\.\d/);
     await expect(header(page)).toContainText("Trades 0/4");
     await expect(header(page)).toContainText(/Round \d+/);
-    await expect(page.locator(`${C} .lane h3`, { hasText: "6th (100% FPT)" })).toBeVisible();
+    await expect(page.locator(`${C} .lane h3`, { hasText: "Sixth man (100% FPT)" })).toBeVisible();
     await expect(page.locator(`${C} .lane h3`, { hasText: "Bench (50% FPT)" })).toBeVisible();
     await expect(page.locator(`${C} .lane h3`, { hasText: "Head Coach" })).toBeVisible();
     await expect(page.locator(`${C} .chip.cap`)).toHaveCount(1);
@@ -199,7 +199,7 @@ test.describe("public edition", () => {
     await savedTeam(page);
     await expect(page.locator("#team")).not.toContainText("Trades για το Round");
     await expect(tradeRows(page)).toHaveCount(0);
-    await expect(page.locator("#team .tm-hint").first()).toContainText("Μέσα στο round");
+    await expect(page.locator("#team .tm-hint").first()).toContainText("Μέσα στο Round");
   });
 
   test("«Αναίρεση τελευταίας κίνησης»: one step back at a time, down to the round's start", async ({ page }) => {
@@ -236,7 +236,7 @@ test.describe("public edition", () => {
     await expect(header(page)).toContainText("Trades 0/4");        // not binding: the count starts again
 
     await option(page, "mUsed");                                   // …but the undo is still there
-    await expect(page.locator("#sheet")).toContainText("Αναίρεση των αλλαγών");
+    await expect(page.locator("#sheet")).toContainText("Αναίρεση των κινήσεων");
     await page.locator("#tmUndoOk").click();
     const after = await stored(page);
     for (const k of ["players", "bank"]) expect(after[k]).toEqual(before[k]);
@@ -250,11 +250,11 @@ test.describe("public edition", () => {
     await page.locator("#tmConfirm").click();
     expect(await tradeRows(page).count()).toBeLessThanOrEqual(1);   // not 4 again
 
-    await option(page, "mLeft");                                    // and later, from the options
+    await page.locator("#tmTrades").click();                       // and later, from «Trades x/4» in the header
     await page.locator('#sheet [data-left="0"]').click();
     await expect(header(page)).toContainText("Trades 4/4");
     await expect(tradeRows(page)).toHaveCount(0);
-    await option(page, "mLeft");
+    await page.locator("#tmTrades").click();
     await page.locator('#sheet [data-left="4"]').click();
     await expect(header(page)).toContainText("Trades 0/4");
     await expect(tradeRows(page).first()).toBeVisible();

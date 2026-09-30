@@ -27,7 +27,7 @@ LETTER = {"Guard": "G", "Forward": "F", "Center": "C"}
 # league status_id values seen with a refused save (403 "The league status does not
 # allow the request"): 2 = games of the round live / being scored
 LOCKED_STATUS = {2}
-LOCKED_MSG = ("🔒 Το παιχνίδι δεν δέχεται αλλαγές αυτή τη στιγμή (κλειδώνει όσο παίζονται ή "
+LOCKED_MSG = ("🔒 Το παιχνίδι δεν δέχεται subs αυτή τη στιγμή (κλειδώνει όσο παίζονται ή "
               "βαθμολογούνται αγώνες). Δεν άλλαξε τίποτα — στείλε ξανά /lineup αργότερα, "
               "π.χ. το πρωί μετά το report των 11:00.")
 
@@ -73,7 +73,7 @@ def load_state():
     five = court[:5]
     name = "-".join(str(sum(p["position"]["name"] == pos for p in five)) for pos in POS)
     if forms.get(name) != raw.get("formation_id"):
-        raise Abort(f"η πεντάδα που διαβάζω ({name}) δεν ταιριάζει με το formation της ομάδας "
+        raise Abort(f"το Starting five που διαβάζω ({name}) δεν ταιριάζει με το formation της ομάδας "
                     f"(id {raw.get('formation_id')}) — δεν αλλάζω τίποτα")
     # slot order inside the five: learn it from the current roster (the game uses C->F->G)
     seq = [POS[p["position"]["name"]] for p in five]
@@ -83,7 +83,7 @@ def load_state():
         direction = 1    # Guard, Forward, Center
     else:
         order = "".join(LETTER[p["position"]["name"]] for p in five)
-        raise Abort(f"άγνωστη διάταξη θέσεων στην πεντάδα ({order}) — δεν αλλάζω τίποτα")
+        raise Abort(f"άγνωστη διάταξη θέσεων στο Starting five ({order}) — δεν αλλάζω τίποτα")
 
     squad = []
     for p in players:
@@ -106,7 +106,7 @@ def load_state():
 def propose(st: dict) -> dict:
     res = optimize.lineup_in_round(st["squad"])
     if not res:
-        raise Abort("ο βελτιστοποιητής δεν βρήκε έγκυρη πεντάδα")
+        raise Abort("ο βελτιστοποιητής δεν βρήκε έγκυρο Starting five")
     res["team"], res["plan"] = optimize.defer_later_turns(res["team"])
     new = {p["id"]: p for p in res["team"]}
     changes = [p for p in st["squad"] if p["position"] != "Head Coach"
@@ -115,9 +115,9 @@ def propose(st: dict) -> dict:
     for p in changes:  # a played player may only leave the starting six for the bench
         n = new[p["id"]]
         if p["played"] and n["role"] != p["cur_role"] and n["role"] != "πάγκος":
-            raise Abort(f"ο {p['name']} έχει ήδη παίξει: μπορεί μόνο να πάει στον πάγκο")
+            raise Abort(f"ο {p['name']} έχει ήδη παίξει: μπορεί μόνο να πάει στο Bench")
         if p["played"] and n["captain"] and not p["cur_captain"]:
-            raise Abort(f"ο {p['name']} έχει ήδη παίξει και δεν μπορεί να γίνει αρχηγός")
+            raise Abort(f"ο {p['name']} έχει ήδη παίξει και δεν μπορεί να γίνει Captain")
 
     # body: played players who keep their role keep their exact slot; the others fill
     # the free slots of their group (five grouped like the game does; sixth; bench)
@@ -154,9 +154,9 @@ def describe(st: dict, pr: dict) -> str:
     five = [p for p in pr["res"]["team"] if p["role"] == "5άδα"]
     six = [p for p in pr["res"]["team"] if p["role"] == "6ος"]
     cap = next(p for p in pr["res"]["team"] if p["captain"])
-    lines = [f"👥 <b>Πρόταση πεντάδας</b> ({pr['formation']})",
+    lines = [f"👥 <b>Πρόταση Starting five</b> ({pr['formation']})",
              ", ".join(lab(p) for p in five), f"6ος: {', '.join(lab(p) for p in six)}",
-             f"★ Αρχηγός: {cap['name']}", ""]
+             f"★ Captain: {cap['name']}", ""]
     for pl in pr["res"].get("plan") or []:
         lines.append(f"🕐 Πριν το T{pl['bench'].get('turn')}: αν ο {pl['start']['name']} φέρει "
                      f"κάτω από {pl['bench']['x_now']:.0f}, βάλε τον {pl['bench']['name']} "
@@ -166,13 +166,13 @@ def describe(st: dict, pr: dict) -> str:
     if not pr["changes"]:
         lines.append("✅ Η ομάδα σου είναι ήδη έτσι — τίποτα να αλλάξει.")
         return "\n".join(lines)
-    lines.append("<b>Αλλαγές:</b>")
+    lines.append("<b>Subs:</b>")
     for p in pr["changes"]:
         n = new[p["id"]]
         if n["role"] != p["cur_role"]:
             lines.append(f"• {p['name']}: {p['cur_role']} → {n['role']}")
         if n["captain"] and not p["cur_captain"]:
-            lines.append(f"• ★ αρχηγός: {p['name']}")
+            lines.append(f"• ★ Captain: {p['name']}")
     return "\n".join(lines)
 
 
@@ -206,7 +206,7 @@ def apply(nonce: str):
     if r.status_code == 403 and "league status" in r.text.lower():
         raise Abort(LOCKED_MSG + f"\n(league status {st.get('league_status')})")
     if r.status_code >= 400:
-        raise Abort(f"το παιχνίδι απέρριψε την αλλαγή ({r.status_code}): {r.text[:200]}")
+        raise Abort(f"το παιχνίδι απέρριψε το sub ({r.status_code}): {r.text[:200]}")
     # read back and verify
     after = fantasy.roster(st["team"]["id"], st["md"]["id"]).get("players") or []
     got = {p["id"]: (p["court_position"], bool(p.get("is_captain"))) for p in after}
@@ -215,8 +215,8 @@ def apply(nonce: str):
     if bad:
         raise Abort(f"η αποθήκευση απάντησε OK αλλά {len(bad)} παίκτες δεν έχουν τη θέση που "
                     "στάλθηκε — έλεγξε την ομάδα στο παιχνίδι.")
-    say("✅ <b>Η πεντάδα εφαρμόστηκε</b> και επιβεβαιώθηκε στο παιχνίδι.\n\n"
-        + describe(st, pr).split("\n\n<b>Αλλαγές:</b>")[0])
+    say("✅ <b>Το Starting five εφαρμόστηκε</b> και επιβεβαιώθηκε στο παιχνίδι.\n\n"
+        + describe(st, pr).split("\n\n<b>Subs:</b>")[0])
 
 
 def check():
@@ -234,7 +234,7 @@ def check():
         pending = [t for t in (pred.get("my_team") or {}).get("transfers") or []
                    if t.get("out_id") in owned]
         if pending:
-            notes += ["🔁 <b>Εκκρεμούν μεταγραφές</b> που πρότεινα (γίνονται μόνο στο app):"]
+            notes += ["🔁 <b>Εκκρεμούν Trades</b> που πρότεινα (γίνονται μόνο στο app):"]
             notes += [f"• {t['out']} ➜ {t['in']}" for t in pending]
             notes.append("")
     pr = propose(st)
@@ -248,7 +248,7 @@ def check():
             [{"text": "✅ Εφάρμοσε", "callback_data": f"lu:apply:{pr['nonce']}"},
              {"text": "❌ Άκυρο", "callback_data": "lu:cancel"}])
     else:
-        say(head + "\n".join(notes) + "✅ Η πεντάδα σου στο παιχνίδι είναι ήδη η προτεινόμενη.")
+        say(head + "\n".join(notes) + "✅ Το Starting five σου στο παιχνίδι είναι ήδη το προτεινόμενο.")
 
 
 def main(argv: list[str]) -> int:
