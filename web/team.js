@@ -751,7 +751,7 @@
   function bestCard(best) {
     if (!best) return "";
     // same sideline layout as «Your Starting five» on a PC (head coach and 6th left, bench right)
-    return `<details class="card"><summary><b>Καλύτερη ομάδα του Round</b> <span class="muted">· ${f1(best.cost)} cr</span></summary>
+    return `<details class="card"><summary><b>Καλύτερη ομάδα του Round (xFPT)</b> <span class="muted">· ${f1(best.cost)} cr</span></summary>
       <div class="tm-courtcard">${courtView(best.team.map((p) => ({ ...p, actual: null })), null)}</div></details>`;
   }
   function render(best) {
