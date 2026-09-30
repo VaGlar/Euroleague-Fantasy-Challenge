@@ -779,7 +779,10 @@ def build(offline: bool = False) -> dict:
         season_pir=("season_pir", "first"), prev_pir=("prev_pir", "first"),
         season_min=("season_min", "first"), games=("games", "first"),
         returning=("returning", "first"), unregistered=("unregistered", "first"))
+    if "avail" not in now_round:
+        now_round = now_round.assign(avail=1.0)
     nr = now_round.groupby("person_id").agg(x_now=("xpir", "sum"), opp=("opp", "first"),
+                                            news_avail=("avail", "first"),
                                             home=("is_home", "first"), margin=("margin", "first"),
                                             pos_dev=("pos_dev", "first"))
     table = agg.join(nr, how="left").reset_index()
@@ -842,7 +845,9 @@ def build(offline: bool = False) -> dict:
                 g_ = table.loc[nc, "games"].astype(float)
                 k_ = PRICE_PRIOR_GAMES * PRICE_PRIOR_DECAY ** (g_ - 1)
                 est_nc = (slope * table.loc[nc, "price"] + icpt).clip(lower=0)   # the market's estimate, no discount
-                table.loc[nc, "x_now"] = (g_ * table.loc[nc, "x_now"] + k_ * est_nc * f_game[nc]) / (g_ + k_)
+                # out by the news for this round's game: the price doesn't bring him back
+                now_f = f_game[nc] * table.loc[nc, "news_avail"].fillna(1.0)
+                table.loc[nc, "x_now"] = (g_ * table.loc[nc, "x_now"] + k_ * est_nc * now_f) / (g_ + k_)
                 table.loc[nc, "x_h"] = (g_ * table.loc[nc, "x_h"] + k_ * est_nc * sum(horizon_weights(trade_rnd))) / (g_ + k_)
                 table.loc[nc, "prior"] = "τιμή+ματς"
         table, price_info = prices.annotate(table)  # $ = likely price rise
