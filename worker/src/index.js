@@ -42,7 +42,7 @@ const RESULTS_DELAY_MIN = 150;   // last tip-off + 2h30 ≈ games over and box s
 // Text inside an HTML-mode message: a stray "<" or "&" makes Telegram reject the whole message.
 const esc = (s) => String(s ?? "").replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
 
-const LINEUP_BUTTON = [[{ text: "👥 Πρόταση πεντάδας (/lineup)", callback_data: "lu:preview" }]];
+const LINEUP_BUTTON = [[{ text: "👥 Πρόταση Starting five (/lineup)", callback_data: "lu:preview" }]];
 
 // The personal site sits behind Cloudflare Access: the bot shows it a service token
 // (secrets CF_ACCESS_CLIENT_ID / CF_ACCESS_CLIENT_SECRET). Without them nothing extra is sent.
@@ -280,7 +280,7 @@ export default {
         await send(env, chat, `Ενημέρωση: ${p.generated}\nFantasy: ${p.fantasy_ok ? "OK" : "ΟΧΙ"}\n`
           + (esc((p.health || []).join("\n")) || "Χωρίς προβλήματα"));
       } else {
-        await send(env, chat, "/report — report ημέρας\n/top — top xFPT\n/lineup — πρόταση πεντάδας/αρχηγού με επιβεβαίωση\n/update — φρέσκα δεδομένα τώρα\n/health — κατάσταση\n"
+        await send(env, chat, "/report — report ημέρας\n/top — top xFPT\n/lineup — πρόταση Starting five/Captain με επιβεβαίωση\n/update — φρέσκα δεδομένα τώρα\n/health — κατάσταση\n"
           + (env.DASHBOARD_URL ? `\n${env.DASHBOARD_URL}` : ""));
       }
     } catch (e) {

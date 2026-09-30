@@ -28,8 +28,12 @@ HORIZON = 3  # rounds used for transfer value
 HORIZON_WEIGHTS = (1.0, 0.6, 0.35)
 UNLIMITED_AFTER = {6, 13, 18, 23, 28, 34}  # trades unlimited before the next round
 MIN_GAIN_PER_TRADE = 2.0  # weighted xFPT a trade must add over the full 3-round horizon
-NEWCOMER_PRIOR_GAMES = 2   # a newcomer's price-based estimate weighs as 2 games of his own (fades as he plays); review after round 3
-NEWCOMER_MAX_GAMES = 10
+# the price-based estimate weighs as PRICE_PRIOR_GAMES games after a player's 1st game this season and
+# halves with each game after (share 67% → 33% → 14% → 6% → 3%): a bad start doesn't zero a 10-credit
+# player, and by his 4th-5th game only his own form counts. Rates by eye; tuned on the logged results
+PRICE_PRIOR_GAMES = 2
+PRICE_PRIOR_DECAY = 0.5
+PRICE_PRIOR_MAX_GAMES = 12   # past this the weight is < 0.1%: skipped
 
 
 def horizon_weights(rnd: int) -> list[float]:
@@ -775,7 +779,10 @@ def build(offline: bool = False) -> dict:
         season_pir=("season_pir", "first"), prev_pir=("prev_pir", "first"),
         season_min=("season_min", "first"), games=("games", "first"),
         returning=("returning", "first"), unregistered=("unregistered", "first"))
+    if "avail" not in now_round:
+        now_round = now_round.assign(avail=1.0)
     nr = now_round.groupby("person_id").agg(x_now=("xpir", "sum"), opp=("opp", "first"),
+                                            news_avail=("avail", "first"),
                                             home=("is_home", "first"), margin=("margin", "first"),
                                             pos_dev=("pos_dev", "first"))
     table = agg.join(nr, how="left").reset_index()
@@ -828,16 +835,19 @@ def build(offline: bool = False) -> dict:
             table.loc[m, "x_now"] = est * f_game[m]
             table.loc[m, "x_h"] = est * sum(horizon_weights(trade_rnd))
             table.loc[m, "prior"] = "τιμή"
-            # new to the EuroLeague with a few games: the price keeps counting as NEWCOMER_PRIOR_GAMES games
-            # and fades as his own games add up (one bad first game shouldn't make a 10-credit player 0).
+            # few games this season (newcomer or not): the price keeps counting for a few games and fades
+            # fast as his own games add up (one bad game shouldn't make a 10-credit player 0: Motley -13, 1).
             # Not backtestable (no past prices); re-checked with this season's prices at rounds 6-8 (R&D 015)
-            nc = (~table["no_data"].fillna(False) & table["prev_pir"].isna()
-                  & table["games"].fillna(0).between(1, NEWCOMER_MAX_GAMES) & table["price"].notna()
+            nc = (~table["no_data"].fillna(False)
+                  & table["games"].fillna(0).between(1, PRICE_PRIOR_MAX_GAMES) & table["price"].notna()
                   & (table["position"] == pos) & ~table["unregistered"].fillna(False).astype(bool))
             if nc.any():
-                g_, k_ = table.loc[nc, "games"].astype(float), float(NEWCOMER_PRIOR_GAMES)
+                g_ = table.loc[nc, "games"].astype(float)
+                k_ = PRICE_PRIOR_GAMES * PRICE_PRIOR_DECAY ** (g_ - 1)
                 est_nc = (slope * table.loc[nc, "price"] + icpt).clip(lower=0)   # the market's estimate, no discount
-                table.loc[nc, "x_now"] = (g_ * table.loc[nc, "x_now"] + k_ * est_nc * f_game[nc]) / (g_ + k_)
+                # out by the news for this round's game: the price doesn't bring him back
+                now_f = f_game[nc] * table.loc[nc, "news_avail"].fillna(1.0)
+                table.loc[nc, "x_now"] = (g_ * table.loc[nc, "x_now"] + k_ * est_nc * now_f) / (g_ + k_)
                 table.loc[nc, "x_h"] = (g_ * table.loc[nc, "x_h"] + k_ * est_nc * sum(horizon_weights(trade_rnd))) / (g_ + k_)
                 table.loc[nc, "prior"] = "τιμή+ματς"
         table, price_info = prices.annotate(table)  # $ = likely price rise
@@ -877,7 +887,7 @@ def build(offline: bool = False) -> dict:
                   "prefs": {"keep": sorted(int(i) for i in keep_ids), "avoid": sorted(int(i) for i in avoid_ids)}}
             five = [r for r in my["actual_lineup"] if r["role"] == "5άδα"]
             if five and not {"Guard", "Forward", "Center"} <= {r["position"] for r in five}:
-                health.append("ομάδα: η πεντάδα που διάβασα δεν έχει G/F/C — έλεγχος court_position")
+                health.append("ομάδα: το Starting five που διάβασα δεν έχει G/F/C — έλεγχος court_position")
             try:
                 sq = _opt_rows(mine)
                 lu = optimize.lineup(sq) if len(sq) == 11 else None
@@ -1044,7 +1054,7 @@ def turn_check(tu: dict, table: pd.DataFrame, my: dict | None) -> list[str]:
     """Before a later turn: the best legal lineup given what already happened, from the
     same optimizer as /lineup (a played starter can only go to the bench, the armband
     only to a player who has not played)."""
-    lines = ["⭐ <b>CAP & αλλαγές πριν το Turn " f"{tu['turn']}</b>"]
+    lines = ["⭐ <b>Captain & subs πριν το Turn " f"{tu['turn']}</b>"]
     sq = in_round_squad(my)
     res = optimize.lineup_in_round(sq) if len(sq) == 11 else None
     if not res:
@@ -1066,7 +1076,7 @@ def turn_check(tu: dict, table: pd.DataFrame, my: dict | None) -> list[str]:
     cap_new = next(p for p in res["team"] if p["captain"])
     cap_cur = next((p for p in sq if p["cur_captain"]), None)
     if ins:
-        lines.append("🔄 <b>Αλλαγή</b>: μπαίνει " + ", ".join(
+        lines.append("🔄 <b>Sub</b>: μπαίνει " + ", ".join(
             f"{nm(p)} (xFPT {p['x_now']:.1f})" for p in ins) + " — βγαίνει " + ", ".join(
             f"{nm(p)} ({'έφερε' if p['played'] else 'xFPT'} {p['x_now']:.1f})" for p in outs))
     if cap_cur is None or cap_new["id"] != cap_cur["id"]:
@@ -1074,7 +1084,7 @@ def turn_check(tu: dict, table: pd.DataFrame, my: dict | None) -> list[str]:
     if ins or cap_cur is None or cap_new["id"] != cap_cur["id"]:
         lines.append("<i>Το /lineup το εφαρμόζει.</i>")
     else:
-        lines.append("✅ Καμία αλλαγή: η ομάδα σου είναι ήδη η καλύτερη δυνατή για σήμερα.")
+        lines.append("✅ Κανένα sub: η ομάδα σου είναι ήδη η καλύτερη δυνατή για σήμερα.")
     return lines
 
 
@@ -1112,12 +1122,12 @@ def messages(rnd, trn, table, my, dig, health, dash: str | None = None) -> list[
                     lines.append(f"• {m['out']} ➜ {m['in']}  ({m['price_out']}→{m['price_in']}cr)")
                 lines.append("")
             elif my:
-                lines += ["🔁 Καμία αλλαγή δεν αξίζει αυτή την αγωνιστική.", ""]
+                lines += ["🔁 Κανένα Trade δεν αξίζει αυτό το Round.", ""]
             if lu:
                 role = lambda r: [p for p in lu if p["role"] == r]  # noqa: E731
                 nm_ = lambda p: (f"{p['name'].split(',')[0].title()} ({p['position'][0]}"  # noqa: E731
                                  + (f", T{p['turn']}" if p.get("turn") else "") + ")")
-                lines.append("👥 <b>Προτεινόμενη πεντάδα</b> (με την τωρινή ομάδα)")
+                lines.append("👥 <b>Προτεινόμενο Starting five</b> (με την τωρινή ομάδα)")
                 lines.append(", ".join(nm_(p) for p in role("5άδα")))
                 lines.append("6th: " + ", ".join(nm_(p) for p in role("6ος")))
                 lines.append("Bench: " + ", ".join(nm_(p) for p in role("πάγκος")))
@@ -1136,32 +1146,32 @@ def messages(rnd, trn, table, my, dig, health, dash: str | None = None) -> list[
                         if p["role"] in ("5άδα", "6ος") and r["role"] == "πάγκος":
                             diff.append(f"βάλε τον {p['name'].split(',')[0].title()} {p['role']}")
                         elif p["role"] == "5άδα" and r["role"] == "6ος":
-                            diff.append(f"ο {p['name'].split(',')[0].title()} στην πεντάδα")
+                            diff.append(f"ο {p['name'].split(',')[0].title()} στο Starting five")
                     cap_s = next((p for p in lu if p["captain"]), None)
                     cap_r = next((r for r in real.values() if r["captain"]), None)
                     if cap_s and cap_r and cap_s["id"] != cap_r["fantasy_id"]:
-                        diff.append(f"αρχηγός ο {cap_s['name'].split(',')[0].title()} "
+                        diff.append(f"Captain ο {cap_s['name'].split(',')[0].title()} "
                                     f"(τώρα: {cap_r['name'].title()})")
                     lines.append("✅ Η ομάδα σου στο παιχνίδι είναι ήδη έτσι." if not diff else
                                  "✏️ <b>Στο παιχνίδι</b>: " + "; ".join(diff) + ".")
                 lines.append("")
-            lines.append("⭐ <b>CAP</b>" + (" (από την πεντάδα σου)" if lu else ""))
+            lines.append("⭐ <b>Captain</b>" + (" (από το Starting five σου)" if lu else ""))
             if len(cand_now):
                 lines.append(f"Turn 1: {_fmt(cand_now.iloc[0])}")
             if len(cand_later):
                 lines.append(f"Plan B (Turn 2+): {_fmt(cand_later.iloc[0])}")
-            lines.append("<i>Βάλε αρχηγό στο Turn 1· αν δεν φτάσει το xFPT του plan B, "
+            lines.append("<i>Βάλε Captain στο Turn 1· αν δεν φτάσει το xFPT του plan B, "
                          "μεταφέρεις το x2 σε παίκτη του Turn 2 (όχι σε κάποιον που έπαιξε).</i>")
         else:
             lines += turn_check(tu, table, my)
         if tu["turn"] == 1 and len(coaches):
             c = coaches.sort_values("x_now", ascending=False).iloc[0]
-            line = (f"🧑‍💼 <b>Καλύτερος coach αγωνιστικής</b>: {c['name'].split(',')[0].title()} ({tv(c['team'])}) "
+            line = (f"🧑‍💼 <b>Καλύτερος Coach του Round</b>: {c['name'].split(',')[0].title()} ({tv(c['team'])}) "
                     f"{'🏠' if c.get('home') else '✈️'} vs {tv(c.get('opp'))} — <b>{c['x_now']:.1f}</b>")
             if c.get("price") == c.get("price") and c.get("price") is not None:
                 line += f" · {c['price']}cr"
             lines += ["", line]
-        lines += ["", f"📈 <b>Top xFPT {'σήμερα' if tu['turn'] > 1 else 'αγωνιστικής'}</b>"]
+        lines += ["", f"📈 <b>Top xFPT {'σήμερα' if tu['turn'] > 1 else 'του Round'}</b>"]
         src = playing if tu["turn"] > 1 else t
         lines += [f"{i}. {_fmt(r)}" for i, r in enumerate(src.head(8).to_dict("records"), 1)]
         if "value" in t and tu["turn"] == 1:
@@ -1184,7 +1194,7 @@ def messages(rnd, trn, table, my, dig, health, dash: str | None = None) -> list[
             if len(cons):
                 lines += ["", "🗣️ <b>Προτάσεις στηλών fantasy</b> (πηγές που τον προτείνουν)"]
                 for r in cons.to_dict("records"):
-                    extra = " · ★ αρχηγός" if r.get("expert_cap") else ""
+                    extra = " · ★ Captain" if r.get("expert_cap") else ""
                     dollar = " $" if r.get("price_trend") == "up" else ""
                     price = f" · {r['price']}cr" if r.get("price") == r.get("price") and r.get("price") else ""
                     lines.append(f"• {r['name'].split(',')[0].title()} ({tv(r['team'])}, "
