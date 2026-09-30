@@ -188,6 +188,40 @@ test.describe("public edition", () => {
     await expect(header(page)).toContainText("Trades 0/4");
   });
 
+  test("round under way: no trades proposed (next round's wait for it to end), only swaps and CAP", async ({ page }) => {
+    await page.route(/predictions\.json/, async (route) => {
+      const res = await route.fetch();
+      const p = await res.json();
+      for (const x of p.players) if (x.turn === 1) x.actual = 7;       // turn 1 has been played
+      p.trade_info = { ...(p.trade_info || {}), round: p.round + 1 };
+      await route.fulfill({ response: res, json: p });
+    });
+    await savedTeam(page);
+    await expect(page.locator("#team")).not.toContainText("Trades για το Round");
+    await expect(tradeRows(page)).toHaveCount(0);
+    await expect(page.locator("#team .tm-hint").first()).toContainText("Μέσα στο round");
+  });
+
+  test("«Αναίρεση τελευταίας κίνησης»: one step back at a time, down to the round's start", async ({ page }) => {
+    await savedTeam(page);
+    await page.locator("#tmConfirm").click();
+    const start = await stored(page);
+    await tradeRows(page).first().locator(".tm-done").click();
+    const one = await stored(page);
+    await tradeRows(page).first().locator(".tm-done").click();
+    await expect(header(page)).toContainText("Trades 2/4");
+
+    await option(page, "mUndoLast");                               // the second trade goes back
+    let now = await stored(page);
+    for (const k of ["players", "bank", "used"]) expect(now[k]).toEqual(one[k]);
+    await expect(header(page)).toContainText("Trades 1/4");
+    await option(page, "mUndoLast");                               // the first one
+    await option(page, "mUndoLast");                               // the «confirmed» click
+    now = await stored(page);
+    for (const k of ["players", "bank", "roles", "captain"]) expect(now[k]).toEqual(start[k]);
+    await expect(header(page)).toContainText("Trades 0/4");
+  });
+
   test("«Αλλαγή ομάδας» after trades: the count starts again, but undo still brings back the round's team", async ({ page }) => {
     await savedTeam(page);
     await page.locator("#tmConfirm").click();

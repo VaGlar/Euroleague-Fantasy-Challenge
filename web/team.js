@@ -22,7 +22,37 @@
   const load = () => { try { return JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) { return null; } };
   const GAME = () => P.edition !== "public";
   const WIDE = () => window.matchMedia("(min-width: 700px)").matches;
-  const save = (t) => { if (t.game) return; try { t.updated = new Date().toISOString(); localStorage.setItem(KEY, JSON.stringify(t)); } catch (e) {} };
+  // every change is a step «Αναίρεση τελευταίας κίνησης» can take back, down to the team at the start of
+  // the round (steps of an earlier round are dropped). Saves within a moment are one move (a rotation).
+  const SNAP = ["players", "bank", "roles", "captain", "confirmed", "used"];
+  const snapOf = (t) => JSON.parse(JSON.stringify(Object.fromEntries(SNAP.map((k) => [k, t[k] ?? null]))));
+  const histRound = () => (P.trade_info || {}).round ?? P.round;
+  let inClick = false;                       // true until the current click's handler has finished
+  const save = (t, { undoing = false } = {}) => {
+    if (t.game) return;
+    try {
+      const prev = load();
+      const r = histRound();
+      t.hist = (t.hist || (prev && prev.hist) || []).filter((h) => h.round === r);
+      if (!undoing && !inClick && prev && JSON.stringify(snapOf(prev)) !== JSON.stringify(snapOf(t))) {
+        t.hist = [...t.hist, { round: r, snap: snapOf(prev) }].slice(-30);
+        inClick = true;
+        setTimeout(() => { inClick = false; }, 0);
+      }
+      t.updated = new Date().toISOString();
+      localStorage.setItem(KEY, JSON.stringify(t));
+    } catch (e) {}
+  };
+  const undoSteps = (t) => (t.hist || []).filter((h) => h.round === histRound()).length;
+  function undoLast(t) {
+    const hist = (t.hist || []).filter((h) => h.round === histRound());
+    const h = hist.pop();
+    if (!h) return false;
+    for (const k of SNAP) { if (h.snap[k] === null) delete t[k]; else t[k] = JSON.parse(JSON.stringify(h.snap[k])); }
+    t.hist = hist;
+    save(t, { undoing: true });
+    return true;
+  }
   function encode(t) {
     const j = JSON.stringify({ p: t.players.map((x) => [x.id, x.price]), b: t.bank, r: t.roles || null, c: t.captain ?? null, u: t.used ? { round: t.used.round, n: t.used.n } : null });
     return btoa(unescape(encodeURIComponent(j))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
@@ -378,7 +408,8 @@
         ${t.game ? "" : `<button class="tm-done" data-i="${n}" ${i.wait ? "disabled" : ""}>✓ Το έκανα</button>`}</li>`).join("");
     const turnPlan = pl.turnPlan.map((x) => { const s = pl.aRows.find((r) => r.id === x.start.id), b = pl.aRows.find((r) => r.id === x.bench.id);
       return `<li>🕐 <b>Πριν το T${x.bench.turn}</b>: αν ο ${esc(sur(s.name))} φέρει κάτω από ${Math.round(x.bench.x_now)}, βάλε τον ${esc(sur(b.name))}.</li>`; }).join("");
-    const nextTrades = !pl.tradesNow && pl.trs.pairs.length ? `<div class="card"><h2>Trades για το Round ${pl.ti.round}
+    // while the round is under way only swaps and the armband: next round's trades wait for it to end
+    const nextTrades = pl.inRound ? "" : !pl.tradesNow && pl.trs.pairs.length ? `<div class="card"><h2>Trades για το Round ${pl.ti.round}
         <small class="muted">(${pl.ti.max_trades > 4 ? "απεριόριστα" : `Trades ${usedTrades(t, pl.ti)}/${pl.ti.max_trades}`} · γίνονται όταν τελειώσει το τρέχον round)</small></h2>
         <ul class="tm-list">${pl.trs.pairs.map((pr, n) => { const o = rows.find((r) => r.id === pr.out.id), nn = row(pr.in.id);
           return `<li class="tm-item"><span class="tm-kind">🔁</span><span class="tm-what"><b>${esc(sur(o.name))}</b> ➜ <b>${esc(sur(nn.name))}</b>
@@ -550,6 +581,7 @@
       <button id="mEdit">✏️ Αλλαγή ομάδας</button>
       <button id="mBank">💰 Διόρθωση credits</button>
       ${(P.trade_info || {}).max_trades > 4 ? "" : `<button id="mLeft">🔁 Μεταγραφές που μένουν (${tradesLeft(t, P.trade_info || {})})</button>`}
+      ${undoSteps(t) ? `<button id="mUndoLast">↶ Αναίρεση τελευταίας κίνησης (${undoSteps(t)})</button>` : ""}
       ${canUndo(t, P.trade_info || {}) ? `<button id="mUsed">↩️ ${usedTrades(t, P.trade_info || {})
         ? `Αναίρεση των μεταγραφών που έκανες (${usedTrades(t, P.trade_info || {})})`
         : "Αναίρεση των αλλαγών: η ομάδα όπως ήταν στην αρχή της αγωνιστικής"}</button>` : ""}
@@ -584,6 +616,10 @@
       document.querySelectorAll("#sheet [data-left]").forEach((b) => b.onclick = () => {
         setTradesLeft(t, Number(b.dataset.left)); save(t); closePlayer(); render(best);
         toast(`Μένουν ${b.dataset.left} μεταγραφές· οι προτάσεις προσαρμόστηκαν`); });
+    };
+    if ($("#mUndoLast")) $("#mUndoLast").onclick = () => {
+      close();
+      if (undoLast(t)) { render(best); toast(`Αναιρέθηκε η τελευταία κίνηση${undoSteps(t) ? ` · μένουν ${undoSteps(t)}` : ""}`); }
     };
     if ($("#mUsed")) $("#mUsed").onclick = () => {
       close();
