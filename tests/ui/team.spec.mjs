@@ -104,11 +104,10 @@ test.describe("public edition", () => {
     expect((await stored(page)).players.find((x) => String(x.id) === id).price).toBe(3.3);
   });
 
-  test("options: each one works (phone menu / PC toolbar)", async ({ page, context }, testInfo) => {
+  test("options: each one works (behind «⋯ Επιλογές» on phone and PC)", async ({ page, context }, testInfo) => {
     await context.grantPermissions(["clipboard-read", "clipboard-write"]);
     await savedTeam(page);
-    if (isPhone(testInfo)) await expect(page.locator("#tmTools")).toHaveCount(0);
-    else await expect(page.locator("#tmTools #mBackup")).toBeVisible();
+    await expect(page.locator("#mBackup")).toHaveCount(0);           // closed until tapped
 
     await option(page, "mBank");
     await page.locator("#tmBank").fill("2,5");
@@ -181,7 +180,7 @@ test.describe("public edition", () => {
     // sold at today's price: bank = before + out(today) - in
     expect(mid.bank).not.toBeNaN();
 
-    await option(page, "mUsed");
+    await page.locator("#mUsed").click();
     await page.locator("#tmUndoOk").click();
     const after = await stored(page);
     for (const k of ["players", "bank", "roles", "captain"]) expect(after[k]).toEqual(before[k]);
@@ -211,12 +210,12 @@ test.describe("public edition", () => {
     await tradeRows(page).first().locator(".tm-done").click();
     await expect(header(page)).toContainText("Trades 2/4");
 
-    await option(page, "mUndoLast");                               // the second trade goes back
+    await page.locator("#mUndoLast").click();                               // the second trade goes back
     let now = await stored(page);
     for (const k of ["players", "bank", "used"]) expect(now[k]).toEqual(one[k]);
     await expect(header(page)).toContainText("Trades 1/4");
-    await option(page, "mUndoLast");                               // the first one
-    await option(page, "mUndoLast");                               // the «confirmed» click
+    await page.locator("#mUndoLast").click();                               // the first one
+    await page.locator("#mUndoLast").click();                               // the «confirmed» click
     now = await stored(page);
     for (const k of ["players", "bank", "roles", "captain"]) expect(now[k]).toEqual(start[k]);
     await expect(header(page)).toContainText("Trades 0/4");
@@ -235,7 +234,7 @@ test.describe("public edition", () => {
     await page.locator("#tmFinish").click();
     await expect(header(page)).toContainText("Trades 0/4");        // not binding: the count starts again
 
-    await option(page, "mUsed");                                   // …but the undo is still there
+    await page.locator("#mUsed").click();                                   // …but the undo is still there
     await expect(page.locator("#sheet")).toContainText("Αναίρεση των κινήσεων");
     await page.locator("#tmUndoOk").click();
     const after = await stored(page);

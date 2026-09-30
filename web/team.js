@@ -427,8 +427,8 @@
         <div class="muted">Αναμενόμενα points <b>${f1(total)}</b>${Math.abs(pl.planned - total) >= 0.05
           ? ` → <b class="tm-planned">${f1(pl.planned)}</b> με το πλάνο` : ""}</div>
         <div class="tm-dead">${head}</div></div>
-        ${t.game || WIDE() ? "" : `<div class="tm-morewrap"><button class="tm-more" id="tmMore" aria-haspopup="menu">⋯ Επιλογές</button><div id="tmMenu"></div></div>`}</header>
-      ${!t.game && WIDE() ? '<div id="tmTools"></div>' : ""}
+        ${t.game ? "" : `<div class="tm-morewrap"><button class="tm-more" id="tmMore" aria-haspopup="menu">⋯ Επιλογές</button><div id="tmMenu"></div></div>`}</header>
+      ${t.game ? "" : undoBar(t)}
       <div class="tm-cols"><div class="tm-colL">
       <div class="card" id="tmTodo"><h2>Τι κάνω τώρα <small class="muted">${items.length ? `${items.length} ${items.length === 1 ? "βήμα" : "βήματα"}` : ""}</small></h2>
         ${done ? `<div class="tm-ready">✅ Έτοιμος για το Round</div>` : `<ul class="tm-list">${confirm}${list}</ul>`}
@@ -583,21 +583,39 @@
   }
 
   // ------------------------------------------------------------ menu
-  // the team's options: a dropdown behind «⋯ Επιλογές» on phones, an always-visible toolbar on wide screens
-  function menu(t, best, inline = false) {
-    const host = inline ? $("#tmTools") : $("#tmMenu");
+  // the undo buttons stay on the screen (only when there is something to undo); the rest behind «⋯ Επιλογές»
+  function undoBar(t) {
+    const ti = P.trade_info || {}, n = undoSteps(t);
+    const b = (n ? `<button id="mUndoLast">↶ Αναίρεση κίνησης (${n})</button>` : "")
+      + (canUndo(t, ti) ? `<button id="mUsed">↩️ ${usedTrades(t, ti) ? `Αναίρεση Trades (${usedTrades(t, ti)})` : "Όπως στην αρχή του Round"}</button>` : "");
+    return b ? `<div class="tm-toolbar" role="toolbar">${b}</div>` : "";
+  }
+  function bindUndo(t, best) {
+    if ($("#mUndoLast")) $("#mUndoLast").onclick = () => {
+      if (undoLast(t)) { render(best); toast(`Αναιρέθηκε η τελευταία κίνηση${undoSteps(t) ? ` · μένουν ${undoSteps(t)}` : ""}`); }
+    };
+    if ($("#mUsed")) $("#mUsed").onclick = () => {
+      const n = usedTrades(t, P.trade_info || {}), snap = !!t.used.before;
+      sheet(`<div class="sh"><h2>Αναίρεση ${n === 0 ? "των κινήσεων" : n === 1 ? "του Trade" : `των ${n} Trades`};</h2><button class="x" onclick="closePlayer()">×</button></div>
+        <p class="muted">${snap ? "Η ομάδα, το υπόλοιπο, οι θέσεις και ο Captain γυρίζουν όπως ήταν πριν την πρώτη κίνηση αυτού του Round."
+          : "Δεν υπάρχει αποθηκευμένη η ομάδα της αρχής του Round, οπότε μηδενίζεται μόνο ο μετρητής· τους παίκτες τους αλλάζεις από την «Αλλαγή ομάδας»."}</p>
+        <button class="tm-primary" id="tmUndoOk">Αναίρεση</button>`);
+      $("#tmUndoOk").onclick = () => { const ok = undoTrades(t); save(t); closePlayer(); render(best);
+        toast(ok ? "Η ομάδα γύρισε όπως ήταν" : "Ο μετρητής μηδενίστηκε"); };
+    };
+  }
+
+  // the team's options: a dropdown behind «⋯ Επιλογές» (phones and wide screens alike)
+  function menu(t, best) {
+    const host = $("#tmMenu");
     if (!host) return;
-    const close = inline ? () => {} : () => { host.innerHTML = ""; };
-    if (!inline && host.innerHTML) { close(); return; }
-    host.innerHTML = `<div class="${inline ? "tm-toolbar" : "tm-menu"}" role="${inline ? "toolbar" : "menu"}">
+    const close = () => { host.innerHTML = ""; };
+    if (host.innerHTML) { close(); return; }
+    host.innerHTML = `<div class="tm-menu" role="menu">
       <button id="mBackup">🔗 Αντίγραφο ασφαλείας (σύνδεσμος)</button>
       <button id="mEdit">✏️ Αλλαγή ομάδας</button>
       <button id="mBank">💰 Διόρθωση credits</button>
-      ${undoSteps(t) ? `<button id="mUndoLast">↶ Αναίρεση τελευταίας κίνησης (${undoSteps(t)})</button>` : ""}
-      ${canUndo(t, P.trade_info || {}) ? `<button id="mUsed">↩️ ${usedTrades(t, P.trade_info || {})
-        ? `Αναίρεση των Trades που έκανες (${usedTrades(t, P.trade_info || {})})`
-        : "Αναίρεση των κινήσεων: η ομάδα όπως ήταν στην αρχή του Round"}</button>` : ""}
-      ${inline ? "" : `<button id="mInstall">📱 Βάλ' το στην οθόνη σου</button>`}
+      ${WIDE() ? "" : `<button id="mInstall">📱 Βάλ' το στην οθόνη σου</button>`}
       <button id="mMail">✉️ Ιδέα ή πρόβλημα; Αντιγραφή του email μας</button>
       <button id="mDel" class="tm-danger">🗑 Διαγραφή ομάδας</button></div>`;
     $("#mBackup").onclick = async () => {
@@ -618,20 +636,6 @@
         if (isNaN(v) || v < 0) { toast("Γράψε ένα ποσό, π.χ. 3,5"); return; }
         t.bank = v; save(t); closePlayer(); render(best); };
     };
-    if ($("#mUndoLast")) $("#mUndoLast").onclick = () => {
-      close();
-      if (undoLast(t)) { render(best); toast(`Αναιρέθηκε η τελευταία κίνηση${undoSteps(t) ? ` · μένουν ${undoSteps(t)}` : ""}`); }
-    };
-    if ($("#mUsed")) $("#mUsed").onclick = () => {
-      close();
-      const n = usedTrades(t, P.trade_info || {}), snap = !!t.used.before;
-      sheet(`<div class="sh"><h2>Αναίρεση ${n === 0 ? "των κινήσεων" : n === 1 ? "του Trade" : `των ${n} Trades`};</h2><button class="x" onclick="closePlayer()">×</button></div>
-        <p class="muted">${snap ? "Η ομάδα, το υπόλοιπο, οι θέσεις και ο Captain γυρίζουν όπως ήταν πριν την πρώτη κίνηση αυτού του Round."
-          : "Δεν υπάρχει αποθηκευμένη η ομάδα της αρχής του Round, οπότε μηδενίζεται μόνο ο μετρητής· τους παίκτες τους αλλάζεις από την «Αλλαγή ομάδας»."}</p>
-        <button class="tm-primary" id="tmUndoOk">Αναίρεση</button>`);
-      $("#tmUndoOk").onclick = () => { const ok = undoTrades(t); save(t); closePlayer(); render(best);
-        toast(ok ? "Η ομάδα γύρισε όπως ήταν" : "Ο μετρητής μηδενίστηκε"); };
-    };
     $("#mMail").onclick = async () => { close();
       toast(await copyText(FEEDBACK_MAIL) ? `Αντιγράφηκε: ${FEEDBACK_MAIL}` : FEEDBACK_MAIL); };
     if ($("#mInstall")) $("#mInstall").onclick = () => { close(); installGuide(true); };
@@ -643,10 +647,6 @@
       $("#tmDelOk").onclick = () => { try { localStorage.removeItem(KEY); } catch (e) {} closePlayer(); setup = null; mode = null; render(best); };
     };
   }
-  // phone ↔ wide (window resized, tablet rotated): switch between dropdown and toolbar
-  window.matchMedia("(min-width: 700px)").addEventListener("change", () => {
-    if (typeof P !== "undefined" && P && document.getElementById("tmTools") !== null !== WIDE()) render();
-  });
   document.addEventListener("click", (e) => { if (!e.target.closest("#tmMenu, #tmMore")) { const h = document.getElementById("tmMenu"); if (h) h.innerHTML = ""; } });
 
   // ------------------------------------------------------------ setup on an empty court
@@ -801,7 +801,7 @@
       toast(`Μένουν ${lp.value} Trades· οι προτάσεις προσαρμόστηκαν`); };
     on("tmTrades", () => leftSheet(t, best));
     on("tmMore", (e) => { e.stopPropagation(); menu(t, best); });
-    if (document.getElementById("tmTools")) menu(t, best, true);
+    bindUndo(t, best);
     on("tmEdit", () => { setup = { players: t.players.map((x) => ({ ...x })) }; mode = "setup"; render(best); });
     bindKeep(t, best);
     bindSteps();
