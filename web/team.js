@@ -905,6 +905,8 @@
   @container (min-width: 500px) {
     :is(.tm-courtcard, .tm-sideline) .tm-floor { overflow: visible; margin-left: 132px; margin-right: auto; }
     :is(.tm-courtcard, .tm-sideline) .tm-floor .lanes .pair { display: block; }
+    /* measured from the top of the floor (not from the bench row under the court) */
+    :is(.tm-courtcard, .tm-sideline) .tm-floor .lanes, :is(.tm-courtcard, .tm-sideline) .tm-floor .lanes .pair { position: static; }
     :is(.tm-courtcard, .tm-sideline) .tm-floor .lane.coach, :is(.tm-courtcard, .tm-sideline) .tm-floor .lane.six { position: absolute; left: -132px; width: 120px; margin: 0; }
     /* anchored to the top of the floor, stacked downwards: the coach, then the 6th below him */
     :is(.tm-courtcard, .tm-sideline) .tm-floor .lane.coach { top: 0; }
