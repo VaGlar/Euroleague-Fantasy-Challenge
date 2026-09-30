@@ -287,12 +287,12 @@ test.describe("public edition", () => {
     await savedTeam(page);
     await page.locator("#tmConfirm").click();
     const btn = page.locator("#team [data-avoid]").first();
-    const name = (await btn.innerText()).match(/Όχι τον (.+), πρότεινε/)[1].trim();
+    const name = (await btn.getAttribute("title")).match(/Όχι τον (.+), πρότεινε/)[1].trim();
     const before = await tradeRows(page).allInnerTexts();
     await btn.click();
     await expect(page.locator("#team .tm-kept")).toContainText(name);
     const after = await tradeRows(page).allInnerTexts();
-    expect(after.some((t) => t.includes(`➜ ${name}`))).toBeFalsy();
+    expect(after.some((t) => t.includes(`vs ${name}`))).toBeFalsy();
     expect(after).not.toEqual(before);
     await page.locator("#team [data-unavoid]").first().click();
     await expect(page.locator("#team .tm-kept")).toHaveCount(0);
@@ -376,10 +376,10 @@ test.describe("personal edition", () => {
   test("«Όχι τον X» on the game's team re-plans without him", async ({ page }) => {
     await open(page, "personal", { tab: "team" });
     const btn = page.locator("#team [data-avoid]").first();
-    const name = (await btn.innerText()).match(/Όχι τον (.+), πρότεινε/)[1].trim();
+    const name = (await btn.getAttribute("title")).match(/Όχι τον (.+), πρότεινε/)[1].trim();
     await btn.click();
     await expect(page.locator("#team .tm-kept")).toContainText(name);
-    expect((await page.locator("#team .tm-list").innerText()).includes(`➜ ${name}`)).toBeFalsy();
+    expect((await page.locator("#team .tm-list").innerText()).includes(`vs ${name}`)).toBeFalsy();
   });
 
   test("«Κράτα τον» re-plans and the expected points with the plan follow", async ({ page }) => {
