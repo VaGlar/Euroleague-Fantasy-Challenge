@@ -1195,18 +1195,26 @@ function autopilotCard(ap) {
   const cur = rounds.find((r) => r.round === P.round) || next;
   if (cur) {
     const live = cur.round === P.round;
+    // the points as the game counts them: captain x2, bench x0.5 (what the chips and the total show)
+    const mult = (p) => (p.role === "πάγκος" ? 0.5 : 1) * (p.captain ? 2 : 1);
     const list = cur.squad.map((p) => {
       const r = live ? byFid(p.id) : null;
-      return { ...p, turn: r?.turn, opp: r?.opp, home: r?.home, actual: r?.actual ?? null, x_now: r?.x_now ?? p.x_now,
+      const actual = r?.actual ?? null, x = r?.x_now ?? p.x_now;
+      return { ...p, turn: r?.turn, opp: r?.opp, home: r?.home, next_opp: r?.next_opp, next_home: r?.next_home,
+               next_round: r?.next_round, actual: actual == null ? null : actual * mult(p), x_now: x == null ? x : x * mult(p),
                avail_game: r?.avail_game, unregistered: r?.unregistered,
                role: p.position === "Head Coach" ? "coach" : p.role };
     });
+    const playedN = list.filter((p) => p.actual != null).length;
+    const soFar = list.reduce((a, p) => a + (p.actual ?? 0), 0);
     const moves = Object.entries(cur.moves || {});
     const moved = new Set(moves.flatMap(([, m]) => [...m.in, ...m.out]));
     const ref = Object.fromEntries(list.map((p) => [p.id, moved.has(p.id) ? "" : p.role]));
     const name = (id) => esc(nm(cur.squad.find((p) => p.id === id)?.name || ""));
     h += `<p><b>Για το Round ${cur.round}</b>: ${cur.trades ? `${cur.trades} ${cur.trades === 1 ? "μεταγραφή" : "μεταγραφές"}` : "καμία μεταγραφή"}
-      · υπόλοιπο ${f1(cur.bank)} cr · xFPT ${f1(cur.x_total)}</p>${courtView(list, moved.size ? ref : null)}
+      · υπόλοιπο ${f1(cur.bank)} cr · xFPT ${f1(cur.x_total)}${cur.pts != null ? ` · <b>πόντοι ${f1(cur.pts)}</b>`
+        : playedN ? ` · <b>μέχρι τώρα ${f1(soFar)}</b> <span class="muted">(${playedN} από ${list.length} έπαιξαν)</span>` : ""}</p>
+      <p class="muted" style="margin-top:-6px">Στο γήπεδο οι πόντοι όπως μετράνε: αρχηγός ×2, πάγκος ×0,5.</p>${courtView(list, moved.size ? ref : null)}
       ${moves.map(([t, m]) => `<p class="muted">Πριν το T${t}: ${m.in.length ? `μπήκαν ${m.in.map(name).join(", ")} — βγήκαν ${m.out.map(name).join(", ")}` : "ίδια πεντάδα"}${
         m.captain ? ` · αρχηγός ο ${name(m.captain)}` : ""}.</p>`).join("")}`;
   }
