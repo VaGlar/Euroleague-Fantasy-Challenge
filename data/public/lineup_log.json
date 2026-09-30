@@ -200,10 +200,10 @@
     "captain": true
    },
    {
-    "id": 8727,
-    "person_id": "014168",
-    "team": "ULK",
-    "position": "Forward",
+    "id": 3887,
+    "person_id": "007975",
+    "team": "PAN",
+    "position": "Guard",
     "role": "5άδα",
     "captain": false
    },
@@ -216,11 +216,19 @@
     "captain": false
    },
    {
-    "id": 11540,
-    "person_id": "011706",
-    "team": "PAM",
+    "id": 11521,
+    "person_id": "015161",
+    "team": "ASV",
     "position": "Guard",
     "role": "5άδα",
+    "captain": false
+   },
+   {
+    "id": 4061,
+    "person_id": "008084",
+    "team": "PAN",
+    "position": "Forward",
+    "role": "6ος",
     "captain": false
    },
    {
@@ -228,7 +236,7 @@
     "person_id": "010318",
     "team": "IST",
     "position": "Center",
-    "role": "6ος",
+    "role": "πάγκος",
     "captain": false
    },
    {
@@ -240,25 +248,17 @@
     "captain": false
    },
    {
-    "id": 4061,
-    "person_id": "008084",
-    "team": "PAN",
+    "id": 8727,
+    "person_id": "014168",
+    "team": "ULK",
     "position": "Forward",
     "role": "πάγκος",
     "captain": false
    },
    {
-    "id": 3887,
-    "person_id": "007975",
-    "team": "PAN",
-    "position": "Guard",
-    "role": "πάγκος",
-    "captain": false
-   },
-   {
-    "id": 11521,
-    "person_id": "015161",
-    "team": "ASV",
+    "id": 11540,
+    "person_id": "011706",
+    "team": "PAM",
     "position": "Guard",
     "role": "πάγκος",
     "captain": false

@@ -127,14 +127,16 @@
      "x_now": 10.4
     }
    ],
-   "x_total": 144.7,
+   "x_total": 139.6,
    "moves": {
     "2": {
      "in": [
       4012,
-      3886
+      3886,
+      3815
      ],
      "out": [
+      7231,
       3905,
       3948
      ],
@@ -145,9 +147,9 @@
    "raw": 85.7,
    "avg_raw": null,
    "my_pts": 138.75,
-   "rank": 203985,
-   "teams": 338115,
-   "my_rank": 98682
+   "rank": 304477,
+   "teams": 341599,
+   "my_rank": 170801
   },
   {
    "round": 2,
@@ -296,7 +298,7 @@
   {
    "round": 3,
    "trades": 4,
-   "bank": -0.0,
+   "bank": 0.3,
    "squad": [
     {
      "id": 3766,
@@ -307,7 +309,7 @@
      "team": "OLY",
      "role": "5άδα",
      "captain": true,
-     "x_now": 27.8
+     "x_now": 26.8
     },
     {
      "id": 3791,
@@ -318,7 +320,7 @@
      "team": "PAR",
      "role": "5άδα",
      "captain": false,
-     "x_now": 25.6
+     "x_now": 24.6
     },
     {
      "id": 11516,
@@ -329,7 +331,7 @@
      "team": "ASV",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 21.9
+     "x_now": 20.9
     },
     {
      "id": 11521,
@@ -340,18 +342,18 @@
      "team": "ASV",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 16.6
+     "x_now": 15.9
     },
     {
-     "id": 11512,
-     "price": 9.1,
-     "position": "Guard",
-     "person_id": "014734",
-     "name": "LAWSON, A.J.",
-     "team": "BAS",
+     "id": 3980,
+     "price": 8.3,
+     "position": "Center",
+     "person_id": "007553",
+     "name": "BALCEROWSKI, OLEK",
+     "team": "BAR",
      "role": "5άδα",
      "captain": false,
-     "x_now": 14.5
+     "x_now": 14.1
     },
     {
      "id": 3897,
@@ -365,6 +367,17 @@
      "x_now": 14.1
     },
     {
+     "id": 11512,
+     "price": 9.1,
+     "position": "Guard",
+     "person_id": "014734",
+     "name": "LAWSON, A.J.",
+     "team": "BAS",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 14.0
+    },
+    {
      "id": 11504,
      "price": 11.0,
      "position": "Center",
@@ -373,18 +386,7 @@
      "team": "MUN",
      "role": "5άδα",
      "captain": false,
-     "x_now": 13.7
-    },
-    {
-     "id": 3824,
-     "price": 7.8,
-     "position": "Guard",
-     "person_id": "007947",
-     "name": "VILDOZA, LUCA",
-     "team": "PAR",
-     "role": "5άδα",
-     "captain": false,
-     "x_now": 13.7
+     "x_now": 13.2
     },
     {
      "id": 4061,
@@ -395,18 +397,7 @@
      "team": "PAN",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 13.0
-    },
-    {
-     "id": 7231,
-     "price": 5.4,
-     "position": "Center",
-     "person_id": "010318",
-     "name": "DESSERT, BRICE",
-     "team": "IST",
-     "role": "6ος",
-     "captain": false,
-     "x_now": 5.1
+     "x_now": 12.4
     },
     {
      "id": 4012,
@@ -415,15 +406,26 @@
      "person_id": "001518",
      "name": "RICCI, GIAMPAOLO",
      "team": "MIL",
+     "role": "6ος",
+     "captain": false,
+     "x_now": 3.8
+    },
+    {
+     "id": 3886,
+     "price": 4.6,
+     "position": "Guard",
+     "person_id": "001844",
+     "name": "HACKETT, DANIEL",
+     "team": "VIR",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 3.9
+     "x_now": 1.4
     }
    ],
-   "x_total": 172.8
+   "x_total": 165.4
   }
  ],
- "seed_id": "8749e56f0015",
+ "seed_id": "5a453a755a9b",
  "start_round": 1,
  "total": {
   "rounds": 1,
@@ -431,5 +433,5 @@
   "raw": 85.7,
   "avg_raw": null
  },
- "generated": "2026-09-30T04:07:53.380799+00:00"
+ "generated": "2026-09-30T09:25:39.235935+00:00"
 }
