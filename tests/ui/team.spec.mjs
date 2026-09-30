@@ -319,6 +319,13 @@ test.describe("player sheet on the team screen", () => {
 });
 
 test.describe("personal edition", () => {
+  test("a player not registered with his club is marked 📋 (not 🚑) on the court", async ({ page }) => {
+    await open(page, "personal", { tab: "team" });
+    const chip = page.locator(`${C} .chip[data-fid="4061"]`);        // Mantzoukas: unregistered in the fixture
+    await expect(chip).toContainText("📋");
+    await expect(chip).not.toContainText("🚑");
+  });
+
   test("the game's team: tapping a player shows his stats and who fits in his place (an idea, not a trade)", async ({ page }) => {
     await open(page, "personal", { tab: "team" });
     await court(page).first().click();

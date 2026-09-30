@@ -654,7 +654,7 @@ function chip(p, changed) {
   const pid = p.person_id ?? byFid(p.id ?? p.fantasy_id)?.person_id;
   return `<div class="${cls}" title="${esc(nm(p.name))}" data-pid="${esc(pid ?? "")}">
     <div class="ct"><span>${LET[p.position] || ""}</span>${p.turn ? `<span class="tb t${p.turn > 1 ? 2 : 1}">T${p.turn}</span>` : ""}</div>
-    <div class="cn">${esc(surname(p.name))}${inj(p) ? " 🚑" : ""}${p.price_trend === "up" ? " $" : ""}</div>
+    <div class="cn">${esc(surname(p.name))}${p.unregistered ? " 📋" : inj(p) ? " 🚑" : ""}${p.price_trend === "up" ? " $" : ""}</div>
     <div class="cp${played ? " done" : ""}">${f1(pts)}</div>
     <div class="cs">${p.opp ? `${p.home ? "🏠" : "✈️"} ${esc(tc(p.opp))}` : ""}${p.price != null ? ` · ${f1(p.price)}` : ""}</div></div>`;
 }
@@ -1194,6 +1194,7 @@ function autopilotCard(ap) {
     const list = cur.squad.map((p) => {
       const r = live ? byFid(p.id) : null;
       return { ...p, turn: r?.turn, opp: r?.opp, home: r?.home, actual: r?.actual ?? null, x_now: r?.x_now ?? p.x_now,
+               avail_game: r?.avail_game, unregistered: r?.unregistered,
                role: p.position === "Head Coach" ? "coach" : p.role };
     });
     const moves = Object.entries(cur.moves || {});
