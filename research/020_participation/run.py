@@ -38,7 +38,7 @@ P = {**copy.deepcopy(MODEL), **{k: LIVE[k] for k in ("w_last3", "w_season", "w_p
 STREAKS = [3]
 KS = [6]
 P0S = [0.95]
-CAPS = [None, 5.0, 5.5, 6.0]   # the factor only for players priced below (None = everyone)      # the shrinkage target: the position's rate, or "no evidence = on the sheet"
+CAPS = [None]   # the factor only for players priced below (None = everyone)      # the shrinkage target: the position's rate, or "no evidence = on the sheet"
 MODES = ["this"]
 FAR = pd.Timestamp("2100-01-01", tz="UTC")
 
@@ -137,7 +137,9 @@ def factor(d: pd.DataFrame, k: float, mode: str, pos_rate: dict, p0_fixed: float
 
 def metrics(df: pd.DataFrame, pred: pd.Series) -> dict:
     """As live: an absence inside an injury-like streak is known (0, no error); any other is not."""
-    known_out = ~df["dressed"] & df["injury_out"].fillna(False)
+    # known live: an injury-like absence (list, news) or a player his club has let go (not on the
+    # EuroLeague roster any more: «εκτός ρόστερ» since the live app checks the roster on every update)
+    known_out = (~df["dressed"] & df["injury_out"].fillna(False)) | df["released"].fillna(False)
     live = pred.where(~known_out, 0.0)
     ev = ~known_out
     err = (live[ev] - df.loc[ev, "fpts"]).abs()
@@ -145,6 +147,21 @@ def metrics(df: pd.DataFrame, pred: pd.Series) -> dict:
     squad = sum(_lib.squad_points(g, live.loc[g.index]) for _, g in df.groupby("round"))
     return {"mae": round(float(err.mean()), 4), "mae_top": round(float(err[top].mean()), 4),
             "squad": round(float(squad), 1)}
+
+
+def released(df: pd.DataFrame, season: int) -> pd.Series:
+    """Rows of a player after his club let him go: inactive in the season's roster, and the round starts
+    after his last game for that club."""
+    games, tg, box = sheets(season)
+    pp = history.load("people", season)
+    gone = set(zip(pp.loc[(pp["type"] == "player") & ~pp["active"], "person_id"].astype(str),
+                   pp.loc[(pp["type"] == "player") & ~pp["active"], "club"]))
+    when = dict(zip(zip(tg["gamecode"], tg["team"]), tg["utc"]))
+    b = box.assign(utc=[when.get((c, t)) for c, t in zip(box["gamecode"], box["team"])])
+    last = b.groupby(["person_id", "team"])["utc"].max()
+    starts = games[(games["phase"] == "RS") & games["played"]].groupby("round")["utc"].min()
+    return pd.Series([(pid, t) in gone and (pid, t) in last.index and starts[r] > last[(pid, t)]
+                      for pid, t, r in zip(df["person_id"], df["team"], df["round"])], index=df.index)
 
 
 def main():
@@ -157,6 +174,7 @@ def main():
         r = {}
         for s, part in parts.items():
             d = df.join(part)
+            d["released"] = released(d, season)
             r[f"S{s}_baseline"] = metrics(d, base)
             # the position's rate of this season so far (shrinkage target)
             for mode in MODES:

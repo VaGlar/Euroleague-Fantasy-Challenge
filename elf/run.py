@@ -28,6 +28,8 @@ HORIZON = 3  # rounds used for transfer value
 HORIZON_WEIGHTS = (1.0, 0.6, 0.35)
 UNLIMITED_AFTER = {6, 13, 18, 23, 28, 34}  # trades unlimited before the next round
 MIN_GAIN_PER_TRADE = 2.0  # weighted xFPT a trade must add over the full 3-round horizon
+NEWCOMER_PRIOR_GAMES = 2   # a newcomer's price-based estimate weighs as 2 games of his own (fades as he plays); review after round 3
+NEWCOMER_MAX_GAMES = 10
 
 
 def horizon_weights(rnd: int) -> list[float]:
@@ -781,6 +783,13 @@ def build(offline: bool = False) -> dict:
     team_turn = {tm: tu["turn"] for tu in trn for tm in tu["teams"]}
     table["turn"] = table["team"].map(team_turn)
     table["actual"] = actual_points(pr["fixtures"], rnd, table)
+    # his game of this round already played: the lists show his next one instead (not the one just played)
+    later = ctx[(ctx["round"] > rnd) & (ctx["position"] != "Head Coach")].copy()
+    later["utc"] = pd.to_datetime(later["utc"], utc=True)
+    nxt = later.sort_values(["round", "utc"], kind="stable").drop_duplicates("person_id").set_index("person_id")
+    done = table["actual"].notna()
+    for col, src in (("next_round", "round"), ("next_opp", "opp"), ("next_home", "is_home")):
+        table[col] = table["person_id"].map(nxt[src]).where(done)
 
     # --- fantasy prices / my team
     my, best = None, None
@@ -819,6 +828,18 @@ def build(offline: bool = False) -> dict:
             table.loc[m, "x_now"] = est * f_game[m]
             table.loc[m, "x_h"] = est * sum(horizon_weights(trade_rnd))
             table.loc[m, "prior"] = "τιμή"
+            # new to the EuroLeague with a few games: the price keeps counting as NEWCOMER_PRIOR_GAMES games
+            # and fades as his own games add up (one bad first game shouldn't make a 10-credit player 0).
+            # Not backtestable (no past prices); re-checked with this season's prices at rounds 6-8 (R&D 015)
+            nc = (~table["no_data"].fillna(False) & table["prev_pir"].isna()
+                  & table["games"].fillna(0).between(1, NEWCOMER_MAX_GAMES) & table["price"].notna()
+                  & (table["position"] == pos) & ~table["unregistered"].fillna(False).astype(bool))
+            if nc.any():
+                g_, k_ = table.loc[nc, "games"].astype(float), float(NEWCOMER_PRIOR_GAMES)
+                est_nc = (slope * table.loc[nc, "price"] + icpt).clip(lower=0)   # the market's estimate, no discount
+                table.loc[nc, "x_now"] = (g_ * table.loc[nc, "x_now"] + k_ * est_nc * f_game[nc]) / (g_ + k_)
+                table.loc[nc, "x_h"] = (g_ * table.loc[nc, "x_h"] + k_ * est_nc * sum(horizon_weights(trade_rnd))) / (g_ + k_)
+                table.loc[nc, "prior"] = "τιμή+ματς"
         table, price_info = prices.annotate(table)  # $ = likely price rise
         table = price_moves(table, price_history())
         n_inj = int((f_game < 1).sum())
