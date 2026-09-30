@@ -63,7 +63,7 @@ test.describe("public edition", () => {
     await expect(header(page)).toContainText(/Credits \d+\.\d\/\d+\.\d/);
     await expect(header(page)).toContainText("Trades 0/4");
     await expect(header(page)).toContainText(/Round \d+/);
-    await expect(page.locator(`${C} .lane h3`, { hasText: "Sixth man (100% FPT)" })).toBeVisible();
+    await expect(page.locator(`${C} .lane h3`, { hasText: "Sixth man" })).toBeVisible();
     await expect(page.locator(`${C} .lane h3`, { hasText: "Bench (50% FPT)" })).toBeVisible();
     await expect(page.locator(`${C} .lane h3`, { hasText: "Head Coach" })).toBeVisible();
     await expect(page.locator(`${C} .chip.cap`)).toHaveCount(1);

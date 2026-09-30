@@ -685,7 +685,7 @@ function courtView(list, ref) {
     ps.map((p) => chip(p, ref && ref[p.id] !== p.role)).join("")}</div></div>` : "";
   return `<div class="tm-floor"><div class="court"><div class="crow">${row("Center")}</div><div class="crow">${row("Forward")}</div>
     <div class="crow">${row("Guard")}</div></div>
-    <div class="lanes"><div class="pair">${lane("six", "Sixth man (100% FPT)", by("6ος"))}${lane("coach", "Head Coach", by("coach"))}</div>
+    <div class="lanes"><div class="pair">${lane("six", "Sixth man", by("6ος"))}${lane("coach", "Head Coach", by("coach"))}</div>
       ${lane("bench", "Bench (50% FPT)", by("πάγκος").sort((a, b) => (b.x_now ?? 0) - (a.x_now ?? 0)))}</div></div>`;
 }
 // «Η ομάδα μου»: web/team.js draws it for both editions
