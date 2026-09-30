@@ -781,6 +781,13 @@ def build(offline: bool = False) -> dict:
     team_turn = {tm: tu["turn"] for tu in trn for tm in tu["teams"]}
     table["turn"] = table["team"].map(team_turn)
     table["actual"] = actual_points(pr["fixtures"], rnd, table)
+    # his game of this round already played: the lists show his next one instead (not the one just played)
+    later = ctx[(ctx["round"] > rnd) & (ctx["position"] != "Head Coach")].copy()
+    later["utc"] = pd.to_datetime(later["utc"], utc=True)
+    nxt = later.sort_values(["round", "utc"], kind="stable").drop_duplicates("person_id").set_index("person_id")
+    done = table["actual"].notna()
+    for col, src in (("next_round", "round"), ("next_opp", "opp"), ("next_home", "is_home")):
+        table[col] = table["person_id"].map(nxt[src]).where(done)
 
     # --- fantasy prices / my team
     my, best = None, None

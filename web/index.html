@@ -457,6 +457,10 @@ const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const nm = (n) => { const [s, f] = String(n || "").split(","); return (f ? f.trim()[0] + ". " : "") + (s || "").toLowerCase().replace(/(^|[\s-])\S/g, (m) => m.toUpperCase()); };
 const f1 = (x) => (x == null ? "–" : Number(x).toFixed(1));
+// the game to show next to a player: this round's, or his next one once this round's is played
+const gameOf = (r) => (r.actual != null && r.next_opp
+  ? `R${r.next_round} ${r.next_home ? "🏠" : "✈️"} ${esc(tc(r.next_opp))}`
+  : r.opp ? `${r.home ? "🏠" : "✈️"} ${esc(tc(r.opp))}` : "");
 const inj = (r) => r.unregistered
   ? ' <span class="pill" title="στη λίστα του fantasy, αλλά όχι δηλωμένος στο ρόστερ της EuroLeague: δεν μπορεί να αγωνιστεί">📋 εκτός ρόστερ</span>'
   : (r.avail_game != null && r.avail_game < 1
@@ -629,7 +633,7 @@ function renderPlayers() {
     + rows.slice(0, 250).map((r) => `<tr data-pid="${esc(r.person_id)}">
       <td>${cbox(r)}${esc(nm(r.name))}${newb(r)}${inj(r)}${exb(r)}${dol(r)}<br><span class="muted">${esc(tc(r.team))} · ${esc(r.position || "")}${r.price != null ? ` · <b>${f1(r.price)}cr</b>` : ""}</span></td>
       <td class="num"><span class="bar" style="width:${Math.max(2, 40 * (r.x_now || 0) / max)}px"></span><b>${f1(r.x_now)}</b></td>
-      <td>${r.home ? "🏠" : "✈️"} ${esc(tc(r.opp))}</td><td class="num">${matchup(r.pos_dev)}</td>
+      <td>${gameOf(r)}</td><td class="num">${matchup(r.pos_dev)}</td>
       <td class="num">${f1(r.x_h)}</td><td class="num">${f1(r.season_pir)}</td><td class="num">${f1(r.prev_pir)}</td>
       ${hasPrice ? `<td class="num">${f1(r.price)}</td><td class="num">${chg(r.price_chg) || "–"}</td><td class="num">${pop(r) || "–"}</td><td class="num">${r.value == null ? "–" : r.value.toFixed(2)}</td>` : ""}</tr>`).join("") + "</tbody>";
   $("#ptable").querySelectorAll("th").forEach((th) => th.onclick = () => {
@@ -638,7 +642,7 @@ function renderPlayers() {
   $("#plist").innerHTML = rows.slice(0, 150).map((r) => `<div class="pcard" data-pid="${esc(r.person_id)}" style="${tcol(r.team)}">
     <div class="pn">${cbox(r)}${esc(nm(r.name))}${avb(r)}${newb(r)}${exb(r)}${dol(r)}</div>
     <div class="px"><b>${f1(r.x_now)}</b><small>xFPT${ii("xpts")}</small><span class="h">${f1(r.x_h)} <small>xFPT3</small></span></div>
-    <div class="pm">${esc(tc(r.team))} · ${esc((r.position || "")[0] || "")}${r.price != null ? ` · <b>${f1(r.price)}cr</b>${chg(r.price_chg)}` : ""}${pop(r) ? ` · POP ${pop(r)}` : ""} · ${r.home ? "🏠" : "✈️"} ${esc(tc(r.opp))} ${matchup(r.pos_dev)}</div>
+    <div class="pm">${esc(tc(r.team))} · ${esc((r.position || "")[0] || "")}${r.price != null ? ` · <b>${f1(r.price)}cr</b>${chg(r.price_chg)}` : ""}${pop(r) ? ` · POP ${pop(r)}` : ""} · ${gameOf(r)} ${matchup(r.pos_dev)}</div>
   </div>`).join("") + (rows.length > 150 ? `<p class="muted">…και ${rows.length - 150} ακόμα — στένεψε τα φίλτρα.</p>` : "");
   const active = FILTERS.filter((id) => { const el = $("#" + id); return el.type === "checkbox" ? el.checked : el.value; }).length;
   $("#fsum").textContent = active ? `Φίλτρα (${active} ενεργά)` : "Φίλτρα";
@@ -656,7 +660,7 @@ function chip(p, changed) {
     <div class="ct"><span>${LET[p.position] || ""}</span>${p.turn ? `<span class="tb t${p.turn > 1 ? 2 : 1}">T${p.turn}</span>` : ""}</div>
     <div class="cn">${esc(surname(p.name))}${p.unregistered ? " 📋" : inj(p) ? " 🚑" : ""}${p.price_trend === "up" ? " $" : ""}</div>
     <div class="cp${played ? " done" : ""}">${f1(pts)}</div>
-    <div class="cs">${p.opp ? `${p.home ? "🏠" : "✈️"} ${esc(tc(p.opp))}` : ""}${p.price != null ? ` · ${f1(p.price)}` : ""}</div></div>`;
+    <div class="cs">${gameOf(p)}${p.price != null ? ` · ${f1(p.price)}` : ""}</div></div>`;
 }
 function courtView(list, ref) {
   // list: players with role/captain; ref: {id: role} to mark differences (optional)
@@ -1364,7 +1368,7 @@ function renderToday() {
   const court = players.filter((r) => r.position !== "Head Coach");
   const li = (r, v, sub) => `<li data-pid="${esc(r.person_id)}"><span class="n">${esc(nm(r.name))}${avb(r)}${dol(r)}</span>
       <span class="v"><b>${f1(v[0])}</b><small>${v[1]}</small></span><span class="m">${sub}</span></li>`;
-  const where = (r) => `${esc(tc(r.team))} · ${esc((r.position || "")[0] || "")}${r.price != null ? ` · ${f1(r.price)}cr` : ""} · ${r.home ? "🏠" : "✈️"} ${esc(tc(r.opp))}${r.turn ? ` · T${r.turn}` : ""}`;
+  const where = (r) => `${esc(tc(r.team))} · ${esc((r.position || "")[0] || "")}${r.price != null ? ` · ${f1(r.price)}cr` : ""} · ${gameOf(r)}${r.turn && r.actual == null ? ` · T${r.turn}` : ""}`;
 
   // start of the season: predictions for players new to the EuroLeague rest on one or two games (R&D 015)
   const fewN = P.players.filter(fewGames).length;
