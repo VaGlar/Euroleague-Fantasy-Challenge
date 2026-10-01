@@ -296,7 +296,7 @@
     "person_id": "007975",
     "team": "PAN",
     "position": "Guard",
-    "role": "5άδα",
+    "role": "πάγκος",
     "captain": false
    },
    {
@@ -304,7 +304,7 @@
     "person_id": "008084",
     "team": "PAN",
     "position": "Forward",
-    "role": "6ος",
+    "role": "5άδα",
     "captain": false
    },
    {
@@ -344,7 +344,7 @@
     "person_id": "014168",
     "team": "ULK",
     "position": "Forward",
-    "role": "πάγκος",
+    "role": "6ος",
     "captain": false
    },
    {
