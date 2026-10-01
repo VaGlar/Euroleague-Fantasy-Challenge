@@ -34,6 +34,7 @@ jobs:
           node --check web/opt.js
           node --check web/team.js
           node --input-type=module --check < functions/feed.js
+          node --input-type=module --check < "functions/api/sync/[[path]].js"
           python - <<'PY'
           import re, pathlib
           html = pathlib.Path("web/index.html").read_text()

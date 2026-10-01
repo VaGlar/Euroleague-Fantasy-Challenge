@@ -52,6 +52,7 @@
       }
       t.updated = new Date().toISOString();
       localStorage.setItem(KEY, JSON.stringify(t));
+      syncLater();
     } catch (e) {}
   };
   const undoSteps = (t) => liveHist(t).length;
@@ -74,6 +75,109 @@
     save(t, { undoing: true });
     return true;
   }
+  // ------------------------------------------------------------ devices in step (public edition)
+  // A code links this device's team to a copy on the server (functions/api/sync): every save goes up a
+  // moment later, opening the page (or coming back to it) brings the other device's changes down. If
+  // both changed it in between, the newer change wins and the page says so. The backup link stays.
+  const SYNC = "tm_sync";
+  const syncGet = () => { try { return JSON.parse(localStorage.getItem(SYNC) || "null"); } catch (e) { return null; } };
+  const syncSet = (v) => { try { if (v) localStorage.setItem(SYNC, JSON.stringify(v)); else localStorage.removeItem(SYNC); } catch (e) {} };
+  const fmtCode = (c) => String(c || "").replace(/(....)(?=.)/g, "$1-");
+  let syncTimer = 0, syncBusy = false, onRemote = null;
+  async function syncApi(method, code, body) {
+    const r = await fetch("api/sync" + (code ? "/" + encodeURIComponent(code) : ""), {
+      method, headers: body ? { "content-type": "application/json" } : {}, body: body ? JSON.stringify(body) : undefined,
+      cache: "no-store" });
+    let b = null; try { b = await r.json(); } catch (e) {}
+    return { status: r.status, body: b };
+  }
+  function syncLater() {
+    const s = syncGet();
+    if (!s || GAME()) return;
+    if (!s.dirty) syncSet({ ...s, dirty: true });
+    clearTimeout(syncTimer);
+    syncTimer = setTimeout(() => syncPush(), 1500);   // a burst of changes is one write
+  }
+  // the server's copy replaces this device's (the newer one wins; the page says so)
+  function takeRemote(res, quiet) {
+    try { localStorage.setItem(KEY, JSON.stringify(res.data)); } catch (e) {}
+    const s = syncGet();
+    if (s) syncSet({ code: s.code, rev: res.rev, dirty: false });
+    if (!quiet) toast("Η ομάδα ενημερώθηκε από την άλλη συσκευή");
+    if (onRemote) onRemote();
+  }
+  const newer = (a, b) => String((a && a.updated) || "") > String((b && b.updated) || "");
+  async function syncPush() {
+    const s = syncGet(), t = load();
+    if (!s || !t || syncBusy) return;
+    syncBusy = true;
+    try {
+      let res = await syncApi("PUT", s.code, { data: t, rev: s.rev });
+      if (res.status === 409) {            // the other device wrote meanwhile: the newer change wins
+        if (newer(res.body.data, t)) { takeRemote(res.body); return; }
+        res = await syncApi("PUT", s.code, { data: t, rev: res.body.rev });
+      }
+      if (res.status === 200) syncSet({ code: s.code, rev: res.body.rev, dirty: false });
+    } catch (e) { /* offline: stays dirty, goes up next time */ } finally { syncBusy = false; }
+  }
+  async function syncPull() {
+    const s = syncGet();
+    if (!s || GAME() || syncBusy) return;
+    try {
+      const res = await syncApi("GET", s.code);
+      if (res.status === 404) { syncSet(null); toast("Ο κωδικός συγχρονισμού δεν υπάρχει πια· η ομάδα μένει σε αυτή τη συσκευή"); return; }
+      if (res.status !== 200) return;
+      const t = load();
+      if (res.body.rev > s.rev && !(s.dirty && newer(t, res.body.data))) { takeRemote(res.body); return; }
+      if (s.dirty || res.body.rev > s.rev) { syncSet({ ...s, rev: s.dirty ? s.rev : res.body.rev }); syncPush(); }
+    } catch (e) {}
+  }
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") syncPull(); });
+  // link this device: with a new code (its team goes up) or an existing one (that team comes down)
+  async function syncNew() {
+    const t = load();
+    if (!t) return null;
+    const res = await syncApi("POST", "", { data: t });
+    if (res.status !== 201) return res.status;
+    syncSet({ code: res.body.code, rev: res.body.rev, dirty: false });
+    return 201;
+  }
+  async function syncJoin(raw) {
+    const code = String(raw || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+    if (code.length !== 12) return 400;
+    const res = await syncApi("GET", code);
+    if (res.status !== 200) return res.status;
+    syncSet({ code, rev: res.body.rev, dirty: false });
+    takeRemote(res.body, true);
+    return 200;
+  }
+  const syncErr = (st) => st === 503 ? "Ο συγχρονισμός δεν είναι ακόμα διαθέσιμος" : st === 404 ? "Αυτός ο κωδικός δεν υπάρχει"
+    : st === 400 ? "Ο κωδικός έχει 12 γράμματα/αριθμούς, π.χ. ABCD-EFGH-JKMN" : "Δεν έγινε σύνδεση· δοκίμασε ξανά";
+  function syncSheet(done) {
+    const s = syncGet(), has = !!load();
+    const joinBox = `<label class="muted" for="tmSyncCode">Έχεις κωδικό από την άλλη συσκευή σου;</label>
+      <input id="tmSyncCode" class="tm-input" placeholder="ABCD-EFGH-JKMN" autocomplete="off" autocapitalize="characters">
+      <button class="tm-primary" id="tmSyncJoin">Σύνδεση</button>
+      ${has ? '<p class="tm-hint">Η ομάδα αυτής της συσκευής θα αντικατασταθεί από την ομάδα του κωδικού.</p>' : ""}`;
+    sheet(`<div class="sh"><div><h2>Συγχρονισμός συσκευών</h2><div class="muted">Το PC και το κινητό σου με την ίδια ομάδα· κάθε αλλαγή περνά αυτόματα</div></div>
+        <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
+      ${s ? `<p>Ο κωδικός σου:</p><p class="tm-code" id="tmSyncShow">${esc(fmtCode(s.code))}</p>
+          <button class="tm-primary" id="tmSyncCopy">Αντιγραφή κωδικού</button>
+          <p class="tm-hint">Στην άλλη συσκευή: «Η ομάδα μου» → ⋯ Επιλογές → Συγχρονισμός συσκευών → γράψε τον κωδικό.
+            Κράτα τον όπως έναν κωδικό: όποιος τον έχει βλέπει και αλλάζει την ομάδα.</p>
+          <button class="linkbtn" id="tmSyncOff" style="display:block;margin:8px auto 0">Αποσύνδεση αυτής της συσκευής</button>`
+        : `${has ? '<button class="tm-primary" id="tmSyncNew">Νέος κωδικός για αυτή την ομάδα</button><hr class="tm-sep">' : ""}${joinBox}`}`);
+    const on = (i, fn) => { const el = document.getElementById(i); if (el) el.onclick = fn; };
+    on("tmSyncNew", async () => { const st = await syncNew(); if (st === 201) syncSheet(done); else toast(syncErr(st)); });
+    on("tmSyncJoin", async () => {
+      const st = await syncJoin($("#tmSyncCode").value);
+      if (st === 200) { closePlayer(); setup = null; mode = null; done(); toast("Συνδέθηκε· η ομάδα ήρθε από την άλλη συσκευή"); }
+      else toast(syncErr(st));
+    });
+    on("tmSyncCopy", async () => toast(await copyText(fmtCode(s.code)) ? "Ο κωδικός αντιγράφηκε" : fmtCode(s.code)));
+    on("tmSyncOff", () => { syncSet(null); closePlayer(); toast("Η συσκευή αποσυνδέθηκε· η ομάδα μένει εδώ"); });
+  }
+
   function encode(t) {
     const j = JSON.stringify({ p: t.players.map((x) => [x.id, x.price]), b: t.bank, r: t.roles || null, c: t.captain ?? null, u: t.used ? { round: t.used.round, n: t.used.n } : null });
     return btoa(unescape(encodeURIComponent(j))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
@@ -740,12 +844,14 @@
     const close = () => { host.innerHTML = ""; };
     if (host.innerHTML) { close(); return; }
     host.innerHTML = `<div class="tm-menu" role="menu">
+      <button id="mSync">🔄 Συγχρονισμός συσκευών${syncGet() ? " ✓" : ""}</button>
       <button id="mBackup">🔗 Αντίγραφο ασφαλείας</button>
       <button id="mEdit">✏️ Αλλαγή ομάδας</button>
       <button id="mBank">💰 Διόρθωση credits</button>
       ${WIDE() ? "" : `<button id="mInstall">📱 Βάλ' το στην οθόνη σου</button>`}
       <button id="mMail">✉️ Επικοινωνία</button>
       <button id="mDel" class="tm-danger">🗑 Διαγραφή ομάδας</button></div>`;
+    $("#mSync").onclick = () => { close(); syncSheet(() => render(best)); };
     $("#mBackup").onclick = async () => {
       close();
       const link = location.origin + location.pathname + "#t=" + encode(t);
@@ -772,7 +878,7 @@
       sheet(`<div class="sh"><h2>Διαγραφή της ομάδας από αυτή τη συσκευή;</h2><button class="x" onclick="closePlayer()">×</button></div>
         <p class="muted">Αν έχεις κρατήσει σύνδεσμο αντιγράφου, μπορείς να την επαναφέρεις αργότερα.</p>
         <button class="tm-primary tm-danger-bg" id="tmDelOk">Διαγραφή</button>`);
-      $("#tmDelOk").onclick = () => { try { localStorage.removeItem(KEY); } catch (e) {} closePlayer(); setup = null; mode = null; render(best); };
+      $("#tmDelOk").onclick = () => { try { localStorage.removeItem(KEY); } catch (e) {} syncSet(null); closePlayer(); setup = null; mode = null; render(best); };
     };
   }
   document.addEventListener("click", (e) => { if (!e.target.closest("#tmMenu, #tmMore")) { const h = document.getElementById("tmMenu"); if (h) h.innerHTML = ""; } });
@@ -799,7 +905,8 @@
         <button class="tm-primary" id="tmFinish" ${full ? "" : "disabled"}>${full ? "Αποθήκευση ➜" : `Λείπουν ${11 - ps.length}`}</button>
         ${had ? '<button class="linkbtn" id="tmCancel" style="display:block;margin:6px auto 0">Άκυρο</button>' : ""}
         <p class="tm-hint">Γράψε τα prices <b>αγοράς</b> (όσο πλήρωσες τον καθένα)· συμπληρώνονται με τα σημερινά, αν διαφέρουν πάτα τον παίκτη. Έτσι βλέπεις πόσο ανέβηκαν ή έπεσαν· στα Trades μετράει η σημερινό price. Το υπόλοιπο το διορθώνεις από τις «Επιλογές».</p>
-        ${had ? "" : '<button class="linkbtn" id="tmRestore" style="display:block;margin:8px auto 0">📥 Έχεις σύνδεσμο αντιγράφου; Επικόλλησέ τον</button>'}</div>`;
+        ${had ? "" : '<button class="linkbtn" id="tmRestore" style="display:block;margin:8px auto 0">📥 Έχεις σύνδεσμο αντιγράφου; Επικόλλησέ τον</button>'
+          + '<button class="linkbtn" id="tmSyncSetup" style="display:block;margin:4px auto 0">🔄 Έχεις κωδικό συγχρονισμού από άλλη συσκευή;</button>'}</div>`;
   }
   // setting up: a picked player's price (as in your game) or removing him
   function setupPlayerSheet(id, best) {
@@ -870,8 +977,12 @@
     return `<details class="card"><summary><b>Καλύτερη ομάδα του Round (xFPT)</b> <span class="muted">· ${f1(best.cost)} cr</span></summary>
       <div class="tm-sideline">${courtView(best.team.map((p) => ({ ...p, actual: null })), null)}</div></details>`;
   }
+  let pulled = false;
   function render(best) {
     best = best === undefined ? P.best_team : best;
+    // the other device's changes: once per page load (and on coming back to it, above)
+    onRemote = () => render(best);
+    if (!pulled && !GAME()) { pulled = true; syncPull(); }
     if (GAME()) {
       const g = gameTeam();
       if (!g) { $("#team").innerHTML = `<div class="card warn"><h2>Η ομάδα δεν είναι διαθέσιμη</h2>
@@ -900,6 +1011,8 @@
       });
       const fin = document.getElementById("tmFinish");
       if (fin) fin.onclick = () => { finishSetup(); render(best); window.scrollTo({ top: 0 }); toast("Η ομάδα αποθηκεύτηκε"); };
+      const ss = document.getElementById("tmSyncSetup");
+      if (ss) ss.onclick = () => syncSheet(() => render(best));
       const rest = document.getElementById("tmRestore");
       if (rest) rest.onclick = () => restoreSheet(() => render(best));
       const cancel = document.getElementById("tmCancel");
@@ -1026,6 +1139,8 @@
   .tm-item .tm-done { padding: 7px 10px; }
   @media (max-width: 340px) {   /* the narrowest phones: the button goes under the text, which keeps the full width */
     .tm-item { grid-template-columns: 30px 1fr; } .tm-item .tm-done { grid-column: 2; justify-self: start; } }
+  .tm-code { font: 700 24px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .06em; text-align: center; margin: 4px 0 12px; }
+  .tm-sep { border: 0; border-top: 1px solid var(--border); margin: 14px 0; }
   .tm-live { margin: 0 0 10px; padding: 10px 12px; border-radius: 10px; font-size: 14px;
     background: color-mix(in srgb, var(--accent) 12%, transparent); }
   .tm-ready { padding: 12px; border-radius: 12px; font-weight: 600; background: color-mix(in srgb, var(--good) 14%, transparent); }
