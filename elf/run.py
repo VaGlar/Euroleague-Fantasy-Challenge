@@ -532,6 +532,28 @@ def manual_team(table: pd.DataFrame) -> dict | None:
 
 # ---------------------------------------------------------------- report
 
+def season_fpt(table: pd.DataFrame) -> pd.Series:
+    """Fantasy points scored this season so far (PIR, +10% on a win; a coach by his team's margins)."""
+    box, games = history.load("players", CURRENT_SEASON), history.load("games", CURRENT_SEASON)
+    if games.empty:
+        return pd.Series(np.nan, index=table.index)
+    games = games[games["played"]]
+    margin = {}
+    for g in games.itertuples():
+        margin[(g.gamecode, g.home)] = g.home_score - g.away_score
+        margin[(g.gamecode, g.away)] = g.away_score - g.home_score
+    tot = {}
+    if not box.empty:
+        m = np.array([margin.get((c, t), 0) for c, t in zip(box["gamecode"], box["team"])])
+        tot = (box["pir"] * np.where(m > 0, 1 + WIN_BONUS, 1.0)).groupby(box["person_id"]).sum().to_dict()
+    coach = {}
+    for (code, team), mg in margin.items():
+        coach[team] = coach.get(team, 0) + next(p for lo, hi, p in COACH_POINTS if lo < mg <= hi)
+    return pd.Series([coach.get(t, 0.0) if pos == "Head Coach" else tot.get(pid, 0.0)
+                      for pid, t, pos in zip(table["person_id"], table["team"], table["position"])],
+                     index=table.index).round(1)
+
+
 def actual_points(fx: pd.DataFrame, rnd: int, table: pd.DataFrame) -> pd.Series:
     """Fantasy points already scored this round (PIR, +10% on a win; coach by margin)."""
     played = fx[(fx["round"] == rnd) & fx["played"]]
@@ -797,6 +819,17 @@ def build(offline: bool = False) -> dict:
     done = table["actual"].notna()
     for col, src in (("next_round", "round"), ("next_opp", "opp"), ("next_home", "is_home")):
         table[col] = table["person_id"].map(nxt[src]).where(done)
+    # xFPT3 as shown: the plain sum of his next 3 games not yet played (as «Επόμενα 3 παιχνίδια»); the
+    # weighted horizon x_h stays what the trades are chosen on
+    played_codes = set(pr["fixtures"].loc[pr["fixtures"]["played"], "gamecode"])
+    up = ctx[~ctx["gamecode"].isin(played_codes)].copy()
+    up["utc"] = pd.to_datetime(up["utc"], utc=True)
+    up = up.sort_values(["round", "utc"], kind="stable").groupby("person_id").head(3)
+    g3 = up.groupby("person_id")["xpir"]
+    table["x3"] = table["person_id"].map(g3.sum())
+    table["n3"] = table["person_id"].map(g3.size()).fillna(0)
+    x3_first = table["person_id"].map(up.groupby("person_id")["xpir"].first()).fillna(0)
+    table["fpt_total"] = season_fpt(table)
 
     # --- fantasy prices / my team
     my, best = None, None
@@ -817,6 +850,7 @@ def build(offline: bool = False) -> dict:
             lambda pid: bool(avail.loc[pid, "is_injured"]) if pid in avail.index else False)
         lost_now = table["x_now"].fillna(0) * (1 - f_game)
         table["x_h"] = table["x_h"] - table["x_first"].fillna(0) * (1 - f_game)
+        table["x3"] = table["x3"] - x3_first * (1 - f_game)
         table["x_now"] = table["x_now"] - lost_now
         # no history (new to EuroLeague): the game's price is the market's estimate.
         # Map price -> xFPT per position from players with data, discounted 20% for
@@ -834,6 +868,7 @@ def build(offline: bool = False) -> dict:
             est = (0.8 * (slope * table.loc[m, "price"] + icpt)).clip(lower=0)
             table.loc[m, "x_now"] = est * f_game[m]
             table.loc[m, "x_h"] = est * sum(horizon_weights(trade_rnd))
+            table.loc[m, "x3"] = est * table.loc[m, "n3"]
             table.loc[m, "prior"] = "τιμή"
             # few games this season (newcomer or not): the price keeps counting for a few games and fades
             # fast as his own games add up (one bad game shouldn't make a 10-credit player 0: Motley -13, 1).
@@ -849,13 +884,14 @@ def build(offline: bool = False) -> dict:
                 now_f = f_game[nc] * table.loc[nc, "news_avail"].fillna(1.0)
                 table.loc[nc, "x_now"] = (g_ * table.loc[nc, "x_now"] + k_ * est_nc * now_f) / (g_ + k_)
                 table.loc[nc, "x_h"] = (g_ * table.loc[nc, "x_h"] + k_ * est_nc * sum(horizon_weights(trade_rnd))) / (g_ + k_)
+                table.loc[nc, "x3"] = (g_ * table.loc[nc, "x3"].fillna(0) + k_ * est_nc * table.loc[nc, "n3"]) / (g_ + k_)
                 table.loc[nc, "prior"] = "τιμή+ματς"
         table, price_info = prices.annotate(table)  # $ = likely price rise
         table = price_moves(table, price_history())
         n_inj = int((f_game < 1).sum())
         if n_inj == 0:
             health.append("fantasy: το παιχνίδι δεν έδωσε κανέναν τραυματία/αμφίβολο (έλεγχος πεδίων)")
-        table["value"] = table["x_h"] / table["price"]
+        table["value"] = table["x3"] / table["price"]
         if fs["unmatched"] > 40:  # a handful of unregistered bench players is normal
             health.append(f"{fs['unmatched']} παίκτες του fantasy λείπουν από τα ρόστερ EuroLeague")
         pool = table.dropna(subset=["price", "fantasy_id"]).copy()

@@ -481,7 +481,7 @@
         <div class="muted">${esc(tc(r.team))} · ${NAME[r.position]} · τώρα ${f1(r.price)} cr${r.buy != null ? ` · αγορά ${f1(r.buy)}${dPrice(r) ? ` (${dPrice(r) > 0 ? "+" : "−"}${f1(Math.abs(dPrice(r)))})` : ""}` : ""}${r.popularity != null ? ` · POP ${f1(r.popularity)} %` : ""}${r.turn ? ` · Turn ${r.turn}` : ""}${role && role !== "coach" ? ` · ${ROLE_LABEL[role] || role}` : ""}</div></div>
         <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
       <div class="kpis"><div class="kpi"><b>${f1(played(r) ? r.actual : r.x_now)}</b><span>${played(r) ? "points" : "xFPT"}</span></div>
-        <div class="kpi"><b>${f1(r.x_h)}</b><span>xFPT3</span></div><div class="kpi"><b>${r.value == null ? "–" : r.value.toFixed(2)}</b><span>xFPT3/cr</span></div></div>
+        <div class="kpi"><b>${f1(xf3(r))}</b><span>xFPT3</span></div><div class="kpi"><b>${r.value == null ? "–" : r.value.toFixed(2)}</b><span>xFPT3/cr</span></div></div>
       <div class="tm-acts">
         ${t.game ? "" : r.position !== "Head Coach" ? `<button class="tm-act" id="aCap" ${canCap ? "" : "disabled"}><span>★</span><div>Captain</div></button>
         <button class="tm-act" id="aSwap"><span>⇄</span><div>Substitute</div></button>` : ""}
@@ -533,7 +533,7 @@
       const k = key(q).trim();
       $("#tmList").innerHTML = list.filter((p) => !k || key(p.name).includes(k)).slice(0, 40).map((p) => `<button class="tm-pick" data-n="${p.fantasy_id}">
           <span><b>${esc(nm(p.name))}</b>${typeof newb === "function" ? newb(p, false) : ""}</span><span class="tm-pv"><b class="${gain(p) > 0 ? "tm-up" : "tm-down"}">${gain(p) > 0 ? "+" : "−"}${f1(Math.abs(gain(p)))}</b><small>xFPT3</small></span>
-          <span class="muted tm-pm">${esc(tc(p.team))} · ${f1(p.price)} cr · xFPT3 ${f1(p.x_h)} · μένουν ${f1(max - p.price)} cr</span></button>`).join("")
+          <span class="muted tm-pm">${esc(tc(p.team))} · ${f1(p.price)} cr · xFPT3 ${f1(xf3(p))} · μένουν ${f1(max - p.price)} cr</span></button>`).join("")
         || `<p class="muted">${k ? `Κανένας ${NAME[r.position]} με αυτό το όνομα μέσα στο υπόλοιπο.` : `Κανένας ${NAME[r.position]} δεν χωράει στο υπόλοιπο.`}</p>`;
       document.querySelectorAll("#tmList [data-n]").forEach((b) => b.onclick = () => {
         const n = row(Number(b.dataset.n));
