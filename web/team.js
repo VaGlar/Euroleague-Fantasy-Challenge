@@ -290,7 +290,7 @@
     if (tradesNow) for (const pr of pairs) {
       const o = rows.find((r) => r.id === pr.out.id), n = row(pr.in.id);
       items.push({ kind: "🔁", html: `<b>${esc(sur(o.name))}</b> vs <b>${esc(sur(n.name))}</b>`, why: "",
-        keep: o, avoid: n,
+        keep: o, avoid: n, cmp: [o.person_id, n.person_id], short: !affords(t, pr),
         run: () => { applyTrade(t, pr.out.id, pr.in.id, pr.in.price); save(t); toast(`${sur(o.name)} ➜ ${sur(n.name)} · υπόλοιπο ${f1(t.bank)} cr`); } });
     }
     const pendingTrades = items.length > 0;
@@ -328,6 +328,11 @@
   }
 
   // ------------------------------------------------------------ actions on the saved team
+  // the credits allow this trade now (sold at today's price): otherwise the others have to go first
+  const affords = (t, pr) => (Number(t.bank) || 0) + (Number(row(pr.out.id)?.price ?? pr.out.price) || 0) - (Number(pr.in.price) || 0) >= -0.05;
+  const doneBtn = (attr, i) => i.short
+    ? `<button class="tm-done" ${attr} disabled title="Δεν φτάνουν τα credits: κάνε πρώτα τα άλλα Trades">🔒 Μετά</button>`
+    : `<button class="tm-done" ${attr} ${i.wait ? "disabled" : ""}>✓ Το έκανα</button>`;
   function applyTrade(t, outId, inId, price) {
     const i = t.players.findIndex((x) => x.id === outId);
     if (i < 0) return;
@@ -417,17 +422,17 @@
         `<b>${who(id)}</b> <button class="linkbtn" data-unkeep="${id}">αναίρεση</button>`).join(" · ")}</p>` : "")
       + (pl.avoid.length ? `<p class="tm-kept">🚫 Δεν θέλεις: ${pl.avoid.map((id) =>
         `<b>${who(id)}</b> <button class="linkbtn" data-unavoid="${id}">αναίρεση</button>`).join(" · ")}</p>` : "");
-    const list = items.map((i, n) => `<li class="tm-item${i.kind === "🔁" ? " tm-trade" : ""}"><span class="tm-kind" aria-hidden="true">${i.kind}</span>
+    const list = items.map((i, n) => `<li class="tm-item${i.kind === "🔁" ? " tm-trade" : ""}"${i.cmp ? ` data-cmp="${esc(i.cmp.join(","))}"` : ""}><span class="tm-kind" aria-hidden="true">${i.kind}</span>
         <span class="tm-what">${i.html}${i.why ? `<span class="tm-why">${i.why}</span>` : ""}${i.keep || i.avoid ? `<span class="tm-kbtns">${i.keep ? keepBtn(i.keep) : ""}${i.avoid ? avoidBtn(i.avoid) : ""}</span>` : ""}</span>
-        ${t.game ? "" : `<button class="tm-done" data-i="${n}" ${i.wait ? "disabled" : ""}>✓ Το έκανα</button>`}</li>`).join("");
+        ${t.game ? "" : doneBtn(`data-i="${n}"`, i)}</li>`).join("");
     const turnPlan = pl.turnPlan.map((x) => { const s = pl.aRows.find((r) => r.id === x.start.id), b = pl.aRows.find((r) => r.id === x.bench.id);
       return `<li>🕐 <b>Πριν το T${x.bench.turn}</b>: αν ο ${esc(sur(s.name))} φέρει κάτω από ${Math.round(x.bench.x_now)}, βάλε τον ${esc(sur(b.name))}.</li>`; }).join("");
     // while the round is under way only swaps and the armband: next round's trades wait for it to end
     const nextTrades = pl.inRound ? "" : !pl.tradesNow && pl.trs.pairs.length ? `<div class="card"><h2>Trades για το Round ${pl.ti.round}
         <small class="muted">(${pl.ti.max_trades > 4 ? "απεριόριστα" : `Trades ${usedTrades(t, pl.ti)}/${pl.ti.max_trades}`} · μετά το τρέχον Round)</small></h2>
         <ul class="tm-list">${pl.trs.pairs.map((pr, n) => { const o = rows.find((r) => r.id === pr.out.id), nn = row(pr.in.id);
-          return `<li class="tm-item tm-trade"><span class="tm-kind">🔁</span><span class="tm-what"><b>${esc(sur(o.name))}</b> vs <b>${esc(sur(nn.name))}</b><span class="tm-kbtns">${keepBtn(o)}${avoidBtn(nn)}</span></span>
-            ${t.game ? "" : `<button class="tm-done" data-n="${n}">✓ Το έκανα</button>`}</li>`; }).join("")}</ul>${keptLine}</div>`
+          return `<li class="tm-item tm-trade" data-cmp="${esc([o.person_id, nn.person_id].join(","))}"><span class="tm-kind">🔁</span><span class="tm-what"><b>${esc(sur(o.name))}</b> vs <b>${esc(sur(nn.name))}</b><span class="tm-kbtns">${keepBtn(o)}${avoidBtn(nn)}</span></span>
+            ${t.game ? "" : doneBtn(`data-n="${n}"`, { short: !affords(t, pr) })}</li>`; }).join("")}</ul>${keptLine}</div>`
       : !pl.tradesNow && (pl.keep.length || pl.avoid.length) ? `<div class="card"><h2>Trades για το Round ${pl.ti.round}</h2><p>Κανένα Trade δεν αξίζει με αυτές τις επιλογές σου.</p>${keptLine}</div>` : "";
     const done = !items.length && t.confirmed;
     const upd = P.generated ? new Date(P.generated).toLocaleString("el-GR", { weekday: "short", hour: "2-digit", minute: "2-digit" }) : "";
@@ -844,6 +849,10 @@
   // phones: the court comes first, this line says there are steps to do below it and takes you there
   function bindSteps() {
     sizeFloors();
+    document.querySelectorAll("#team li[data-cmp]").forEach((li) => li.onclick = (e) => {
+      if (e.target.closest("button")) return;
+      if (typeof compareSheet === "function") compareSheet(li.dataset.cmp.split(","));
+    });
     const b = document.getElementById("tmSteps"), to = document.getElementById("tmTodo");
     if (b && to) b.onclick = () => window.scrollTo({ top: to.getBoundingClientRect().top + window.scrollY - 8, behavior: "smooth" });
   }
@@ -989,6 +998,7 @@
   .tm-left { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: 13px; color: var(--text-secondary); }
   .tm-left select { font: inherit; padding: 4px 8px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface-1); color: var(--text-primary); }
   .tm-kbtns { display: block; }
+  #team li[data-cmp] .tm-what { cursor: pointer; }
   .tm-warn { font-size: 12px; font-weight: 600; color: var(--warning, #b45309); margin-top: 4px; }
   .tm-keep { display: inline-block; margin: 6px 14px 0 0; padding: 0; border: 0; background: none; color: var(--series-1); font: inherit; font-size: 13px;
     text-align: left; cursor: pointer; }

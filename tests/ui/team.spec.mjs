@@ -259,6 +259,24 @@ test.describe("public edition", () => {
     await checkLayout(page, "trades left");
   });
 
+  test("tapping a proposed trade opens the two players side by side; a trade the credits can't pay yet is locked", async ({ page }) => {
+    await savedTeam(page);
+    await page.locator("#tmConfirm").click();
+    const row = tradeRows(page).first();
+    const [out, inn] = await row.locator(".tm-what > b").allInnerTexts();
+    await row.locator(".tm-what > b").first().click();
+    await expect(page.locator("#sheet table.h2h")).toBeVisible();
+    await expect(page.locator("#sheet h2")).toContainText(`${out} vs ${inn}`);
+    await page.keyboard.press("Escape");
+    // no credits left: a trade that costs more than it frees waits for the others
+    await page.evaluate(() => { const t = JSON.parse(localStorage.getItem("myteam_v1")); t.bank = 0; localStorage.setItem("myteam_v1", JSON.stringify(t)); });
+    await page.reload();
+    for (const b of await page.locator("#team li.tm-trade .tm-done").all()) {
+      if ((await b.innerText()).includes("Μετά")) await expect(b).toBeDisabled();
+      else await expect(b).toBeEnabled();
+    }
+  });
+
   test("all the proposed trades together fit in the credits left", async ({ page }) => {
     await savedTeam(page);
     await page.locator("#tmConfirm").click();

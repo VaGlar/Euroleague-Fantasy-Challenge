@@ -203,7 +203,10 @@
     const order = { Guard: 0, Forward: 1, Center: 2, "Head Coach": 3 };
     const srt = (a, b) => order[a.position] - order[b.position] || num(b.price) - num(a.price);
     out.sort(srt); inn.sort(srt);
-    return { pairs: out.map((o, i) => ({ out: o, in: inn[i] })), gain: best.val - baseVal,
+    // the ones that free credits first: done in this order, each one is affordable when its turn comes
+    const pairs = out.map((o, i) => ({ out: o, in: inn[i] }))
+      .sort((a, b) => (num(b.out.price) - num(b.in.price)) - (num(a.out.price) - num(a.in.price)));
+    return { pairs, gain: best.val - baseVal,
       bankAfter: budget - best.cost, squad: best.squad };
   }
 

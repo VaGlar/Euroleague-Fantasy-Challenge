@@ -836,6 +836,11 @@ async function renderCompare() {
       ${rows.length ? `<p>Επιλεγμένος: <b>${esc(nm(rows[0].name))}</b></p>` : ""}</div>`;
     return;
   }
+  box.innerHTML = `<div class="card"><h2>Σύγκριση head-to-head</h2>
+    <p class="muted">Πράσινο = καλύτερη τιμή της γραμμής. Πάτα το όνομα για την καρτέλα του παίκτη.</p>${await compareTable(rows, true)}</div>`;
+}
+// the head-to-head table (tab «Σύγκριση» and a proposed trade in «Η ομάδα μου»); removable: the ✕ per column
+async function compareTable(rows, removable = false) {
   const all = await details();
   const det = rows.map((r) => all[r.person_id] || { stats: [], last: [], next: [] });
   const cur = det.map((d) => d.stats.find((s) => s.season === P.season) || {});
@@ -851,12 +856,10 @@ async function renderCompare() {
   const sec = (t) => `<tr class="sec"><td colspan="${rows.length + 1}">${t}</td></tr>`;
   const nextSum = det.map((d) => d.next.length ? d.next.reduce((a, g) => a + g.x, 0) : null);
   const pct0 = (x) => `${Math.round(x)}%`;
-  const html = `<div class="card"><h2>Σύγκριση head-to-head</h2>
-    <p class="muted">Πράσινο = καλύτερη τιμή της γραμμής. Πάτα το όνομα για την καρτέλα του παίκτη.</p>
-    <div class="tablewrap"><table class="h2h"><thead><tr><th></th>${rows.map((r) => `<th>
+  return `<div class="tablewrap"><table class="h2h"><thead><tr><th></th>${rows.map((r) => `<th>
       <div data-pid="${esc(r.person_id)}" style="cursor:pointer">${esc(nm(r.name))}${inj(r)}${dol(r)}</div>
       <div class="muted" style="font-weight:400;font-size:12px">${esc(tc(r.team))} · ${esc((r.position || "")[0] || "")}</div>
-      <button class="rm" type="button" title="αφαίρεση" onclick="setCmp(CMP.filter((x) => x !== '${esc(r.person_id)}'))">✕</button></th>`).join("")}</tr></thead><tbody>
+      ${removable ? `<button class="rm" type="button" title="αφαίρεση" onclick="setCmp(CMP.filter((x) => x !== '${esc(r.person_id)}'))">✕</button>` : ""}</th>`).join("")}</tr></thead><tbody>
     ${sec("Fantasy")}
     ${line("Price (cr)", rows.map((r) => r.price), "lo")}
     ${line("xFPT του Round", rows.map((r) => r.actual ?? r.x_now), "hi")}
@@ -892,8 +895,17 @@ async function renderCompare() {
     ${line("Λεπτά", prev.map((s) => s.min), "hi")}
     ${line("PIR", prev.map((s) => s.pir), "hi")}
     ${line("Points", prev.map((s) => s.pts), "hi")}
-    </tbody></table></div></div>`;
-  box.innerHTML = html;
+    </tbody></table></div>`;
+}
+// a proposed trade, out vs in, side by side in the popup
+async function compareSheet(pids, title) {
+  const rows = pids.map((id) => P.players.find((x) => x.person_id === id)).filter(Boolean);
+  if (rows.length < 2) return;
+  $("#sheet").innerHTML = `<div class="sh"><h2>${esc(title || rows.map((r) => surname(r.name)).join(" vs "))}</h2>
+    <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>${await compareTable(rows)}`;
+  $("#modal").classList.add("on");
+  document.body.classList.add("noscroll");
+  $("#sheet").scrollTop = 0;
 }
 
 // ---------------------------------------------------------------- install guide
