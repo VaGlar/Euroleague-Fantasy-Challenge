@@ -305,29 +305,18 @@
   {
    "round": 3,
    "trades": 4,
-   "bank": 0.6,
+   "bank": 1.1,
    "squad": [
     {
-     "id": 3766,
-     "price": 18.0,
-     "position": "Forward",
-     "person_id": "003469",
-     "name": "VEZENKOV, SASHA",
-     "team": "OLY",
+     "id": 11549,
+     "price": 16.0,
+     "position": "Center",
+     "person_id": "000898",
+     "name": "VALANCIUNAS, JONAS",
+     "team": "ZAL",
      "role": "5άδα",
      "captain": true,
-     "x_now": 23.7
-    },
-    {
-     "id": 3887,
-     "price": 15.3,
-     "position": "Guard",
-     "person_id": "007975",
-     "name": "FRANCISCO, SYLVAIN",
-     "team": "PAN",
-     "role": "5άδα",
-     "captain": false,
-     "x_now": 20.5
+     "x_now": 22.6
     },
     {
      "id": 3791,
@@ -341,15 +330,37 @@
      "x_now": 20.5
     },
     {
+     "id": 3887,
+     "price": 15.3,
+     "position": "Guard",
+     "person_id": "007975",
+     "name": "FRANCISCO, SYLVAIN",
+     "team": "PAN",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 19.8
+    },
+    {
      "id": 11504,
      "price": 10.9,
      "position": "Center",
      "person_id": "003958",
      "name": "THIEMANN, JOHANNES",
      "team": "MUN",
-     "role": "5άδα",
+     "role": "6ος",
      "captain": false,
      "x_now": 13.8
+    },
+    {
+     "id": 11516,
+     "price": 10.0,
+     "position": "Forward",
+     "person_id": "015166",
+     "name": "CROWDER, JAE",
+     "team": "ASV",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 13.4
     },
     {
      "id": 4061,
@@ -358,20 +369,9 @@
      "person_id": "008084",
      "name": "MANTZOUKAS, ELEFTHERIOS",
      "team": "PAN",
-     "role": "6ος",
-     "captain": false,
-     "x_now": 12.6
-    },
-    {
-     "id": 3980,
-     "price": 8.5,
-     "position": "Center",
-     "person_id": "007553",
-     "name": "BALCEROWSKI, OLEK",
-     "team": "BAR",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 11.3
+     "x_now": 12.6
     },
     {
      "id": 4255,
@@ -393,7 +393,7 @@
      "team": "ASV",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 6.2
+     "x_now": 5.9
     },
     {
      "id": 4012,
@@ -429,7 +429,8 @@
      "x_now": 1.4
     }
    ],
-   "x_total": 138.0
+   "x_total": 136.4,
+   "decided_at": "2026-10-01T14:41+00:00"
   }
  ],
  "seed_id": "5a453a755a9b",
@@ -440,5 +441,5 @@
   "raw": 184.8,
   "avg_raw": 115.9
  },
- "generated": "2026-10-01T13:33:53.563790+00:00"
+ "generated": "2026-10-01T14:41:46.295953+00:00"
 }
