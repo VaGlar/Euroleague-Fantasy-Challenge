@@ -837,7 +837,8 @@ async function renderCompare() {
   const rows = CMP.map((id) => P.players.find((x) => x.person_id === id)).filter(Boolean);
   if (rows.length < 2) {
     box.innerHTML = `<div class="card"><h2>Σύγκριση head-to-head</h2><p>Διάλεξε ${rows.length ? "ακόμα έναν" : "2 έως 4"} παίκτες με το ☐ στο tab «Παίκτες».</p>
-      ${rows.length ? `<p>Επιλεγμένος: <b>${esc(nm(rows[0].name))}</b></p>` : ""}</div>`;
+      ${rows.length ? `<p>Επιλεγμένος: <b>${esc(nm(rows[0].name))}</b>
+        <button class="linkbtn" type="button" id="cmpClear" onclick="setCmp([])">✕ αφαίρεση</button></p>` : ""}</div>`;
     return;
   }
   box.innerHTML = `<div class="card"><h2>Σύγκριση head-to-head</h2>

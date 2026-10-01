@@ -104,6 +104,11 @@ test("compare: pick two players, see them side by side", async ({ page }, testIn
   const names = await page.evaluate(() => CMP.length);
   expect(names).toBe(2);
   await checkLayout(page, "compare");
+  // remove them one by one, the last one too
+  await page.locator("#compare .h2h button.rm").first().click();
+  await page.locator("#cmpClear").click();
+  expect(await page.evaluate(() => CMP.length)).toBe(0);
+  await expect(page.locator("#cmpClear")).toHaveCount(0);
 });
 
 test("club codes as in the game (EFS, BAY, RMB…), not the API's (IST, MUN, MAD…)", async ({ page }, testInfo) => {
