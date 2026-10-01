@@ -272,7 +272,7 @@ test.describe("public edition", () => {
     await page.evaluate(() => { const t = JSON.parse(localStorage.getItem("myteam_v1")); t.bank = 0; localStorage.setItem("myteam_v1", JSON.stringify(t)); });
     await page.reload();
     for (const b of await page.locator("#team li.tm-trade .tm-done").all()) {
-      if ((await b.innerText()).includes("Μετά")) await expect(b).toBeDisabled();
+      if (await b.getAttribute("title")) await expect(b).toBeDisabled();   // greyed: the credits don't reach yet
       else await expect(b).toBeEnabled();
     }
   });

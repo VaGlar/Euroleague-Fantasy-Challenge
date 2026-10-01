@@ -330,9 +330,8 @@
   // ------------------------------------------------------------ actions on the saved team
   // the credits allow this trade now (sold at today's price): otherwise the others have to go first
   const affords = (t, pr) => (Number(t.bank) || 0) + (Number(row(pr.out.id)?.price ?? pr.out.price) || 0) - (Number(pr.in.price) || 0) >= -0.05;
-  const doneBtn = (attr, i) => i.short
-    ? `<button class="tm-done" ${attr} disabled title="Δεν φτάνουν τα credits: κάνε πρώτα τα άλλα Trades">🔒 Μετά</button>`
-    : `<button class="tm-done" ${attr} ${i.wait ? "disabled" : ""}>✓ Το έκανα</button>`;
+  const doneBtn = (attr, i) => `<button class="tm-done" ${attr} ${i.short || i.wait ? "disabled" : ""}${
+    i.short ? ' title="Δεν φτάνουν τα credits: κάνε πρώτα τα άλλα Trades"' : ""}>✓ Το έκανα</button>`;
   function applyTrade(t, outId, inId, price) {
     const i = t.players.findIndex((x) => x.id === outId);
     if (i < 0) return;
