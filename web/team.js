@@ -839,10 +839,17 @@
   }
   // PC: the side columns (coach, 6th, bench) start level with the top of the court; they are placed from the
   // row under the court, so they are lifted by the court's height (the centre circle stays where it is)
+  // measured when the court gets its size, not only at render: a court drawn on a hidden tab, or before
+  // the fonts load, has no height yet (the columns then started at the bottom of the court)
+  const floorObs = typeof ResizeObserver === "function" ? new ResizeObserver((es) => {
+    for (const e of es) { const f = e.target.closest(".tm-floor"); if (f && e.target.offsetHeight) f.style.setProperty("--court-h", e.target.offsetHeight + "px"); }
+  }) : null;
   function sizeFloors() {
     document.querySelectorAll(".tm-floor").forEach((f) => {
       const c = f.querySelector(".court");
-      if (c && c.offsetHeight) f.style.setProperty("--court-h", c.offsetHeight + "px");
+      if (!c) return;
+      if (c.offsetHeight) f.style.setProperty("--court-h", c.offsetHeight + "px");
+      if (floorObs && !c.dataset.obs) { c.dataset.obs = "1"; floorObs.observe(c); }
     });
   }
   window.addEventListener("resize", sizeFloors);
