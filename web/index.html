@@ -294,6 +294,7 @@ ul.news li { padding: 8px 0; border-bottom: 1px solid var(--border); }
 .xp { list-style: none; margin: 4px 0 8px; padding: 0; }
 .xp li { display: flex; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--border); }
 .xp li[data-pid] { cursor: pointer; }
+.ap-mv { border-top: 1px solid var(--border); padding: 6px 0; } .ap-mv summary { cursor: pointer; }
 .xp .ic { width: 18px; flex: none; text-align: center; } .xp .nt { font-size: 12px; margin-top: 1px; }
 .xp-src { border-top: 1px solid var(--border); padding: 8px 0 0; margin-top: 6px; }
 .xp-src summary { cursor: pointer; font-weight: 600; font-size: 14px; }
@@ -1311,11 +1312,34 @@ function autopilotCard(ap) {
     h += `<p><b>Για το Round ${cur.round}</b>: ${cur.trades ? `${cur.trades} ${cur.trades === 1 ? "Trade" : "Trades"}` : "κανένα Trade"}
       · υπόλοιπο ${f1(cur.bank)} cr · xFPT ${f1(cur.x_total)}${cur.pts != null ? ` · <b>points ${f1(cur.pts)}</b>`
         : playedN ? ` · <b>μέχρι τώρα ${f1(soFar)}</b> <span class="muted">(${playedN} από ${list.length} έπαιξαν)</span>` : ""}</p>
-      <p class="muted" style="margin-top:-6px">Στο γήπεδο τα points όπως μετράνε: Captain ×2, Bench ×0,5.</p><div class="tm-sideline">${courtView(list, moved.size ? ref : null)}</div>
-      ${moves.map(([t, m]) => `<p class="muted">Πριν το T${t}: ${m.in.length ? `μπήκαν ${m.in.map(name).join(", ")} — βγήκαν ${m.out.map(name).join(", ")}` : "ίδιο Starting five"}${
-        m.captain ? ` · Captain ο ${name(m.captain)}` : ""}.</p>`).join("")}`;
+      <p class="muted" style="margin-top:-6px">Στο γήπεδο τα points όπως μετράνε: Captain ×2, Bench ×0,5.</p><div class="tm-sideline">${courtView(list, moved.size ? ref : null)}</div>`;
   }
-  return h + "</div>";
+  return h + apMovesHtml(rounds) + "</div>";
+}
+// every round's trades (the squad against the previous round's) and the changes before a later turn.
+// A round's decision is the last one before its first tip-off: until then it is a proposal that each update rewrites.
+function apMovesHtml(rounds) {
+  if (!rounds.length) return "";
+  const when = (iso) => iso ? new Date(iso).toLocaleString("el-GR", { weekday: "short", day: "numeric", month: "numeric", hour: "2-digit", minute: "2-digit" }) : "";
+  const frozenBelow = (P.trade_info && P.trade_info.round) || P.round + 1;   // rounds under way or done: decided
+  const items = [];
+  for (let i = rounds.length - 1; i >= 0; i--) {
+    const cur = rounds[i], prev = rounds[i - 1];   // the first round: the squad from scratch, no trades
+    const now = new Set(cur.squad.map((p) => p.id)), had = new Set(prev ? prev.squad.map((p) => p.id) : []);
+    const outs = prev ? prev.squad.filter((p) => !now.has(p.id)) : [], ins = cur.squad.filter((p) => !had.has(p.id));
+    const pairs = outs.map((o) => { const k = ins.findIndex((n) => n.position === o.position); const n = k >= 0 ? ins.splice(k, 1)[0] : null;
+      return `<li><b>${esc(nm(o.name || ""))}</b> → <b>${n ? esc(nm(n.name || "")) : "–"}</b> <span class="muted">${o.position === "Head Coach" ? "HC" : esc((o.position || "")[0])}${n ? ` · ${f1(o.price)} → ${f1(n.price)} cr` : ""}</span></li>`; });
+    const name = (id) => esc(nm(cur.squad.find((p) => p.id === id)?.name || ""));
+    const turns = Object.entries(cur.moves || {}).map(([t, m]) => `<li class="muted">Πριν το T${t}${m.at ? ` (${when(m.at)})` : ""}: ${m.in.length
+      ? `μπήκαν ${m.in.map(name).join(", ")}, βγήκαν ${m.out.map(name).join(", ")}` : "ίδιο Starting five"}${m.captain ? ` · Captain ο ${name(m.captain)}` : ""}</li>`).join("");
+    const open = cur.round >= frozenBelow;
+    const state = open ? `πρόταση${cur.decided_at ? ` της ${when(cur.decided_at)}` : ""} · οριστική με το τελευταίο update πριν το τζάμπολ`
+      : cur.decided_at ? `οριστική (${when(cur.decided_at)})` : "οριστική";
+    items.push(`<details class="ap-mv"${i === rounds.length - 1 ? " open" : ""}><summary><b>Round ${cur.round}</b> · ${pairs.length
+      ? `${pairs.length} ${pairs.length === 1 ? "Trade" : "Trades"}` : prev ? "κανένα Trade" : "η αρχική ομάδα"} <span class="muted">· ${state}</span></summary>
+      ${pairs.length || turns ? `<ul class="news">${pairs.join("")}${turns}</ul>` : ""}</details>`);
+  }
+  return `<h3 style="margin-top:16px">Κινήσεις του autopilot</h3>${items.join("")}`;
 }
 function renderModel(mp, trk, ap) {
   const pctd = (a, b) => (a && b ? Math.round((1 - a / b) * 100) : null);
