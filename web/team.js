@@ -52,6 +52,7 @@
       }
       t.updated = new Date().toISOString();
       localStorage.setItem(KEY, JSON.stringify(t));
+      syncLater();
     } catch (e) {}
   };
   const undoSteps = (t) => liveHist(t).length;
@@ -74,6 +75,109 @@
     save(t, { undoing: true });
     return true;
   }
+  // ------------------------------------------------------------ devices in step (public edition)
+  // A code links this device's team to a copy on the server (functions/api/sync): every save goes up a
+  // moment later, opening the page (or coming back to it) brings the other device's changes down. If
+  // both changed it in between, the newer change wins and the page says so. The backup link stays.
+  const SYNC = "tm_sync";
+  const syncGet = () => { try { return JSON.parse(localStorage.getItem(SYNC) || "null"); } catch (e) { return null; } };
+  const syncSet = (v) => { try { if (v) localStorage.setItem(SYNC, JSON.stringify(v)); else localStorage.removeItem(SYNC); } catch (e) {} };
+  const fmtCode = (c) => String(c || "").replace(/(....)(?=.)/g, "$1-");
+  let syncTimer = 0, syncBusy = false, onRemote = null;
+  async function syncApi(method, code, body) {
+    const r = await fetch("api/sync" + (code ? "/" + encodeURIComponent(code) : ""), {
+      method, headers: body ? { "content-type": "application/json" } : {}, body: body ? JSON.stringify(body) : undefined,
+      cache: "no-store" });
+    let b = null; try { b = await r.json(); } catch (e) {}
+    return { status: r.status, body: b };
+  }
+  function syncLater() {
+    const s = syncGet();
+    if (!s || GAME()) return;
+    if (!s.dirty) syncSet({ ...s, dirty: true });
+    clearTimeout(syncTimer);
+    syncTimer = setTimeout(() => syncPush(), 1500);   // a burst of changes is one write
+  }
+  // the server's copy replaces this device's (the newer one wins; the page says so)
+  function takeRemote(res, quiet) {
+    try { localStorage.setItem(KEY, JSON.stringify(res.data)); } catch (e) {}
+    const s = syncGet();
+    if (s) syncSet({ code: s.code, rev: res.rev, dirty: false });
+    if (!quiet) toast("Η ομάδα ενημερώθηκε από την άλλη συσκευή");
+    if (onRemote) onRemote();
+  }
+  const newer = (a, b) => String((a && a.updated) || "") > String((b && b.updated) || "");
+  async function syncPush() {
+    const s = syncGet(), t = load();
+    if (!s || !t || syncBusy) return;
+    syncBusy = true;
+    try {
+      let res = await syncApi("PUT", s.code, { data: t, rev: s.rev });
+      if (res.status === 409) {            // the other device wrote meanwhile: the newer change wins
+        if (newer(res.body.data, t)) { takeRemote(res.body); return; }
+        res = await syncApi("PUT", s.code, { data: t, rev: res.body.rev });
+      }
+      if (res.status === 200) syncSet({ code: s.code, rev: res.body.rev, dirty: false });
+    } catch (e) { /* offline: stays dirty, goes up next time */ } finally { syncBusy = false; }
+  }
+  async function syncPull() {
+    const s = syncGet();
+    if (!s || GAME() || syncBusy) return;
+    try {
+      const res = await syncApi("GET", s.code);
+      if (res.status === 404) { syncSet(null); toast("Ο κωδικός συγχρονισμού δεν υπάρχει πια· η ομάδα μένει σε αυτή τη συσκευή"); return; }
+      if (res.status !== 200) return;
+      const t = load();
+      if (res.body.rev > s.rev && !(s.dirty && newer(t, res.body.data))) { takeRemote(res.body); return; }
+      if (s.dirty || res.body.rev > s.rev) { syncSet({ ...s, rev: s.dirty ? s.rev : res.body.rev }); syncPush(); }
+    } catch (e) {}
+  }
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") syncPull(); });
+  // link this device: with a new code (its team goes up) or an existing one (that team comes down)
+  async function syncNew() {
+    const t = load();
+    if (!t) return null;
+    const res = await syncApi("POST", "", { data: t });
+    if (res.status !== 201) return res.status;
+    syncSet({ code: res.body.code, rev: res.body.rev, dirty: false });
+    return 201;
+  }
+  async function syncJoin(raw) {
+    const code = String(raw || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+    if (code.length !== 12) return 400;
+    const res = await syncApi("GET", code);
+    if (res.status !== 200) return res.status;
+    syncSet({ code, rev: res.body.rev, dirty: false });
+    takeRemote(res.body, true);
+    return 200;
+  }
+  const syncErr = (st) => st === 503 ? "Ο συγχρονισμός δεν είναι ακόμα διαθέσιμος" : st === 404 ? "Αυτός ο κωδικός δεν υπάρχει"
+    : st === 400 ? "Ο κωδικός έχει 12 γράμματα/αριθμούς, π.χ. ABCD-EFGH-JKMN" : "Δεν έγινε σύνδεση· δοκίμασε ξανά";
+  function syncSheet(done) {
+    const s = syncGet(), has = !!load();
+    const joinBox = `<label class="muted" for="tmSyncCode">Έχεις κωδικό από την άλλη συσκευή σου;</label>
+      <input id="tmSyncCode" class="tm-input" placeholder="ABCD-EFGH-JKMN" autocomplete="off" autocapitalize="characters">
+      <button class="tm-primary" id="tmSyncJoin">Σύνδεση</button>
+      ${has ? '<p class="tm-hint">Η ομάδα αυτής της συσκευής θα αντικατασταθεί από την ομάδα του κωδικού.</p>' : ""}`;
+    sheet(`<div class="sh"><div><h2>Συγχρονισμός συσκευών</h2><div class="muted">Το PC και το κινητό σου με την ίδια ομάδα· κάθε αλλαγή περνά αυτόματα</div></div>
+        <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
+      ${s ? `<p>Ο κωδικός σου:</p><p class="tm-code" id="tmSyncShow">${esc(fmtCode(s.code))}</p>
+          <button class="tm-primary" id="tmSyncCopy">Αντιγραφή κωδικού</button>
+          <p class="tm-hint">Στην άλλη συσκευή: «Η ομάδα μου» → ⋯ Επιλογές → Συγχρονισμός συσκευών → γράψε τον κωδικό.
+            Κράτα τον όπως έναν κωδικό: όποιος τον έχει βλέπει και αλλάζει την ομάδα.</p>
+          <button class="linkbtn" id="tmSyncOff" style="display:block;margin:8px auto 0">Αποσύνδεση αυτής της συσκευής</button>`
+        : `${has ? '<button class="tm-primary" id="tmSyncNew">Νέος κωδικός για αυτή την ομάδα</button><hr class="tm-sep">' : ""}${joinBox}`}`);
+    const on = (i, fn) => { const el = document.getElementById(i); if (el) el.onclick = fn; };
+    on("tmSyncNew", async () => { const st = await syncNew(); if (st === 201) syncSheet(done); else toast(syncErr(st)); });
+    on("tmSyncJoin", async () => {
+      const st = await syncJoin($("#tmSyncCode").value);
+      if (st === 200) { closePlayer(); setup = null; mode = null; done(); toast("Συνδέθηκε· η ομάδα ήρθε από την άλλη συσκευή"); }
+      else toast(syncErr(st));
+    });
+    on("tmSyncCopy", async () => toast(await copyText(fmtCode(s.code)) ? "Ο κωδικός αντιγράφηκε" : fmtCode(s.code)));
+    on("tmSyncOff", () => { syncSet(null); closePlayer(); toast("Η συσκευή αποσυνδέθηκε· η ομάδα μένει εδώ"); });
+  }
+
   function encode(t) {
     const j = JSON.stringify({ p: t.players.map((x) => [x.id, x.price]), b: t.bank, r: t.roles || null, c: t.captain ?? null, u: t.used ? { round: t.used.round, n: t.used.n } : null });
     return btoa(unescape(encodeURIComponent(j))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
@@ -107,8 +211,11 @@
   function gameTeam() {
     const my = P.my_team;
     if (!my || !(my.players || []).length) return null;
-    const players = my.players.filter((r) => r.fantasy_id != null).map((r) => ({ id: Number(r.fantasy_id), price: r.price }));
     const real = (my.actual_lineup || []).filter((r) => r.role);
+    // the squad as the game sets it (an older update also counted the players sold this round: 14/11)
+    const inGame = new Set(real.map((r) => Number(r.fantasy_id)));
+    const players = my.players.filter((r) => r.fantasy_id != null && (real.length !== 11 || inGame.has(Number(r.fantasy_id))))
+      .map((r) => ({ id: Number(r.fantasy_id), price: r.price }));
     const src = real.length === players.length ? real.map((r) => ({ id: Number(r.fantasy_id), role: r.role, captain: r.captain }))
       : (my.lineup || []).map((p) => ({ id: Number(p.id), role: p.role, captain: p.captain }));
     const roles = Object.fromEntries(src.map((x) => [x.id, x.role]));
@@ -121,8 +228,15 @@
   const row = (id) => P.players.find((p) => p.fantasy_id === id);
   const key = (s) => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
   const sur = (n) => nm(n).replace(/^\S\. /, "");
-  const started = () => P.players.some((p) => p.actual != null);
-  const played = (r) => started() && r.actual != null;
+  // the round under way by the clock too: the data hear of it only at the next update, after the games
+  // (Round 3, 19:08: the screen still offered the trades and «κλείνει 18:59»)
+  const turnStart = (n) => { const t = (P.turns || []).find((x) => x.turn === n);
+    return t && typeof athensMs === "function" ? athensMs(t.date, t.first_tip) : Infinity; };
+  const started = () => P.players.some((p) => p.actual != null) || (P.turns || []).some((t) => turnStart(t.turn) <= Date.now());
+  // scored / played: his points of the round are in. The app doesn't lock a player whose game has started
+  // (the game does; here it only records what was done there), the round under way only shows a note
+  const scored = (r) => r.actual != null;
+  const played = scored;
   // price: today's (players are sold at it); buy: what the user paid (public edition), for the change only
   function rowsOf(t) {
     return t.players.map((x) => { const r = row(x.id); return r ? { ...r, id: x.id, price: r.price ?? x.price,
@@ -132,17 +246,17 @@
   const arrow = (d) => (d > 0 ? `<span class="tm-up">▲${f1(d)}</span>` : d < 0 ? `<span class="tm-down">▼${f1(-d)}</span>` : "");
   function optRows(rows, t, inRound) {
     return rows.map((r) => ({ id: r.id, position: r.position, team: r.team, price: Number(r.price) || 0, x_h: r.x_h ?? 0,
-      x_now: inRound && played(r) ? r.actual : (r.x_now ?? 0), turn: r.turn, played: inRound && played(r),
+      x_now: inRound && scored(r) ? r.actual : (r.x_now ?? 0), turn: r.turn, played: inRound && played(r),
       cur_role: (t.roles || {})[r.id] || (r.position === "Head Coach" ? "coach" : "πάγκος"), cur_captain: t.captain === r.id }));
   }
   const fiveOk = (roles, rows) => {
     const five = rows.filter((r) => roles[r.id] === "5άδα");
     return five.length === 5 && ["Guard", "Forward", "Center"].every((pos) => five.some((r) => r.position === pos));
   };
-  // «· Turn 1/2» as the game shows it: the first turn not yet finished
+  // «· Turn 1/2» as the game shows it: the latest turn already started (by the clock), else the first
   function turnNow() {
     const ts = P.turns || [];
-    const cur = ts.find((x) => !x.done) || ts[ts.length - 1];
+    const cur = [...ts].reverse().find((x) => turnStart(x.turn) <= Date.now()) || ts.find((x) => !x.done) || ts[ts.length - 1];
     return ts.length > 1 && cur ? ` · Turn ${cur.turn}/${ts.length}` : "";
   }
   function deadline() {
@@ -287,7 +401,7 @@
     const targetCap = team.find((p) => p.captain)?.id ?? null;
     // expected points of the round if the plan is followed (its trades, five, 6th and CAP)
     const planned = team.reduce((a, p) => { const r = aRows.find((x) => x.id === p.id); if (!r) return a;
-      const v = inRound && played(r) ? r.actual : (r.x_now ?? 0);
+      const v = inRound && scored(r) ? r.actual : (r.x_now ?? 0);
       return a + v * (p.role === "πάγκος" ? 0.5 : 1) * (p.captain ? 2 : 1); }, 0);
     const items = [];
     if (tradesNow) for (const pr of pairs) {
@@ -378,7 +492,7 @@
 
   // ------------------------------------------------------------ court
   function chipHtml(r, t, extraCls = "") {
-    const isPlayed = played(r);
+    const isPlayed = scored(r);
     const cap = t && t.captain === r.id;
     return `<div class="chip${cap ? " cap" : ""} ${extraCls}" data-fid="${r.id}" tabindex="0" role="button" aria-label="${esc(nm(r.name))}">
       <div class="ct"><span>${LETTER[r.position] || ""}</span>${r.turn ? `<span class="tb t${r.turn > 1 ? 2 : 1}">T${r.turn}</span>` : ""}</div>
@@ -408,7 +522,7 @@
         <p>Μπορεί να άλλαξαν ομάδα ή να έφυγαν από τη λίστα του παιχνιδιού.</p><button class="linkbtn" id="tmEdit">Διόρθωση ομάδας</button></div>`;
     }
     const items = pl.items;
-    const total = rows.reduce((a, r) => { const role = (t.roles || {})[r.id]; const v = played(r) ? r.actual : (r.x_now ?? 0);
+    const total = rows.reduce((a, r) => { const role = (t.roles || {})[r.id]; const v = scored(r) ? r.actual : (r.x_now ?? 0);
       return a + v * (role === "πάγκος" ? 0.5 : 1) * (t.captain === r.id ? 2 : 1); }, 0);
     const value = rows.reduce((a, r) => a + (Number(r.price) || 0), 0);
     // as the game: (credits + today's value of the squad) − the 100 of the start (sold players' gains/losses included)
@@ -453,6 +567,8 @@
         ${t.game ? "" : `<div class="tm-right">${undoBar(t)}<div class="tm-morewrap"><button class="tm-more" id="tmMore" aria-haspopup="menu">⋯ Επιλογές</button><div id="tmMenu"></div></div></div>`}</header>
       <div class="tm-cols"><div class="tm-colL">
       <div class="card" id="tmTodo"><h2>To do <small class="muted">${items.length ? `${items.length} ${items.length === 1 ? "βήμα" : "βήματα"}` : ""}</small></h2>
+        ${pl.inRound && !t.game ? `<p class="tm-live">⏱ Το Round ${P.round} τρέχει. Αν έκανες Trades στο παιχνίδι, έλεγξε ότι είναι και εδώ
+          (πάτα τον παίκτη → Trade ή ✕), ώστε το επόμενο Round να ξεκινήσει από τη σωστή ομάδα.</p>` : ""}
         ${done ? `<div class="tm-ready">✅ Έτοιμος για το Round</div>` : `<ul class="tm-list">${confirm}${list}</ul>`}
         ${pl.tradesNow ? keptLine : ""}
         ${turnPlan ? `<ul class="plan">${turnPlan}</ul>` : ""}
@@ -485,7 +601,7 @@
     sheet(`<div class="sh"><div><h2>${esc(nm(r.name))}</h2>
         <div class="muted">${esc(tc(r.team))} · ${NAME[r.position]} · τώρα ${f1(r.price)} cr${r.buy != null ? ` · αγορά ${f1(r.buy)}${dPrice(r) ? ` (${dPrice(r) > 0 ? "+" : "−"}${f1(Math.abs(dPrice(r)))})` : ""}` : ""}${r.popularity != null ? ` · POP ${f1(r.popularity)} %` : ""}${r.turn ? ` · Turn ${r.turn}` : ""}${role && role !== "coach" ? ` · ${ROLE_LABEL[role] || role}` : ""}</div></div>
         <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
-      <div class="kpis"><div class="kpi"><b>${f1(played(r) ? r.actual : r.x_now)}</b><span>${played(r) ? "points" : "xFPT"}</span></div>
+      <div class="kpis"><div class="kpi"><b>${f1(scored(r) ? r.actual : r.x_now)}</b><span>${scored(r) ? "points" : "xFPT"}</span></div>
         <div class="kpi"><b>${f1(xf3(r))}</b><span>xFPT3</span></div><div class="kpi"><b>${r.value == null ? "–" : r.value.toFixed(2)}</b><span>xFPT3/cr</span></div></div>
       <div class="tm-acts">
         ${t.game ? "" : r.position !== "Head Coach" ? `<button class="tm-act" id="aCap" ${canCap ? "" : "disabled"}><span>★</span><div>Captain</div></button>
@@ -501,7 +617,7 @@
       sheet(`<div class="sh"><div><h2>${esc(sur(r.name))} ⇄ …</h2><div class="muted">Τώρα: ${ROLE_LABEL[role] || role}</div></div>
           <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
         <div class="tm-acts">${others.map((x) => `<button class="tm-act" data-q="${x.id}"><span>${LETTER[x.position]}</span><div>${esc(nm(x.name))}
-          <small>${(t.roles || {})[x.id]} · ${played(x) ? `έφερε ${f1(x.actual)}` : `xFPT ${f1(x.x_now)}`}</small></div></button>`).join("")}</div>`);
+          <small>${(t.roles || {})[x.id]} · ${scored(x) ? `έφερε ${f1(x.actual)}` : `xFPT ${f1(x.x_now)}`}</small></div></button>`).join("")}</div>`);
       document.querySelectorAll("#sheet [data-q]").forEach((b) => b.onclick = () => { if (swap(t, id, Number(b.dataset.q))) closePlayer(); });
     });
     on("aRep", () => replaceSheet(t, r));
@@ -728,12 +844,14 @@
     const close = () => { host.innerHTML = ""; };
     if (host.innerHTML) { close(); return; }
     host.innerHTML = `<div class="tm-menu" role="menu">
+      <button id="mSync">🔄 Συγχρονισμός συσκευών${syncGet() ? " ✓" : ""}</button>
       <button id="mBackup">🔗 Αντίγραφο ασφαλείας</button>
       <button id="mEdit">✏️ Αλλαγή ομάδας</button>
       <button id="mBank">💰 Διόρθωση credits</button>
       ${WIDE() ? "" : `<button id="mInstall">📱 Βάλ' το στην οθόνη σου</button>`}
       <button id="mMail">✉️ Επικοινωνία</button>
       <button id="mDel" class="tm-danger">🗑 Διαγραφή ομάδας</button></div>`;
+    $("#mSync").onclick = () => { close(); syncSheet(() => render(best)); };
     $("#mBackup").onclick = async () => {
       close();
       const link = location.origin + location.pathname + "#t=" + encode(t);
@@ -760,7 +878,7 @@
       sheet(`<div class="sh"><h2>Διαγραφή της ομάδας από αυτή τη συσκευή;</h2><button class="x" onclick="closePlayer()">×</button></div>
         <p class="muted">Αν έχεις κρατήσει σύνδεσμο αντιγράφου, μπορείς να την επαναφέρεις αργότερα.</p>
         <button class="tm-primary tm-danger-bg" id="tmDelOk">Διαγραφή</button>`);
-      $("#tmDelOk").onclick = () => { try { localStorage.removeItem(KEY); } catch (e) {} closePlayer(); setup = null; mode = null; render(best); };
+      $("#tmDelOk").onclick = () => { try { localStorage.removeItem(KEY); } catch (e) {} syncSet(null); closePlayer(); setup = null; mode = null; render(best); };
     };
   }
   document.addEventListener("click", (e) => { if (!e.target.closest("#tmMenu, #tmMore")) { const h = document.getElementById("tmMenu"); if (h) h.innerHTML = ""; } });
@@ -787,7 +905,8 @@
         <button class="tm-primary" id="tmFinish" ${full ? "" : "disabled"}>${full ? "Αποθήκευση ➜" : `Λείπουν ${11 - ps.length}`}</button>
         ${had ? '<button class="linkbtn" id="tmCancel" style="display:block;margin:6px auto 0">Άκυρο</button>' : ""}
         <p class="tm-hint">Γράψε τα prices <b>αγοράς</b> (όσο πλήρωσες τον καθένα)· συμπληρώνονται με τα σημερινά, αν διαφέρουν πάτα τον παίκτη. Έτσι βλέπεις πόσο ανέβηκαν ή έπεσαν· στα Trades μετράει η σημερινό price. Το υπόλοιπο το διορθώνεις από τις «Επιλογές».</p>
-        ${had ? "" : '<button class="linkbtn" id="tmRestore" style="display:block;margin:8px auto 0">📥 Έχεις σύνδεσμο αντιγράφου; Επικόλλησέ τον</button>'}</div>`;
+        ${had ? "" : '<button class="linkbtn" id="tmRestore" style="display:block;margin:8px auto 0">📥 Έχεις σύνδεσμο αντιγράφου; Επικόλλησέ τον</button>'
+          + '<button class="linkbtn" id="tmSyncSetup" style="display:block;margin:4px auto 0">🔄 Έχεις κωδικό συγχρονισμού από άλλη συσκευή;</button>'}</div>`;
   }
   // setting up: a picked player's price (as in your game) or removing him
   function setupPlayerSheet(id, best) {
@@ -858,8 +977,12 @@
     return `<details class="card"><summary><b>Καλύτερη ομάδα του Round (xFPT)</b> <span class="muted">· ${f1(best.cost)} cr</span></summary>
       <div class="tm-sideline">${courtView(best.team.map((p) => ({ ...p, actual: null })), null)}</div></details>`;
   }
+  let pulled = false;
   function render(best) {
     best = best === undefined ? P.best_team : best;
+    // the other device's changes: once per page load (and on coming back to it, above)
+    onRemote = () => render(best);
+    if (!pulled && !GAME()) { pulled = true; syncPull(); }
     if (GAME()) {
       const g = gameTeam();
       if (!g) { $("#team").innerHTML = `<div class="card warn"><h2>Η ομάδα δεν είναι διαθέσιμη</h2>
@@ -888,6 +1011,8 @@
       });
       const fin = document.getElementById("tmFinish");
       if (fin) fin.onclick = () => { finishSetup(); render(best); window.scrollTo({ top: 0 }); toast("Η ομάδα αποθηκεύτηκε"); };
+      const ss = document.getElementById("tmSyncSetup");
+      if (ss) ss.onclick = () => syncSheet(() => render(best));
       const rest = document.getElementById("tmRestore");
       if (rest) rest.onclick = () => restoreSheet(() => render(best));
       const cancel = document.getElementById("tmCancel");
@@ -1014,6 +1139,10 @@
   .tm-item .tm-done { padding: 7px 10px; }
   @media (max-width: 340px) {   /* the narrowest phones: the button goes under the text, which keeps the full width */
     .tm-item { grid-template-columns: 30px 1fr; } .tm-item .tm-done { grid-column: 2; justify-self: start; } }
+  .tm-code { font: 700 24px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .06em; text-align: center; margin: 4px 0 12px; }
+  .tm-sep { border: 0; border-top: 1px solid var(--border); margin: 14px 0; }
+  .tm-live { margin: 0 0 10px; padding: 10px 12px; border-radius: 10px; font-size: 14px;
+    background: color-mix(in srgb, var(--accent) 12%, transparent); }
   .tm-ready { padding: 12px; border-radius: 12px; font-weight: 600; background: color-mix(in srgb, var(--good) 14%, transparent); }
   .tm-hint { color: var(--text-muted); font-size: 12px; margin: 8px 2px 0; }
   .tm-acts { display: grid; gap: 8px; margin-top: 12px; }

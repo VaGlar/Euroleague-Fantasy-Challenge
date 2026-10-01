@@ -349,6 +349,15 @@ def parse_my_roster(raw: dict) -> tuple[list[int], dict]:
             for v in o:
                 walk(v)
     walk(raw)
+    # the squad itself is the payload's own "players" list (what actual_lineup reads): once trades are made,
+    # the payload also carries the players sold this round, and the walk counted them too (14/11, Round 3)
+    own = [p for p in (raw.get("players") or []) if isinstance(p, dict) and p.get("id") is not None] \
+        if isinstance(raw, dict) else []
+    if own:
+        ids = [p["id"] for p in own]
+        cap = next((p["id"] for p in own if p.get("is_captain")), None)
+        if cap is not None:
+            meta["captain"] = cap
     return list(dict.fromkeys(ids)), meta
 
 

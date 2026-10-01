@@ -221,6 +221,67 @@ test.describe("public edition", () => {
     expect(after.bank).toBeGreaterThanOrEqual(0);
   });
 
+  test("round started by the clock, no results yet: no trades proposed, «σε εξέλιξη», a note to record the game's trades", async ({ page }) => {
+    await savedTeam(page);
+    const pred = await page.evaluate(() => P.turns[0]);
+    // 10 minutes after Turn 1's first tip-off (Athens time), the data not updated yet
+    const t1 = await page.evaluate(([d, hm]) => athensMs(d, hm), [pred.date, pred.first_tip]);
+    await page.clock.setFixedTime(new Date(t1 + 10 * 60 * 1000));
+    await page.reload();
+    await expect(header(page)).toContainText("σε εξέλιξη");
+    await expect(tradeRows(page)).toHaveCount(0);
+    await expect(page.locator("#team .tm-live")).toContainText("τρέχει");
+    // not locked as in the game: a trade made there can still be recorded
+    await page.locator(`${C} .court .chip[data-fid]`).first().click();
+    await expect(page.locator("#aRep")).toBeEnabled();
+    await expect(page.locator("#aOut")).toBeEnabled();
+  });
+
+  test("sync: a code links two devices; a change on one reaches the other", async ({ page, browser }, testInfo) => {
+    // the server (functions/api/sync) stood in for by a shared in-memory store, as both devices see it
+    const store = new Map();
+    const server = async (route) => {
+      const req = route.request(), code = (new URL(req.url()).pathname.match(/api\/sync\/?(.*)$/)[1] || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+      if (req.method() === "POST") { store.set("ABCDEFGHJKMN", { data: req.postDataJSON().data, rev: 1 }); return route.fulfill({ status: 201, json: { code: "ABCDEFGHJKMN", rev: 1 } }); }
+      const row = store.get(code);
+      if (!row) return route.fulfill({ status: 404, json: { error: "unknown code" } });
+      if (req.method() === "GET") return route.fulfill({ json: row });
+      const b = req.postDataJSON();
+      if (b.rev !== row.rev) return route.fulfill({ status: 409, json: { ...row, error: "conflict" } });
+      store.set(code, { data: b.data, rev: row.rev + 1 });
+      return route.fulfill({ json: { rev: row.rev + 1 } });
+    };
+    await page.route("**/api/sync**", server);
+    await savedTeam(page);
+    await page.locator("#tmMore").click();
+    await page.locator("#mSync").click();
+    await page.locator("#tmSyncNew").click();
+    await expect(page.locator("#tmSyncShow")).toHaveText("ABCD-EFGH-JKMN");
+    await page.locator("#sheet .x").click();
+
+    // the other device: no team yet, joins with the code as a person types it
+    const ctx2 = await browser.newContext({ baseURL: testInfo.project.use.baseURL, locale: "el-GR", timezoneId: "Europe/Athens" });
+    const p2 = await ctx2.newPage();
+    await p2.route("**/api/sync**", server);
+    await open(p2, "public", { tab: "team" });
+    await p2.locator("#tmSyncSetup").click();
+    await p2.locator("#tmSyncCode").fill("abcd-efgh-jkmn");
+    await p2.locator("#tmSyncJoin").click();
+    await expect(court(p2)).toHaveCount(11);
+    expect((await stored(p2)).players).toEqual((await stored(page)).players);
+
+    // a change there goes up a moment later and comes down here when the page is back in view
+    const chip = p2.locator(`${C} .court .chip[data-fid]:not(.cap)`).first();
+    const id = Number(await chip.getAttribute("data-fid"));
+    await chip.click();
+    await p2.locator("#aCap").click();
+    await expect.poll(() => store.get("ABCDEFGHJKMN").rev, { timeout: 8000 }).toBe(2);
+    await page.evaluate(() => document.dispatchEvent(new Event("visibilitychange")));
+    await expect.poll(async () => (await stored(page)).captain).toBe(id);
+    await expect(page.locator(`${C} .chip.cap[data-fid="${id}"]`)).toHaveCount(1);
+    await ctx2.close();
+  });
+
   test("round under way: no trades proposed (next round's wait for it to end), only swaps and CAP", async ({ page }) => {
     await page.route(/predictions\.json/, async (route) => {
       const res = await route.fetch();

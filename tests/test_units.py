@@ -158,6 +158,9 @@ def test_parse_my_roster_and_actual_lineup():
         for i in range(1, 12)]}
     ids, meta = run.parse_my_roster(raw)
     assert ids == list(range(1, 12)) and meta == {"bank": 1.5, "captain": 3}
+    # after trades the payload also lists the players sold this round: only the squad counts
+    sold = {**raw, "transfers": [{"player": {"id": 90 + i, "quotation": 5.0}, "is_captain": False} for i in range(3)]}
+    assert run.parse_my_roster(sold)[0] == list(range(1, 12))
     lu = {r["fantasy_id"]: r for r in run.actual_lineup(raw)}
     assert [lu[i]["role"] for i in (1, 5, 6, 7, 11)] == ["5άδα", "5άδα", "6ος", "πάγκος", "coach"]
     assert lu[3]["captain"] and lu[1]["played"] and lu[6]["turn"] == 2

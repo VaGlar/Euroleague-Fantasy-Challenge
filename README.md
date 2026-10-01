@@ -151,6 +151,22 @@ xPIR = base × (1 + calib + pos·pos_dev + pace·pace_dev + margin·m/10 + blowo
    Αν το bot γράψει «Cloudflare Access 302», το token λείπει ή είναι λάθος: βήματα 3–4.
 7. Στο iPhone: άνοιξε μία φορά τη σελίδα από το εικονίδιο και κάνε login· μετά κρατάει για όσο είναι η session duration.
 
+### Συγχρονισμός συσκευών (HoopsLab, D1)
+
+Η ομάδα του HoopsLab ζει στη συσκευή· με έναν κωδικό (⋯ Επιλογές → Συγχρονισμός συσκευών) PC και κινητό
+κρατούν την ίδια ομάδα. Το `functions/api/sync/[[path]].js` την κρατά σε μια βάση **Cloudflare D1**
+(πίνακας `teams`: code, data, rev, updated_at, user_id — φτιάχνεται μόνος του στην πρώτη κλήση· SQL ώστε να
+περάσει αυτούσιος σε Supabase/Postgres όταν έρθουν λογαριασμοί). Μία φορά:
+
+1. Cloudflare → Storage & Databases → D1 → Create: `hoopslab-sync` (και, για το dev, `hoopslab-sync-dev`).
+2. Workers & Pages → `hoopslab-beta` → Settings → Bindings → Add → D1 database: όνομα **`SYNC_DB`**,
+   Production → `hoopslab-sync`, Preview → `hoopslab-sync-dev`.
+3. Ένα νέο deploy (το επόμενο update) το ενεργοποιεί. Χωρίς τη βάση η σελίδα λέει «δεν είναι ακόμα διαθέσιμος».
+
+Χωρίς λογαριασμούς ή προσωπικά στοιχεία: μόνο ids παικτών, τιμές, credits. Όποιος έχει τον κωδικό
+(12 χαρακτήρες, ~10^17 συνδυασμοί) βλέπει και αλλάζει την ομάδα. Σε αλλαγές και στις δύο συσκευές χωρίς
+συγχρονισμό ενδιάμεσα κερδίζει η πιο πρόσφατη.
+
 ### Στήλες fantasy (ειδικοί)
 Στο `sources.yaml` οι πηγές με `fantasy: true` (επίσημα Fantasy Tips, Basketball Sphere, EuroBallin)
 διαβάζονται ολόκληρες. Το Gemini καταγράφει ποιον προτείνει κάθε στήλη (pick / captain / avoid).
