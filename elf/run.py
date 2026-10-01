@@ -658,6 +658,24 @@ def player_details(season: int, ctx: pd.DataFrame, fixtures: pd.DataFrame,
     return out
 
 
+def popup_next(games: list[dict], r, rnd: int) -> list[dict]:
+    """The popup's next games on the tables' terms: the game's injury on this round's game, and the
+    price's share for a player with few games (or none), as x_now / x3 have them."""
+    f = r.get("avail_game")
+    f = 1.0 if f is None or f != f else float(f)
+    w, est = r.get("prior_w"), r.get("prior_est")
+    news_f = r.get("news_avail")
+    news_f = 1.0 if news_f is None or news_f != news_f else float(news_f)
+    out = []
+    for g in games:
+        now = g.get("round") == rnd
+        x = float(g.get("x") or 0) * (f if now else 1.0)
+        if w is not None and w == w and est is not None and est == est:
+            x = (1 - float(w)) * x + float(w) * float(est) * (f * news_f if now else 1.0)
+        out.append({**g, "x": round(x, 1)})
+    return out
+
+
 def price_history() -> dict:
     """{person_id: [[matchday, price], ...]} from the per-matchday snapshots in prices.csv."""
     path = PUBLIC / "prices.csv"
@@ -836,6 +854,9 @@ def build(offline: bool = False) -> dict:
 
     # --- fantasy prices / my team
     my, best = None, None
+    # the price's share in a player's xFPT (few games or none) and its estimate, so the popup's
+    # «Επόμενα 3 παιχνίδια» show the same numbers as the tables (they showed the model alone: 22.3 vs 20.5)
+    table["prior_w"], table["prior_est"] = np.nan, np.nan
     price_info = {"method": "none"}
     if fs.get("ok"):
         fp = fs["players"]
@@ -873,6 +894,7 @@ def build(offline: bool = False) -> dict:
             table.loc[m, "x_h"] = est * sum(horizon_weights(trade_rnd))
             table.loc[m, "x3"] = est * table.loc[m, "n3"]
             table.loc[m, "prior"] = "τιμή"
+            table.loc[m, "prior_w"], table.loc[m, "prior_est"] = 1.0, est
             # few games this season (newcomer or not): the price keeps counting for a few games and fades
             # fast as his own games add up (one bad game shouldn't make a 10-credit player 0: Motley -13, 1).
             # Not backtestable (no past prices); re-checked with this season's prices at rounds 6-8 (R&D 015)
@@ -889,6 +911,7 @@ def build(offline: bool = False) -> dict:
                 table.loc[nc, "x_h"] = (g_ * table.loc[nc, "x_h"] + k_ * est_nc * sum(horizon_weights(trade_rnd))) / (g_ + k_)
                 table.loc[nc, "x3"] = (g_ * table.loc[nc, "x3"].fillna(0) + k_ * est_nc * table.loc[nc, "n3"]) / (g_ + k_)
                 table.loc[nc, "prior"] = "τιμή+ματς"
+                table.loc[nc, "prior_w"], table.loc[nc, "prior_est"] = k_ / (g_ + k_), est_nc
         table, price_info = prices.annotate(table)  # $ = likely price rise
         table = price_moves(table, price_history())
         n_inj = int((f_game < 1).sum())
@@ -1000,8 +1023,11 @@ def build(offline: bool = False) -> dict:
     try:
         det = player_details(CURRENT_SEASON, ctx, pr["fixtures"], set(table.loc[table["x_now"].notna(), "person_id"]))
         hist = price_history()
+        adj = table.drop_duplicates("person_id").set_index("person_id")
         for pid, d in det.items():
             d["prices"] = hist.get(pid, [])
+            if pid in adj.index:
+                d["next"] = popup_next(d.get("next", []), adj.loc[pid], rnd)
         _write("players.json", det)
     except Exception as e:  # noqa: BLE001 - the popup is a nice-to-have
         health.append(f"λεπτομέρειες παικτών: {type(e).__name__}: {e}")

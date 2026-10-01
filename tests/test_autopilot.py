@@ -42,7 +42,8 @@ def test_decides_frozen_rounds_and_trades(pub, monkeypatch):
     rows2, _ = pool(boost={1: 30.0, 2: 30.0})                     # two cheap guards become great
     s = autopilot.update(2026, rnd=3, trade_rnd=4, rows=rows2, table=table, max_trades=4, min_gain=0.5)
     r3b, r4 = s["rounds"]
-    assert r3b == r3                                              # untouched
+    assert r3b == r3                                              # untouched (its time too: the last run before tip-off)
+    assert r3["decided_at"] and r4["decided_at"] >= r3["decided_at"]
     ids3, ids4 = {p["id"] for p in r3["squad"]}, {p["id"] for p in r4["squad"]}
     assert r4["trades"] == len(ids4 - ids3) <= 4 and {1, 2} <= ids4
     assert json.loads((pub / "autopilot.json").read_text())["rounds"][1]["round"] == 4

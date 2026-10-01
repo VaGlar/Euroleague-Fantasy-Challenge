@@ -99,6 +99,8 @@ def decide(state: dict, rnd: int, rows: list[dict], table: pd.DataFrame, max_tra
                    "role": role.get(p["id"], (None, False))[0], "captain": role.get(p["id"], (None, False))[1],
                    "x_now": round(p["x_now"], 1)} for p in squad],
         "x_total": round(lu.get("objective", 0.0), 1),
+        # rewritten on every run until the round's first tip-off: the last one is the decision that counts
+        "decided_at": datetime.now(timezone.utc).isoformat(timespec="minutes"),
     }
 
 
@@ -134,7 +136,8 @@ def between_turns(entry: dict, rows: list[dict], turn: int) -> None:
         return
     for p in entry["squad"]:
         p["role"], p["captain"] = new[p["id"]]["role"], bool(new[p["id"]]["captain"])
-    moves[str(turn)] = {"in": ins, "out": outs, "captain": cap_new if cap_new != cap_old else None}
+    moves[str(turn)] = {"in": ins, "out": outs, "captain": cap_new if cap_new != cap_old else None,
+                        "at": datetime.now(timezone.utc).isoformat(timespec="minutes")}
 
 
 def _upcoming_turn(rows: list[dict], played_teams: set) -> int | None:

@@ -349,3 +349,14 @@ def test_news_names_in_greek_back_to_the_roster():
     assert [e["player"] for e in out["expert"]] == ["LESSORT, MATHIAS", "JOKUBAITIS, ROKAS", "BINGHAM, MARCUS",
                                                     "HERNANGOMEZ, JUANCHO", "SHORTS, TJ", "LESSORT, MATHIAS"]
     assert news.resolve_names(None, roster) is None
+
+
+def test_popup_next_games_on_the_tables_terms():
+    # 2 games played: a third of his xFPT is the price's estimate (17.0), as x_now has it (22.3 → 20.5)
+    r = pd.Series({"avail_game": 1.0, "news_avail": 1.0, "prior_w": 1 / 3, "prior_est": 17.0})
+    out = run.popup_next([{"round": 5, "x": 22.3}, {"round": 6, "x": 18.0}], r, 5)
+    assert [g["x"] for g in out] == [20.5, 17.7]
+    # doubtful in the game (×0.4): only this round's game; no price share: the model alone
+    r = pd.Series({"avail_game": 0.4, "news_avail": 1.0, "prior_w": np.nan, "prior_est": np.nan})
+    out = run.popup_next([{"round": 5, "x": 20.0}, {"round": 6, "x": 20.0}], r, 5)
+    assert [g["x"] for g in out] == [8.0, 20.0]
