@@ -198,8 +198,11 @@ def participation(cur_players: pd.DataFrame, prev_players: pd.DataFrame, cur_gam
         elif not whole:
             return 0, 0
         flags = [(pid, team, c) in on for c in codes["gamecode"]]
-        # an injury is a run of missed games that ended with him back; a run still going on counts
-        # as left out (if he is hurt now, the game's own list already sets him to 0)
+        # an injury is a run of missed games that ended with him back. A run still going on: if he has
+        # played for this team and it is already >= streak games long, it is left out of the count
+        # (neither played nor available: the return factor already marks him, R&D 022 - counting it
+        # as «left out» too gave ×0.54 where players back from an absence bring ×0.74-0.82); a
+        # shorter one, or one of a player who never appeared, counts as left out
         injured, run = 0, 0
         for x in flags:
             if x:
@@ -207,6 +210,8 @@ def participation(cur_players: pd.DataFrame, prev_players: pd.DataFrame, cur_gam
                 run = 0
             else:
                 run += 1
+        if f is not None and run >= streak:
+            injured += run
         return sum(flags), len(flags) - injured
 
     cur, prev = sheet(cur_games, cur_players), sheet(prev_games, prev_players)
