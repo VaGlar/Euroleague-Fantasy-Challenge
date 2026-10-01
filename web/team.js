@@ -129,10 +129,10 @@
   const turnStart = (n) => { const t = (P.turns || []).find((x) => x.turn === n);
     return t && typeof athensMs === "function" ? athensMs(t.date, t.first_tip) : Infinity; };
   const started = () => P.players.some((p) => p.actual != null) || (P.turns || []).some((t) => turnStart(t.turn) <= Date.now());
-  // scored: his points of the round are in; played: locked as the game locks him, once his turn has started
-  // (he can only go to the bench, not be Captain), points in or not
+  // scored / played: his points of the round are in. The app doesn't lock a player whose game has started
+  // (the game does; here it only records what was done there), the round under way only shows a note
   const scored = (r) => r.actual != null;
-  const played = (r) => scored(r) || (r.turn != null && turnStart(r.turn) <= Date.now());
+  const played = scored;
   // price: today's (players are sold at it); buy: what the user paid (public edition), for the change only
   function rowsOf(t) {
     return t.players.map((x) => { const r = row(x.id); return r ? { ...r, id: x.id, price: r.price ?? x.price,
@@ -368,7 +368,7 @@
       for (const [p, from, to] of [[byId[a], ra, rb], [byId[b], rb, ra]]) {
         if (!played(p)) continue;
         if (from === "πάγκος") { toast(`Ο ${sur(p.name)} έπαιξε από το Bench — μένει εκεί`); return false; }
-        if (to !== "πάγκος") { toast(`Ο ${sur(p.name)} έχει παίξει ή παίζει — μπορεί μόνο να βγει στο Bench`); return false; }
+        if (to !== "πάγκος") { toast(`Ο ${sur(p.name)} έχει παίξει — μπορεί μόνο να βγει στο Bench`); return false; }
       }
     }
     const next = { ...roles, [a]: rb, [b]: ra };
@@ -463,6 +463,8 @@
         ${t.game ? "" : `<div class="tm-right">${undoBar(t)}<div class="tm-morewrap"><button class="tm-more" id="tmMore" aria-haspopup="menu">⋯ Επιλογές</button><div id="tmMenu"></div></div></div>`}</header>
       <div class="tm-cols"><div class="tm-colL">
       <div class="card" id="tmTodo"><h2>To do <small class="muted">${items.length ? `${items.length} ${items.length === 1 ? "βήμα" : "βήματα"}` : ""}</small></h2>
+        ${pl.inRound && !t.game ? `<p class="tm-live">⏱ Το Round ${P.round} τρέχει. Αν έκανες Trades στο παιχνίδι, έλεγξε ότι είναι και εδώ
+          (πάτα τον παίκτη → Trade ή ✕), ώστε το επόμενο Round να ξεκινήσει από τη σωστή ομάδα.</p>` : ""}
         ${done ? `<div class="tm-ready">✅ Έτοιμος για το Round</div>` : `<ul class="tm-list">${confirm}${list}</ul>`}
         ${pl.tradesNow ? keptLine : ""}
         ${turnPlan ? `<ul class="plan">${turnPlan}</ul>` : ""}
@@ -1024,6 +1026,8 @@
   .tm-item .tm-done { padding: 7px 10px; }
   @media (max-width: 340px) {   /* the narrowest phones: the button goes under the text, which keeps the full width */
     .tm-item { grid-template-columns: 30px 1fr; } .tm-item .tm-done { grid-column: 2; justify-self: start; } }
+  .tm-live { margin: 0 0 10px; padding: 10px 12px; border-radius: 10px; font-size: 14px;
+    background: color-mix(in srgb, var(--accent) 12%, transparent); }
   .tm-ready { padding: 12px; border-radius: 12px; font-weight: 600; background: color-mix(in srgb, var(--good) 14%, transparent); }
   .tm-hint { color: var(--text-muted); font-size: 12px; margin: 8px 2px 0; }
   .tm-acts { display: grid; gap: 8px; margin-top: 12px; }
