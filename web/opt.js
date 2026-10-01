@@ -30,7 +30,8 @@
     const turns = court.map((p) => p.turn).filter(Boolean);
     if (!turns.length) return new Set();
     const first = Math.min(...turns);
-    return new Set(court.filter((p) => (p.turn || first) > first).map((p) => p.id));
+    // a player with nothing expected (out of the roster, injured) starts only if nobody else can (as optimize.py)
+    return new Set(court.filter((p) => (p.turn || first) > first || num(p.x_now) <= 0).map((p) => p.id));
   }
 
   // Best five / sixth man / captain for a fixed squad of 10 court players + coach.
@@ -150,7 +151,7 @@
   // A set of k trades is kept only if it adds >= minGain per trade over the current
   // squad, and each extra trade adds >= minGain (as optimize.transfers).
   // keep: ids never sold; avoid: ids never bought.
-  function transfers(squad, pool, bank, { maxTrades = 4, minGain = 2.0, beam = 24, perPos = 16,
+  function transfers(squad, pool, bank, { maxTrades = 4, minGain = 2.0, beam = 48, perPos = 16,
     value = "x_h", now = "x_now", keep = [], avoid = [] } = {}) {
     const kept = new Set(keep), avoided = new Set(avoid);
     const budget = squad.reduce((a, p) => a + num(p.price), 0) + bank;
@@ -161,8 +162,12 @@
     const clubOk = (sq, team) => !team || sq.filter((p) => p.team === team).length <= Math.max(MAX_PER_CLUB, ownedClub[team] || 0);
     const cand = {};
     for (const pos of Object.keys(SQUAD)) {
-      cand[pos] = pool.filter((p) => p.position === pos && !owned.has(p.id) && !avoided.has(p.id) && p.price != null)
-        .sort((a, b) => num(b[value]) - num(a[value])).slice(0, perPos);
+      // the best by xFPT and the best per credit: the top ones alone can all be too dear to replace a
+      // cheap player (Dessert 5.3: the 16 best Centers all cost 8.5+, so he was never sold)
+      const all = pool.filter((p) => p.position === pos && !owned.has(p.id) && !avoided.has(p.id) && p.price != null);
+      const top = all.slice().sort((a, b) => num(b[value]) - num(a[value])).slice(0, perPos);
+      const per = all.filter((p) => num(p.price) > 0).sort((a, b) => num(b[value]) / num(b.price) - num(a[value]) / num(a.price)).slice(0, perPos);
+      cand[pos] = [...new Map([...top, ...per].map((p) => [p.id, p])).values()];
     }
     const baseVal = squadValue(squad, value, now);
     let frontier = [{ squad, cost: budget - bank, val: baseVal, key: "" }];

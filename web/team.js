@@ -406,7 +406,8 @@
     const total = rows.reduce((a, r) => { const role = (t.roles || {})[r.id]; const v = played(r) ? r.actual : (r.x_now ?? 0);
       return a + v * (role === "πάγκος" ? 0.5 : 1) * (t.captain === r.id ? 2 : 1); }, 0);
     const value = rows.reduce((a, r) => a + (Number(r.price) || 0), 0);
-    const gain = t.game ? Math.round((Number(t.gain) || 0) * 10) / 10 : Math.round(rows.reduce((a, r) => a + dPrice(r), 0) * 10) / 10;
+    // as the game: (credits + today's value of the squad) − the 100 of the start (sold players' gains/losses included)
+    const gain = t.game ? Math.round((Number(t.gain) || 0) * 10) / 10 : Math.round(((Number(t.bank) || 0) + value - 100) * 10) / 10;
     const head = pl.inRound
       ? `⏱ Round ${P.round}${turnNow()} σε εξέλιξη`
       : `⏱ Round ${P.round}${turnNow()} · κλείνει ${deadline()}`;

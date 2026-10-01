@@ -314,3 +314,23 @@ def test_participation_counts_left_out_games_but_not_injuries():
     assert p["injured"] == pytest.approx((5 + 5.7) / 11)       # 8 games minus the 3-game injury
     assert p["benched"] == pytest.approx((4 + 5.7) / 14)       # 8 games, 4 single misses: left out
     assert p["benched"] < p["injured"] < 1 and p["never"] == pytest.approx(5.7 / 14)
+
+
+def test_participation_leaves_out_an_absence_still_going_on_once_it_is_an_injury():
+    """R&D 022: 2 games then 3 missed and not back yet. Counting the 3 as «left out» on top of the return
+    factor (×0.8) gave ×0.54 where such players bring ×0.74-0.82: once the running absence is >= 3
+    games it counts neither as played nor as available. Shorter ones, and a player who never appeared,
+    still count as left out."""
+    import pandas as pd
+    codes = list(range(1, 6))
+    games = pd.DataFrame({"gamecode": codes, "utc": pd.date_range("2026-10-01", periods=5, freq="7D", tz="UTC"),
+                          "played": True, "home": "AAA", "away": [f"X{i}" for i in codes]})
+    on = {"back": [1, 2], "two_out": [1, 2, 3]}                  # back: out for 3-5; two_out: out for 4-5
+    box = pd.DataFrame([{"gamecode": c, "person_id": pid, "team": "AAA", "pir": 5, "min": 10}
+                        for pid, cs in on.items() for c in cs])
+    team = pd.Series({"back": "AAA", "two_out": "AAA", "never": "AAA"})
+    p = model.participation(box, box.iloc[0:0], games, games.iloc[0:0], team,
+                            {"part_streak": 3, "part_k": 6, "part_p0": 0.95})
+    assert p["back"] == pytest.approx((2 + 5.7) / 8)             # 2 of 2: the 3-game run left out
+    assert p["two_out"] == pytest.approx((3 + 5.7) / 11)         # a 2-game run: still «left out»
+    assert p["never"] == pytest.approx(5.7 / 11)                 # never on a sheet: left out

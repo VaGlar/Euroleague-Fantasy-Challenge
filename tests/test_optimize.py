@@ -84,6 +84,20 @@ def test_lineup_starts_only_current_turn_players():
     assert next(p["id"] for p in team if p["captain"]) == 1
 
 
+def test_a_turn1_player_with_nothing_expected_does_not_start():
+    """The only turn-1 Center is out (0 xFPT, e.g. not on his club's roster): the turn-2 Center starts,
+    not a sure zero «to swap before T2» (Dessert, round 3)."""
+    sq = squad_t1_t2()
+    for p in sq:
+        if p["id"] == 9:
+            p["x_now"], p["x_h"] = 0.0, 0.0
+    assert 9 in optimize.later_turn_ids(sq)
+    team = optimize.lineup(sq)["team"]
+    check_lineup(team)
+    role = {p["id"]: p["role"] for p in team}
+    assert role[9] == "πάγκος" and role[10] == "5άδα"
+
+
 def test_lineup_falls_back_to_one_later_player_when_no_turn1_center():
     sq = squad_t1_t2()
     for p in sq:

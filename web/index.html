@@ -837,7 +837,8 @@ async function renderCompare() {
   const rows = CMP.map((id) => P.players.find((x) => x.person_id === id)).filter(Boolean);
   if (rows.length < 2) {
     box.innerHTML = `<div class="card"><h2>Σύγκριση head-to-head</h2><p>Διάλεξε ${rows.length ? "ακόμα έναν" : "2 έως 4"} παίκτες με το ☐ στο tab «Παίκτες».</p>
-      ${rows.length ? `<p>Επιλεγμένος: <b>${esc(nm(rows[0].name))}</b></p>` : ""}</div>`;
+      ${rows.length ? `<p>Επιλεγμένος: <b>${esc(nm(rows[0].name))}</b>
+        <button class="linkbtn" type="button" id="cmpClear" onclick="setCmp([])">✕ αφαίρεση</button></p>` : ""}</div>`;
     return;
   }
   box.innerHTML = `<div class="card"><h2>Σύγκριση head-to-head</h2>
@@ -1480,6 +1481,15 @@ function movesHtml(court) {
     <div><h3>Ανέβηκαν</h3><ul class="td-list">${up.map(row).join("") || '<li class="muted">—</li>'}</ul></div>
     <div><h3>Έπεσαν</h3><ul class="td-list">${dn.map(row).join("") || '<li class="muted">—</li>'}</ul></div></div></div>`;
 }
+// back to the app after a while (tab, phone): if newer data is out, reload so no device shows old numbers
+document.addEventListener("visibilitychange", async () => {
+  if (document.visibilityState !== "visible" || typeof P === "undefined" || !P || !P.generated) return;
+  try {
+    const r = await fetch("data/predictions.json", { method: "GET", cache: "no-store" });
+    const g = r.ok ? (await r.json()).generated : null;
+    if (g && g !== P.generated && !document.querySelector("#modal.on")) location.reload();
+  } catch (e) {}
+});
 setInterval(() => {
   freshness();
   const c = document.getElementById("tdCount");
