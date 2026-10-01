@@ -272,5 +272,187 @@
     "captain": false
    }
   ]
+ },
+ "3": {
+  "suggested": [
+   {
+    "id": 3766,
+    "person_id": "003469",
+    "team": "OLY",
+    "position": "Forward",
+    "role": "5άδα",
+    "captain": true
+   },
+   {
+    "id": 3836,
+    "person_id": "007866",
+    "team": "PAN",
+    "position": "Forward",
+    "role": "πάγκος",
+    "captain": false
+   },
+   {
+    "id": 3887,
+    "person_id": "007975",
+    "team": "PAN",
+    "position": "Guard",
+    "role": "5άδα",
+    "captain": false
+   },
+   {
+    "id": 4061,
+    "person_id": "008084",
+    "team": "PAN",
+    "position": "Forward",
+    "role": "6ος",
+    "captain": false
+   },
+   {
+    "id": 4255,
+    "person_id": "009154",
+    "team": "PAM",
+    "position": "Head Coach",
+    "role": "coach",
+    "captain": false
+   },
+   {
+    "id": 7231,
+    "person_id": "010318",
+    "team": "IST",
+    "position": "Center",
+    "role": "5άδα",
+    "captain": false
+   },
+   {
+    "id": 11540,
+    "person_id": "011706",
+    "team": "PAM",
+    "position": "Guard",
+    "role": "πάγκος",
+    "captain": false
+   },
+   {
+    "id": 3843,
+    "person_id": "012878",
+    "team": "MIL",
+    "position": "Center",
+    "role": "5άδα",
+    "captain": false
+   },
+   {
+    "id": 8727,
+    "person_id": "014168",
+    "team": "ULK",
+    "position": "Forward",
+    "role": "πάγκος",
+    "captain": false
+   },
+   {
+    "id": 11512,
+    "person_id": "014734",
+    "team": "BAS",
+    "position": "Guard",
+    "role": "5άδα",
+    "captain": false
+   },
+   {
+    "id": 11521,
+    "person_id": "015161",
+    "team": "ASV",
+    "position": "Guard",
+    "role": "πάγκος",
+    "captain": false
+   }
+  ],
+  "actual": [
+   {
+    "id": 3843,
+    "person_id": "012878",
+    "team": "MIL",
+    "position": "Center",
+    "role": "5άδα",
+    "captain": false
+   },
+   {
+    "id": 3766,
+    "person_id": "003469",
+    "team": "OLY",
+    "position": "Forward",
+    "role": "5άδα",
+    "captain": true
+   },
+   {
+    "id": 3836,
+    "person_id": "007866",
+    "team": "PAN",
+    "position": "Forward",
+    "role": "5άδα",
+    "captain": false
+   },
+   {
+    "id": 11512,
+    "person_id": "014734",
+    "team": "BAS",
+    "position": "Guard",
+    "role": "5άδα",
+    "captain": false
+   },
+   {
+    "id": 3887,
+    "person_id": "007975",
+    "team": "PAN",
+    "position": "Guard",
+    "role": "5άδα",
+    "captain": false
+   },
+   {
+    "id": 11521,
+    "person_id": "015161",
+    "team": "ASV",
+    "position": "Guard",
+    "role": "6ος",
+    "captain": false
+   },
+   {
+    "id": 7231,
+    "person_id": "010318",
+    "team": "IST",
+    "position": "Center",
+    "role": "πάγκος",
+    "captain": false
+   },
+   {
+    "id": 4061,
+    "person_id": "008084",
+    "team": "PAN",
+    "position": "Forward",
+    "role": "πάγκος",
+    "captain": false
+   },
+   {
+    "id": 8727,
+    "person_id": "014168",
+    "team": "ULK",
+    "position": "Forward",
+    "role": "πάγκος",
+    "captain": false
+   },
+   {
+    "id": 11540,
+    "person_id": "011706",
+    "team": "PAM",
+    "position": "Guard",
+    "role": "πάγκος",
+    "captain": false
+   },
+   {
+    "id": 4255,
+    "person_id": "009154",
+    "team": "PAM",
+    "position": "Head Coach",
+    "role": "coach",
+    "captain": false
+   }
+  ]
  }
 }

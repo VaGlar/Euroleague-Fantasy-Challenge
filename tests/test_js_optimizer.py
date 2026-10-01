@@ -1,5 +1,6 @@
 """The dashboard's in-browser optimizer (web/opt.js) must agree with elf/optimize.py."""
 import json
+from collections import Counter
 import random
 import shutil
 import subprocess
@@ -160,3 +161,41 @@ def test_a_cheap_zero_is_sold_even_when_the_best_at_his_position_are_all_dear():
     bank = 0.0
     j = js([{"kind": "transfers", "squad": sq, "pool": pool, "bank": bank, "maxTrades": 4, "minGain": 2.0}])[0]
     assert centers[0]["id"] not in {q["id"] for q in j["squad"]}
+
+
+def test_club_limit_binding_everywhere_js_and_python_agree():
+    """One club's players are far better value, so without the limit both optimizers would load up
+    on it: both keep at most 6 from every club, the budget and the squad shape, and the JS gain stays
+    close to Python's."""
+    rnd = random.Random(21)
+    clubs = ("PAN", "OLY", "MAD", "BAR")
+    cases, pys = [], []
+    for i in range(10):
+        pool = rand_squad(rnd, 1000) + rand_squad(rnd, 2000) + rand_squad(rnd, 3000)
+        for q in pool:
+            q["team"] = "PAN" if rnd.random() < 0.5 else rnd.choice(clubs[1:])
+            if q["team"] == "PAN":
+                q["x_h"] = round(q["x_h"] * 2.0, 1)
+                q["x_now"] = round(q["x_now"] * 2.0, 1)
+        sq = rand_squad(rnd, 1)
+        for n, q in enumerate(sq):
+            q["team"] = "PAN" if n < 4 else clubs[1 + n % 3]
+        bank = round(rnd.uniform(2, 8), 1)
+        k = 4 if i % 2 else 11
+        cases.append({"kind": "transfers", "squad": sq, "pool": pool, "bank": bank, "maxTrades": k,
+                      "minGain": 2.0})
+        pys.append(optimize.transfers(sq, pool, bank, max_trades=k, min_gain_per_trade=2.0))
+    binding = 0
+    for c, p, j in zip(cases, pys, js(cases)):
+        team_of = {q["id"]: q["team"] for q in c["pool"] + c["squad"]}
+        js_clubs = Counter(team_of[q["id"]] for q in j["squad"])
+        assert max(js_clubs.values()) <= optimize.MAX_PER_CLUB, js_clubs
+        binding += js_clubs["PAN"] == optimize.MAX_PER_CLUB
+        if p:
+            py_clubs = Counter(q["team"] for q in p["result"]["team"])
+            assert max(py_clubs.values()) <= optimize.MAX_PER_CLUB, py_clubs
+        budget = sum(q["price"] for q in c["squad"]) + c["bank"]
+        assert sum(q["price"] for q in j["squad"]) <= budget + 1e-6
+        assert {pos: sum(q["position"] == pos for q in j["squad"]) for pos in optimize.SQUAD} == optimize.SQUAD
+        assert j["gain"] >= 0.95 * ((p or {}).get("gain") or 0) - 0.5, (j["gain"], (p or {}).get("gain"))
+    assert binding >= 5, "the limit must actually bind in most cases, or this test proves nothing"

@@ -162,3 +162,20 @@ def test_main_token_error_exits_nonzero(monkeypatch):
         raise lineup_cmd.fantasy.TokenError("FANTASY_TOKEN is not set")
     monkeypatch.setattr(lineup_cmd, "load_state", no_token)
     assert lineup_cmd.main(["preview", ""]) == 1 and "FANTASY_TOKEN" in said[0]
+
+
+def test_apply_confirmation_shows_the_lineup_without_the_list_of_subs(monkeypatch, public):
+    """The preview lists the subs; the ✅ after apply shows only the resulting lineup. describe()'s
+    text is cut at the subs heading, so renaming that heading in one place only would break it."""
+    g = game(monkeypatch, public, BAD, captain=10)
+    said = []
+    monkeypatch.setattr(lineup_cmd, "say", lambda text, buttons=None: said.append(text))
+    st = lineup_cmd.load_state()
+    pr = lineup_cmd.propose(st)
+    preview = lineup_cmd.describe(st, pr)
+    heading = "\n\n" + preview.split("\n\n")[-1].split("\n")[0]       # the subs heading, whatever its name
+    assert "→" in preview.split(heading)[-1], "η πρόταση δείχνει τις αλλαγές"
+    lineup_cmd.apply(pr["nonce"])
+    (done,) = said
+    assert done.startswith("✅") and heading.strip() not in done and "→" not in done
+    assert g.lineup()[0] == GOOD
