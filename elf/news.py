@@ -239,6 +239,8 @@ def collect(names: list[str], hours: int = 96) -> tuple[list[dict], list[str]]:
 PROMPT = """You are a EuroLeague Fantasy Challenge analyst. Below are recent articles
 (title + excerpt) and the list of valid player names (Surname, Name) with team.
 Greek articles write names in Greek: map them to the exact roster name.
+Every "player" value is copied EXACTLY from ROSTER, in Latin letters ("SURNAME, NAME"), without the
+team; never write a name in Greek, even when the article is Greek.
 
 Return ONLY JSON with this schema:
 {
@@ -365,6 +367,68 @@ def _flash_models(base: str, headers: dict) -> list[str]:
     # interleave: newest flash, newest lite, next flash... (lite is usually less overloaded)
     return [m for pair in zip(full + [None] * len(lite), lite + [None] * len(full))
             for m in pair if m]
+
+
+# ------------------------------------------------------------ names back to the roster
+# The LLM sometimes writes the names in Greek («ΛΕΣΟΡ, ΜΑΘΙΑΣ»): nothing matched, so the news' injuries
+# and the columns' picks were silently ignored. Both sides go to a rough sound-alike Latin skeleton and the
+# closest roster name wins, only when it is clearly the closest.
+_GR2 = [("μπ", "b"), ("ντ", "d"), ("γκ", "g"), ("γγ", "ng"), ("ου", "u"), ("αι", "e"), ("ει", "i"),
+        ("οι", "i"), ("τζ", "tz"), ("τσ", "ts"), ("αυ", "av"), ("ευ", "ev")]
+_GR1 = dict(zip("αβγδεζηθικλμνξοπρσςτυφχψω",
+                ["a", "v", "g", "d", "e", "z", "i", "t", "i", "k", "l", "m", "n", "ks", "o", "p", "r", "s",
+                 "s", "t", "i", "f", "h", "ps", "o"]))
+_LAT = [("sch", "s"), ("sh", "s"), ("ch", "ts"), ("ph", "f"), ("th", "t"), ("ck", "k"), ("dj", "tz"),
+        ("j", "tz"), ("c", "k"), ("q", "k"), ("x", "ks"), ("w", "u"), ("y", "i"), ("oo", "u"), ("ou", "u"),
+        ("ee", "i"), ("ai", "e"), ("ay", "ei"), ("ei", "i")]
+
+
+def _skel(s: str) -> str:
+    s = unicodedata.normalize("NFD", str(s).lower())
+    s = "".join(c for c in s if unicodedata.category(c) != "Mn")
+    greek = any("α" <= c <= "ω" for c in s)
+    if greek:
+        for a, b in _GR2:
+            s = s.replace(a, b)
+        s = "".join(_GR1.get(c, c) for c in s)
+    else:
+        for a, b in _LAT:
+            s = s.replace(a, b)
+    s = re.sub(r"[^a-z ,]", "", s).replace("h", "").replace("v", "b")
+    return re.sub(r"(.)\1+", r"\1", s).strip()
+
+
+def resolve_names(d: dict | None, roster: list[str]) -> dict | None:
+    """Each availability / expert "player" set to the exact roster name; the unmatched are dropped."""
+    import difflib
+    if not d:
+        return d
+    exact = {n.upper(): n for n in roster}
+    # «SURNAME, NAME» as the roster writes it, or «Name Surname» (Marcus Bingham Jr. vs BINGHAM, MARCUS)
+    words = lambda x: _skel(re.sub(r"\b(jr|sr|ii|iii)\b\.?", " ", str(x), flags=re.I)).replace(",", " ").split()
+    skel = [(n, " ".join(words(n))) for n in roster]
+    cache = {}
+
+    def find(raw: str):
+        name = str(raw).split(" (")[0].strip()
+        if name.upper() in exact:
+            return exact[name.upper()]
+        if name not in cache:
+            w = words(name)
+            ks = {" ".join(w)} | ({" ".join(w[-1:] + w[:-1])} if "," not in name else set())
+            sc = sorted(((max(difflib.SequenceMatcher(None, k, s).ratio() for k in ks), n) for n, s in skel), reverse=True)
+            ok = sc and sc[0][0] >= 0.75 and (len(sc) < 2 or sc[0][0] - sc[1][0] >= 0.04)
+            cache[name] = sc[0][1] if ok else None
+        return cache[name]
+
+    for key in ("availability", "expert"):
+        out = []
+        for it in d.get(key) or []:
+            n = find(it.get("player", ""))
+            if n:
+                out.append({**it, "player": n})
+        d[key] = out
+    return d
 
 
 AVAILABILITY_FACTOR = {"out": 0.0, "doubtful": 0.4, "questionable": 0.8, "available": 1.0}
