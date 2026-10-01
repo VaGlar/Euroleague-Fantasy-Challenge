@@ -431,6 +431,136 @@
    ],
    "x_total": 136.4,
    "decided_at": "2026-10-01T14:41+00:00"
+  },
+  {
+   "round": 4,
+   "trades": 3,
+   "bank": 0.5,
+   "squad": [
+    {
+     "id": 3903,
+     "price": 16.0,
+     "position": "Guard",
+     "person_id": "009846",
+     "name": "BRYANT, ELIJAH",
+     "team": "HTA",
+     "role": "5άδα",
+     "captain": true,
+     "x_now": 24.9
+    },
+    {
+     "id": 11549,
+     "price": 16.0,
+     "position": "Center",
+     "person_id": "000898",
+     "name": "VALANCIUNAS, JONAS",
+     "team": "ZAL",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 22.6
+    },
+    {
+     "id": 3791,
+     "price": 15.0,
+     "position": "Guard",
+     "person_id": "013369",
+     "name": "JONES, CARLIK",
+     "team": "PAR",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 20.6
+    },
+    {
+     "id": 3850,
+     "price": 10.0,
+     "position": "Guard",
+     "person_id": "007027",
+     "name": "MALEDON, THEO",
+     "team": "MAD",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 16.1
+    },
+    {
+     "id": 11504,
+     "price": 10.9,
+     "position": "Center",
+     "person_id": "003958",
+     "name": "THIEMANN, JOHANNES",
+     "team": "MUN",
+     "role": "6ος",
+     "captain": false,
+     "x_now": 13.8
+    },
+    {
+     "id": 4061,
+     "price": 5.4,
+     "position": "Forward",
+     "person_id": "008084",
+     "name": "MANTZOUKAS, ELEFTHERIOS",
+     "team": "PAN",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 12.6
+    },
+    {
+     "id": 4255,
+     "price": 7.6,
+     "position": "Head Coach",
+     "person_id": "009154",
+     "name": "ALBERT, XAVIER",
+     "team": "PAM",
+     "role": "coach",
+     "captain": false,
+     "x_now": 9.6
+    },
+    {
+     "id": 11521,
+     "price": 5.0,
+     "position": "Guard",
+     "person_id": "015161",
+     "name": "FODZO DADA, MARC-OWEN",
+     "team": "ASV",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 6.1
+    },
+    {
+     "id": 3986,
+     "price": 4.2,
+     "position": "Forward",
+     "person_id": "001557",
+     "name": "GIFFEY, NIELS",
+     "team": "MUN",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 3.4
+    },
+    {
+     "id": 4012,
+     "price": 4.4,
+     "position": "Forward",
+     "person_id": "001518",
+     "name": "RICCI, GIAMPAOLO",
+     "team": "MIL",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 3.3
+    },
+    {
+     "id": 4016,
+     "price": 4.0,
+     "position": "Forward",
+     "person_id": "011816",
+     "name": "AKELE, NICOLA",
+     "team": "MIL",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 2.3
+    }
+   ],
+   "x_total": 152.7,
+   "decided_at": "2026-10-01T19:27+00:00"
   }
  ],
  "seed_id": "5a453a755a9b",
@@ -441,5 +571,5 @@
   "raw": 184.8,
   "avg_raw": 115.9
  },
- "generated": "2026-10-01T14:41:46.295953+00:00"
+ "generated": "2026-10-01T19:27:52.144330+00:00"
 }
