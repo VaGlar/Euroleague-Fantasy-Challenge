@@ -263,3 +263,14 @@ def test_a_player_not_registered_with_his_club_gets_zero(pipeline):
     assert all(not p.get("prior") for p in out)                      # the price prior doesn't revive them
     box = set(history.load("players", CURRENT_SEASON)["person_id"].astype(str))
     assert not [p["name"] for p in out if str(p["person_id"]) in box]
+
+
+def test_players_carry_the_plain_next3_and_the_season_total(pipeline):
+    """xFPT3 as shown is the plain sum of the next 3 games (not the trade horizon's weights); the season's
+    fantasy points so far come with every player (0 before his first game)."""
+    players = pipeline["pred"]["players"]
+    assert all("x3" in p and "fpt_total" in p for p in players)
+    assert any((p["fpt_total"] or 0) > 0 for p in players)
+    healthy = [p for p in players if p.get("n3") == 3 and (p.get("avail_game") in (None, 1.0))
+               and not p.get("prior") and (p["x_now"] or 0) > 5]
+    assert healthy and all(p["x3"] >= p["x_now"] for p in healthy)

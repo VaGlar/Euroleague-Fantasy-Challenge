@@ -15,7 +15,7 @@ process.stdin.on("data", (d) => (buf += d)).on("end", () => {
     if (c.kind === "transfers") {
       const r = opt.transfers(c.squad, c.pool, c.bank, { maxTrades: c.maxTrades, minGain: c.minGain, keep: c.keep || [] });
       return { gain: r.gain, bankAfter: r.bankAfter, n: r.pairs.length,
-        squad: r.squad.map((p) => ({ id: p.id, position: p.position, price: p.price })) };
+        squad: r.squad.map((p) => ({ id: p.id, position: p.position, price: p.price, team: p.team })) };
     }
     return null;
   });

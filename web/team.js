@@ -128,7 +128,7 @@
   const dPrice = (r) => (r.buy == null || r.price == null ? 0 : Math.round((r.price - r.buy) * 10) / 10);
   const arrow = (d) => (d > 0 ? `<span class="tm-up">▲${f1(d)}</span>` : d < 0 ? `<span class="tm-down">▼${f1(-d)}</span>` : "");
   function optRows(rows, t, inRound) {
-    return rows.map((r) => ({ id: r.id, position: r.position, price: Number(r.price) || 0, x_h: r.x_h ?? 0,
+    return rows.map((r) => ({ id: r.id, position: r.position, team: r.team, price: Number(r.price) || 0, x_h: r.x_h ?? 0,
       x_now: inRound && played(r) ? r.actual : (r.x_now ?? 0), turn: r.turn, played: inRound && played(r),
       cur_role: (t.roles || {})[r.id] || (r.position === "Head Coach" ? "coach" : "πάγκος"), cur_captain: t.captain === r.id }));
   }
@@ -174,7 +174,7 @@
   const tradeInfo = (t) => t.game ? { round: P.my_team?.trade_round ?? P.round, max_trades: P.my_team?.max_trades ?? 4,
     min_gain: P.trade_info?.min_gain ?? 2 } : (P.trade_info || { round: P.round, max_trades: 4, min_gain: 2 });
   const poolRows = (avoid = []) => P.players.filter((p) => p.fantasy_id != null && p.price != null && !avoid.includes(Number(p.fantasy_id)))
-    .map((p) => ({ id: Number(p.fantasy_id), position: p.position, price: p.price, x_h: p.x_h ?? 0, x_now: p.x_now ?? 0 }));
+    .map((p) => ({ id: Number(p.fantasy_id), position: p.position, team: p.team, price: p.price, x_h: p.x_h ?? 0, x_now: p.x_now ?? 0 }));
   function tradesFor(t, rows) {
     if (t.game) {
       const my = P.my_team || {}, ti = tradeInfo(t), keep = kept(ti), avoid = avoided(ti);
@@ -290,7 +290,7 @@
     if (tradesNow) for (const pr of pairs) {
       const o = rows.find((r) => r.id === pr.out.id), n = row(pr.in.id);
       items.push({ kind: "🔁", html: `<b>${esc(sur(o.name))}</b> vs <b>${esc(sur(n.name))}</b>`, why: "",
-        keep: o, avoid: n,
+        keep: o, avoid: n, cmp: [o.person_id, n.person_id], short: !affords(t, pr),
         run: () => { applyTrade(t, pr.out.id, pr.in.id, pr.in.price); save(t); toast(`${sur(o.name)} ➜ ${sur(n.name)} · υπόλοιπο ${f1(t.bank)} cr`); } });
     }
     const pendingTrades = items.length > 0;
@@ -328,6 +328,10 @@
   }
 
   // ------------------------------------------------------------ actions on the saved team
+  // the credits allow this trade now (sold at today's price): otherwise the others have to go first
+  const affords = (t, pr) => (Number(t.bank) || 0) + (Number(row(pr.out.id)?.price ?? pr.out.price) || 0) - (Number(pr.in.price) || 0) >= -0.05;
+  const doneBtn = (attr, i) => `<button class="tm-done" ${attr} ${i.short || i.wait ? "disabled" : ""}${
+    i.short ? ' title="Δεν φτάνουν τα credits: κάνε πρώτα τα άλλα Trades"' : ""}>✓ Το έκανα</button>`;
   function applyTrade(t, outId, inId, price) {
     const i = t.players.findIndex((x) => x.id === outId);
     if (i < 0) return;
@@ -417,17 +421,17 @@
         `<b>${who(id)}</b> <button class="linkbtn" data-unkeep="${id}">αναίρεση</button>`).join(" · ")}</p>` : "")
       + (pl.avoid.length ? `<p class="tm-kept">🚫 Δεν θέλεις: ${pl.avoid.map((id) =>
         `<b>${who(id)}</b> <button class="linkbtn" data-unavoid="${id}">αναίρεση</button>`).join(" · ")}</p>` : "");
-    const list = items.map((i, n) => `<li class="tm-item${i.kind === "🔁" ? " tm-trade" : ""}"><span class="tm-kind" aria-hidden="true">${i.kind}</span>
+    const list = items.map((i, n) => `<li class="tm-item${i.kind === "🔁" ? " tm-trade" : ""}"${i.cmp ? ` data-cmp="${esc(i.cmp.join(","))}"` : ""}><span class="tm-kind" aria-hidden="true">${i.kind}</span>
         <span class="tm-what">${i.html}${i.why ? `<span class="tm-why">${i.why}</span>` : ""}${i.keep || i.avoid ? `<span class="tm-kbtns">${i.keep ? keepBtn(i.keep) : ""}${i.avoid ? avoidBtn(i.avoid) : ""}</span>` : ""}</span>
-        ${t.game ? "" : `<button class="tm-done" data-i="${n}" ${i.wait ? "disabled" : ""}>✓ Το έκανα</button>`}</li>`).join("");
+        ${t.game ? "" : doneBtn(`data-i="${n}"`, i)}</li>`).join("");
     const turnPlan = pl.turnPlan.map((x) => { const s = pl.aRows.find((r) => r.id === x.start.id), b = pl.aRows.find((r) => r.id === x.bench.id);
       return `<li>🕐 <b>Πριν το T${x.bench.turn}</b>: αν ο ${esc(sur(s.name))} φέρει κάτω από ${Math.round(x.bench.x_now)}, βάλε τον ${esc(sur(b.name))}.</li>`; }).join("");
     // while the round is under way only swaps and the armband: next round's trades wait for it to end
     const nextTrades = pl.inRound ? "" : !pl.tradesNow && pl.trs.pairs.length ? `<div class="card"><h2>Trades για το Round ${pl.ti.round}
         <small class="muted">(${pl.ti.max_trades > 4 ? "απεριόριστα" : `Trades ${usedTrades(t, pl.ti)}/${pl.ti.max_trades}`} · μετά το τρέχον Round)</small></h2>
         <ul class="tm-list">${pl.trs.pairs.map((pr, n) => { const o = rows.find((r) => r.id === pr.out.id), nn = row(pr.in.id);
-          return `<li class="tm-item tm-trade"><span class="tm-kind">🔁</span><span class="tm-what"><b>${esc(sur(o.name))}</b> vs <b>${esc(sur(nn.name))}</b><span class="tm-kbtns">${keepBtn(o)}${avoidBtn(nn)}</span></span>
-            ${t.game ? "" : `<button class="tm-done" data-n="${n}">✓ Το έκανα</button>`}</li>`; }).join("")}</ul>${keptLine}</div>`
+          return `<li class="tm-item tm-trade" data-cmp="${esc([o.person_id, nn.person_id].join(","))}"><span class="tm-kind">🔁</span><span class="tm-what"><b>${esc(sur(o.name))}</b> vs <b>${esc(sur(nn.name))}</b><span class="tm-kbtns">${keepBtn(o)}${avoidBtn(nn)}</span></span>
+            ${t.game ? "" : doneBtn(`data-n="${n}"`, { short: !affords(t, pr) })}</li>`; }).join("")}</ul>${keptLine}</div>`
       : !pl.tradesNow && (pl.keep.length || pl.avoid.length) ? `<div class="card"><h2>Trades για το Round ${pl.ti.round}</h2><p>Κανένα Trade δεν αξίζει με αυτές τις επιλογές σου.</p>${keptLine}</div>` : "";
     const done = !items.length && t.confirmed;
     const upd = P.generated ? new Date(P.generated).toLocaleString("el-GR", { weekday: "short", hour: "2-digit", minute: "2-digit" }) : "";
@@ -439,7 +443,7 @@
           : `Trades <b>${usedTrades(t, pl.ti)}/${pl.ti.max_trades > 4 ? "∞" : pl.ti.max_trades}</b>`}</div>
         <div class="muted">xFPT <b>${f1(total)}</b>${Math.abs(pl.planned - total) >= 0.05
           ? ` → <b class="tm-planned">${f1(pl.planned)}</b>` : ""}</div>
-        <div class="tm-dead">${head}</div></div>
+        <div class="tm-dead">${head}</div>${clubWarn(rows, pl.trs)}</div>
         ${t.game ? "" : `<div class="tm-morewrap"><button class="tm-more" id="tmMore" aria-haspopup="menu">⋯ Επιλογές</button><div id="tmMenu"></div></div>`}</header>
       ${t.game ? "" : undoBar(t)}
       <div class="tm-cols"><div class="tm-colL">
@@ -454,6 +458,18 @@
       ${bestCard(best)}`;
   }
 
+  // ⚠️ 4+ players from one club (the game allows 6): one bad night of that team hits them all together,
+  // and they all play in the same Turn. Now, and after the proposed trades if they add to it.
+  const CLUB_WARN = 4;
+  function clubWarn(rows, trs) {
+    const count = (list) => list.reduce((a, p) => (p.team && p.position !== "Head Coach" ? (a[p.team] = (a[p.team] || 0) + 1, a) : a), {});
+    const now = count(rows), next = trs && trs.pairs && trs.pairs.length ? count(trs.squad || []) : {};
+    const out = [];
+    for (const [club, n] of Object.entries(now)) if (n >= CLUB_WARN) out.push(`${n} παίκτες ${esc(tc(club))}`);
+    for (const [club, n] of Object.entries(next)) if (n >= CLUB_WARN && n > (now[club] || 0)) out.push(`με τα Trades ${n} παίκτες ${esc(tc(club))}`);
+    return out.length ? `<div class="tm-warn" title="Μία κακή βραδιά της ομάδας τους χτυπάει όλους μαζί, και παίζουν στο ίδιο Turn">⚠️ ${out.join(" · ")}</div>` : "";
+  }
+
   // ------------------------------------------------------------ player actions
   const ROLE_LABEL = { "5άδα": "Starting five", "6ος": "Sixth man", "πάγκος": "Bench" };
   function playerSheet(t, id) {
@@ -465,7 +481,7 @@
         <div class="muted">${esc(tc(r.team))} · ${NAME[r.position]} · τώρα ${f1(r.price)} cr${r.buy != null ? ` · αγορά ${f1(r.buy)}${dPrice(r) ? ` (${dPrice(r) > 0 ? "+" : "−"}${f1(Math.abs(dPrice(r)))})` : ""}` : ""}${r.popularity != null ? ` · POP ${f1(r.popularity)} %` : ""}${r.turn ? ` · Turn ${r.turn}` : ""}${role && role !== "coach" ? ` · ${ROLE_LABEL[role] || role}` : ""}</div></div>
         <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
       <div class="kpis"><div class="kpi"><b>${f1(played(r) ? r.actual : r.x_now)}</b><span>${played(r) ? "points" : "xFPT"}</span></div>
-        <div class="kpi"><b>${f1(r.x_h)}</b><span>xFPT3</span></div><div class="kpi"><b>${r.value == null ? "–" : r.value.toFixed(2)}</b><span>xFPT3/cr</span></div></div>
+        <div class="kpi"><b>${f1(xf3(r))}</b><span>xFPT3</span></div><div class="kpi"><b>${r.value == null ? "–" : r.value.toFixed(2)}</b><span>xFPT3/cr</span></div></div>
       <div class="tm-acts">
         ${t.game ? "" : r.position !== "Head Coach" ? `<button class="tm-act" id="aCap" ${canCap ? "" : "disabled"}><span>★</span><div>Captain</div></button>
         <button class="tm-act" id="aSwap"><span>⇄</span><div>Substitute</div></button>` : ""}
@@ -517,7 +533,7 @@
       const k = key(q).trim();
       $("#tmList").innerHTML = list.filter((p) => !k || key(p.name).includes(k)).slice(0, 40).map((p) => `<button class="tm-pick" data-n="${p.fantasy_id}">
           <span><b>${esc(nm(p.name))}</b>${typeof newb === "function" ? newb(p, false) : ""}</span><span class="tm-pv"><b class="${gain(p) > 0 ? "tm-up" : "tm-down"}">${gain(p) > 0 ? "+" : "−"}${f1(Math.abs(gain(p)))}</b><small>xFPT3</small></span>
-          <span class="muted tm-pm">${esc(tc(p.team))} · ${f1(p.price)} cr · xFPT3 ${f1(p.x_h)} · μένουν ${f1(max - p.price)} cr</span></button>`).join("")
+          <span class="muted tm-pm">${esc(tc(p.team))} · ${f1(p.price)} cr · xFPT3 ${f1(xf3(p))} · μένουν ${f1(max - p.price)} cr</span></button>`).join("")
         || `<p class="muted">${k ? `Κανένας ${NAME[r.position]} με αυτό το όνομα μέσα στο υπόλοιπο.` : `Κανένας ${NAME[r.position]} δεν χωράει στο υπόλοιπο.`}</p>`;
       document.querySelectorAll("#tmList [data-n]").forEach((b) => b.onclick = () => {
         const n = row(Number(b.dataset.n));
@@ -832,6 +848,10 @@
   // phones: the court comes first, this line says there are steps to do below it and takes you there
   function bindSteps() {
     sizeFloors();
+    document.querySelectorAll("#team li[data-cmp]").forEach((li) => li.onclick = (e) => {
+      if (e.target.closest("button")) return;
+      if (typeof compareSheet === "function") compareSheet(li.dataset.cmp.split(","));
+    });
     const b = document.getElementById("tmSteps"), to = document.getElementById("tmTodo");
     if (b && to) b.onclick = () => window.scrollTo({ top: to.getBoundingClientRect().top + window.scrollY - 8, behavior: "smooth" });
   }
@@ -977,6 +997,8 @@
   .tm-left { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: 13px; color: var(--text-secondary); }
   .tm-left select { font: inherit; padding: 4px 8px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface-1); color: var(--text-primary); }
   .tm-kbtns { display: block; }
+  #team li[data-cmp] .tm-what { cursor: pointer; }
+  .tm-warn { font-size: 12px; font-weight: 600; color: var(--warning, #b45309); margin-top: 4px; }
   .tm-keep { display: inline-block; margin: 6px 14px 0 0; padding: 0; border: 0; background: none; color: var(--series-1); font: inherit; font-size: 13px;
     text-align: left; cursor: pointer; }
   .tm-kept { font-size: 14px; margin: 10px 0 0; }

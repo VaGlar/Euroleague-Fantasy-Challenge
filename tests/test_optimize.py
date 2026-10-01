@@ -164,6 +164,30 @@ def test_in_round_played_bench_player_stays_and_played_player_cannot_take_armban
 
 # -------------------------------------------------------------- transfers
 
+def _one_club_dominates(pl, club="PAN", n=10):
+    """The n best players by value per credit all play for one club; the rest for others."""
+    best = sorted(pl, key=lambda p: -p["x_h"] / p["price"])[:n]
+    for i, p in enumerate(pl):
+        p["team"] = club if p in best else f"T{i % 9}"
+    return pl
+
+
+def test_best_squad_keeps_the_games_per_club_limit():
+    pl = _one_club_dominates(pool(seed=4), n=12)
+    team = optimize.best_squad(pl)["team"]
+    assert sum(p["team"] == "PAN" for p in team) <= optimize.MAX_PER_CLUB
+
+
+def test_transfers_never_go_over_the_per_club_limit():
+    pl = _one_club_dominates(pool(seed=6), n=12)
+    squad = cheapest_squad(pl)
+    for n, p in enumerate(squad):
+        p["team"] = "PAN" if n < 5 else f"S{n}"            # already 5 from that club
+    bank = BUDGET - sum(p["price"] for p in squad)
+    tr = optimize.transfers(squad, pl, bank=bank, max_trades=4)
+    assert sum(p["team"] == "PAN" for p in tr["result"]["team"]) <= optimize.MAX_PER_CLUB
+
+
 def test_transfers_respect_limits_budget_and_keep():
     pl = pool(seed=3)
     squad = cheapest_squad(pl)
