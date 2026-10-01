@@ -310,6 +310,8 @@
       const moved = [...new Set(g.flatMap((st) => [st.in, st.out]))].filter((r) => fin[r.id] !== roles0[r.id])
         .sort((x, y) => ORDER[fin[x.id]] - ORDER[fin[y.id]]);
       Object.assign(roles0, fin);
+      // only players the trades bring in: their place is set when the trade is made (no extra step)
+      if (g.every((st) => [st.in, st.out].every((r) => !t.players.some((x) => x.id === r.id)))) continue;
       const first = g[0];
       const html = g.length === 1
         ? `<b>${esc(sur(first.out.name))}</b> vs <b>${esc(sur(first.in.name))}</b>`
@@ -445,8 +447,7 @@
         <div class="muted">xFPT <b>${f1(total)}</b>${Math.abs(pl.planned - total) >= 0.05
           ? ` → <b class="tm-planned">${f1(pl.planned)}</b>` : ""}</div>
         <div class="tm-dead">${head}</div>${clubWarn(rows, pl.trs)}</div>
-        ${t.game ? "" : `<div class="tm-morewrap"><button class="tm-more" id="tmMore" aria-haspopup="menu">⋯ Επιλογές</button><div id="tmMenu"></div></div>`}</header>
-      ${t.game ? "" : undoBar(t)}
+        ${t.game ? "" : `<div class="tm-right">${undoBar(t)}<div class="tm-morewrap"><button class="tm-more" id="tmMore" aria-haspopup="menu">⋯ Επιλογές</button><div id="tmMenu"></div></div></div>`}</header>
       <div class="tm-cols"><div class="tm-colL">
       <div class="card" id="tmTodo"><h2>To do <small class="muted">${items.length ? `${items.length} ${items.length === 1 ? "βήμα" : "βήματα"}` : ""}</small></h2>
         ${done ? `<div class="tm-ready">✅ Έτοιμος για το Round</div>` : `<ul class="tm-list">${confirm}${list}</ul>`}
@@ -645,7 +646,7 @@
       <button id="mEdit">✏️ Αλλαγή ομάδας</button>
       <button id="mBank">💰 Διόρθωση credits</button>
       ${WIDE() ? "" : `<button id="mInstall">📱 Βάλ' το στην οθόνη σου</button>`}
-      <button id="mMail">✉️ Ιδέα/Πρόβλημα</button>
+      <button id="mMail">✉️ Επικοινωνία</button>
       <button id="mDel" class="tm-danger">🗑 Διαγραφή ομάδας</button></div>`;
     $("#mBackup").onclick = async () => {
       close();
@@ -838,10 +839,17 @@
   }
   // PC: the side columns (coach, 6th, bench) start level with the top of the court; they are placed from the
   // row under the court, so they are lifted by the court's height (the centre circle stays where it is)
+  // measured when the court gets its size, not only at render: a court drawn on a hidden tab, or before
+  // the fonts load, has no height yet (the columns then started at the bottom of the court)
+  const floorObs = typeof ResizeObserver === "function" ? new ResizeObserver((es) => {
+    for (const e of es) { const f = e.target.closest(".tm-floor"); if (f && e.target.offsetHeight) f.style.setProperty("--court-h", e.target.offsetHeight + "px"); }
+  }) : null;
   function sizeFloors() {
-    document.querySelectorAll("#team .tm-floor").forEach((f) => {
+    document.querySelectorAll(".tm-floor").forEach((f) => {
       const c = f.querySelector(".court");
-      if (c && c.offsetHeight) f.style.setProperty("--court-h", c.offsetHeight + "px");
+      if (!c) return;
+      if (c.offsetHeight) f.style.setProperty("--court-h", c.offsetHeight + "px");
+      if (floorObs && !c.dataset.obs) { c.dataset.obs = "1"; floorObs.observe(c); }
     });
   }
   window.addEventListener("resize", sizeFloors);
@@ -890,7 +898,10 @@
   .tm-morewrap { position: relative; }
   .tm-more { border: 1px solid var(--border); background: var(--surface-1); color: var(--text-primary); border-radius: 999px;
     padding: 8px 14px; font: inherit; font-size: 14px; font-weight: 600; white-space: nowrap; cursor: pointer; }
-  .tm-toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin: -4px 0 12px; }
+  .tm-toolbar { display: flex; flex-wrap: wrap; gap: 8px; }
+  /* wraps on the narrowest phones: Undo, Undo all and ⋯ Επιλογές in one row overflowed 320px (the page got wider) */
+  .tm-right { display: flex; gap: 6px; align-items: flex-start; flex-wrap: wrap; justify-content: flex-end; flex: 0 1 auto; min-width: 0; }
+  .tm-top > div:first-child { min-width: 0; }
   .tm-toolbar button { border: 1px solid var(--border); background: var(--surface-1); color: var(--text-primary); border-radius: 999px;
     padding: 7px 13px; font: inherit; font-size: 14px; cursor: pointer; }
   .tm-toolbar button:hover { border-color: var(--series-1); }
@@ -910,7 +921,8 @@
   .tm-done { border: 0; border-radius: 10px; padding: 8px 12px; background: var(--text-primary); color: var(--surface-1);
     font: inherit; font-weight: 600; font-size: 13px; cursor: pointer; white-space: nowrap; }
   .tm-done:disabled { opacity: .35; cursor: default; }
-  @media (max-width: 400px) {   /* narrow phones: the button goes under the text, which keeps the full width */
+  .tm-item .tm-done { padding: 7px 10px; }
+  @media (max-width: 340px) {   /* the narrowest phones: the button goes under the text, which keeps the full width */
     .tm-item { grid-template-columns: 30px 1fr; } .tm-item .tm-done { grid-column: 2; justify-self: start; } }
   .tm-ready { padding: 12px; border-radius: 12px; font-weight: 600; background: color-mix(in srgb, var(--good) 14%, transparent); }
   .tm-hint { color: var(--text-muted); font-size: 12px; margin: 8px 2px 0; }
@@ -1007,7 +1019,8 @@
   .tm-trades { border: 0; background: none; padding: 0; font: inherit; color: inherit; cursor: pointer; }
   /* wide screens: the to-do list and the court side by side */
   @media (min-width: 1000px) {
-    .tm-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.55fr); gap: 14px; align-items: start; }   /* the court has sidelines */
+    .tm-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.85fr); gap: 14px; align-items: start; }
+    .tm-cols .tm-floor .chip .cs { font-size: 10px; }   /* the court has sidelines */
   }
   .sheet #tmQ { position: sticky; top: -14px; z-index: 1; box-shadow: 0 6px 8px -6px rgba(0,0,0,.25); }
   .tm-input { width: 100%; font: inherit; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--border);
@@ -1071,5 +1084,5 @@
         bank: t.bank, name: t.game ? t.name : null, inRound: pl.inRound };
     } catch (e) { return null; }
   }
-  window.TEAM = { render, summary, encode, decode, KEY };
+  window.TEAM = { render, summary, encode, decode, KEY, sizeFloors };
 })();

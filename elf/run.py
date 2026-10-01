@@ -1212,7 +1212,7 @@ def messages(rnd, trn, table, my, dig, health, dash: str | None = None) -> list[
         lines += [f"{i}. {_fmt(r)}" for i, r in enumerate(src.head(8).to_dict("records"), 1)]
         if "value" in t and tu["turn"] == 1:
             v = t.dropna(subset=["value"]).sort_values("value", ascending=False).head(5)
-            lines += ["", "💰 <b>Value (σταθμισμένα xFPT/credit)</b>"]
+            lines += ["", "💰 <b>Value (xFPT3/credit)</b>"]
             lines += [f"• {r['name'].split(',')[0].title()} ({tv(r['team'])}) {r['price']}cr — "
                       f"{r['value']:.2f}" for r in v.to_dict("records")]
         if tu["turn"] == 1 and "avail_game" in t:
