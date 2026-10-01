@@ -72,7 +72,8 @@ section { display: none; } section.on { display: block; }
 .card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px;
   padding: 12px 14px; margin-bottom: 12px; }
 .card h2 { font-size: 15px; margin: 0 0 8px; }
-.filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+.filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; align-items: center; }
+@media (min-width: 900px) { #fsearch { width: 130px; } #fpmin, #fpmax { width: 56px; } }
 select, input { font: inherit; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--border);
   background: var(--surface-1); color: var(--text-primary); }
 .range input { width: 72px; }
@@ -644,18 +645,20 @@ function renderPlayers() {
   rows.sort((a, b) => ((a[sortKey] ?? -1e9) > (b[sortKey] ?? -1e9) ? 1 : -1) * sortDir);
   const max = Math.max(...rows.map((r) => r.x_now || 0), 1);
   const hasPrice = P.fantasy_ok;
-  const cols = [["name", "Παίκτης"], ["x_now", "xFPT" + ii("xpts"), 1], ["actual", "Points" + ii("pts"), 1], ["fpt_total", "Σύνολο" + ii("ptot"), 1], ["opp", "Αντ."], ["pos_dev", "Ματσάρ." + ii("matchup"), 1],
-    ["x3", "xFPT3" + ii("xpts3"), 1], ["season_pir", "PIR φέτος" + ii("pir"), 1], ["prev_pir", "PIR πέρσι", 1]]
+  const anyPlayed = P.players.some((r) => r.actual != null);
+  const cols = [["name", "Παίκτης"], ["x_now", "xFPT" + ii("xpts"), 1]].concat(anyPlayed ? [["actual", "Points" + ii("pts"), 1]] : [])
+    .concat([["fpt_total", "Σύνολο" + ii("ptot"), 1], ["opp", "Αντ."], ["pos_dev", "Ματσάρ." + ii("matchup"), 1],
+    ["x3", "xFPT3" + ii("xpts3"), 1], ["season_pir", "PIR φέτος" + ii("pir"), 1]])
     .concat(hasPrice ? [["price", "Price", 1], ["price_chg", "Δ price" + ii("pchg"), 1], ["popularity", "POP" + ii("pop"), 1], ["value", "Value" + ii("value"), 1]] : []);
   $("#ptable").innerHTML = "<thead><tr>" + cols.map(([k, l, n]) =>
     `<th data-k="${k}" class="${n ? "num" : ""}">${l}${sortKey === k ? (sortDir < 0 ? " ↓" : " ↑") : ""}</th>`).join("") + "</tr></thead><tbody>"
     + rows.slice(0, 250).map((r) => `<tr data-pid="${esc(r.person_id)}">
       <td>${cbox(r)}${esc(nm(r.name))}${newb(r)}${inj(r)}${exb(r)}${dol(r)}<br><span class="muted">${esc(tc(r.team))} · ${esc(r.position || "")}${r.price != null ? ` · <b>${f1(r.price)}cr</b>` : ""}</span></td>
       <td class="num"><span class="bar" style="width:${Math.max(2, 40 * (r.x_now || 0) / max)}px"></span><b>${f1(r.x_now)}</b></td>
-      <td class="num">${r.actual == null ? "–" : `<b class="${r.actual >= (r.x_now ?? 0) ? "up" : "down"}">${f1(r.actual)}</b>`}</td>
+      ${anyPlayed ? `<td class="num">${r.actual == null ? "–" : `<b class="${r.actual >= (r.x_now ?? 0) ? "up" : "down"}">${f1(r.actual)}</b>`}</td>` : ""}
       <td class="num">${r.fpt_total == null ? "–" : f1(r.fpt_total)}</td>
       <td>${gameOf(r)}</td><td class="num">${matchup(r.pos_dev)}</td>
-      <td class="num">${f1(xf3(r))}</td><td class="num">${f1(r.season_pir)}</td><td class="num">${f1(r.prev_pir)}</td>
+      <td class="num">${f1(xf3(r))}</td><td class="num">${f1(r.season_pir)}</td>
       ${hasPrice ? `<td class="num">${f1(r.price)}</td><td class="num">${chg(r.price_chg) || "–"}</td><td class="num">${pop(r) || "–"}</td><td class="num">${r.value == null ? "–" : r.value.toFixed(2)}</td>` : ""}</tr>`).join("") + "</tbody>";
   $("#ptable").querySelectorAll("th").forEach((th) => th.onclick = () => {
     const k = th.dataset.k; sortDir = sortKey === k ? -sortDir : -1; sortKey = k; renderPlayers();
