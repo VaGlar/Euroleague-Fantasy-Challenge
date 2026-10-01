@@ -79,13 +79,14 @@ select, input { font: inherit; padding: 6px 8px; border-radius: 8px; border: 1px
 .range input { width: 72px; }
 .chk { display: inline-flex; align-items: center; gap: 6px; color: var(--text-secondary); }
 .posdd { position: relative; display: inline-block; }
-.posdd summary { list-style: none; cursor: pointer; border: 1px solid var(--border); border-radius: 10px; padding: 8px 30px 8px 12px;
+.posdd summary { list-style: none; cursor: pointer; border: 1px solid var(--border); border-radius: 8px; padding: 6px 26px 6px 8px;
   background: var(--surface-1); color: var(--text-primary); position: relative; white-space: nowrap; }
 .posdd summary::-webkit-details-marker { display: none; }
-.posdd summary::after { content: "▾"; position: absolute; right: 10px; color: var(--text-secondary); }
+.posdd summary::after { content: "▾"; position: absolute; right: 8px; color: var(--text-secondary); }
 .posmenu { position: absolute; z-index: 6; top: calc(100% + 4px); left: 0; display: flex; flex-direction: column; gap: 2px; min-width: 100%;
   background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px; padding: 6px 10px; box-shadow: 0 6px 20px rgba(0,0,0,.12); }
 .posmenu .chk { padding: 6px 0; white-space: nowrap; }
+.posmenu .posall { border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 2px; }
 .linkbtn { border: 0; background: none; color: var(--series-1); font: inherit; cursor: pointer; padding: 6px 4px; }
 #fcount { font-size: 13px; }
 .fcountrow { display: flex; align-items: center; gap: 10px; margin: -4px 0 8px; }
@@ -421,7 +422,7 @@ body > header nav button.on { color: var(--bar-fg); border-color: var(--bar-line
   <section id="players">
     <details class="fbox" id="fbox"><summary id="fsum">Φίλτρα</summary>
     <div class="filters">
-      <details class="posdd" id="fposdd"><summary id="fpossum">Όλες οι θέσεις</summary><div class="posmenu" id="fpos" role="group" aria-label="Θέσεις"><label class="chk"><input type="checkbox" value="Guard"> Guard</label><label class="chk"><input type="checkbox" value="Forward"> Forward</label><label class="chk"><input type="checkbox" value="Center"> Center</label><label class="chk"><input type="checkbox" value="Head Coach"> Head Coach</label></div></details>
+      <details class="posdd" id="fposdd"><summary id="fpossum">Όλες οι θέσεις</summary><div class="posmenu" id="fpos" role="group" aria-label="Θέσεις"><label class="chk posall"><input type="checkbox" id="fposall" checked> Όλες</label><label class="chk"><input type="checkbox" value="Guard" checked> Guard</label><label class="chk"><input type="checkbox" value="Forward" checked> Forward</label><label class="chk"><input type="checkbox" value="Center" checked> Center</label><label class="chk"><input type="checkbox" value="Head Coach" checked> Head Coach</label></div></details>
       <select id="fteam"><option value="">Όλες οι ομάδες</option></select>
       <select id="fturn"><option value="">Όλα τα turns</option></select>
       <input id="fsearch" placeholder="Αναζήτηση" size="12">
@@ -623,8 +624,11 @@ function findPlayer(name) {
 // price boxes: accept "6,5" (Greek keyboard) as well as "6.5"
 const num = (v) => parseFloat(String(v).trim().replace(",", "."));
 const FILTERS = ["fpos", "fteam", "fturn", "fsearch", "fpmin", "fpmax", "fhealthy"];
-// positions: checkboxes, any number at once (none ticked = all)
-const posSel = () => [...document.querySelectorAll("#fpos input:checked")].map((i) => i.value);
+// positions: checkboxes, all ticked by default; «Όλες» ticks/unticks them together
+const POS_N = 4;
+const posBoxes = () => [...document.querySelectorAll("#fpos input[value]")];
+const posSel = () => posBoxes().filter((i) => i.checked).map((i) => i.value);
+const posAll = () => posSel().length === POS_N;
 function saveFilters() {
   try {
     localStorage.setItem("filters", JSON.stringify(Object.fromEntries(FILTERS.map((id) =>
@@ -637,7 +641,7 @@ function loadFilters() {
     for (const [id, v] of Object.entries(f)) {
       const el = $("#" + id);
       if (!el) continue;
-      if (id === "fpos") { const on = [].concat(v || []); el.querySelectorAll("input").forEach((i) => { i.checked = on.includes(i.value); }); }
+      if (id === "fpos") { const on = [].concat(v || []); posBoxes().forEach((i) => { i.checked = !on.length || on.includes(i.value); }); }
       else if (el.type === "checkbox") el.checked = !!v;
       else if (el.tagName !== "SELECT" || [...el.options].some((o) => o.value === v)) el.value = v;
     }
@@ -648,13 +652,14 @@ function renderPlayers() {
   const pmin = num($("#fpmin").value), pmax = num($("#fpmax").value), healthy = $("#fhealthy").checked;
   const turnTeams = turn ? P.turns.find((t) => String(t.turn) === turn).teams : null;
   let rows = P.players.filter((p) => p.x_now != null
-    && (!pos.length || pos.includes(p.position)) && (!team || p.team === team)
+    && (pos.length === POS_N || pos.includes(p.position)) && (!team || p.team === team)
     && (!turnTeams || turnTeams.includes(p.team)) && (!q || String(p.name).toLowerCase().includes(q))
     && (isNaN(pmin) || (p.price != null && p.price >= pmin))
     && (isNaN(pmax) || (p.price != null && p.price <= pmax))
     && (!healthy || p.avail_game == null || p.avail_game >= 1));
   saveFilters();
-  $("#fpossum").textContent = pos.length ? pos.join(", ") : "Όλες οι θέσεις";
+  $("#fposall").checked = pos.length === POS_N;
+  $("#fpossum").textContent = pos.length === POS_N ? "Όλες οι θέσεις" : pos.length ? pos.join(", ") : "Καμία θέση";
   $("#fcount").textContent = `${rows.length} ${rows.length === 1 ? "παίκτης" : "παίκτες"}`;
   rows.sort((a, b) => ((a[sortKey] ?? -1e9) > (b[sortKey] ?? -1e9) ? 1 : -1) * sortDir);
   const max = Math.max(...rows.map((r) => r.x_now || 0), 1);
@@ -682,7 +687,7 @@ function renderPlayers() {
     <div class="px"><b>${f1(r.x_now)}</b><small>xFPT${ii("xpts")}</small>${r.actual != null ? `<span class="h"><b class="${r.actual >= (r.x_now ?? 0) ? "up" : "down"}">${f1(r.actual)}</b> <small>points</small></span>` : ""}<span class="h">${f1(xf3(r))} <small>xFPT3</small></span></div>
     <div class="pm">${esc(tc(r.team))} · ${esc((r.position || "")[0] || "")}${r.price != null ? ` · <b>${f1(r.price)}cr</b>${chg(r.price_chg)}` : ""}${pop(r) ? ` · POP ${pop(r)}` : ""}${r.fpt_total != null ? ` · Σύνολο <b>${f1(r.fpt_total)}</b>` : ""} · ${gameOf(r)} ${matchup(r.pos_dev)}</div>
   </div>`).join("") + (rows.length > 150 ? `<p class="muted">…και ${rows.length - 150} ακόμα — στένεψε τα φίλτρα.</p>` : "");
-  const active = FILTERS.filter((id) => { const el = $("#" + id); return id === "fpos" ? posSel().length : el.type === "checkbox" ? el.checked : el.value; }).length;
+  const active = FILTERS.filter((id) => { const el = $("#" + id); return id === "fpos" ? !posAll() : el.type === "checkbox" ? el.checked : el.value; }).length;
   $("#fsum").textContent = active ? `Φίλτρα (${active} ενεργά)` : "Φίλτρα";
   $("#fsort").value = sortKey;
 }
@@ -1592,9 +1597,11 @@ setInterval(() => {
   FILTERS.forEach((id) => $("#" + id).addEventListener("input", renderPlayers));
   $("#fsearch").addEventListener("focus", (e) => searchToTop(e.target));
   $("#fsort").addEventListener("input", () => { sortKey = $("#fsort").value; sortDir = -1; renderPlayers(); });
+  // «Όλες»: click runs before the bubbling "input" that re-renders
+  $("#fposall").addEventListener("click", (e) => { posBoxes().forEach((i) => { i.checked = e.target.checked; }); });
   document.addEventListener("click", (e) => { const d = $("#fposdd"); if (d && d.open && !d.contains(e.target)) d.open = false; });
   $("#freset").onclick = () => {
-    FILTERS.forEach((id) => { const el = $("#" + id); if (id === "fpos") el.querySelectorAll("input").forEach((i) => { i.checked = false; }); else if (el.type === "checkbox") el.checked = false; else el.value = ""; });
+    FILTERS.forEach((id) => { const el = $("#" + id); if (id === "fpos") posBoxes().forEach((i) => { i.checked = true; }); else if (el.type === "checkbox") el.checked = false; else el.value = ""; });
     sortKey = "x_now"; sortDir = -1; renderPlayers();
   };
   renderPlayers();

@@ -34,6 +34,8 @@ test("filters: visible on PC, behind «Φίλτρα» on phones; search, positio
   await page.locator("#fsearch").fill("");
 
   await page.locator("#fpossum").click();
+  await expect(page.locator(`#fpos input[value="Center"]`)).toBeChecked();   // all ticked by default
+  await page.locator("#fposall").uncheck();                       // «Όλες» unticks them all
   await page.locator(`#fpos input[value="Center"]`).check();
   await page.locator("#fpossum").click();                         // closes the dropdown
   await expect(page.locator("#fcount")).not.toHaveText(new RegExp(`^${all} `));
@@ -87,6 +89,8 @@ test("a head coach's popup has upcoming games too", async ({ page }, testInfo) =
   await open(page, "public", { tab: "players" });
   if (isPhone(testInfo)) await page.locator("#fsum").click();
   await page.locator("#fpossum").click();
+  await expect(page.locator(`#fpos input[value="Head Coach"]`)).toBeChecked();   // all ticked by default
+  await page.locator("#fposall").uncheck();                       // «Όλες» unticks them all
   await page.locator(`#fpos input[value="Head Coach"]`).check();
   await page.locator("#fpossum").click();                         // closes the dropdown
   await rows(page, testInfo).first().click();
