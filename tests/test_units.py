@@ -334,3 +334,18 @@ def test_participation_leaves_out_an_absence_still_going_on_once_it_is_an_injury
     assert p["back"] == pytest.approx((2 + 5.7) / 8)             # 2 of 2: the 3-game run left out
     assert p["two_out"] == pytest.approx((3 + 5.7) / 11)         # a 2-game run: still «left out»
     assert p["never"] == pytest.approx(5.7 / 11)                 # never on a sheet: left out
+
+
+def test_news_names_in_greek_back_to_the_roster():
+    # the LLM wrote every name in Greek: the news' injuries and the columns' picks matched nobody
+    roster = ["LESSORT, MATHIAS", "WILLIS, DEREK", "JOKUBAITIS, ROKAS", "BINGHAM, MARCUS", "SMITH JR, NICK",
+              "PAPAGIANNIS, GEORGIOS", "HERNANGOMEZ, JUANCHO", "SHORTS, TJ"]
+    d = {"availability": [{"player": "ΓΟΥΙΛΙΣ, ΝΤΕΡΕΚ", "status": "out"}],
+         "expert": [{"player": p} for p in ["ΛΕΣΟΡ, ΜΑΘΙΑΣ", "ΓΟΚΟΥΜΠΑΙΤΙΣ, ΡΟΚΑΣ", "Marcus Bingham Jr.",
+                                              "ΕΡΝΑΝΓΚΟΜΕΘ, ΧΟΥΑΝΤΣΟ", "ΣΟΡΤΣ, ΤΙ ΤΖΕΙ", "Lessort, Mathias (PAN)",
+                                              "SMITH, JOHN", "ΠΑΠΑΔΟΠΟΥΛΟΣ, ΓΙΩΡΓΟΣ"]]}
+    out = news.resolve_names(d, roster)
+    assert out["availability"] == [{"player": "WILLIS, DEREK", "status": "out"}]
+    assert [e["player"] for e in out["expert"]] == ["LESSORT, MATHIAS", "JOKUBAITIS, ROKAS", "BINGHAM, MARCUS",
+                                                    "HERNANGOMEZ, JUANCHO", "SHORTS, TJ", "LESSORT, MATHIAS"]
+    assert news.resolve_names(None, roster) is None

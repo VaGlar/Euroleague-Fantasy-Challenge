@@ -729,7 +729,7 @@ function expertsHtml(list, track) {
   const srcs = [...by.keys()].sort((a, b) => (score[b] ?? -99) - (score[a] ?? -99));
   const li = (e) => { const r = findPlayer(e.player);
     return `<li${r ? ` data-pid="${esc(r.person_id)}"` : ""}><span class="ic">${STANCE_ICON[e.stance] || "•"}</span><div>
-      <b>${esc(nm(String(e.player).split(" (")[0]))}</b>${r ? ` <span class="muted">${esc(tc(r.team))} · ${esc((r.position || "")[0] || "")}${r.price != null ? " · " + f1(r.price) + "cr" : ""}${r.x_now != null ? " · xFPT " + f1(r.x_now) : ""}</span>${dol(r)}` : ""}
+      <b>${esc(nm(r ? r.name : String(e.player).split(" (")[0]))}</b>${r ? ` <span class="muted">${esc(tc(r.team))} · ${esc((r.position || "")[0] || "")}${r.price != null ? " · " + f1(r.price) + "cr" : ""}${r.x_now != null ? " · xFPT " + f1(r.x_now) : ""}</span>${dol(r)}` : ""}
       ${e.note ? `<div class="muted nt">${esc(e.note)}</div>` : ""}</div></li>`; };
   const block = (src, i) => { const es = by.get(src), sc = score[src];
     const head = `${esc(src)} <span class="muted">· ${es.length}${sc != null ? ` · ${sc >= 0 ? "+" : ""}${f1(sc)} vs μοντέλο` : ""}</span>`;

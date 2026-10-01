@@ -187,6 +187,40 @@ test.describe("public edition", () => {
     await expect(header(page)).toContainText("Trades 0/4");
   });
 
+  test("✕ as in the game: take players off, empty places, save only when full; cancel leaves the team as it was", async ({ page }) => {
+    await savedTeam(page);
+    await page.locator("#tmConfirm").click();
+    const before = await stored(page);
+    const first = page.locator(`${C} .court .chip[data-fid]`).first();
+    const outId = Number(await first.getAttribute("data-fid"));
+    await first.click();
+    await page.locator("#aOut").click();
+    await expect(page.locator("#team [data-fill]")).toHaveCount(1);
+    await expect(page.locator("#tmSellOk")).toBeDisabled();
+    await expect(page.locator("#tmSellOk")).toHaveText("Λείπουν 1");
+    expect(await stored(page)).toEqual(before);                         // nothing saved while a place is empty
+
+    await page.locator("#team [data-off]").first().click();             // a second one off
+    await expect(page.locator("#team [data-fill]")).toHaveCount(2);
+    await page.locator("#tmSellNo").click();                            // cancel: the team as it was
+    await expect(court(page)).toHaveCount(11);
+    expect(await stored(page)).toEqual(before);
+
+    await page.locator(`${C} .chip[data-fid="${outId}"]`).click();
+    await page.locator("#aOut").click();
+    await page.locator("#team [data-fill]").click();
+    const inId = Number(await page.locator("#tmList [data-n]").first().getAttribute("data-n"));
+    await page.locator("#tmList [data-n]").first().click();
+    await expect(page.locator("#tmSellOk")).toBeEnabled();
+    await page.locator("#tmSellOk").click();
+    await expect(court(page)).toHaveCount(11);
+    await expect(header(page)).toContainText("Trades 1/4");
+    const after = await stored(page);
+    expect(after.players.map((x) => x.id)).toContain(inId);
+    expect(after.players.map((x) => x.id)).not.toContain(outId);
+    expect(after.bank).toBeGreaterThanOrEqual(0);
+  });
+
   test("round under way: no trades proposed (next round's wait for it to end), only swaps and CAP", async ({ page }) => {
     await page.route(/predictions\.json/, async (route) => {
       const res = await route.fetch();

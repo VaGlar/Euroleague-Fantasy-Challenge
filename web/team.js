@@ -16,6 +16,9 @@
   const DAYS = ["Κυριακή", "Δευτέρα", "Τρίτη", "Τετάρτη", "Πέμπτη", "Παρασκευή", "Σάββατο"];
   let mode = null;          // null | "setup"
   let setup = null;         // {players: [{id, price}]} while setting up
+  // ✕ as in the game: players taken off before their replacements are picked. Only in memory, never saved:
+  // the saved team always has 11 (a refresh brings back the last full team). {out: [ids], picks: {outId: inId}}
+  let sell = null;
   let cache = { key: null, trs: null };
 
   // ------------------------------------------------------------ storage
@@ -488,6 +491,7 @@
         ${t.game ? "" : r.position !== "Head Coach" ? `<button class="tm-act" id="aCap" ${canCap ? "" : "disabled"}><span>★</span><div>Captain</div></button>
         <button class="tm-act" id="aSwap"><span>⇄</span><div>Substitute</div></button>` : ""}
         <button class="tm-act" id="aRep"><span>🔁</span><div>Trade</div></button>
+        ${t.game ? "" : `<button class="tm-act" id="aOut"><span>✕</span><div>Remove</div></button>`}
         ${t.game ? "" : `<button class="tm-act" id="aPrice"><span>✎</span><div>Correct price</div></button>`}
       </div>`);
     const on = (i, fn) => { const el = document.getElementById(i); if (el) el.onclick = fn; };
@@ -501,6 +505,7 @@
       document.querySelectorAll("#sheet [data-q]").forEach((b) => b.onclick = () => { if (swap(t, id, Number(b.dataset.q))) closePlayer(); });
     });
     on("aRep", () => replaceSheet(t, r));
+    on("aOut", () => { if (sellOut(t, id)) { closePlayer(); render(); } });
     on("aPrice", () => {
       sheet(`<div class="sh"><div><h2>Price αγοράς: ${esc(sur(r.name))}</h2><div class="muted">Όσο τον πλήρωσες στο παιχνίδι · σημερινό price ${f1(r.price)} cr</div></div>
           <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
@@ -550,6 +555,87 @@
         <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
       <input id="tmQ" class="tm-input" placeholder="Αναζήτηση ${NAME[r.position]}…" autocomplete="off"><div id="tmList"></div>`);
     draw(""); $("#tmQ").addEventListener("input", (e) => draw(e.target.value));
+  }
+
+  // ------------------------------------------------------------ ✕: take players off, then fill the empty places
+  const sellLeft = (t) => { const ti = P.trade_info || { max_trades: 4 }; return ti.max_trades > 4 ? Infinity : tradesLeft(t, ti); };
+  function sellOut(t, id) {
+    const out = sell ? sell.out : [];
+    if (out.includes(id)) return false;
+    if (out.length >= sellLeft(t)) { toast(sellLeft(t) ? `Σου μένουν ${sellLeft(t)} Trades` : "Δεν σου μένουν Trades"); return false; }
+    sell = { out: [...out, id], picks: sell ? sell.picks : {} };
+    return true;
+  }
+  // credits as the game shows them while players are off: the sold at today's price, the picked paid
+  function sellCredits(t) {
+    const sold = sell.out.reduce((a, id) => a + (Number(row(id)?.price ?? t.players.find((x) => x.id === id)?.price) || 0), 0);
+    const bought = Object.values(sell.picks).reduce((a, id) => a + (Number(row(id)?.price) || 0), 0);
+    return Math.round(((Number(t.bank) || 0) + sold - bought) * 10) / 10;
+  }
+  function sellView(t) {
+    const rows = rowsOf(t), roles = t.roles || {};
+    const empty = sell.out.filter((id) => sell.picks[id] == null).length;
+    const credits = sellCredits(t);
+    const place = (r) => {
+      if (!sell.out.includes(r.id)) return `<div class="chip tm-sellchip" data-off="${r.id}" role="button" tabindex="0" aria-label="✕ ${esc(nm(r.name))}">
+          <span class="tm-x" aria-hidden="true">✕</span><div class="ct"><span>${LETTER[r.position]}</span><span>${esc(tc(r.team))}</span></div>
+          <div class="cn">${esc(sur(r.name))}</div><div class="cp">${f1(r.price)}<small> cr</small></div></div>`;
+      const n = sell.picks[r.id] != null ? row(sell.picks[r.id]) : null;
+      return n ? `<div class="chip tm-sellchip tm-new" data-unpick="${r.id}" role="button" tabindex="0" aria-label="✕ ${esc(nm(n.name))}">
+          <span class="tm-x" aria-hidden="true">✕</span><div class="ct"><span>${LETTER[n.position]}</span><span>${esc(tc(n.team))}</span></div>
+          <div class="cn">${esc(sur(n.name))}</div><div class="cp">${f1(n.price)}<small> cr</small></div></div>`
+        : `<button class="tm-slot" data-fill="${r.id}"><b>+</b>${NAME[r.position]}<small>${esc(sur(r.name))} ${f1(r.price)}</small></button>`;
+    };
+    const by = (role) => rows.filter((r) => (role === "coach" ? r.position === "Head Coach" : roles[r.id] === role && r.position !== "Head Coach"));
+    const line = (pos) => by("5άδα").filter((r) => r.position === pos).map(place).join("");
+    const ok = !empty && credits >= -0.05;
+    return `<header class="tm-top"><div><h2 class="tm-h">Trades</h2>
+        <div class="muted">Πάτα ✕ σε όποιον φεύγει, μετά τις κενές θέσεις · ${sell.out.length} ${sell.out.length === 1 ? "Trade" : "Trades"}${sellLeft(t) < Infinity ? ` · μένουν ${sellLeft(t) - sell.out.length}` : ""}</div></div></header>
+      <div class="card tm-courtcard"><div class="tm-floor"><div class="court tm-setcourt"><div class="crow">${line("Center")}</div><div class="crow">${line("Forward")}</div><div class="crow">${line("Guard")}</div></div>
+        <div class="lanes"><div class="pair">
+          <div class="lane six"><h3>Sixth man</h3><div class="crow">${by("6ος").map(place).join("")}</div></div>
+          <div class="lane coach"><h3>Head Coach</h3><div class="crow">${by("coach").map(place).join("")}</div></div></div>
+          <div class="lane bench"><h3>Bench (50% FPT)</h3><div class="crow">${by("πάγκος").map(place).join("")}</div></div></div></div>
+        <div class="tm-money"><span>Credits <b class="${credits < -0.05 ? "tm-down" : ""}">${f1(credits)}</b> cr</span><span>${empty ? `${empty} ${empty === 1 ? "κενή θέση" : "κενές θέσεις"}` : "πλήρης ομάδα"}</span></div>
+        <button class="tm-primary" id="tmSellOk" ${ok ? "" : "disabled"}>${empty ? `Λείπουν ${empty}` : credits < -0.05 ? `Λείπουν ${f1(-credits)} cr` : "Αποθήκευση ➜"}</button>
+        <button class="linkbtn" id="tmSellNo" style="display:block;margin:6px auto 0">Άκυρο</button></div>`;
+  }
+  function fillSheet(t, outId, best) {
+    const r = rowsOf(t).find((x) => x.id === outId);
+    const taken = new Set([...t.players.map((x) => x.id), ...Object.values(sell.picks)]);
+    const max = sellCredits(t);   // this place is empty, its player's credits are in already
+    const list = P.players.filter((p) => p.position === r.position && p.fantasy_id != null && p.price != null
+        && p.price <= max + 1e-9 && !taken.has(p.fantasy_id))
+      .sort((a, b) => (b.x_h ?? 0) - (a.x_h ?? 0));
+    const gain = (p) => (p.x_h ?? 0) - (r.x_h ?? 0);
+    const draw = (q) => {
+      const k = key(q).trim();
+      $("#tmList").innerHTML = list.filter((p) => !k || key(p.name).includes(k)).slice(0, 40).map((p) => `<button class="tm-pick" data-n="${p.fantasy_id}">
+          <span><b>${esc(nm(p.name))}</b>${typeof newb === "function" ? newb(p, false) : ""}</span><span class="tm-pv"><b class="${gain(p) > 0 ? "tm-up" : "tm-down"}">${gain(p) > 0 ? "+" : "−"}${f1(Math.abs(gain(p)))}</b><small>xFPT3</small></span>
+          <span class="muted tm-pm">${esc(tc(p.team))} · ${f1(p.price)} cr · xFPT3 ${f1(xf3(p))} · μένουν ${f1(max - p.price)} cr</span></button>`).join("")
+        || `<p class="muted">${k ? `Κανένας ${NAME[r.position]} με αυτό το όνομα μέσα στα credits.` : `Κανένας ${NAME[r.position]} δεν χωράει στα credits: πάτα ✕ σε άλλον παίκτη.`}</p>`;
+      document.querySelectorAll("#tmList [data-n]").forEach((b) => b.onclick = () => {
+        sell.picks[outId] = Number(b.dataset.n); closePlayer(); render(best);
+      });
+    };
+    sheet(`<div class="sh"><div><h2>Στη θέση του ${esc(sur(r.name))}</h2><div class="muted">${NAME[r.position]} · ${list.length} χωράνε στα ${f1(max)} cr · το μεγαλύτερο κέρδος σε xFPT3 πρώτα</div></div>
+        <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
+      <input id="tmQ" class="tm-input" placeholder="Αναζήτηση ${NAME[r.position]}…" autocomplete="off"><div id="tmList"></div>`);
+    draw(""); $("#tmQ").addEventListener("input", (e) => draw(e.target.value));
+  }
+  function bindSell(t, best) {
+    const act = (el, fn) => { el.onclick = fn; el.onkeydown = (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fn(); } }; };
+    document.querySelectorAll("#team [data-off]").forEach((c) => act(c, () => { if (sellOut(t, Number(c.dataset.off))) render(best); }));
+    document.querySelectorAll("#team [data-unpick]").forEach((c) => act(c, () => { delete sell.picks[Number(c.dataset.unpick)]; render(best); }));
+    document.querySelectorAll("#team [data-fill]").forEach((b) => b.onclick = () => fillSheet(t, Number(b.dataset.fill), best));
+    $("#tmSellNo").onclick = () => { sell = null; render(best); };
+    $("#tmSellOk").onclick = () => {
+      if (sell.out.some((id) => sell.picks[id] == null) || sellCredits(t) < -0.05) return;
+      const n = sell.out.length;
+      for (const id of sell.out) { const p = row(sell.picks[id]); applyTrade(t, id, p.fantasy_id, p.price); }
+      sell = null; save(t); render(best); window.scrollTo({ top: 0 });
+      toast(`${n} ${n === 1 ? "Trade" : "Trades"} · υπόλοιπο ${f1(t.bank)} cr`);
+    };
   }
 
   // ------------------------------------------------------------ drag to swap (pointer events: touch + mouse)
@@ -812,6 +898,10 @@
       const res = ELFOPT.lineup(optRows(rowsOf(t), t, false));
       if (res) { t.roles = Object.fromEntries(res.team.map((p) => [p.id, p.role])); t.captain = res.team.find((p) => p.captain)?.id ?? null; t.confirmed = false; save(t); }
     }
+    if (sell && sell.out.every((id) => t.players.some((x) => x.id === id))) {
+      $("#team").innerHTML = sellView(t); sizeFloors(); bindSell(t, best); return;
+    }
+    sell = null;
     const pl = mainView(t, best), y = window.scrollY;
     $("#team").innerHTML = pl;
     if (Math.abs(window.scrollY - y) > 2) window.scrollTo({ top: y });   // a change doesn't throw you to the top
@@ -1051,6 +1141,11 @@
   .tm-slot b { display: block; font-size: 18px; color: var(--accent); }
   #team .chip { touch-action: none; user-select: none; -webkit-user-select: none; cursor: grab; transition: transform .15s ease; }
   #team .tm-setchip { touch-action: auto; cursor: pointer; }
+  #team .tm-sellchip { touch-action: auto; cursor: pointer; position: relative; }
+  .tm-sellchip .tm-x { position: absolute; top: -7px; right: -7px; width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center;
+    font-size: 11px; font-weight: 700; background: var(--surface-0); color: var(--text-primary); border: 1px solid var(--border); }
+  .tm-sellchip.tm-new { outline: 2px solid var(--good); outline-offset: -2px; }
+  .tm-slot small { display: block; font-size: 10px; color: var(--text-muted); font-weight: 400; margin-top: 2px; }
   .tm-lift { opacity: .35; }
   .tm-target { outline: 3px solid var(--series-1) !important; outline-offset: 2px; transform: scale(1.04); }
   .tm-ghost { position: fixed; z-index: 50; pointer-events: none; width: 104px; transform: translate(-50%, -60%) rotate(-3deg);
