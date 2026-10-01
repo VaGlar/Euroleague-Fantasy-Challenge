@@ -646,7 +646,7 @@
       <button id="mEdit">✏️ Αλλαγή ομάδας</button>
       <button id="mBank">💰 Διόρθωση credits</button>
       ${WIDE() ? "" : `<button id="mInstall">📱 Βάλ' το στην οθόνη σου</button>`}
-      <button id="mMail">✉️ Ιδέα/Πρόβλημα</button>
+      <button id="mMail">✉️ Επικοινωνία</button>
       <button id="mDel" class="tm-danger">🗑 Διαγραφή ομάδας</button></div>`;
     $("#mBackup").onclick = async () => {
       close();
@@ -840,7 +840,7 @@
   // PC: the side columns (coach, 6th, bench) start level with the top of the court; they are placed from the
   // row under the court, so they are lifted by the court's height (the centre circle stays where it is)
   function sizeFloors() {
-    document.querySelectorAll("#team .tm-floor").forEach((f) => {
+    document.querySelectorAll(".tm-floor").forEach((f) => {
       const c = f.querySelector(".court");
       if (c && c.offsetHeight) f.style.setProperty("--court-h", c.offsetHeight + "px");
     });
@@ -1075,5 +1075,5 @@
         bank: t.bank, name: t.game ? t.name : null, inRound: pl.inRound };
     } catch (e) { return null; }
   }
-  window.TEAM = { render, summary, encode, decode, KEY };
+  window.TEAM = { render, summary, encode, decode, KEY, sizeFloors };
 })();

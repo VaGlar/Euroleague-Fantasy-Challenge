@@ -87,7 +87,9 @@ select, input { font: inherit; padding: 6px 8px; border-radius: 8px; border: 1px
   background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px; padding: 6px 10px; box-shadow: 0 6px 20px rgba(0,0,0,.12); }
 .posmenu .chk { padding: 6px 0; white-space: nowrap; }
 .linkbtn { border: 0; background: none; color: var(--series-1); font: inherit; cursor: pointer; padding: 6px 4px; }
-#fcount { font-size: 13px; margin: -4px 0 8px; }
+#fcount { font-size: 13px; }
+.fcountrow { display: flex; align-items: center; gap: 10px; margin: -4px 0 8px; }
+.fcountrow .linkbtn { padding: 2px 4px; font-size: 13px; }
 .tablewrap { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; font-size: 14px; }
 th, td { text-align: left; padding: 6px 6px; border-bottom: 1px solid var(--border); white-space: nowrap; }
@@ -282,6 +284,18 @@ ul.news li { padding: 8px 0; border-bottom: 1px solid var(--border); }
 @media (min-width: 760px) { .td-grid { grid-template-columns: 1fr 1fr; align-items: start; } .td-grid .wide { grid-column: 1 / -1; } }
 .td-grid .card { margin-bottom: 0; }
 @media (max-width: 759px) { .td-grid .td-avail { order: 1; } .td-grid .td-avail ~ .card { order: 2; } .td-grid .td-avail ~ .td-best { order: 0; } }
+.cmp-add { position: relative; margin: 0 0 10px; }
+.cmp-add input { width: 100%; box-sizing: border-box; }
+.cmp-res { list-style: none; margin: 0; padding: 0; position: absolute; z-index: 5; left: 0; right: 0; background: var(--surface-1);
+  border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 6px 20px rgba(0,0,0,.12); }
+.cmp-res:empty { display: none; }
+.cmp-res li { padding: 8px 10px; cursor: pointer; border-bottom: 1px solid var(--border); } .cmp-res li:last-child { border-bottom: 0; }
+.xp { list-style: none; margin: 4px 0 8px; padding: 0; }
+.xp li { display: flex; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--border); }
+.xp li[data-pid] { cursor: pointer; }
+.xp .ic { width: 18px; flex: none; text-align: center; } .xp .nt { font-size: 12px; margin-top: 1px; }
+.xp-src { border-top: 1px solid var(--border); padding: 8px 0 0; margin-top: 6px; }
+.xp-src summary { cursor: pointer; font-weight: 600; font-size: 14px; }
 .td-more summary { cursor: pointer; color: var(--series-1); font-size: 13px; padding: 6px 0 0; list-style: none; }
 .td-more summary::-webkit-details-marker { display: none; }
 .note-early { display: flex; align-items: center; gap: 8px; padding-top: 10px; padding-bottom: 10px; }
@@ -414,13 +428,12 @@ body > header nav button.on { color: var(--bar-fg); border-color: var(--bar-line
       <span class="range">Price <input id="fpmin" type="text" inputmode="decimal" autocomplete="off" placeholder="από">
         – <input id="fpmax" type="text" inputmode="decimal" autocomplete="off" placeholder="έως"></span>
       <label class="chk"><input id="fhealthy" type="checkbox"> Χωρίς τραυματίες</label>
-      <button id="freset" class="linkbtn" type="button">Καθαρισμός</button>
     </div></details>
     <div class="filters" id="fsortwrap"><label class="chk">Ταξινόμηση <select id="fsort">
       <option value="x_now">xFPT</option><option value="actual">Points (Round)</option><option value="x3">xFPT3</option><option value="fpt_total">Points σεζόν</option><option value="value">Value</option>
       <option value="price">Price</option><option value="price_chg">Άνοδος price</option><option value="price_last_chg">Τελευταία αλλαγή price</option><option value="popularity">POP (πόσοι τον έχουν)</option><option value="pos_dev">Ματσάρισμα</option><option value="season_pir">PIR φέτος</option>
     </select></label></div>
-    <div class="muted" id="fcount"></div>
+    <div class="fcountrow"><span class="muted" id="fcount"></span><button id="freset" class="linkbtn" type="button">Clear</button></div>
     <div class="card tablewrap"><table id="ptable"></table></div>
     <div class="plist" id="plist"></div>
     <p class="muted">xFPT: αναμενόμενα points του Round (PIR +10% αν κερδίσει η ομάδα· coach: βαθμολογία από τη διαφορά σκορ). xFPT3: άθροισμα xFPT των επόμενων 3 αγώνων του. Σύνολο: τα points του φέτος.
@@ -433,7 +446,7 @@ body > header nav button.on { color: var(--bar-fg); border-color: var(--bar-line
   <section id="compare"></section>
   <section id="model"></section>
 </main>
-<footer id="feedback" class="fb" hidden>💬 Ιδέες, προβλήματα ή ό,τι σκέψη έχεις; Γράψε μας στο
+<footer id="feedback" class="fb" hidden>💬 Επικοινωνία:
   <a href="mailto:euroleaguefantasy26@gmail.com?subject=HoopsLab%20beta">euroleaguefantasy26@gmail.com</a>
   <button class="fbcopy" type="button" onclick="copyMail(this)">📋 Αντιγραφή</button></footer>
 <nav class="bnav" id="bnav" aria-label="Κύρια πλοήγηση">
@@ -541,6 +554,7 @@ function showTab(t) {
     b.dataset.t === t || (b.dataset.t === "more" && MORE_TABS.some((m) => m[0] === t))));
   if (t === "compare" && P) renderCompare();
   if (t === "today" && P) renderToday();
+  if (window.TEAM && TEAM.sizeFloors) TEAM.sizeFloors();          // courts on a shown tab: side columns from the top
   $("#cmpbar").classList.toggle("on", CMP.length > 0 && t === "players");
   if (changed && window.scrollY > 0) window.scrollTo({ top: 0 });
   try { localStorage.setItem("tab", t); } catch (e) {}
@@ -700,6 +714,32 @@ function courtView(list, ref) {
     <div class="lanes"><div class="pair">${lane("six", "Sixth man", by("6ος"))}${lane("coach", "Head Coach", by("coach"))}</div>
       ${lane("bench", "Bench (50% FPT)", by("πάγκος").sort((a, b) => (b.x_now ?? 0) - (a.x_now ?? 0)))}</div></div>`;
 }
+// «Νέα»: the columns' picks grouped by column, the one whose picks did best (tab «Μοντέλο») first and open,
+// the others folded; per player 👍 / ★ / 👎, the note on a second line
+const STANCE_ICON = { pick: "👍", captain: "★", avoid: "👎" };
+function expertsHtml(list, track) {
+  const score = Object.fromEntries(track.map((e) => [e.source, e.diff]));
+  const by = new Map();
+  for (const e of list) { if (!by.has(e.source)) by.set(e.source, []); by.get(e.source).push(e); }
+  const srcs = [...by.keys()].sort((a, b) => (score[b] ?? -99) - (score[a] ?? -99));
+  const li = (e) => { const r = findPlayer(e.player);
+    return `<li${r ? ` data-pid="${esc(r.person_id)}"` : ""}><span class="ic">${STANCE_ICON[e.stance] || "•"}</span><div>
+      <b>${esc(nm(String(e.player).split(" (")[0]))}</b>${r ? ` <span class="muted">${esc(tc(r.team))} · ${esc((r.position || "")[0] || "")}${r.price != null ? " · " + f1(r.price) + "cr" : ""}${r.x_now != null ? " · xFPT " + f1(r.x_now) : ""}</span>${dol(r)}` : ""}
+      ${e.note ? `<div class="muted nt">${esc(e.note)}</div>` : ""}</div></li>`; };
+  const block = (src, i) => { const es = by.get(src), sc = score[src];
+    const head = `${esc(src)} <span class="muted">· ${es.length}${sc != null ? ` · ${sc >= 0 ? "+" : ""}${f1(sc)} vs μοντέλο` : ""}</span>`;
+    const ul = (xs) => `<ul class="xp">${xs.map(li).join("")}</ul>`;
+    return i === 0
+      ? `<h3>${head}</h3>${ul(es.slice(0, 6))}${es.length > 6 ? `<details class="td-more"><summary>+${es.length - 6} ακόμα</summary>${ul(es.slice(6))}</details>` : ""}`
+      : `<details class="xp-src"><summary>${head}</summary>${ul(es)}</details>`; };
+  return `<div class="card"><h2>Ειδικοί ${track.length ? `<small class="muted">πρώτη η στήλη με τις καλύτερες προτάσεις ως τώρα</small>` : ""}</h2>${srcs.map(block).join("")}</div>`;
+}
+function articlesHtml(arts) {
+  const li = (a) => `<li><a href="${esc(a.url)}" target="_blank" rel="noopener">${esc(a.title)}</a><br><span class="muted">${esc(a.source)} · ${a.date ? new Date(a.date).toLocaleString("el-GR") : ""}</span></li>`;
+  const fan = arts.filter((a) => a.fantasy), rest = arts.filter((a) => !a.fantasy).slice(0, 60);
+  return `<div class="card"><h2>Άρθρα fantasy</h2>${fan.length ? `<ul class="news">${fan.map(li).join("")}</ul>` : `<p class="muted">Κανένα αυτή τη στιγμή.</p>`}
+    ${rest.length ? `<details class="td-more"><summary>Όλα τα άρθρα (${rest.length})</summary><ul class="news">${rest.map(li).join("")}</ul></details>` : ""}</div>`;
+}
 // «Η ομάδα μου»: web/team.js draws it for both editions
 function renderTeam(my, best) { if (window.TEAM) TEAM.render(best); }
 
@@ -843,14 +883,25 @@ document.addEventListener("change", (e) => {
 async function renderCompare() {
   const box = $("#compare");
   const rows = CMP.map((id) => P.players.find((x) => x.person_id === id)).filter(Boolean);
+  // add a player right here: type a few letters of the name
+  const add = CMP.length < CMP_MAX ? `<div class="cmp-add"><input id="cmpSearch" placeholder="Πρόσθεσε παίκτη: γράψε όνομα" autocomplete="off">
+    <ul class="cmp-res" id="cmpRes"></ul></div>` : "";
   if (rows.length < 2) {
-    box.innerHTML = `<div class="card"><h2>Σύγκριση head-to-head</h2><p>Διάλεξε ${rows.length ? "ακόμα έναν" : "2 έως 4"} παίκτες με το ☐ στο tab «Παίκτες».</p>
+    box.innerHTML = `<div class="card"><h2>Σύγκριση head-to-head</h2>${add}<p class="muted">Ή διάλεξε με το ☐ στο tab «Παίκτες» (2 έως 4).</p>
       ${rows.length ? `<p>Επιλεγμένος: <b>${esc(nm(rows[0].name))}</b>
         <button class="linkbtn" type="button" id="cmpClear" onclick="setCmp([])">✕ αφαίρεση</button></p>` : ""}</div>`;
-    return;
+  } else {
+    box.innerHTML = `<div class="card"><h2>Σύγκριση head-to-head</h2>${add}
+      <p class="muted">Πράσινο = καλύτερη τιμή της γραμμής. Πάτα το όνομα για την καρτέλα του παίκτη.</p>${await compareTable(rows, true)}</div>`;
   }
-  box.innerHTML = `<div class="card"><h2>Σύγκριση head-to-head</h2>
-    <p class="muted">Πράσινο = καλύτερη τιμή της γραμμής. Πάτα το όνομα για την καρτέλα του παίκτη.</p>${await compareTable(rows, true)}</div>`;
+  const inp = $("#cmpSearch");
+  if (!inp) return;
+  inp.oninput = () => {
+    const q = inp.value.trim().toLowerCase();
+    const hits = q.length < 2 ? [] : P.players.filter((x) => !CMP.includes(x.person_id) && String(x.name).toLowerCase().includes(q)).slice(0, 8);
+    $("#cmpRes").innerHTML = hits.map((x) => `<li data-add="${esc(x.person_id)}"><b>${esc(nm(x.name))}</b> <span class="muted">${esc(tc(x.team))} · ${esc((x.position || "")[0] || "")}${x.price != null ? " · " + f1(x.price) + "cr" : ""}</span></li>`).join("");
+    $("#cmpRes").querySelectorAll("[data-add]").forEach((li) => li.onclick = () => setCmp([...CMP, li.dataset.add]));
+  };
 }
 // the head-to-head table (tab «Σύγκριση» and a proposed trade in «Η ομάδα μου»); removable: the ✕ per column
 async function compareTable(rows, removable = false) {
@@ -1255,7 +1306,7 @@ function autopilotCard(ap) {
     h += `<p><b>Για το Round ${cur.round}</b>: ${cur.trades ? `${cur.trades} ${cur.trades === 1 ? "Trade" : "Trades"}` : "κανένα Trade"}
       · υπόλοιπο ${f1(cur.bank)} cr · xFPT ${f1(cur.x_total)}${cur.pts != null ? ` · <b>points ${f1(cur.pts)}</b>`
         : playedN ? ` · <b>μέχρι τώρα ${f1(soFar)}</b> <span class="muted">(${playedN} από ${list.length} έπαιξαν)</span>` : ""}</p>
-      <p class="muted" style="margin-top:-6px">Στο γήπεδο τα points όπως μετράνε: Captain ×2, Bench ×0,5.</p>${courtView(list, moved.size ? ref : null)}
+      <p class="muted" style="margin-top:-6px">Στο γήπεδο τα points όπως μετράνε: Captain ×2, Bench ×0,5.</p><div class="tm-sideline">${courtView(list, moved.size ? ref : null)}</div>
       ${moves.map(([t, m]) => `<p class="muted">Πριν το T${t}: ${m.in.length ? `μπήκαν ${m.in.map(name).join(", ")} — βγήκαν ${m.out.map(name).join(", ")}` : "ίδιο Starting five"}${
         m.captain ? ` · Captain ο ${name(m.captain)}` : ""}.</p>`).join("")}`;
   }
@@ -1561,11 +1612,9 @@ setInterval(() => {
 
   const d = nw?.digest;
   $("#news").innerHTML = (d ? `<div class="card"><h2>Σύνοψη (AI)</h2><div class="msg">${esc(d.summary_el)}</div></div>`
-    + (d.expert?.length ? `<div class="card"><h2>Ειδικοί</h2>${d.expert.map((e) => { const r = findPlayer(e.player);
-        const info = r ? ` <span class="muted">${esc(tc(r.team))} · ${esc((r.position || "")[0] || "")}${r.price != null ? " · " + f1(r.price) + "cr" : ""}${r.x_now != null ? " · xFPT " + f1(r.x_now) : ""}</span>${dol(r)}` : "";
-        return `• <b>${esc(nm(String(e.player).split(" (")[0]))}</b>${info} — ${esc(STANCE[e.stance] || e.stance)}: ${esc(e.note || "")} <span class="muted">(${esc(e.source)})</span>`; }).join("<br>")}</div>` : "") : "")
-    + `<div class="card"><h2>Άρθρα</h2><ul class="news">${(nw?.articles || []).slice(0, 60).map((a) =>
-      `<li><a href="${esc(a.url)}" target="_blank" rel="noopener">${esc(a.title)}</a><br><span class="muted">${esc(a.source)} · ${a.date ? new Date(a.date).toLocaleString("el-GR") : ""}</span></li>`).join("")}</ul></div>`;
+    + (d.expert?.length ? expertsHtml(d.expert, trk?.experts || []) : "") : "")
+    + articlesHtml(nw?.articles || []);
+  $("#news").querySelectorAll("[data-pid]").forEach((el) => el.onclick = () => openPlayer(el.dataset.pid));
 
   renderModel(mp, trk, ap);
 })();
