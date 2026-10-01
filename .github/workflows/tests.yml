@@ -1,17 +1,16 @@
 name: Tests
 
 on:
-  # A PR is tested as it would be merged (its branch + the current main), so a clash between two
-  # changes shows up before it reaches main (= live). main itself is tested again after each merge.
-  # A branch without a PR isn't tested on push (open the PR early, as a draft, to get CI on it).
-  push:
-    branches: [main]
-    paths-ignore: ["data/**"]   # the bot's data commits don't change code
+  # A PR is tested as it would be merged (its branch + the current main), so what reaches main
+  # (= live) has already been tested; PRs are merged one at a time, so there is no second run after
+  # the merge. Two PRs open at once: GitHub's «Require branches to be up to date before merging»
+  # makes the second one re-test on the new main. A branch without a PR isn't tested on push
+  # (open the PR early, as a draft, to get CI on it); workflow_dispatch runs any branch by hand.
   pull_request:
   workflow_dispatch:
 
 # Several pushes to a PR in a row: only the newest is tested, the older runs are cancelled (they
-# cost Actions minutes and their result no longer matters). Runs on main are never cancelled.
+# cost Actions minutes and their result no longer matters).
 concurrency:
   group: tests-${{ github.event.pull_request.number || github.sha }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
@@ -46,7 +45,7 @@ jobs:
   changes:
     # Does this change reach the dashboard? The UI tests use frozen fixtures, so only web/,
     # tests/ui/ and what builds the public edition (elf/publish.py) can break them.
-    # Decided for PRs only; main and manual runs always run it.
+    # Decided for PRs; manual runs always run it.
     runs-on: ubuntu-latest
     outputs:
       ui: ${{ steps.diff.outputs.ui }}
