@@ -142,3 +142,21 @@ def test_transfers_keep_the_per_club_limit():
         cases.append({"kind": "transfers", "squad": sq, "pool": pool, "bank": 5.0, "maxTrades": 4, "minGain": 2.0})
     for j in js(cases):
         assert sum(q.get("team") == "PAN" for q in j["squad"]) <= optimize.MAX_PER_CLUB
+
+
+def test_a_cheap_zero_is_sold_even_when_the_best_at_his_position_are_all_dear():
+    """Dessert (5.3, 0 xFPT, not on the roster) wasn't sold: the 16 best Centers by xFPT all cost 8.5+,
+    so the candidates had nothing he could be swapped for. The best per credit are candidates too."""
+    rnd = random.Random(11)
+    sq = rand_squad(rnd, 1)
+    centers = [q for q in sq if q["position"] == "Center"]
+    centers[0].update(x_now=0.0, x_h=0.0, price=5.3)
+    pool = [player(5000 + i, "Center", 20 + i * 0.1, 1, price=12 + i * 0.1) for i in range(20)]
+    for q in pool:
+        q["x_h"] = q["x_now"] * 2
+    pool += [player(6000 + i, "Center", 6, 1, price=5.0) for i in range(3)]
+    for q in pool[-3:]:
+        q["x_h"] = 18.0                          # 3.6 per credit: among the best per credit
+    bank = 0.0
+    j = js([{"kind": "transfers", "squad": sq, "pool": pool, "bank": bank, "maxTrades": 4, "minGain": 2.0}])[0]
+    assert centers[0]["id"] not in {q["id"] for q in j["squad"]}
