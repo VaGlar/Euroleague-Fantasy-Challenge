@@ -315,7 +315,7 @@
      "name": "VALANCIUNAS, JONAS",
      "team": "ZAL",
      "role": "5άδα",
-     "captain": true,
+     "captain": false,
      "x_now": 22.6
     },
     {
@@ -326,7 +326,7 @@
      "name": "JONES, CARLIK",
      "team": "PAR",
      "role": "5άδα",
-     "captain": false,
+     "captain": true,
      "x_now": 20.5
     },
     {
@@ -347,7 +347,7 @@
      "person_id": "003958",
      "name": "THIEMANN, JOHANNES",
      "team": "MUN",
-     "role": "6ος",
+     "role": "5άδα",
      "captain": false,
      "x_now": 13.8
     },
@@ -369,7 +369,7 @@
      "person_id": "008084",
      "name": "MANTZOUKAS, ELEFTHERIOS",
      "team": "PAN",
-     "role": "πάγκος",
+     "role": "6ος",
      "captain": false,
      "x_now": 12.6
     },
@@ -424,18 +424,30 @@
      "person_id": "001844",
      "name": "HACKETT, DANIEL",
      "team": "VIR",
-     "role": "5άδα",
+     "role": "πάγκος",
      "captain": false,
      "x_now": 1.4
     }
    ],
    "x_total": 136.4,
-   "decided_at": "2026-10-01T14:41+00:00"
+   "decided_at": "2026-10-01T14:41+00:00",
+   "moves": {
+    "2": {
+     "in": [
+      4061
+     ],
+     "out": [
+      3886
+     ],
+     "captain": 3791,
+     "at": "2026-10-01T22:08+00:00"
+    }
+   }
   },
   {
    "round": 4,
-   "trades": 3,
-   "bank": 0.5,
+   "trades": 4,
+   "bank": 0.9,
    "squad": [
     {
      "id": 3903,
@@ -446,7 +458,18 @@
      "team": "HTA",
      "role": "5άδα",
      "captain": true,
-     "x_now": 24.9
+     "x_now": 25.0
+    },
+    {
+     "id": 3791,
+     "price": 15.0,
+     "position": "Guard",
+     "person_id": "013369",
+     "name": "JONES, CARLIK",
+     "team": "PAR",
+     "role": "6ος",
+     "captain": false,
+     "x_now": 21.4
     },
     {
      "id": 11549,
@@ -457,18 +480,7 @@
      "team": "ZAL",
      "role": "5άδα",
      "captain": false,
-     "x_now": 22.6
-    },
-    {
-     "id": 3791,
-     "price": 15.0,
-     "position": "Guard",
-     "person_id": "013369",
-     "name": "JONES, CARLIK",
-     "team": "PAR",
-     "role": "5άδα",
-     "captain": false,
-     "x_now": 20.6
+     "x_now": 19.9
     },
     {
      "id": 3850,
@@ -479,18 +491,18 @@
      "team": "MAD",
      "role": "5άδα",
      "captain": false,
-     "x_now": 16.1
+     "x_now": 16.2
     },
     {
-     "id": 11504,
-     "price": 10.9,
+     "id": 7424,
+     "price": 7.2,
      "position": "Center",
-     "person_id": "003958",
-     "name": "THIEMANN, JOHANNES",
-     "team": "MUN",
-     "role": "6ος",
+     "person_id": "014108",
+     "name": "DIARRA, ALIOU",
+     "team": "VIR",
+     "role": "5άδα",
      "captain": false,
-     "x_now": 13.8
+     "x_now": 13.3
     },
     {
      "id": 4061,
@@ -499,9 +511,20 @@
      "person_id": "008084",
      "name": "MANTZOUKAS, ELEFTHERIOS",
      "team": "PAN",
-     "role": "5άδα",
+     "role": "πάγκος",
      "captain": false,
      "x_now": 12.6
+    },
+    {
+     "id": 3948,
+     "price": 7.5,
+     "position": "Forward",
+     "person_id": "012731",
+     "name": "NDIAYE, MBAYE",
+     "team": "OLY",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 11.4
     },
     {
      "id": 4255,
@@ -523,18 +546,7 @@
      "team": "ASV",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 6.1
-    },
-    {
-     "id": 3986,
-     "price": 4.2,
-     "position": "Forward",
-     "person_id": "001557",
-     "name": "GIFFEY, NIELS",
-     "team": "MUN",
-     "role": "πάγκος",
-     "captain": false,
-     "x_now": 3.4
+     "x_now": 6.2
     },
     {
      "id": 4012,
@@ -559,8 +571,8 @@
      "x_now": 2.3
     }
    ],
-   "x_total": 152.7,
-   "decided_at": "2026-10-01T19:27+00:00"
+   "x_total": 154.5,
+   "decided_at": "2026-10-01T22:08+00:00"
   }
  ],
  "seed_id": "5a453a755a9b",
@@ -571,5 +583,5 @@
   "raw": 184.8,
   "avg_raw": 115.9
  },
- "generated": "2026-10-01T19:27:52.144330+00:00"
+ "generated": "2026-10-01T22:08:22.387792+00:00"
 }
