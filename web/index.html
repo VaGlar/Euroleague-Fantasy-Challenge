@@ -280,6 +280,11 @@ ul.news li { padding: 8px 0; border-bottom: 1px solid var(--border); }
 .td-grid { display: grid; gap: 12px; }
 @media (min-width: 760px) { .td-grid { grid-template-columns: 1fr 1fr; align-items: start; } .td-grid .wide { grid-column: 1 / -1; } }
 .td-grid .card { margin-bottom: 0; }
+@media (max-width: 759px) { .td-grid .td-avail { order: 1; } .td-grid .td-avail ~ .card { order: 2; } .td-grid .td-avail ~ .td-best { order: 0; } }
+.td-more summary { cursor: pointer; color: var(--series-1); font-size: 13px; padding: 6px 0 0; list-style: none; }
+.td-more summary::-webkit-details-marker { display: none; }
+.note-early { display: flex; align-items: center; gap: 8px; padding-top: 10px; padding-bottom: 10px; }
+.note-early .x { margin-left: auto; }
 .td-team { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
 .td-btn { border: 0; border-radius: 999px; padding: 9px 16px; font: inherit; font-weight: 700; cursor: pointer; background: var(--text-primary); color: var(--surface-1); white-space: nowrap; }
 .td-list { list-style: none; margin: 0; padding: 0; }
@@ -1382,7 +1387,7 @@ function nextUpdate(now = Date.now()) {
 function freshness() {
   if (!P) return;
   const nx = nextUpdate(), a = ago(Date.now() - new Date(P.generated).getTime());
-  $("#updated").textContent = `Ενημερώθηκε ${a} · επόμενη ${dayWord(nx)} ${athensHM(nx)}` + (P.fantasy_ok ? "" : " · χωρίς prices fantasy");
+  $("#updated").textContent = `Ενημερώθηκε ${a} · επόμενη ενημέρωση ${dayWord(nx)} ${athensHM(nx)}` + (P.fantasy_ok ? "" : " · χωρίς prices fantasy");
 }
 function roundState(now = Date.now()) {
   const ts = (P.turns || []).map((t) => ({ t, start: athensMs(t.date, t.first_tip) })).sort((a, b) => a.start - b.start);
@@ -1413,9 +1418,11 @@ function renderToday() {
 
   // start of the season: predictions for players new to the EuroLeague rest on one or two games (R&D 015)
   const fewN = P.players.filter(fewGames).length;
-  const early = P.round <= 5 && fewN ? `<div class="card wide note-early">🆕 <b>Αρχή σεζόν.</b> Για ${fewN} παίκτες νέους στη EuroLeague η πρόβλεψη
-    στηρίζεται σε 1–${Math.max(...P.players.filter(fewGames).map((r) => r.games))} ματς (σήμα «νέος» ${ii("few")}): ένα καλό ματς δεν είναι επίπεδο.
-    Το μοντέλο κρίνεται σε 5–10 Rounds, όχι σε ένα.</div>` : "";
+  let earlyOff = false;
+  try { earlyOff = localStorage.getItem("earlyOff") === "1"; } catch (e) {}
+  const early = P.round <= 5 && fewN && !earlyOff ? `<div class="card wide note-early"><span>🆕 <b>Αρχή σεζόν:</b> ${fewN} νέοι παίκτες με 1–${
+    Math.max(...P.players.filter(fewGames).map((r) => r.games))} ματς ${ii("few")}</span>
+    <button class="x" id="earlyOff" type="button" aria-label="Κλείσιμο">×</button></div>` : "";
 
   // my team
   const sm = window.TEAM && TEAM.summary ? TEAM.summary() : null;
@@ -1438,11 +1445,19 @@ function renderToday() {
     e.note = a.note || ""; e.status = a.status; out.set(r.person_id, e);
   }
   const SL = { out: "εκτός (νέα)", doubtful: "αμφίβολος (νέα)", questionable: "αμφίβολος (νέα)" };
+  // the most valuable first (the ones that matter for a squad); on the right what he misses, not a number
   const avail = [...out.values()].sort((a, b) => (xf3(b.r) ?? 0) - (xf3(a.r) ?? 0)).slice(0, 8);
-  const availHtml = avail.length ? `<ul class="td-list">${avail.map(({ r, note, status }) => `<li data-pid="${esc(r.person_id)}">
-      <span class="n">${esc(nm(r.name))}${avb(r) || (status ? ` <span class="av ${status === "out" ? "out" : "q"}" data-info="avail">${SL[status] || status}</span>` : "")}</span>
-      <span class="v"><b>${f1(xf3(r))}</b><small>xFPT3</small></span>
-      <span class="m">${esc(tc(r.team))} · ${esc((r.position || "")[0] || "")}${note ? ` · ${esc(note)}` : ""}</span></li>`).join("")}</ul>`
+  const misses = ({ r, status }) => {
+    const rnd = r.actual != null && r.next_round ? r.next_round : P.round;
+    const sure = status === "out" || (r.avail_game != null && r.avail_game <= 0);
+    return `${sure ? "χάνει" : "αμφίβολος"} R${rnd}`;
+  };
+  const availLi = (e) => `<li data-pid="${esc(e.r.person_id)}">
+      <span class="n">${esc(nm(e.r.name))}${avb(e.r) || (e.status ? ` <span class="av ${e.status === "out" ? "out" : "q"}" data-info="avail">${SL[e.status] || e.status}</span>` : "")}</span>
+      <span class="v"><small>${misses(e)}</small></span>
+      <span class="m">${esc(tc(e.r.team))} · ${esc((e.r.position || "")[0] || "")}${e.note ? ` · ${esc(e.note)}` : ""}</span></li>`;
+  const availHtml = avail.length ? `<ul class="td-list">${avail.slice(0, 3).map(availLi).join("")}</ul>${avail.length > 3
+      ? `<details class="td-more"><summary>+${avail.length - 3} ακόμα</summary><ul class="td-list">${avail.slice(3).map(availLi).join("")}</ul></details>` : ""}`
     : `<p class="muted" style="margin:0">Κανένας γνωστός τραυματίας ή αμφίβολος.</p>`;
 
   // captain
@@ -1460,13 +1475,15 @@ function renderToday() {
 
   const health = (P.health || []).length ? `<div class="card warn wide"><h2>⚠️ Κατάσταση</h2>${P.health.map(esc).join("<br>")}</div>` : "";
   $("#today").innerHTML = `<div class="td-grid">${health}
-    <div class="card wide">${heroHtml()}</div>${early}
-    <div class="card wide"><h2>${P.edition === "public" ? "Η ομάδα μου" : esc(P.my_team?.name || "Η ομάδα μου")}</h2>${team}</div>
-    <div class="card"><h2>Τραυματίες & αμφίβολοι ${ii("avail")}</h2>${availHtml}</div>
+    <div class="card">${heroHtml()}</div>
+    <div class="card"><h2>${P.edition === "public" ? "Η ομάδα μου" : esc(P.my_team?.name || "Η ομάδα μου")}</h2>${team}</div>${early}
     <div class="card"><h2>Για CAP ${ii("xpts")}</h2><ul class="td-list">${caps.map((r) => li(r, [r.x_now, "xFPT"], where(r))).join("")}</ul></div>
-    <div class="card wide"><h2>Καλύτερες επιλογές ανά price ${ii("xpts3")}</h2><div class="td-tiers">${tierHtml}</div></div>
-    ${movesHtml(court)}
-    <div class="card wide"><h2>Αγώνες του Round</h2>${games}</div></div>`;
+    <div class="card td-avail"><h2>Τραυματίες & αμφίβολοι ${ii("avail")}</h2>${availHtml}</div>
+    <div class="card wide td-best"><h2>Καλύτερες επιλογές ανά price ${ii("xpts3")}</h2><div class="td-tiers">${tierHtml}</div></div>
+    <div class="card wide"><h2>Αγώνες του Round</h2>${games}</div>
+    ${movesHtml(court)}</div>`;
+  const eo = $("#earlyOff");
+  if (eo) eo.onclick = () => { try { localStorage.setItem("earlyOff", "1"); } catch (e) {} renderToday(); };
   $("#today").querySelectorAll("[data-tab]").forEach((b) => b.onclick = () => showTab(b.dataset.tab));
 }
 function movesHtml(court) {
@@ -1474,7 +1491,7 @@ function movesHtml(court) {
   if (!mv.length) return "";
   const row = (r) => `<li data-pid="${esc(r.person_id)}"><span class="n">${esc(nm(r.name))}${avb(r)}</span>
       <span class="v"><b>${f1(r.price)}</b><small>cr${chg(r.price_last_chg)}</small></span>
-      <span class="m">${esc(tc(r.team))} · ${esc((r.position || "")[0] || "")} · από την αρχή${chg(r.price_chg) || " 0.0"}</span></li>`;
+      <span class="m">${esc(tc(r.team))} · ${esc((r.position || "")[0] || "")} · σεζόν${chg(r.price_chg) || " 0.0"}</span></li>`;
   const up = mv.filter((r) => r.price_last_chg > 0).sort((a, b) => b.price_last_chg - a.price_last_chg).slice(0, 3);
   const dn = mv.filter((r) => r.price_last_chg < 0).sort((a, b) => a.price_last_chg - b.price_last_chg).slice(0, 3);
   return `<div class="card wide"><h2>Price changes · τελευταίο Round ${ii("pchg")}</h2><div class="td-tiers" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr))">
