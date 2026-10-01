@@ -319,8 +319,10 @@ test.describe("public edition", () => {
   test("drag a bench player onto a starter swaps them", async ({ page }, testInfo) => {
     test.skip(isPhone(testInfo), "touch drag is covered by the player sheet's «Αλλαγή θέσης»");
     await savedTeam(page);
+    // a starter of the bench player's position, so the five keeps its G/F/C whatever the proposal was
     const bench = page.locator(`${C} .lane.bench .chip[data-fid]`).first();
-    const starter = page.locator(`${C} .court .chip[data-fid]`).first();
+    const pos = (await bench.locator(".ct span").first().innerText()).trim();
+    const starter = page.locator(`${C} .court .chip[data-fid]`).filter({ has: page.locator(".ct span", { hasText: new RegExp(`^${pos}$`) }) }).first();
     const [b, s] = [await bench.getAttribute("data-fid"), await starter.getAttribute("data-fid")];
     await bench.dragTo(starter);
     const roles = (await stored(page)).roles;
