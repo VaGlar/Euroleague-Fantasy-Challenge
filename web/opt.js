@@ -10,6 +10,7 @@
   const BENCH = 0.5;
   const LATER_PENALTY = 1000;
   const PLAN_MIN_X = 5;
+  const MAX_PER_CLUB = 6;   // the game's rule: up to 6 players from the same EuroLeague club (as optimize.py)
   const num = (v) => (typeof v === "number" && isFinite(v) ? v : 0);
 
   function combos(n, k) {                 // all k-subsets of 0..n-1 (as index arrays)
@@ -154,6 +155,10 @@
     const kept = new Set(keep), avoided = new Set(avoid);
     const budget = squad.reduce((a, p) => a + num(p.price), 0) + bank;
     const owned = new Set(squad.map((p) => p.id));
+    // the per-club limit, never below what the squad already has
+    const ownedClub = {};
+    for (const p of squad) if (p.team) ownedClub[p.team] = (ownedClub[p.team] || 0) + 1;
+    const clubOk = (sq, team) => !team || sq.filter((p) => p.team === team).length <= Math.max(MAX_PER_CLUB, ownedClub[team] || 0);
     const cand = {};
     for (const pos of Object.keys(SQUAD)) {
       cand[pos] = pool.filter((p) => p.position === pos && !owned.has(p.id) && !avoided.has(p.id) && p.price != null)
@@ -173,6 +178,7 @@
             const cost = st.cost - num(out.price) + num(inn.price);
             if (cost > budget + 1e-6) continue;
             const sq = st.squad.slice(); sq[oi] = inn;
+            if (!clubOk(sq, inn.team)) continue;
             const key = sq.map((p) => p.id).sort((a, b) => a - b).join(",");
             if (next.has(key)) continue;
             next.set(key, { squad: sq, cost, val: squadValue(sq, value, now), key });
@@ -201,7 +207,7 @@
       bankAfter: budget - best.cost, squad: best.squad };
   }
 
-  const api = { lineup, deferLaterTurns, transfers, squadValue, laterTurnIds, SQUAD, COURT };
+  const api = { lineup, deferLaterTurns, transfers, squadValue, laterTurnIds, SQUAD, COURT, MAX_PER_CLUB };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else root.ELFOPT = api;
 })(typeof window !== "undefined" ? window : globalThis);

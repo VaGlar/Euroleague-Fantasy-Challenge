@@ -128,7 +128,7 @@
   const dPrice = (r) => (r.buy == null || r.price == null ? 0 : Math.round((r.price - r.buy) * 10) / 10);
   const arrow = (d) => (d > 0 ? `<span class="tm-up">▲${f1(d)}</span>` : d < 0 ? `<span class="tm-down">▼${f1(-d)}</span>` : "");
   function optRows(rows, t, inRound) {
-    return rows.map((r) => ({ id: r.id, position: r.position, price: Number(r.price) || 0, x_h: r.x_h ?? 0,
+    return rows.map((r) => ({ id: r.id, position: r.position, team: r.team, price: Number(r.price) || 0, x_h: r.x_h ?? 0,
       x_now: inRound && played(r) ? r.actual : (r.x_now ?? 0), turn: r.turn, played: inRound && played(r),
       cur_role: (t.roles || {})[r.id] || (r.position === "Head Coach" ? "coach" : "πάγκος"), cur_captain: t.captain === r.id }));
   }
@@ -174,7 +174,7 @@
   const tradeInfo = (t) => t.game ? { round: P.my_team?.trade_round ?? P.round, max_trades: P.my_team?.max_trades ?? 4,
     min_gain: P.trade_info?.min_gain ?? 2 } : (P.trade_info || { round: P.round, max_trades: 4, min_gain: 2 });
   const poolRows = (avoid = []) => P.players.filter((p) => p.fantasy_id != null && p.price != null && !avoid.includes(Number(p.fantasy_id)))
-    .map((p) => ({ id: Number(p.fantasy_id), position: p.position, price: p.price, x_h: p.x_h ?? 0, x_now: p.x_now ?? 0 }));
+    .map((p) => ({ id: Number(p.fantasy_id), position: p.position, team: p.team, price: p.price, x_h: p.x_h ?? 0, x_now: p.x_now ?? 0 }));
   function tradesFor(t, rows) {
     if (t.game) {
       const my = P.my_team || {}, ti = tradeInfo(t), keep = kept(ti), avoid = avoided(ti);
@@ -439,7 +439,7 @@
           : `Trades <b>${usedTrades(t, pl.ti)}/${pl.ti.max_trades > 4 ? "∞" : pl.ti.max_trades}</b>`}</div>
         <div class="muted">xFPT <b>${f1(total)}</b>${Math.abs(pl.planned - total) >= 0.05
           ? ` → <b class="tm-planned">${f1(pl.planned)}</b>` : ""}</div>
-        <div class="tm-dead">${head}</div></div>
+        <div class="tm-dead">${head}</div>${clubWarn(rows, pl.trs)}</div>
         ${t.game ? "" : `<div class="tm-morewrap"><button class="tm-more" id="tmMore" aria-haspopup="menu">⋯ Επιλογές</button><div id="tmMenu"></div></div>`}</header>
       ${t.game ? "" : undoBar(t)}
       <div class="tm-cols"><div class="tm-colL">
@@ -452,6 +452,18 @@
       <div class="tm-colR">${items.length && !done ? `<button class="tm-steps" id="tmSteps" type="button">📋 <b>${items.length} ${items.length === 1 ? "βήμα" : "βήματα"}</b> για το Round ${pl.ti.round} <span aria-hidden="true">↓</span></button>` : ""}<div class="card tm-courtcard"><h2>${t.game ? (t.fromGame ? "Στο παιχνίδι τώρα" : "Η πρόταση") : "Your Starting five"}${t.game ? ` <small class="muted">${t.fromGame ? "διακεκομμένο = αλλάζει" : "δεν διαβάστηκε το Starting five"}</small>` : ""}</h2>
         ${courtHtml(t, rows, t.game ? pl : null)}</div></div></div>
       ${bestCard(best)}`;
+  }
+
+  // ⚠️ 4+ players from one club (the game allows 6): one bad night of that team hits them all together,
+  // and they all play in the same Turn. Now, and after the proposed trades if they add to it.
+  const CLUB_WARN = 4;
+  function clubWarn(rows, trs) {
+    const count = (list) => list.reduce((a, p) => (p.team && p.position !== "Head Coach" ? (a[p.team] = (a[p.team] || 0) + 1, a) : a), {});
+    const now = count(rows), next = trs && trs.pairs && trs.pairs.length ? count(trs.squad || []) : {};
+    const out = [];
+    for (const [club, n] of Object.entries(now)) if (n >= CLUB_WARN) out.push(`${n} παίκτες ${esc(tc(club))}`);
+    for (const [club, n] of Object.entries(next)) if (n >= CLUB_WARN && n > (now[club] || 0)) out.push(`με τα Trades ${n} παίκτες ${esc(tc(club))}`);
+    return out.length ? `<div class="tm-warn" title="Μία κακή βραδιά της ομάδας τους χτυπάει όλους μαζί, και παίζουν στο ίδιο Turn">⚠️ ${out.join(" · ")}</div>` : "";
   }
 
   // ------------------------------------------------------------ player actions
@@ -977,6 +989,7 @@
   .tm-left { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: 13px; color: var(--text-secondary); }
   .tm-left select { font: inherit; padding: 4px 8px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface-1); color: var(--text-primary); }
   .tm-kbtns { display: block; }
+  .tm-warn { font-size: 12px; font-weight: 600; color: var(--warning, #b45309); margin-top: 4px; }
   .tm-keep { display: inline-block; margin: 6px 14px 0 0; padding: 0; border: 0; background: none; color: var(--series-1); font: inherit; font-size: 13px;
     text-align: left; cursor: pointer; }
   .tm-kept { font-size: 14px; margin: 10px 0 0; }

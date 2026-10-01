@@ -126,3 +126,19 @@ def test_transfers_keep_never_sells_kept_players():
         ids = {q["id"] for q in j["squad"]}
         assert set(c["keep"]) <= ids
         assert j["gain"] >= 0.95 * (p["gain"] or 0) - 0.5, (j["gain"], p["gain"])
+
+
+def test_transfers_keep_the_per_club_limit():
+    """5 already from one club and the best buys all from it: at most 6 after the trades."""
+    rnd = random.Random(9)
+    cases = []
+    for i in range(6):
+        pool = rand_squad(rnd, 1000) + rand_squad(rnd, 2000)
+        for q in pool:
+            q["team"] = "PAN" if q["x_h"] / q["price"] > 1.6 else f"T{q['id'] % 7}"
+        sq = rand_squad(rnd, 1)
+        for n, q in enumerate(sq):
+            q["team"] = "PAN" if n < 5 else f"S{n}"
+        cases.append({"kind": "transfers", "squad": sq, "pool": pool, "bank": 5.0, "maxTrades": 4, "minGain": 2.0})
+    for j in js(cases):
+        assert sum(q.get("team") == "PAN" for q in j["squad"]) <= optimize.MAX_PER_CLUB

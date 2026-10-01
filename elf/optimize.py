@@ -19,6 +19,7 @@ from .config import BENCH_MULTIPLIER, BUDGET
 
 SQUAD = {"Guard": 4, "Forward": 4, "Center": 2, "Head Coach": 1}
 COURT = ("Guard", "Forward", "Center")
+MAX_PER_CLUB = 6   # the game's rule: up to 6 players from the same EuroLeague club (coach counted too, to be safe)
 LATER_PENALTY = 1000.0
 PLAN_MIN_X = 5.0  # a later-turn bench player below this is not worth a swap plan
 
@@ -81,6 +82,14 @@ def _model(players: list[dict], value: str, now: str, budget: float,
     m += pulp.lpSum(cap.values()) == 1
     for pos in COURT:
         m += pulp.lpSum(five[i] for i in ids if players[i]["position"] == pos) >= 1
+    if fixed is None:      # squad choice: the game's per-club limit (never below what is already owned)
+        clubs = {}
+        for i, p in enumerate(players):
+            if p.get("team"):
+                clubs.setdefault(p["team"], []).append(i)
+        for club, idx in clubs.items():
+            have = sum(1 for i in idx if owned and players[i]["id"] in owned)
+            m += pulp.lpSum(pick[i] for i in idx) <= max(MAX_PER_CLUB, have)
     if fixed is not None:  # lineup only: squad is given
         for i, p in enumerate(players):
             m += pick[i] == (1 if p["id"] in fixed else 0)
