@@ -63,6 +63,17 @@ jobs:
           CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
         run: python -m elf.run
 
+      # The real data of the day, before anything is committed, sent or deployed: an API that
+      # changed shape, a NaN or half-written file, an empty report stop the run here (the sites
+      # keep the last good data; the owner gets the reasons on Telegram). elf/validate.py
+      - name: Data check
+        id: check
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ env.LIVE == 'true' && secrets.TELEGRAM_BOT_TOKEN || '' }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: python -m elf.validate
+
       - name: Problems to the owner (Telegram)
         if: ${{ always() && env.LIVE == 'true' }}
         continue-on-error: true
@@ -123,7 +134,8 @@ jobs:
           npx --yes wrangler@4 pages deploy site_public --project-name "$PROJECT" --branch "$PAGES_BRANCH" --commit-dirty=true
 
       - name: Run failed (Telegram)
-        if: ${{ failure() && !inputs.notify && env.LIVE == 'true' }}
+        # the data check sends its own, more precise message
+        if: ${{ failure() && !inputs.notify && env.LIVE == 'true' && steps.check.outcome != 'failure' }}
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
@@ -139,8 +151,10 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           STATUS: ${{ job.status }}
+          CHECK: ${{ steps.check.outcome }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
+          [ "$CHECK" = "failure" ] && exit 0      # the data check already said why
           if [ "$STATUS" = "success" ]; then
             health=$(python -c "import json;h=json.load(open('data/public/predictions.json')).get('health') or [];print('\n'.join('⚠️ '+x for x in h) or 'Χωρίς προβλήματα')")
             text=$(printf '✅ Το update ολοκληρώθηκε.\n%s\n\n/report για το report.' "$health")
