@@ -1,10 +1,20 @@
 name: Tests
 
 on:
+  # A PR is tested as it would be merged (its branch + the current main), so a clash between two
+  # changes shows up before it reaches main (= live). main itself is tested again after each merge.
+  # A branch without a PR isn't tested on push (open the PR early, as a draft, to get CI on it).
   push:
+    branches: [main]
     paths-ignore: ["data/**"]   # the bot's data commits don't change code
   pull_request:
   workflow_dispatch:
+
+# Several pushes to a PR in a row: only the newest is tested, the older runs are cancelled (they
+# cost Actions minutes and their result no longer matters). Runs on main are never cancelled.
+concurrency:
+  group: tests-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   tests:
@@ -36,7 +46,7 @@ jobs:
   changes:
     # Does this change reach the dashboard? The UI tests use frozen fixtures, so only web/,
     # tests/ui/ and what builds the public edition (elf/publish.py) can break them.
-    # main, manual runs and anything unclear (new branch, force push): always run.
+    # Decided for PRs only; main and manual runs always run it.
     runs-on: ubuntu-latest
     outputs:
       ui: ${{ steps.diff.outputs.ui }}
@@ -47,13 +57,10 @@ jobs:
       - id: diff
         env:
           EVENT: ${{ github.event_name }}
-          REF: ${{ github.ref }}
           PR_BASE: ${{ github.event.pull_request.base.sha }}
-          BEFORE: ${{ github.event.before }}
         run: |
           from=""
-          if [ "$EVENT" = pull_request ]; then from="$PR_BASE"
-          elif [ "$EVENT" = push ] && [ "$REF" != refs/heads/main ]; then from="$BEFORE"; fi
+          if [ "$EVENT" = pull_request ]; then from="$PR_BASE"; fi
           if [ -z "$from" ] || ! git cat-file -e "$from^{commit}" 2>/dev/null; then
             echo "ui=true" >> "$GITHUB_OUTPUT"; exit 0
           fi

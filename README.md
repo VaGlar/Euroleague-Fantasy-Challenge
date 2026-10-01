@@ -182,7 +182,7 @@ xPIR = base × (1 + calib + pos·pos_dev + pace·pace_dev + margin·m/10 + blowo
 Στο CI το coverage του `elf/` δεν πρέπει να πέσει κάτω από το όριο του `.coveragerc` (`python -m pytest --cov`
 το δείχνει τοπικά, μαζί με τις γραμμές χωρίς test): νέος κώδικας έρχεται με τα tests του.
 
-Τρέχουν αυτόματα σε κάθε push (workflow **Tests**) και **πριν από κάθε `/lineup` apply**: αν αποτύχουν,
+Τρέχουν αυτόματα σε κάθε PR (ως συνδυασμός με το τρέχον main) και μετά από κάθε merge στο main (workflow **Tests**) και **πριν από κάθε `/lineup` apply**: αν αποτύχουν,
 δεν γράφεται τίποτα στο παιχνίδι και έρχεται ❌ στο Telegram.
 
 UI tests (Playwright, PC + iPhone + δύο Android, και οι δύο εκδόσεις): `tests/ui/`, βλ. `tests/ui/README.md`.
