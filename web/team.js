@@ -899,7 +899,9 @@
   .tm-more { border: 1px solid var(--border); background: var(--surface-1); color: var(--text-primary); border-radius: 999px;
     padding: 8px 14px; font: inherit; font-size: 14px; font-weight: 600; white-space: nowrap; cursor: pointer; }
   .tm-toolbar { display: flex; flex-wrap: wrap; gap: 8px; }
-  .tm-right { display: flex; gap: 6px; align-items: flex-start; flex-wrap: nowrap; justify-content: flex-end; flex: none; }
+  /* wraps on the narrowest phones: Undo, Undo all and ⋯ Επιλογές in one row overflowed 320px (the page got wider) */
+  .tm-right { display: flex; gap: 6px; align-items: flex-start; flex-wrap: wrap; justify-content: flex-end; flex: 0 1 auto; min-width: 0; }
+  .tm-top > div:first-child { min-width: 0; }
   .tm-toolbar button { border: 1px solid var(--border); background: var(--surface-1); color: var(--text-primary); border-radius: 999px;
     padding: 7px 13px; font: inherit; font-size: 14px; cursor: pointer; }
   .tm-toolbar button:hover { border-color: var(--series-1); }
