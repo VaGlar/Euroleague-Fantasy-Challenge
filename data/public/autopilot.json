@@ -296,82 +296,86 @@
    },
    "pts": 129.2,
    "raw": 99.1,
-   "avg_raw": 115.9
+   "avg_raw": 115.9,
+   "my_pts": 152.15,
+   "rank": 216757,
+   "teams": 347074,
+   "my_rank": 15237
   },
   {
    "round": 3,
    "trades": 4,
-   "bank": 0.2,
+   "bank": 0.6,
    "squad": [
     {
      "id": 3766,
-     "price": 17.6,
+     "price": 18.0,
      "position": "Forward",
      "person_id": "003469",
      "name": "VEZENKOV, SASHA",
      "team": "OLY",
      "role": "5άδα",
      "captain": true,
-     "x_now": 23.1
+     "x_now": 23.7
     },
     {
      "id": 3791,
-     "price": 14.5,
+     "price": 15.0,
      "position": "Guard",
      "person_id": "013369",
      "name": "JONES, CARLIK",
      "team": "PAR",
      "role": "5άδα",
      "captain": false,
-     "x_now": 20.9
+     "x_now": 21.3
     },
     {
      "id": 3887,
-     "price": 14.9,
+     "price": 15.3,
      "position": "Guard",
      "person_id": "007975",
      "name": "FRANCISCO, SYLVAIN",
      "team": "PAN",
      "role": "5άδα",
      "captain": false,
-     "x_now": 20.3
-    },
-    {
-     "id": 4180,
-     "price": 9.9,
-     "position": "Guard",
-     "person_id": "013285",
-     "name": "DOTSON, DEVON",
-     "team": "BES",
-     "role": "5άδα",
-     "captain": false,
-     "x_now": 15.1
+     "x_now": 20.6
     },
     {
      "id": 11504,
-     "price": 11.0,
+     "price": 10.9,
      "position": "Center",
      "person_id": "003958",
      "name": "THIEMANN, JOHANNES",
      "team": "MUN",
-     "role": "6ος",
+     "role": "5άδα",
      "captain": false,
-     "x_now": 13.7
+     "x_now": 13.8
     },
     {
      "id": 4061,
-     "price": 4.8,
+     "price": 5.4,
      "position": "Forward",
      "person_id": "008084",
      "name": "MANTZOUKAS, ELEFTHERIOS",
      "team": "PAN",
+     "role": "6ος",
+     "captain": false,
+     "x_now": 12.0
+    },
+    {
+     "id": 3980,
+     "price": 8.5,
+     "position": "Center",
+     "person_id": "007553",
+     "name": "BALCEROWSKI, OLEK",
+     "team": "BAR",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 11.8
+     "x_now": 11.3
     },
     {
      "id": 4255,
-     "price": 7.1,
+     "price": 7.6,
      "position": "Head Coach",
      "person_id": "009154",
      "name": "ALBERT, XAVIER",
@@ -382,25 +386,25 @@
     },
     {
      "id": 11521,
-     "price": 5.3,
+     "price": 5.0,
      "position": "Guard",
      "person_id": "015161",
      "name": "FODZO DADA, MARC-OWEN",
      "team": "ASV",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 6.1
+     "x_now": 5.9
     },
     {
      "id": 4012,
-     "price": 4.5,
+     "price": 4.4,
      "position": "Forward",
      "person_id": "001518",
      "name": "RICCI, GIAMPAOLO",
      "team": "MIL",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 3.4
+     "x_now": 3.3
     },
     {
      "id": 4016,
@@ -414,18 +418,18 @@
      "x_now": 2.3
     },
     {
-     "id": 7231,
-     "price": 5.4,
-     "position": "Center",
-     "person_id": "010318",
-     "name": "DESSERT, BRICE",
-     "team": "IST",
+     "id": 3886,
+     "price": 4.3,
+     "position": "Guard",
+     "person_id": "001844",
+     "name": "HACKETT, DANIEL",
+     "team": "VIR",
      "role": "5άδα",
      "captain": false,
-     "x_now": 0.0
+     "x_now": 1.4
     }
    ],
-   "x_total": 138.2
+   "x_total": 138.0
   }
  ],
  "seed_id": "5a453a755a9b",
@@ -436,5 +440,5 @@
   "raw": 184.8,
   "avg_raw": 115.9
  },
- "generated": "2026-10-01T04:08:01.570688+00:00"
+ "generated": "2026-10-01T08:10:46.105678+00:00"
 }
