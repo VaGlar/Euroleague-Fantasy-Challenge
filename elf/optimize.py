@@ -33,7 +33,9 @@ def later_turn_ids(squad: list[dict]) -> set:
     if not turns:
         return set()
     first = min(turns)
-    return {p["id"] for p in court if (p.get("turn") or first) > first}
+    # a player with nothing expected (out of the roster, injured) is no option to keep in the five
+    # either: he starts only if nobody else can, like a later-turn player
+    return {p["id"] for p in court if (p.get("turn") or first) > first or float(p.get("x_now") or 0) <= 0}
 
 
 def _model(players: list[dict], value: str, now: str, budget: float,

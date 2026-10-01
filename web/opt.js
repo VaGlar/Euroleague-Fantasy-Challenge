@@ -30,7 +30,8 @@
     const turns = court.map((p) => p.turn).filter(Boolean);
     if (!turns.length) return new Set();
     const first = Math.min(...turns);
-    return new Set(court.filter((p) => (p.turn || first) > first).map((p) => p.id));
+    // a player with nothing expected (out of the roster, injured) starts only if nobody else can (as optimize.py)
+    return new Set(court.filter((p) => (p.turn || first) > first || num(p.x_now) <= 0).map((p) => p.id));
   }
 
   // Best five / sixth man / captain for a fixed squad of 10 court players + coach.
