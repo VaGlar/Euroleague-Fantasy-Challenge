@@ -107,8 +107,11 @@
   function gameTeam() {
     const my = P.my_team;
     if (!my || !(my.players || []).length) return null;
-    const players = my.players.filter((r) => r.fantasy_id != null).map((r) => ({ id: Number(r.fantasy_id), price: r.price }));
     const real = (my.actual_lineup || []).filter((r) => r.role);
+    // the squad as the game sets it (an older update also counted the players sold this round: 14/11)
+    const inGame = new Set(real.map((r) => Number(r.fantasy_id)));
+    const players = my.players.filter((r) => r.fantasy_id != null && (real.length !== 11 || inGame.has(Number(r.fantasy_id))))
+      .map((r) => ({ id: Number(r.fantasy_id), price: r.price }));
     const src = real.length === players.length ? real.map((r) => ({ id: Number(r.fantasy_id), role: r.role, captain: r.captain }))
       : (my.lineup || []).map((p) => ({ id: Number(p.id), role: p.role, captain: p.captain }));
     const roles = Object.fromEntries(src.map((x) => [x.id, x.role]));
@@ -121,8 +124,15 @@
   const row = (id) => P.players.find((p) => p.fantasy_id === id);
   const key = (s) => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
   const sur = (n) => nm(n).replace(/^\S\. /, "");
-  const started = () => P.players.some((p) => p.actual != null);
-  const played = (r) => started() && r.actual != null;
+  // the round under way by the clock too: the data hear of it only at the next update, after the games
+  // (Round 3, 19:08: the screen still offered the trades and «κλείνει 18:59»)
+  const turnStart = (n) => { const t = (P.turns || []).find((x) => x.turn === n);
+    return t && typeof athensMs === "function" ? athensMs(t.date, t.first_tip) : Infinity; };
+  const started = () => P.players.some((p) => p.actual != null) || (P.turns || []).some((t) => turnStart(t.turn) <= Date.now());
+  // scored: his points of the round are in; played: locked as the game locks him, once his turn has started
+  // (he can only go to the bench, not be Captain), points in or not
+  const scored = (r) => r.actual != null;
+  const played = (r) => scored(r) || (r.turn != null && turnStart(r.turn) <= Date.now());
   // price: today's (players are sold at it); buy: what the user paid (public edition), for the change only
   function rowsOf(t) {
     return t.players.map((x) => { const r = row(x.id); return r ? { ...r, id: x.id, price: r.price ?? x.price,
@@ -132,17 +142,17 @@
   const arrow = (d) => (d > 0 ? `<span class="tm-up">▲${f1(d)}</span>` : d < 0 ? `<span class="tm-down">▼${f1(-d)}</span>` : "");
   function optRows(rows, t, inRound) {
     return rows.map((r) => ({ id: r.id, position: r.position, team: r.team, price: Number(r.price) || 0, x_h: r.x_h ?? 0,
-      x_now: inRound && played(r) ? r.actual : (r.x_now ?? 0), turn: r.turn, played: inRound && played(r),
+      x_now: inRound && scored(r) ? r.actual : (r.x_now ?? 0), turn: r.turn, played: inRound && played(r),
       cur_role: (t.roles || {})[r.id] || (r.position === "Head Coach" ? "coach" : "πάγκος"), cur_captain: t.captain === r.id }));
   }
   const fiveOk = (roles, rows) => {
     const five = rows.filter((r) => roles[r.id] === "5άδα");
     return five.length === 5 && ["Guard", "Forward", "Center"].every((pos) => five.some((r) => r.position === pos));
   };
-  // «· Turn 1/2» as the game shows it: the first turn not yet finished
+  // «· Turn 1/2» as the game shows it: the latest turn already started (by the clock), else the first
   function turnNow() {
     const ts = P.turns || [];
-    const cur = ts.find((x) => !x.done) || ts[ts.length - 1];
+    const cur = [...ts].reverse().find((x) => turnStart(x.turn) <= Date.now()) || ts.find((x) => !x.done) || ts[ts.length - 1];
     return ts.length > 1 && cur ? ` · Turn ${cur.turn}/${ts.length}` : "";
   }
   function deadline() {
@@ -287,7 +297,7 @@
     const targetCap = team.find((p) => p.captain)?.id ?? null;
     // expected points of the round if the plan is followed (its trades, five, 6th and CAP)
     const planned = team.reduce((a, p) => { const r = aRows.find((x) => x.id === p.id); if (!r) return a;
-      const v = inRound && played(r) ? r.actual : (r.x_now ?? 0);
+      const v = inRound && scored(r) ? r.actual : (r.x_now ?? 0);
       return a + v * (p.role === "πάγκος" ? 0.5 : 1) * (p.captain ? 2 : 1); }, 0);
     const items = [];
     if (tradesNow) for (const pr of pairs) {
@@ -358,7 +368,7 @@
       for (const [p, from, to] of [[byId[a], ra, rb], [byId[b], rb, ra]]) {
         if (!played(p)) continue;
         if (from === "πάγκος") { toast(`Ο ${sur(p.name)} έπαιξε από το Bench — μένει εκεί`); return false; }
-        if (to !== "πάγκος") { toast(`Ο ${sur(p.name)} έχει παίξει — μπορεί μόνο να βγει στο Bench`); return false; }
+        if (to !== "πάγκος") { toast(`Ο ${sur(p.name)} έχει παίξει ή παίζει — μπορεί μόνο να βγει στο Bench`); return false; }
       }
     }
     const next = { ...roles, [a]: rb, [b]: ra };
@@ -378,7 +388,7 @@
 
   // ------------------------------------------------------------ court
   function chipHtml(r, t, extraCls = "") {
-    const isPlayed = played(r);
+    const isPlayed = scored(r);
     const cap = t && t.captain === r.id;
     return `<div class="chip${cap ? " cap" : ""} ${extraCls}" data-fid="${r.id}" tabindex="0" role="button" aria-label="${esc(nm(r.name))}">
       <div class="ct"><span>${LETTER[r.position] || ""}</span>${r.turn ? `<span class="tb t${r.turn > 1 ? 2 : 1}">T${r.turn}</span>` : ""}</div>
@@ -408,7 +418,7 @@
         <p>Μπορεί να άλλαξαν ομάδα ή να έφυγαν από τη λίστα του παιχνιδιού.</p><button class="linkbtn" id="tmEdit">Διόρθωση ομάδας</button></div>`;
     }
     const items = pl.items;
-    const total = rows.reduce((a, r) => { const role = (t.roles || {})[r.id]; const v = played(r) ? r.actual : (r.x_now ?? 0);
+    const total = rows.reduce((a, r) => { const role = (t.roles || {})[r.id]; const v = scored(r) ? r.actual : (r.x_now ?? 0);
       return a + v * (role === "πάγκος" ? 0.5 : 1) * (t.captain === r.id ? 2 : 1); }, 0);
     const value = rows.reduce((a, r) => a + (Number(r.price) || 0), 0);
     // as the game: (credits + today's value of the squad) − the 100 of the start (sold players' gains/losses included)
@@ -485,7 +495,7 @@
     sheet(`<div class="sh"><div><h2>${esc(nm(r.name))}</h2>
         <div class="muted">${esc(tc(r.team))} · ${NAME[r.position]} · τώρα ${f1(r.price)} cr${r.buy != null ? ` · αγορά ${f1(r.buy)}${dPrice(r) ? ` (${dPrice(r) > 0 ? "+" : "−"}${f1(Math.abs(dPrice(r)))})` : ""}` : ""}${r.popularity != null ? ` · POP ${f1(r.popularity)} %` : ""}${r.turn ? ` · Turn ${r.turn}` : ""}${role && role !== "coach" ? ` · ${ROLE_LABEL[role] || role}` : ""}</div></div>
         <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
-      <div class="kpis"><div class="kpi"><b>${f1(played(r) ? r.actual : r.x_now)}</b><span>${played(r) ? "points" : "xFPT"}</span></div>
+      <div class="kpis"><div class="kpi"><b>${f1(scored(r) ? r.actual : r.x_now)}</b><span>${scored(r) ? "points" : "xFPT"}</span></div>
         <div class="kpi"><b>${f1(xf3(r))}</b><span>xFPT3</span></div><div class="kpi"><b>${r.value == null ? "–" : r.value.toFixed(2)}</b><span>xFPT3/cr</span></div></div>
       <div class="tm-acts">
         ${t.game ? "" : r.position !== "Head Coach" ? `<button class="tm-act" id="aCap" ${canCap ? "" : "disabled"}><span>★</span><div>Captain</div></button>
@@ -501,7 +511,7 @@
       sheet(`<div class="sh"><div><h2>${esc(sur(r.name))} ⇄ …</h2><div class="muted">Τώρα: ${ROLE_LABEL[role] || role}</div></div>
           <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
         <div class="tm-acts">${others.map((x) => `<button class="tm-act" data-q="${x.id}"><span>${LETTER[x.position]}</span><div>${esc(nm(x.name))}
-          <small>${(t.roles || {})[x.id]} · ${played(x) ? `έφερε ${f1(x.actual)}` : `xFPT ${f1(x.x_now)}`}</small></div></button>`).join("")}</div>`);
+          <small>${(t.roles || {})[x.id]} · ${scored(x) ? `έφερε ${f1(x.actual)}` : `xFPT ${f1(x.x_now)}`}</small></div></button>`).join("")}</div>`);
       document.querySelectorAll("#sheet [data-q]").forEach((b) => b.onclick = () => { if (swap(t, id, Number(b.dataset.q))) closePlayer(); });
     });
     on("aRep", () => replaceSheet(t, r));

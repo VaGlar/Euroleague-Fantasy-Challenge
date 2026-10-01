@@ -221,6 +221,23 @@ test.describe("public edition", () => {
     expect(after.bank).toBeGreaterThanOrEqual(0);
   });
 
+  test("round started by the clock, no results yet: no trades, «σε εξέλιξη», a T1 player can't be Captain", async ({ page }) => {
+    await savedTeam(page);
+    const pred = await page.evaluate(() => P.turns[0]);
+    // 10 minutes after Turn 1's first tip-off (Athens time), the data not updated yet
+    const t1 = await page.evaluate(([d, hm]) => athensMs(d, hm), [pred.date, pred.first_tip]);
+    await page.clock.setFixedTime(new Date(t1 + 10 * 60 * 1000));
+    await page.reload();
+    await expect(header(page)).toContainText("σε εξέλιξη");
+    await expect(tradeRows(page)).toHaveCount(0);
+    const t1Chip = page.locator(`${C} .court .chip[data-fid]`, { has: page.locator(".tb.t1") }).first();
+    if (await t1Chip.count()) {
+      await t1Chip.click();
+      const cap = page.locator("#aCap");
+      if (await cap.count()) await expect(cap).toBeDisabled();
+    }
+  });
+
   test("round under way: no trades proposed (next round's wait for it to end), only swaps and CAP", async ({ page }) => {
     await page.route(/predictions\.json/, async (route) => {
       const res = await route.fetch();
