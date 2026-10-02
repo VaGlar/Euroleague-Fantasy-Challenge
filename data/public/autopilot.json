@@ -326,7 +326,7 @@
      "name": "JONES, CARLIK",
      "team": "PAR",
      "role": "5άδα",
-     "captain": true,
+     "captain": false,
      "x_now": 20.5
     },
     {
@@ -337,7 +337,7 @@
      "name": "FRANCISCO, SYLVAIN",
      "team": "PAN",
      "role": "5άδα",
-     "captain": false,
+     "captain": true,
      "x_now": 19.8
     },
     {
@@ -433,14 +433,10 @@
    "decided_at": "2026-10-01T14:41+00:00",
    "moves": {
     "2": {
-     "in": [
-      4061
-     ],
-     "out": [
-      3886
-     ],
-     "captain": 3791,
-     "at": "2026-10-01T22:08+00:00"
+     "in": [],
+     "out": [],
+     "captain": 3887,
+     "at": "2026-10-02T04:07+00:00"
     }
    }
   },
@@ -461,17 +457,6 @@
      "x_now": 25.0
     },
     {
-     "id": 3791,
-     "price": 15.0,
-     "position": "Guard",
-     "person_id": "013369",
-     "name": "JONES, CARLIK",
-     "team": "PAR",
-     "role": "6ος",
-     "captain": false,
-     "x_now": 21.4
-    },
-    {
      "id": 11549,
      "price": 16.0,
      "position": "Center",
@@ -480,7 +465,18 @@
      "team": "ZAL",
      "role": "5άδα",
      "captain": false,
-     "x_now": 19.9
+     "x_now": 21.4
+    },
+    {
+     "id": 3791,
+     "price": 15.0,
+     "position": "Guard",
+     "person_id": "013369",
+     "name": "JONES, CARLIK",
+     "team": "PAR",
+     "role": "6ος",
+     "captain": false,
+     "x_now": 20.6
     },
     {
      "id": 3850,
@@ -524,7 +520,7 @@
      "team": "OLY",
      "role": "5άδα",
      "captain": false,
-     "x_now": 11.4
+     "x_now": 11.9
     },
     {
      "id": 4255,
@@ -571,8 +567,8 @@
      "x_now": 2.3
     }
    ],
-   "x_total": 154.5,
-   "decided_at": "2026-10-01T22:08+00:00"
+   "x_total": 155.7,
+   "decided_at": "2026-10-02T04:07+00:00"
   }
  ],
  "seed_id": "5a453a755a9b",
@@ -583,5 +579,5 @@
   "raw": 184.8,
   "avg_raw": 115.9
  },
- "generated": "2026-10-01T22:08:22.387792+00:00"
+ "generated": "2026-10-02T04:07:17.435083+00:00"
 }

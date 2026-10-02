@@ -971,7 +971,7 @@ fantasy_id,person_id,first_name,last_name,team,position,price,matchday,is_injure
 4008,003091,Metecan,Birsen,BES,Forward,5.3,3,False,1.0,,0.4
 4242,009400,Davide,Casarin,VIR,Guard,5.3,3,False,1.0,,0.4
 7231,010318,Brice,Dessert,IST,Center,5.3,3,False,1.0,,1.2
-3975,012611,Sebastian,Herrera,PRS,Guard,5.2,3,False,1.0,,5.6
+3975,012611,Sebastian,Herrera,PRS,Guard,5.2,3,False,1.0,,5.5
 7216,003458,Davis,Bertans,DUB,Forward,5.2,3,False,1.0,,2.9
 3962,007632,Mario,Nakic,PAR,Forward,5.1,3,False,1.0,,0.7
 3936,011085,Nikos,Rogkavopoulos,PAN,Forward,5.0,3,False,1.0,,13.8
@@ -1017,10 +1017,10 @@ fantasy_id,person_id,first_name,last_name,team,position,price,matchday,is_injure
 8644,014107,Stefan,Joksimovic,BAS,Forward,4.1,3,False,1.0,,10.3
 3916,008384,Gabriele,Procida,MAD,Forward,4.0,3,False,1.0,,7.9
 3955,007886,Paolo,Galbiati,BAS,Head Coach,4.0,3,False,1.0,,1.3
-3976,007736,Arijan,Lakic,PAR,Forward,4.0,3,False,1.0,,30.9
+3976,007736,Arijan,Lakic,PAR,Forward,4.0,3,False,1.0,,30.8
 3997,006509,Stefano,Tonut,MIL,Guard,4.0,3,False,1.0,,2.0
 3998,007513,Dovydas,Giedraitis,ZAL,Guard,4.0,3,False,1.0,,3.2
-4000,002969,Melih,Mahmutoglu,ULK,Guard,4.0,3,False,1.0,,4.4
+4000,002969,Melih,Mahmutoglu,ULK,Guard,4.0,3,False,1.0,,4.5
 4009,013385,Ousmane,Diop,MIL,Center,4.0,3,False,1.0,,20.9
 4013,005670,Diego,Flaccadori,MIL,Guard,4.0,3,False,1.0,,3.1
 4016,011816,Nicola,Akele,MIL,Forward,4.0,3,False,1.0,,3.6
