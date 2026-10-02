@@ -438,34 +438,26 @@
      "captain": 3887,
      "at": "2026-10-02T04:07+00:00"
     }
-   }
+   },
+   "pts": 115.5,
+   "raw": 110.2,
+   "avg_raw": 99.0
   },
   {
    "round": 4,
    "trades": 4,
-   "bank": 0.9,
+   "bank": 1.1,
    "squad": [
     {
-     "id": 3903,
-     "price": 16.0,
-     "position": "Guard",
-     "person_id": "009846",
-     "name": "BRYANT, ELIJAH",
-     "team": "HTA",
+     "id": 3766,
+     "price": 18.0,
+     "position": "Forward",
+     "person_id": "003469",
+     "name": "VEZENKOV, SASHA",
+     "team": "OLY",
      "role": "5άδα",
      "captain": true,
-     "x_now": 24.9
-    },
-    {
-     "id": 11549,
-     "price": 16.0,
-     "position": "Center",
-     "person_id": "000898",
-     "name": "VALANCIUNAS, JONAS",
-     "team": "ZAL",
-     "role": "5άδα",
-     "captain": false,
-     "x_now": 21.4
+     "x_now": 26.0
     },
     {
      "id": 3791,
@@ -474,9 +466,9 @@
      "person_id": "013369",
      "name": "JONES, CARLIK",
      "team": "PAR",
-     "role": "6ος",
+     "role": "5άδα",
      "captain": false,
-     "x_now": 20.6
+     "x_now": 19.2
     },
     {
      "id": 3850,
@@ -487,7 +479,29 @@
      "team": "MAD",
      "role": "5άδα",
      "captain": false,
-     "x_now": 16.2
+     "x_now": 18.0
+    },
+    {
+     "id": 11504,
+     "price": 10.9,
+     "position": "Center",
+     "person_id": "003958",
+     "name": "THIEMANN, JOHANNES",
+     "team": "MUN",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 17.2
+    },
+    {
+     "id": 7362,
+     "price": 10.4,
+     "position": "Guard",
+     "person_id": "013855",
+     "name": "GIBSON, UMOJA",
+     "team": "BAR",
+     "role": "6ος",
+     "captain": false,
+     "x_now": 14.9
     },
     {
      "id": 7424,
@@ -496,9 +510,9 @@
      "person_id": "014108",
      "name": "DIARRA, ALIOU",
      "team": "VIR",
-     "role": "5άδα",
+     "role": "πάγκος",
      "captain": false,
-     "x_now": 13.3
+     "x_now": 13.6
     },
     {
      "id": 4061,
@@ -509,18 +523,7 @@
      "team": "PAN",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 12.6
-    },
-    {
-     "id": 3948,
-     "price": 7.5,
-     "position": "Forward",
-     "person_id": "012731",
-     "name": "NDIAYE, MBAYE",
-     "team": "OLY",
-     "role": "5άδα",
-     "captain": false,
-     "x_now": 11.9
+     "x_now": 11.4
     },
     {
      "id": 4255,
@@ -531,7 +534,7 @@
      "team": "PAM",
      "role": "coach",
      "captain": false,
-     "x_now": 9.6
+     "x_now": 9.7
     },
     {
      "id": 11521,
@@ -540,9 +543,9 @@
      "person_id": "015161",
      "name": "FODZO DADA, MARC-OWEN",
      "team": "ASV",
-     "role": "πάγκος",
+     "role": "5άδα",
      "captain": false,
-     "x_now": 6.2
+     "x_now": 5.7
     },
     {
      "id": 4012,
@@ -553,7 +556,7 @@
      "team": "MIL",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 3.3
+     "x_now": 3.4
     },
     {
      "id": 4016,
@@ -564,20 +567,20 @@
      "team": "MIL",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 2.3
+     "x_now": 2.0
     }
    ],
-   "x_total": 155.6,
-   "decided_at": "2026-10-02T14:08+00:00"
+   "x_total": 152.8,
+   "decided_at": "2026-10-02T21:08+00:00"
   }
  ],
  "seed_id": "5a453a755a9b",
  "start_round": 1,
  "total": {
-  "rounds": 2,
-  "pts": 248.3,
-  "raw": 184.8,
-  "avg_raw": 115.9
+  "rounds": 3,
+  "pts": 363.8,
+  "raw": 295.0,
+  "avg_raw": 214.9
  },
- "generated": "2026-10-02T14:08:52.654578+00:00"
+ "generated": "2026-10-02T21:08:01.477070+00:00"
 }
