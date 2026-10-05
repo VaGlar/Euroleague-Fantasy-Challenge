@@ -1297,5 +1297,5 @@ if __name__ == "__main__":
     ap.add_argument("--offline", action="store_true")
     a = ap.parse_args()
     res = build(a.offline)
-    for m in res.get("messages", []):
-        print(f"--- {m['date']} (turn {m['turn']})\n{m['text']}\n")
+    # only a count: the messages carry the owner's lineup and trades, and the Actions log is public
+    print(f"report: {len(res.get('messages', []))} message(s)")

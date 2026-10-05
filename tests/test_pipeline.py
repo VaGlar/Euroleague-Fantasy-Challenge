@@ -271,6 +271,8 @@ def test_players_carry_the_plain_next3_and_the_season_total(pipeline):
     players = pipeline["pred"]["players"]
     assert all("x3" in p and "fpt_total" in p for p in players)
     assert any((p["fpt_total"] or 0) > 0 for p in players)
+    # court players only: a head coach's expected points can be negative (a likely loss scores -5
+    # to -20), so three hard games can sum to less than this round's (Gavel, round 4)
     healthy = [p for p in players if p.get("n3") == 3 and (p.get("avail_game") in (None, 1.0))
-               and not p.get("prior") and (p["x_now"] or 0) > 5]
+               and not p.get("prior") and (p["x_now"] or 0) > 5 and p.get("position") != "Head Coach"]
     assert healthy and all(p["x3"] >= p["x_now"] for p in healthy)
