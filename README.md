@@ -77,11 +77,43 @@ xPIR = base × (1 + calib + pos·pos_dev + pace·pace_dev + margin·m/10 + blowo
 - **επιστροφή από απουσία**: όποιος δεν έπαιξε σε κανένα από τα 3 τελευταία ματς της ομάδας του → βάση ×0.8 και σήμα «↩ επιστρέφει» (`research/012_injury_return`).
 - Τα βάρη **δεν είναι με το μάτι**: `python -m elf.backtest 2025 --save` τα ρυθμίζει με walk-forward backtest.
 
+## Δημόσιο repo και ιδιωτικά δεδομένα
+
+Το repo είναι **δημόσιο** (δωρεάν GitHub Actions, και φαίνεται η δουλειά). Ό,τι μπαίνει εδώ, και ό,τι
+τυπώνεται στα logs των Actions, το βλέπουν όλοι. Γι' αυτό τα δεδομένα είναι σε δύο repos:
+
+| Πού | Τι |
+|---|---|
+| **αυτό το repo** (δημόσιο) | ο κώδικας και το `data/public` **καθαρισμένο**: χωρίς την ομάδα/report/πεντάδες του ιδιοκτήτη, χωρίς κείμενα άρθρων |
+| **`<owner>/elf-data`** (ιδιωτικό) | τα **πλήρη** αρχεία του `data/public` και το αρχείο άρθρων (`archive/`, κείμενα τρίτων) |
+
+Το update (`update.yml`) τα κρατάει σε συγχρονισμό, μόνο όταν υπάρχει το secret `DATA_REPO_TOKEN`
+(fine-grained token, **μόνο** για το `elf-data`, Contents: read/write):
+επαναφορά από το `elf-data` → pipeline → έλεγχος δεδομένων → αποθήκευση στο `elf-data` →
+καθαρισμός (`python -m elf.publish --repo`) → commit εδώ. Η προσωπική σελίδα και το `/lineup`
+διαβάζουν τα πλήρη αρχεία. Χωρίς το secret όλα μένουν εδώ, όπως παλιά (μην το αφαιρέσεις: το επόμενο
+update θα ξανάγραφε εδώ τα προσωπικά δεδομένα — το `tests/test_public_repo.py` θα κοκκινίσει).
+
+**Κανόνες για κάθε αλλαγή:**
+- **Νέο αρχείο στο `data/public`;** Βάλ' το συνειδητά σε μία κατηγορία στο `elf/publish.py`:
+  `PUBLIC_FILES` (δημοσιεύεται, με συνάρτηση καθαρισμού αν έχει κάτι προσωπικό) ή `PRIVATE_ONLY`
+  (μόνο στο `elf-data`). Ένα νέο `PRIVATE_ONLY` μπαίνει **και** στο `git rm` του βήματος «Sanitize for
+  the public repo» στο `update.yml` **και** στο `.gitignore`. Το `tests/test_public_repo.py` αποτυγχάνει
+  αν ένα αρχείο δεν έχει κατηγορία ή αν οι τρεις λίστες διαφέρουν.
+- **Τίποτα προσωπικό στα logs:** όχι `print` της ομάδας, του report, των tokens ή απαντήσεων του
+  fantasy API (το `python -m elf.run` τυπώνει μόνο πόσα μηνύματα έφτιαξε).
+- **Κείμενα άρθρων** μόνο στο `elf-data`· εδώ το `news.json` κρατά τίτλο, πηγή, link, ημερομηνία.
+- **Fixtures των tests** (`tests/ui/fixtures/`): ψεύτικα — ομάδα «Demo team», άρθρα χωρίς κείμενο,
+  το δημόσιο report.
+- Το παλιό ιστορικό του git **δεν** καθαρίστηκε (έχει ακόμη το αρχείο άρθρων και την ομάδα από πριν
+  γίνει δημόσιο)· απόφαση του ιδιοκτήτη. Αν ποτέ χρειαστεί: νέο repo με `git filter-repo`, γιατί σε αυτό
+  τα παλιά PR κρατούν ορατά τα παλιά commits.
+
 ## Setup (μία φορά)
 
 1. **GitHub Secrets** (Settings → Secrets and variables → Actions):
    `TELEGRAM_BOT_TOKEN`, `GEMINI_API_KEY`, `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`,
-   `FANTASY_TOKEN`, και αργότερα `TELEGRAM_CHAT_ID`.
+   `FANTASY_TOKEN`, `DATA_REPO_TOKEN` (βλ. «Δημόσιο repo και ιδιωτικά δεδομένα»), και αργότερα `TELEGRAM_CHAT_ID`.
 2. Merge στο `main` (τα scheduled workflows τρέχουν μόνο από το default branch).
 3. Actions → **Deploy Telegram bot** → Run workflow. Μετά ανεβαίνει μόνο του σε κάθε αλλαγή του `worker/` στο `main`· χειροκίνητα χρειάζεται μόνο όταν αλλάξει κάποιο secret.
 4. Στείλε `/start` στο bot → σου απαντά το chat ID → βάλ' το στο secret `TELEGRAM_CHAT_ID`
@@ -194,11 +226,15 @@ xPIR = base × (1 + calib + pos·pos_dev + pace·pace_dev + margin·m/10 + blowo
 - οι clients των εξωτερικών API (νέα, Gemini, EuroLeague, Dunkest, Telegram) και ότι τα μηνύματα είναι έγκυρο Telegram HTML
 - οι εφεδρικές διαδρομές: Gemini κάτω → προηγούμενη σύνοψη, βελτιστοποίηση που σκάει → απλές μεταγραφές,
   αγωνιστική σε εξέλιξη → κανόνες εντός αγωνιστικής, `my_team.yaml` όταν πέσει το API του παιχνιδιού
+- ο έλεγχος δεδομένων του update (`elf/validate.py`: σταματά πριν το commit αν τα δεδομένα της μέρας είναι χαλασμένα)
+- το δημόσιο repo (`tests/test_public_repo.py`): τίποτα προσωπικό ή κείμενο άρθρου στα αρχεία του, σωστή σειρά
+  των βημάτων του `update.yml`, ίδια λίστα ιδιωτικών αρχείων σε `publish.py` / `update.yml` / `.gitignore`
 
 Στο CI το coverage του `elf/` δεν πρέπει να πέσει κάτω από το όριο του `.coveragerc` (`python -m pytest --cov`
 το δείχνει τοπικά, μαζί με τις γραμμές χωρίς test): νέος κώδικας έρχεται με τα tests του.
 
-Τρέχουν αυτόματα σε κάθε PR, ως συνδυασμός με το τρέχον main (workflow **Tests**· όχι ξανά μετά το merge) και **πριν από κάθε `/lineup` apply**: αν αποτύχουν,
+Τρέχουν αυτόματα σε κάθε PR, ως συνδυασμός με το τρέχον main (workflow **Tests**· όχι ξανά μετά το merge, ούτε
+σε push χωρίς PR — για έλεγχο από νωρίς άνοιξε το PR ως draft) και **πριν από κάθε `/lineup` apply**: αν αποτύχουν,
 δεν γράφεται τίποτα στο παιχνίδι και έρχεται ❌ στο Telegram.
 
 UI tests (Playwright, PC + iPhone + δύο Android, και οι δύο εκδόσεις): `tests/ui/`, βλ. `tests/ui/README.md`.
@@ -209,7 +245,8 @@ UI tests (Playwright, PC + iPhone + δύο Android, και οι δύο εκδό�
 - **Branch εργασίας** (το `claude/…`): οι αλλαγές ανεβαίνουν εκεί χωρίς αναμονή. Ένα update από αυτό είναι
   **preview**: ανεβαίνει στο `https://dev.elf-dashboard.pages.dev` και στο `https://dev.<δημόσιο project>.pages.dev`,
   δεν γράφει δεδομένα και δεν στέλνει τίποτα στο Telegram.
-- Όταν μαζευτούν αλλαγές: **PR προς `main`** → τρέχουν όλα τα tests (Python + UI) → merge μόνο αν είναι πράσινα.
+- Όταν μαζευτούν αλλαγές: **PR προς `main`** → τρέχουν όλα τα tests (Python + UI· τα UI μόνο αν άλλαξε κάτι που
+  φτάνει στο dashboard) → merge μόνο αν είναι πράσινα.
   Με το merge ανεβαίνει μόνο του και το bot, αν άλλαξε το `worker/`· για νέα δεδομένα στο live τρέχει ένα update από το `main`.
 - Το `main` προχωράει μόνο του (κάθε update γράφει δεδομένα), οπότε το branch εργασίας συγχρονίζεται με το `main` πριν από κάθε νέα αλλαγή.
 - Επείγον (π.χ. λάθος στις μεταγραφές πριν κλείσει η αγωνιστική): μικρή διόρθωση απευθείας στο `main`.
