@@ -56,19 +56,6 @@
    "diff": 2.5
   }
  ],
- "lineups": [
-  {
-   "round": 2,
-   "suggested": 107.4,
-   "actual": 152.0,
-   "diff": 44.6
-  },
-  {
-   "round": 3,
-   "suggested": 139.9,
-   "actual": 135.6,
-   "diff": -4.3
-  }
- ],
+ "lineups": [],
  "min_xpred": 5.0
 }
