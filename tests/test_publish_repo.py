@@ -62,7 +62,7 @@ def test_public_site_news_has_no_article_text(public, tmp_path):
 
 def test_the_repos_own_data_passes_through(public):
     """Whatever data/public holds today sanitizes cleanly (no NaN, valid JSON)."""
-    seed_public(public, *publish.PUBLIC_FILES, *publish.PRIVATE_ONLY)
+    seed_public(public, *publish.PUBLIC_FILES)     # the private-only files are not in this repo
     publish.sanitize_repo(public)
     for f in public.glob("*.json"):
         json.loads(f.read_text(), parse_constant=lambda c: (_ for _ in ()).throw(ValueError(c)))
