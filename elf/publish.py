@@ -2,6 +2,9 @@
 
 python -m elf.publish <out_dir>   -> the public site in <out_dir>: the web app (renamed to
                                      the product name) + data/*.json
+python -m elf.publish --repo      -> data/public rewritten in place for the public GitHub repo:
+                                     the same sanitized files, private-only files deleted
+                                     (their full versions live in the private data repo)
 
 One engine run feeds both editions. The personal edition deploys data/public as is;
 the public one gets only what is listed in PUBLIC_FILES, stripped of personal fields
@@ -25,7 +28,10 @@ PUBLIC_FILES = {
                                    "edition": "public"},
     "report_public.json": None,     # published as report.json
     "players.json": None,
-    "news.json": None,
+    # titles, sources and links only: the articles' text belongs to their publishers (it is
+    # read for the summary during the run and kept in the private archive, never published)
+    "news.json": lambda d: {**d, "articles": [{k: v for k, v in a.items() if k != "text"}
+                                              for a in d.get("articles", [])]},
     "model_params.json": None,
     "clubs.json": None,
     "tracking.json": lambda d: {**d, "lineups": []},
@@ -34,6 +40,29 @@ PUBLIC_FILES = {
                                                  for r in d.get("rounds", [])]},
 }
 RENAME = {"report_public.json": "report.json"}
+
+# In the public repo these exist only in the private data repo: the owner's report and lineups,
+# debugging shapes and alert state. Files kept but sanitized are the PUBLIC_FILES above; the
+# rest of data/public (prices, prediction logs, expert log) has nothing personal in it.
+PRIVATE_ONLY = ("report.json", "lineup_log.json", "roster_shape.json", "health_last.json")
+
+
+def sanitize_repo(src: Path | None = None) -> list[str]:
+    """Rewrite data/public in place for the public repo (the full files were saved to the private
+    data repo first). Returns what it changed."""
+    src = src or PUBLIC
+    done = []
+    for name, clean in PUBLIC_FILES.items():
+        f = src / name
+        if clean and f.exists():
+            f.write_text(json.dumps(clean(json.loads(f.read_text())), ensure_ascii=False,
+                                    indent=1, allow_nan=False))
+            done.append(name)
+    for name in PRIVATE_ONLY:
+        if (src / name).exists():
+            (src / name).unlink()
+            done.append(f"-{name}")
+    return done
 
 
 def bundle(out: Path, src: Path | None = None) -> list[str]:
@@ -75,4 +104,7 @@ def site(out: Path, src: Path | None = None) -> list[str]:
 
 
 if __name__ == "__main__":
-    print(site(Path(sys.argv[1] if len(sys.argv) > 1 else "site_public")))
+    if sys.argv[1:] == ["--repo"]:
+        print(sanitize_repo())
+    else:
+        print(site(Path(sys.argv[1] if len(sys.argv) > 1 else "site_public")))

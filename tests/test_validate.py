@@ -18,6 +18,9 @@ NOW = datetime.now(timezone.utc).isoformat()
 def pub(public):
     """Today's real data, as if the pipeline had just written it."""
     seed_public(public, *FILES)
+    if not (public / "report.json").exists():      # the public repo keeps only the public report
+        seed_public(public, "report_public.json")
+        (public / "report_public.json").rename(public / "report.json")
     for name in ("predictions.json", "report.json"):
         d = json.loads((public / name).read_text())
         d["generated"] = NOW

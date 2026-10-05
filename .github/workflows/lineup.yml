@@ -21,8 +21,21 @@ jobs:
   lineup:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    env:
+      HAS_DATA_REPO: ${{ secrets.DATA_REPO_TOKEN != '' }}
     steps:
       - uses: actions/checkout@v7
+      # the owner's team (pending trades for the reminder) lives in the private data repo
+      - name: Private data repo
+        if: ${{ env.HAS_DATA_REPO == 'true' }}
+        uses: actions/checkout@v7
+        with:
+          repository: ${{ github.repository_owner }}/elf-data
+          token: ${{ secrets.DATA_REPO_TOKEN }}
+          path: private
+      - name: Restore the private data
+        if: ${{ env.HAS_DATA_REPO == 'true' }}
+        run: '[ -d private/public ] && cp -r private/public/. data/public/ || true'
       - uses: actions/setup-python@v7
         with:
           python-version: "3.11"

@@ -8,3 +8,11 @@ tests/ui/node_modules/
 tests/ui/test-results/
 tests/ui/playwright-report/
 .coverage
+# private data repo (elf-data): kept out of the public repo once DATA_REPO_TOKEN is set
+# (files already tracked keep updating until then; see .github/workflows/update.yml)
+data/archive/
+data/public/report.json
+data/public/lineup_log.json
+data/public/roster_shape.json
+data/public/health_last.json
+private/
