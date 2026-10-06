@@ -122,7 +122,7 @@ round,source,stance,person_id,name,team,model_xpts
 4,EuroLeague Fantasy Tips (official),pick,004554,"ZIZIC, ANTE",BES,12.96
 4,EuroLeague Fantasy Tips (official),pick,003958,"THIEMANN, JOHANNES",MUN,18.25
 4,EuroLeague Fantasy Tips (official),pick,008192,"TUBELIS, AZUOLAS",ZAL,17.0
-4,EuroLeague Fantasy Tips (official),pick,015166,"CROWDER, JAE",ASV,12.14
+4,EuroLeague Fantasy Tips (official),captain,015166,"CROWDER, JAE",ASV,12.14
 4,EuroLeague Fantasy Tips (official),pick,007866,"MITOGLOU, KONSTANTINOS",PAN,7.67
 4,EuroLeague Fantasy Tips (official),pick,000796,"MIROTIC, NIKOLA",PAM,16.66
 4,EuroLeague Fantasy Tips (official),pick,012613,"JANTUNEN, MIKAEL",MAD,7.01
@@ -131,3 +131,22 @@ round,source,stance,person_id,name,team,model_xpts
 4,EuroLeague Fantasy Tips (official),pick,007947,"VILDOZA, LUCA",PAR,12.23
 4,EuroLeague Fantasy Tips (official),pick,011205,"HALL, DEVON",MIL,11.51
 4,EuroLeague Fantasy Tips (official),pick,011305,"CARTER, TYSON",RED,5.71
+4,Basketball Sphere – Fantasy,pick,012608,"SHORTS, TJ",PAM,15.82
+4,Basketball Sphere – Fantasy,pick,007975,"FRANCISCO, SYLVAIN",PAN,17.15
+4,Basketball Sphere – Fantasy,pick,011987,"EDWARDS, CARSEN",ZAL,9.56
+4,Basketball Sphere – Fantasy,pick,007519,"JOKUBAITIS, ROKAS",MUN,8.26
+4,Basketball Sphere – Fantasy,pick,008173,"SPAGNOLO, MATTEO",BAS,6.3
+4,Basketball Sphere – Fantasy,pick,010357,"YABUSELE, GUERSCHON",PAN,13.36
+4,Basketball Sphere – Fantasy,pick,013363,"NWORA, JORDAN",RED,11.41
+4,Basketball Sphere – Fantasy,pick,012878,"WRIGHT, MOSES",MIL,15.04
+4,Basketball Sphere – Fantasy,pick,007464,"PARRA, JOEL",BAR,6.1
+4,Basketball Sphere – Fantasy,pick,007736,"LAKIC, ARIJAN",PAR,2.41
+4,Basketball Sphere – Fantasy,pick,011706,"SAINT-SUPERY, MARIO",PAM,2.4
+4,Basketball Sphere – Fantasy,avoid,000898,"VALANCIUNAS, JONAS",ZAL,20.51
+4,Basketball Sphere – Fantasy,avoid,009035,"BOLOMBOY, JOEL",ASV,6.47
+4,Basketball Sphere – Fantasy,avoid,013667,"FERNANDO, BRUNO",IST,6.16
+4,leagues_or_other,avoid,011157,"MOTLEY, JOHNATHAN",RED,1.07
+4,leagues_or_other,avoid,001133,"SHENGELIA, TORNIKE",DUB,7.66
+4,leagues_or_other,avoid,014742,"THOMPSON, ETHAN",PAR,0.0
+4,leagues_or_other,avoid,012080,"LUWAWU-CABARROT, TIMOTHE",MAD,8.17
+4,leagues_or_other,avoid,014802,"BELLO, RASHEED",VIR,0.94

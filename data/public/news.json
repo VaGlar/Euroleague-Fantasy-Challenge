@@ -127,6 +127,15 @@
    "report": false
   },
   {
+   "title": "Giannis Antetokounmpo shuts down Magic Johnson comparisons: “I’m far away”",
+   "url": "https://www.eurohoops.net/en/nba-news/2016838/giannis-antetokounmpo-talks-magic-johnson-comparison-miami-heat-nba/",
+   "date": "2026-10-06T03:29:59+00:00",
+   "source": "Eurohoops",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
    "title": "Παρτίζαν-Μέγκα 83-59: Μπήκε με φόρα στην ABA League η ομάδα του Πενιαρόγια",
    "url": "https://www.gazzetta.gr/basketball/aba-liga/2574818/partizan-megka-83-59-mpike-me-fora-stin-aba-league-i-omada-toy",
    "date": "2026-10-05T23:57:11+02:00",
@@ -346,15 +355,6 @@
    "title": "Ρεάλ Μαδρίτης: Η επική απάντηση του Εμπαπέ στα δημοσιεύματα για τον… εκνευρισμό του στο ντέρμπι με την Ατλέτικο! (video)",
    "url": "https://www.novasports.gr/sport/podosfairo/event/laliga-division/article/15151609/real-madritis-i-epiki-apantisi-tou-empape-sta-dimosieymata-gia-ton-ekneyrismo-tou-sto-ntermpi-me-tin-atletiko-video/",
    "date": "2026-10-05T16:40:00+00:00",
-   "source": "Novasports",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Λιβάι Γκαρσία: Οι αγώνες που θα χάσει λόγω τραυματισμού",
-   "url": "https://www.novasports.gr/sport/podosfairo/event/super-league-1/article/15151717/livai-gkarsia-oi-agones-pou-tha-xasei-logo-traymatismou/",
-   "date": "2026-10-05T16:31:00+00:00",
    "source": "Novasports",
    "weight": 1,
    "fantasy": false,
@@ -737,24 +737,6 @@
    "weight": 1,
    "fantasy": false,
    "report": false
-  },
-  {
-   "title": "Mike James injury shocks EuroLeague",
-   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/mike-james-injury-shocks-euroleague/",
-   "date": "2026-10-01T23:30:52.148000+00:00",
-   "source": "EuroLeague (official)",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Backdoor cuts: Milestones, match-winners and hidden heroes",
-   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/backdoor-cuts-milestones-match-winners-and-hidden-heroes/",
-   "date": "2026-10-01T22:52:32.267000+00:00",
-   "source": "EuroLeague (official)",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
   }
  ],
  "digest": {
@@ -762,87 +744,105 @@
    {
     "player": "FALL, MOUSTAPHA",
     "status": "available",
-    "note": "Ανεβάζει ρυθμούς και αναμένεται να είναι διαθέσιμος για το παιχνίδι με τη Φενέρμπαχτσε.",
-    "source": "Gazzetta"
+    "note": "Ανεβάζει ρυθμούς και πιθανότατα θα είναι διαθέσιμος για το ματς με τη Φενέρμπαχτσε.",
+    "source": "Eurohoops (GR)"
+   },
+   {
+    "player": "EDWARDS, CARSEN",
+    "status": "available",
+    "note": "Τιμωρήθηκε με πρόστιμο από τη Ζάλγκιρις για τροχαίο παράπτωμα, αλλά αγωνίζεται κανονικά.",
+    "source": "Eurohoops (GR)"
    },
    {
     "player": "PETERS, ALEC",
     "status": "available",
-    "note": "Επέστρεψε στη δωδεκάδα της Αρμάνι στο ιταλικό πρωτάθλημα.",
+    "note": "Επέστρεψε στη δωδεκάδα της Αρμάνι μετά την απουσία του στην πρεμιέρα.",
     "source": "Eurohoops (GR)"
+   },
+   {
+    "player": "JAMES, MIKE",
+    "status": "out",
+    "note": "Υπέστη ρήξη αχιλλείου τένοντα και τέθηκε νοκ άουτ.",
+    "source": "EuroLeague (official)"
+   },
+   {
+    "player": "JEFFRIES, DAQUAN",
+    "status": "out",
+    "note": "Υπέστη κάταγμα στο χέρι στην πρεμιέρα.",
+    "source": "Eurohoops"
    }
   ],
   "expert": [
    {
     "player": "BINGHAM, MARCUS",
     "stance": "pick",
-    "note": "Εξαιρετική επιλογή στους σέντερ με σταθερά υψηλή απόδοση.",
+    "note": "Εξαιρετική φόρμα και βασική επιλογή στους σέντερ.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "DIARRA, ALIOU",
     "stance": "pick",
-    "note": "εξαιρετική value for money επιλογή μετά τις τελευταίες του εμφανίσεις.",
+    "note": "value for money επιλογή που προσφέρει συνεχώς άνοδο τιμής.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "VALANCIUNAS, JONAS",
     "stance": "pick",
-    "note": "Κορυφαία και πιο αξιόπιστη λύση στους ακριβούς σέντερ για αυτή την αγωνιστική.",
+    "note": "Αξιόπιστη και ακριβή λύση στη ρακέτα απέναντι σε αποδυναμωμένους αντιπάλους.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "ZIZIC, ANTE",
     "stance": "pick",
-    "note": "Ρισκαδόρικη αλλά πιθανόν εξαιρετικά αποδοτική επιλογή, ειδικά εντός έδρας.",
+    "note": "Ρισκαδόρικη αλλά πιθανώς προσοδοφόρα επιλογή εντός έδρας.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "THIEMANN, JOHANNES",
     "stance": "pick",
-    "note": "Αξιόπιστος και σταθερός σέντερ με εξαιρετικά ποσοστά.",
+    "note": "Σταθερός και αξιόπιστος ψηλός για το παιχνίδι εντός έδρας.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "TUBELIS, AZUOLAS",
     "stance": "pick",
-    "note": "Τρομερό value και σταθερά υψηλά νούμερα στη φαντασία.",
+    "note": "Εξαιρετικά υποτιμημένος με σταθερά υψηλά PIR.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "CROWDER, JAE",
-    "stance": "pick",
-    "note": "Προτείνεται ως έξτρα επιλογή για αρχηγό την Τετάρτη.",
+    "stance": "captain",
+    "note": "Ιδανική επιλογή για αρχηγός σε βραδιά μεμονωμένου αγώνα.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "MITOGLOU, KONSTANTINOS",
     "stance": "pick",
-    "note": "Προτιμότερη και πιο έμπειρη λύση στα φτηνά forwards του Παναθηναϊκού.",
+    "note": "Πιο έμπειρη και ασφαλής λύση από τους νεαρότερους συμπαίκτες του.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "MIROTIC, NIKOLA",
     "stance": "pick",
-    "note": "Υποτιμημένος παίκτης με τεράστια εμπειρία και ηγετικό ρόλο.",
+    "note": "Εξαιρετική φόρμα και χαμηλή τιμή για την ποιότητά του.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "JANTUNEN, MIKAEL",
     "stance": "pick",
-    "note": "Φθηνή και αποδοτική λύση στις θέσεις των φόργουορντ.",
+    "note": "Φθηνή και αποδοτική επιλογή στο 4.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "BRYANT, ELIJAH",
     "stance": "pick",
-    "note": "Ασταμάτητος MVP με κορυφαία νούμερα, επιβάλλεται η απόκτησή του.",
+    "note": "Ασταμάτητος και MVP δύο συνεχόμενων αγωνιστικών.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "MALEDON, THEO",
     "stance": "pick",
-    "note": "Εξαιρετική φόρμα και ηγερετικός ρόλος στη Ρεάλ Μαδρίτης.",
+    "note": "Σε εξαιρετική κατάσταση, αποτελεί τον ηγέτη της Ρεάλ.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
@@ -854,20 +854,134 @@
    {
     "player": "HALL, DEVON",
     "stance": "pick",
-    "note": "Εξαιρετικά υποτιμημένος και οικονομικός γκαρντ.",
+    "note": "Υποτιμημένος γκαρντ με εξαιρετικές πρόσφατες εμφανίσεις.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "CARTER, TYSON",
     "stance": "pick",
-    "note": "Αυξανόμενος ρόλος και σταθερή συνεισφορά.",
+    "note": "Αυξανόμενος ρόλος και σταθερή απόδοση.",
     "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "SHORTS, TJ",
+    "stance": "pick",
+    "note": "Κορυφαία επιλογή στα γκαρντ χάρη στον γρήγορο ρυθμό.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "FRANCISCO, SYLVAIN",
+    "stance": "pick",
+    "note": "Αυξημένος ρόλος λόγω απουσιών στην περιφέρεια.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "EDWARDS, CARSEN",
+    "stance": "pick",
+    "note": "Υψηλή επιθετική παραγωγή σε παιχνίδι υψηλού ρυθμού.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "JOKUBAITIS, ROKAS",
+    "stance": "pick",
+    "note": "Οικονομική λύση με αυξανόμενο χρόνο συμμετοχής.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "SPAGNOLO, MATTEO",
+    "stance": "pick",
+    "note": "Ευκαιρία απόκτησης σε χαμηλή τιμή με καλή προοπτική.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "YABUSELE, GUERSCHON",
+    "stance": "pick",
+    "note": "Αναμένεται να ανέβει αγωνιστικά σε δύσκολο παιχνίδι.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "NWORA, JORDAN",
+    "stance": "pick",
+    "note": "Κύριος εκφραστής της επίθεσης, ιδανικός για αντίδραση.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "WRIGHT, MOSES",
+    "stance": "pick",
+    "note": "Σταθερός πυλώνας της Μιλάνο, δεν πρέπει να πωληθεί.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "PARRA, JOEL",
+    "stance": "pick",
+    "note": "Αξιόπιστη οικονομική επιλογή παρότι ξεκίνησε άσχημα.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "LAKIC, ARIJAN",
+    "stance": "pick",
+    "note": "Απαραίτητη επιλογή βάσης στη ελάχιστη τιμή.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "SAINT-SUPERY, MARIO",
+    "stance": "pick",
+    "note": "Φθηνός γκαρντ με σταθερό χρόνο συμμετοχής.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "VALANCIUNAS, JONAS",
+    "stance": "avoid",
+    "note": "Προτείνεται η πώλησή του λόγω δύσκολου προγράμματος και ρυθμού.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "BOLOMBOY, JOEL",
+    "stance": "avoid",
+    "note": "Χαμηλή επιθετική εμπλοκή και δύσκολο πρόγραμμα.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "FERNANDO, BRUNO",
+    "stance": "avoid",
+    "note": "Χαμηλό usage και περιορισμένος χρόνος συμμετοχής.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "MOTLEY, JOHNATHAN",
+    "stance": "avoid",
+    "note": "Απογοητευτικό ξεκίνημα και πτώση αξίας.",
+    "source": "leagues_or_other"
+   },
+   {
+    "player": "SHENGELIA, TORNIKE",
+    "stance": "avoid",
+    "note": "Δεν έχει βρει σταθερό ρόλο στο rotation.",
+    "source": "leagues_or_other"
+   },
+   {
+    "player": "THOMPSON, ETHAN",
+    "stance": "avoid",
+    "note": "Προβλήματα στην επιλογή σουτ και προσαρμογή.",
+    "source": "leagues_or_other"
+   },
+   {
+    "player": "LUWAWU-CABARROT, TIMOTHE",
+    "stance": "avoid",
+    "note": "Ασταθής απόδοση και αρνητικά σκορ.",
+    "source": "leagues_or_other"
+   },
+   {
+    "player": "BELLO, RASHEED",
+    "stance": "avoid",
+    "note": "Περιορισμένος χρόνος συμμετοχής.",
+    "source": "leagues_or_other"
    }
   ],
   "round": 4,
-  "summary_el": "Ξεκινούν οι αναλύσεις και οι προτάσεις για τη 4η αγωνιστική του EuroLeague Fantasy Challenge, με τους φανταστικούς μάνατζερ να καταστρώνουν τα πλάνα τους για αλλαγές πριν από τα νέα παιχνίδια. Ο Έλιαϊ Μπράιαντ συνεχίζει να εντυπωσιάζει μετά τα διαδοχικά βραβεία MVP, αποτελώντας την νούμερο ένα επιλογή για τις ομάδες. Σημαντικές επιστροφές και εξελίξεις προκύπτουν για παίκτες όπως ο Μουσταφά Φαλ, ο οποίος ανεβάζει ρυθμούς στον Παναθηναϊκό ενόψει του αγώνα με τη Φενέρμπαχτσε. Στον αντίποδα, προβληματισμός επικρατεί για περιπτώσεις παικτών που δεν έχουν αποδώσει τα αναμενόμενα στα πρώτα ματς, ενώ οι ειδικοί προτείνουν ευκαιρίες για value picks σε όλες τις θέσεις. Παράλληλα, συνεχίζονται οι ζυμώσεις και οι συζητήσεις σε επίπεδο ιδιοκτητών για το μέλλον και την επέκταση της διοργάνωσης.",
+  "summary_el": "• Πλησιάζει η 4η αγωνιστική της EuroLeague Fantasy Challenge, με τις αλλαγές να παραμένουν περιορισμένες πριν από τις απεριόριστες στον έκτο γύρο.\n• Οι Μάρκους Μπίνγκαμ, Αλιού Ντιαρά και Γιόνας Βαλαντσιούνας ξεχωρίζουν ως κορυφαίες επιλογές για τη θέση των σέντερ.\n• Στους φόργουορντ, οι Αζουόλας Τουμπέλις και Νικόλα Μίροτιτς προσφέρουν εξαιρετική αξία σε σχέση με την τιμή τους.\n• Ο Έλιαϊ Μπράιαντ συνεχίζει εντυπωσιακά μετά τα διαδοχικά βραβεία MVP, όντας βασικός πυλώνας για όσους διαθέτουν το απαραίτητο μπάτζετ.\n• Παίκτες όπως ο Τεό Μαλεντόν και ο Τι Τاي Σορτς προτείνονται ανεπιφύλακτα για την ενίσχυση της περιφέρειας.\n• Σημαντικές επιστροφές όπως αυτή του Μουσταφά Φαλ στον Παναθηναϊκό ενισχύουν τις επιλογές των μανατζέρ.\n• Αρκετοί παίκτες υψηλού κόστους όπως ο Τζόναθαν Μότλεϊ και ο Μπρούνο Φερνάντο προτείνονται προς πώληση λόγω χαμηλής απόδοσης.",
   "_model": "gemini-3.5-flash-lite"
  },
- "digest_at": "2026-10-05T21:43:32.177882+00:00",
+ "digest_at": "2026-10-06T04:08:53.591503+00:00",
  "failed": []
 }
