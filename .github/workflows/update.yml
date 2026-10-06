@@ -190,7 +190,7 @@ jobs:
         run: |
           curl -sS "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
             --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
-            --data-urlencode "text=❌ Το αυτόματο update απέτυχε — η δημόσια έκδοση δεν ενημερώθηκε: ${RUN_URL}" > /dev/null
+            --data-urlencode "text=❌ Το αυτόματο update απέτυχε — η δημόσια έκδοση δεν ενημερώθηκε: ${RUN_URL}" | python3 .github/tg_ok.py
 
       - name: Notify Telegram
         if: ${{ always() && inputs.notify && env.LIVE == 'true' }}
@@ -210,4 +210,4 @@ jobs:
             text="❌ Το update απέτυχε: $RUN_URL"
           fi
           curl -sS "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
-            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" --data-urlencode "text=${text}" > /dev/null
+            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" --data-urlencode "text=${text}" | python3 .github/tg_ok.py
