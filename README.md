@@ -1,261 +1,270 @@
 # EuroLeague Fantasy Challenge — helper
 
-Προσωπικό εργαλείο για το [EuroLeague Fantasy Challenge](https://euroleaguefantasy.euroleaguebasketball.net/10):
-κατάταξη παικτών με βάση δεδομένα, νέα και γνώμες ειδικών, προτάσεις για αλλαγές και αρχηγό,
-ειδοποίηση στο Telegram στις 10:05 κάθε μέρας αγώνων. Κόστος: 0 €.
+A personal tool for the [EuroLeague Fantasy Challenge](https://euroleaguefantasy.euroleaguebasketball.net/10):
+a data-driven player ranking built from stats, news and expert opinion, trade and captain suggestions,
+and a Telegram report at 10:05 on every game day. Running cost: €0.
 
-> **Δημόσια έκδοση:** το σχέδιο προϊόντος (δύο εκδόσεις από το ίδιο engine, συνδρομές, ασφάλεια) βρίσκεται στο [`docs/PRODUCT.md`](docs/PRODUCT.md).
+> **Public edition:** the product plan (two editions from one engine, subscriptions, security) is in [`docs/PRODUCT.md`](docs/PRODUCT.md).
 >
-> **R&D:** πειράματα βελτίωσης του μοντέλου, μαζί με όσα απέτυχαν, και οι ιδέες σε αναμονή βρίσκονται στο [`research/`](research/README.md).
+> **R&D:** experiments to improve the model, including the ones that failed, and the ideas on hold are in [`research/`](research/README.md).
+>
+> **Language:** documentation, code comments and commit messages are in English. Everything a user sees
+> (the site, the Telegram bot, the report) is in Greek: the product is for Greek-speaking managers.
 
-## Αρχιτεκτονική
+## Architecture
 
-Πώς ρέουν τα δεδομένα, από τις πηγές μέχρι το κινητό σου (το GitHub το δείχνει ως διάγραμμα). Εκτός διαγράμματος για να μένει καθαρό: `analytics.yml` (επισκεψιμότητα, 09:05 → Telegram), `functions/feed.js` (proxy όταν ένα site — Substack, BasketNews — μπλοκάρει το GitHub), `tests.yml`.
+How the data flows, from the sources to your phone (GitHub renders it as a diagram). Left out to keep it readable: `analytics.yml` (traffic, 09:05 → Telegram), `functions/feed.js` (a proxy for sites that block GitHub — Substack, BasketNews), `functions/api/sync` (devices in step, see below), `tests.yml`.
 
 ```mermaid
 flowchart TB
-  BOT["🤖 Telegram bot · worker/<br/>ωριαίο cron στο Cloudflare"]
+  BOT["🤖 Telegram bot · worker/<br/>hourly cron on Cloudflare"]
 
-  subgraph SRC["Πηγές"]
+  subgraph SRC["Sources"]
     direction LR
-    EL["EuroLeague API<br/>αγώνες, box scores"]
-    FG["Fantasy game<br/>τιμές, POP, η ομάδα σου"]
-    NEWS["RSS / Substack<br/>νέα, ειδικοί"]
+    EL["EuroLeague API<br/>games, box scores"]
+    FG["Fantasy game<br/>prices, POP, your team"]
+    NEWS["RSS / Substack<br/>news, experts"]
   end
 
-  UPD["⚙️ update.yml → elf/run.py (GitHub Actions)<br/>μοντέλο xFPT · βελτιστοποίηση · report"]
-  GEM["Gemini<br/>σύνοψη νέων"]
+  UPD["⚙️ update.yml → elf/run.py (GitHub Actions)<br/>xFPT model · optimizer · report"]
+  GEM["Gemini<br/>news summary"]
   DATA[("data/public")]
-  PUB["elf/publish.py<br/>αφαιρεί τα προσωπικά"]
-  P1["elf-dashboard.pages.dev<br/>προσωπική"]
-  P2["hoopslab-beta.pages.dev<br/>δημόσια"]
-  LU["lineup.yml<br/>πεντάδα + CAP"]
+  PUB["elf/publish.py<br/>strips personal data"]
+  P1["elf-dashboard.pages.dev<br/>personal"]
+  P2["hoopslab-beta.pages.dev<br/>public"]
+  LU["lineup.yml<br/>five + CAP"]
   TG(["📱 Telegram"])
 
-  BOT -- "07:05 · 3ω πριν τον 1ο αγώνα · μετά τους αγώνες" --> UPD
+  BOT -- "07:05 · 3h before the first game · after the games" --> UPD
   SRC --> UPD
   UPD <--> GEM
   UPD --> DATA
   DATA --> P1
   DATA --> PUB --> P2
-  UPD -- "report · προβλήματα" --> TG
+  UPD -- "report · problems" --> TG
   BOT -- "/lineup" --> LU
-  LU -- "γράφει μόνο πεντάδα/αρχηγό" --> FG
+  LU -- "writes the five/captain only" --> FG
   TG <--> BOT
 ```
 
-Πώς περνάει μια αλλαγή στο live (βλ. «Ροή αλλαγών» παρακάτω):
+How a change reaches live (see «Change flow» below):
 
 ```mermaid
 flowchart LR
-  W["branch εργασίας<br/>claude/…"] -- "update από το branch" --> PRE["preview<br/>dev.*.pages.dev<br/>χωρίς δεδομένα / Telegram"]
-  W -- "PR" --> T{"tests<br/>πράσινα;"}
-  T -- "ναι → merge" --> M["main = live"]
-  T -- "όχι → διόρθωση" --> W
-  M -- "προγραμματισμένα updates (bot)" --> LIVE["elf-dashboard + hoopslab<br/>δεδομένα + Telegram"]
+  W["work branch<br/>claude/…"] -- "update from the branch" --> PRE["preview<br/>dev.*.pages.dev<br/>no data commit / Telegram"]
+  W -- "PR" --> T{"tests<br/>green?"}
+  T -- "yes → merge" --> M["main = live"]
+  T -- "no → fix" --> W
+  M -- "scheduled updates (bot)" --> LIVE["elf-dashboard + hoopslab<br/>data + Telegram"]
 ```
 
-| Κομμάτι | Πού τρέχει | Τι κάνει |
+| Part | Runs on | What it does |
 |---|---|---|
-| `elf/` (Python) | GitHub Actions (από το bot, 3–4×/μέρα) | στατιστικά EuroLeague, τιμές fantasy, νέα, xPIR, report |
-| `web/` | Cloudflare Pages | dashboard (PWA: «Προσθήκη στην αρχική οθόνη» στο iPhone) |
-| `worker/` | Cloudflare Workers | ωριαίο cron (update 07:05, report 10:05, update 3 ώρες και έλεγχος 2 ώρες πριν τον 1ο αγώνα, update μετά τους αγώνες) + εντολές bot· ανεβαίνει μόνο του σε κάθε αλλαγή του `worker/` στο `main` |
-| `sources.yaml` | — | λίστα πηγών νέων: RSS feeds, το CMS της EuroLeague και σελίδες που ενημερώνονται στη θέση τους (π.χ. το injury report του BasketNews) |
+| `elf/` (Python) | GitHub Actions (started by the bot, 3–4×/day) | EuroLeague stats, fantasy prices, news, xPIR, report |
+| `web/` | Cloudflare Pages | dashboard (a PWA: «Add to Home Screen» on an iPhone) |
+| `functions/` | Cloudflare Pages Functions | `/feed` (news proxy), `/api/sync` (HoopsLab devices in step, D1) |
+| `worker/` | Cloudflare Workers | hourly cron (update 07:05, report 10:05, update 3 hours and check 2 hours before the first game, update after the games) + bot commands; deploys itself on every change to `worker/` on `main` |
+| `sources.yaml` | — | news sources: RSS feeds, the EuroLeague CMS and pages updated in place (e.g. BasketNews' injury report) |
 
-**Κωδικοί ομάδων:** τα δεδομένα κρατούν τους κωδικούς του API της EuroLeague (IST, MUN, MAD, PAM…)· ό,τι διαβάζει ο χρήστης (site, report, Telegram) δείχνει τους κωδικούς του παιχνιδιού (EFS, BAY, RMB, VBC…), δηλαδή τα «TV codes» του `clubs.json` (`tc()` στο `web/`, `tv()` στο `elf/run.py`).
+**Club codes:** the data keep the EuroLeague API's codes (IST, MUN, MAD, PAM…); whatever a user reads (site, report, Telegram) shows the game's codes (EFS, BAY, RMB, VBC…), i.e. the «TV codes» of `clubs.json` (`tc()` in `web/`, `tv()` in `elf/run.py`).
 
-## Μοντέλο
+## Model
 
 ```
 xPIR = base × (1 + calib + pos·pos_dev + pace·pace_dev + margin·m/10 + blowout·|m|/10 + home·h)
 ```
-- **base**: blend PIR τελευταίων 3 / σεζόν / περσινής (DNP μετράει 0).
-- **Team rating**: net rating ανά 100 κατοχές + pace + πλεονέκτημα έδρας *ανά ομάδα* (shrinkage).
-- **pos_dev**: PIR που δίνει ο αντίπαλος στη θέση του παίκτη vs μέσος όρος.
-- **m**: αναμενόμενη διαφορά σκορ (ratings + έδρα) → blowouts κόβουν λεπτά.
-- **availability**: από τα νέα (Gemini) — out ×0, doubtful ×0.4, questionable ×0.8.
-- **επιστροφή από απουσία**: όποιος δεν έπαιξε σε κανένα από τα 3 τελευταία ματς της ομάδας του → βάση ×0.8 και σήμα «↩ επιστρέφει» (`research/012_injury_return`).
-- Τα βάρη **δεν είναι με το μάτι**: `python -m elf.backtest 2025 --save` τα ρυθμίζει με walk-forward backtest.
+- **base**: a blend of PIR over the last 3 games / the season / last season (a DNP counts as 0).
+- **Team rating**: net rating per 100 possessions + pace + home advantage *per team* (shrunk).
+- **pos_dev**: the PIR the opponent concedes to the player's position vs the league average.
+- **m**: the expected score margin (ratings + home) → blowouts cut minutes.
+- **availability**: from the news (Gemini) — out ×0, doubtful ×0.4, questionable ×0.8.
+- **return from absence**: a player who missed all of his team's last 3 games → base ×0.8 and the «↩ returning» flag (`research/012_injury_return`).
+- **price as memory**: for players with few games this season, the fantasy price counts as extra games that fade game by game (`research/021_price_prior`).
+- The weights are **not set by eye**: `python -m elf.backtest 2025 --save` fits them with a walk-forward backtest.
 
-## Δημόσιο repo και ιδιωτικά δεδομένα
+## Public repo and private data
 
-Το repo είναι **δημόσιο** (δωρεάν GitHub Actions, και φαίνεται η δουλειά). Ό,τι μπαίνει εδώ, και ό,τι
-τυπώνεται στα logs των Actions, το βλέπουν όλοι. Γι' αυτό τα δεδομένα είναι σε δύο repos:
+This repo is **public** (free GitHub Actions, and the work is visible). Everything committed here, and
+everything printed in the Actions logs, is visible to anyone. So the data live in two repos:
 
-| Πού | Τι |
+| Where | What |
 |---|---|
-| **αυτό το repo** (δημόσιο) | ο κώδικας και το `data/public` **καθαρισμένο**: χωρίς την ομάδα/report/πεντάδες του ιδιοκτήτη, χωρίς κείμενα άρθρων |
-| **`<owner>/elf-data`** (ιδιωτικό) | τα **πλήρη** αρχεία του `data/public` και το αρχείο άρθρων (`archive/`, κείμενα τρίτων) |
+| **this repo** (public) | the code and `data/public` **sanitized**: without the owner's team/report/lineups, without article text |
+| **`<owner>/elf-data`** (private) | the **full** `data/public` files and the article archive (`archive/`, third-party text) |
 
-Το update (`update.yml`) τα κρατάει σε συγχρονισμό, μόνο όταν υπάρχει το secret `DATA_REPO_TOKEN`
-(fine-grained token, **μόνο** για το `elf-data`, Contents: read/write):
-επαναφορά από το `elf-data` → pipeline → έλεγχος δεδομένων → αποθήκευση στο `elf-data` →
-καθαρισμός (`python -m elf.publish --repo`) → commit εδώ. Η προσωπική σελίδα και το `/lineup`
-διαβάζουν τα πλήρη αρχεία. Χωρίς το secret όλα μένουν εδώ, όπως παλιά (μην το αφαιρέσεις: το επόμενο
-update θα ξανάγραφε εδώ τα προσωπικά δεδομένα — το `tests/test_public_repo.py` θα κοκκινίσει).
+The update (`update.yml`) keeps them in step, only when the `DATA_REPO_TOKEN` secret exists
+(a fine-grained token for `elf-data` **only**, Contents: read/write):
+restore from `elf-data` → pipeline → data check → save to `elf-data` →
+sanitize (`python -m elf.publish --repo`) → commit here. The personal site and `/lineup` read the
+full files. Without the secret everything stays here, as before (don't remove it: the next update would
+write the personal data here again — `tests/test_public_repo.py` would go red).
 
-**Κανόνες για κάθε αλλαγή:**
-- **Νέο αρχείο στο `data/public`;** Βάλ' το συνειδητά σε μία κατηγορία στο `elf/publish.py`:
-  `PUBLIC_FILES` (δημοσιεύεται, με συνάρτηση καθαρισμού αν έχει κάτι προσωπικό) ή `PRIVATE_ONLY`
-  (μόνο στο `elf-data`). Ένα νέο `PRIVATE_ONLY` μπαίνει **και** στο `git rm` του βήματος «Sanitize for
-  the public repo» στο `update.yml` **και** στο `.gitignore`. Το `tests/test_public_repo.py` αποτυγχάνει
-  αν ένα αρχείο δεν έχει κατηγορία ή αν οι τρεις λίστες διαφέρουν.
-- **Τίποτα προσωπικό στα logs:** όχι `print` της ομάδας, του report, των tokens ή απαντήσεων του
-  fantasy API (το `python -m elf.run` τυπώνει μόνο πόσα μηνύματα έφτιαξε).
-- **Κείμενα άρθρων** μόνο στο `elf-data`· εδώ το `news.json` κρατά τίτλο, πηγή, link, ημερομηνία.
-- **Fixtures των tests** (`tests/ui/fixtures/`): ψεύτικα — ομάδα «Demo team», άρθρα χωρίς κείμενο,
-  το δημόσιο report.
-- Το παλιό ιστορικό του git **δεν** καθαρίστηκε (έχει ακόμη το αρχείο άρθρων και την ομάδα από πριν
-  γίνει δημόσιο)· απόφαση του ιδιοκτήτη. Αν ποτέ χρειαστεί: νέο repo με `git filter-repo`, γιατί σε αυτό
-  τα παλιά PR κρατούν ορατά τα παλιά commits.
+**Rules for every change:**
+- **A new file in `data/public`?** Put it deliberately in one category in `elf/publish.py`:
+  `PUBLIC_FILES` (published, with a sanitizing function if it holds anything personal) or `PRIVATE_ONLY`
+  (only in `elf-data`). A new `PRIVATE_ONLY` file also goes into the `git rm` of the «Sanitize for the
+  public repo» step in `update.yml` **and** into `.gitignore`. `tests/test_public_repo.py` fails if a
+  file has no category or if the three lists differ.
+- **Nothing personal in the logs:** no `print` of the team, the report, tokens or fantasy API answers
+  (`python -m elf.run` prints only how many messages it built; Telegram answers are reduced to «ok» or
+  the error by `.github/tg_ok.py`).
+- **Article text** only in `elf-data`; here `news.json` keeps title, source, link, date.
+- **Test fixtures** (`tests/ui/fixtures/`): fake — team «Demo team», articles without text, the public report.
+- The old git history was **not** cleaned (it still holds the article archive and the team from before
+  the repo went public): the owner's decision. If it is ever needed: a new repo with `git filter-repo`,
+  because in this one the old PRs keep the old commits visible.
 
-## Setup (μία φορά)
+## Setup (once)
 
 1. **GitHub Secrets** (Settings → Secrets and variables → Actions):
    `TELEGRAM_BOT_TOKEN`, `GEMINI_API_KEY`, `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`,
-   `FANTASY_TOKEN`, `DATA_REPO_TOKEN` (βλ. «Δημόσιο repo και ιδιωτικά δεδομένα»), και αργότερα `TELEGRAM_CHAT_ID`.
-2. Merge στο `main` (τα scheduled workflows τρέχουν μόνο από το default branch).
-3. Actions → **Deploy Telegram bot** → Run workflow. Μετά ανεβαίνει μόνο του σε κάθε αλλαγή του `worker/` στο `main`· χειροκίνητα χρειάζεται μόνο όταν αλλάξει κάποιο secret.
-4. Στείλε `/start` στο bot → σου απαντά το chat ID → βάλ' το στο secret `TELEGRAM_CHAT_ID`
-   → ξανατρέξε το **Deploy Telegram bot**.
-5. Actions → **Update data & dashboard** → Run workflow (το πρώτο τρέχει και το backtest).
-6. Άνοιξε `https://elf-dashboard.pages.dev` στο Safari → Share → Add to Home Screen.
+   `FANTASY_TOKEN`, `DATA_REPO_TOKEN` (see «Public repo and private data»), and later `TELEGRAM_CHAT_ID`.
+2. Merge to `main` (scheduled workflows run from the default branch only).
+3. Actions → **Deploy Telegram bot** → Run workflow. After that it deploys itself on every change to `worker/` on `main`; a manual run is needed only when a secret changes.
+4. Send `/start` to the bot → it answers with the chat ID → put it in the `TELEGRAM_CHAT_ID` secret
+   → run **Deploy Telegram bot** again.
+5. Actions → **Update data & dashboard** → Run workflow (the first run also runs the backtest).
+6. Open `https://elf-dashboard.pages.dev` in Safari → Share → Add to Home Screen.
 
 ### Fantasy token
-Από υπολογιστή: login στο site → F12 → Network → φίλτρο `dunkest` → refresh →
-κλικ σε request προς `fantaking-api.dunkest.com` → Request Headers → `Authorization: Bearer …` →
-αντέγραψε ό,τι ακολουθεί το `Bearer ` στο secret `FANTASY_TOKEN`.
-- Αν είναι JWT, το pipeline διαβάζει την ημερομηνία λήξης και σε προειδοποιεί **3 μέρες πριν**.
-- Αν είναι opaque token, η λήξη φαίνεται μόνο από `401`. Τότε το report και το `/health` το αναφέρουν.
-- **Fallback χωρίς token:** αντέγραψε το `my_team.example.yaml` σε `my_team.yaml` με τους 10 παίκτες σου.
-  Πρόταση αρχηγού και xPIR της ομάδας δουλεύουν κανονικά. Τιμές και προτάσεις αλλαγών χρειάζονται το token.
-- Χρήση: μόνο GET, 3 φορές τη μέρα, για τον δικό σου λογαριασμό. Είναι ανεπίσημο API και μπορεί να αλλάξει χωρίς προειδοποίηση.
+On a computer: log in to the site → F12 → Network → filter `dunkest` → refresh →
+click a request to `fantaking-api.dunkest.com` → Request Headers → `Authorization: Bearer …` →
+copy what follows `Bearer ` into the `FANTASY_TOKEN` secret.
+- If it is a JWT, the pipeline reads its expiry and warns you **3 days before**.
+- If it is an opaque token, expiry shows only as a `401`; the report and `/health` then say so.
+- **Fallback without a token:** copy `my_team.example.yaml` to `my_team.yaml` with your players.
+  The captain suggestion and the team's xPIR work as usual; prices and trade suggestions need the token.
+- Use: GET only, a few times a day, for your own account. It is an unofficial API and can change without notice.
 
-### Telegram `/update` (προαιρετικό)
-Ξεκινάει το update από το κινητό και σου γράφει όταν τελειώσει.
-1. GitHub → Settings (του λογαριασμού) → Developer settings → Personal access tokens →
+### Telegram `/update` (optional)
+Starts an update from your phone and tells you when it is done.
+1. GitHub → (account) Settings → Developer settings → Personal access tokens →
    **Fine-grained tokens** → Generate new token.
-2. Repository access: **Only select repositories** → αυτό το repo.
-3. Permissions → Repository permissions → **Actions: Read and write**. Τίποτα άλλο.
-4. Expiration: έως το τέλος της σεζόν.
-5. Βάλ' το στο secret `GH_DISPATCH_TOKEN` και ξανατρέξε το **Deploy Telegram bot**.
+2. Repository access: **Only select repositories** → this repo.
+3. Permissions → Repository permissions → **Actions: Read and write**. Nothing else.
+4. Expiration: the end of the season.
+5. Put it in the `GH_DISPATCH_TOKEN` secret and run **Deploy Telegram bot** again.
 
-### Πρόγραμμα (ώρα Ελλάδας)
-Το GitHub καθυστερεί τα δικά του προγραμματισμένα runs κατά ώρες, γι' αυτό όλο το πρόγραμμα το κρατά το bot (Cloudflare cron):
-- **07:05 κάθε μέρα**: update δεδομένων (και για τις δύο εκδόσεις).
-- **10:05 σε μέρα αγώνων**: το report στο Telegram, με κουμπί **👥 Πρόταση πεντάδας**.
-- **3 ώρες πριν τον 1ο αγώνα της ημέρας**: update, ώστε τραυματισμοί και νέα της ημέρας να φτάσουν στις προτάσεις πριν τη λήξη (βλ. `research/010`).
-- **2 ώρες πριν τον 1ο αγώνα της ημέρας**: έλεγχος της ομάδας στο παιχνίδι· μήνυμα **μόνο** αν η πεντάδα
-  διαφέρει από την πρόταση (με ✅ Εφάρμοσε) ή αν εκκρεμούν μεταγραφές που πρότεινα (Turn 1).
-- **~2,5 ώρες μετά τον τελευταίο αγώνα της ημέρας**: update με τα αποτελέσματα.
-- **Προβλήματα** (Gemini, πηγή νέων, token, αποτυχία update) έρχονται στο Telegram μόνο όταν αλλάζουν·
-  στη δημόσια έκδοση δεν εμφανίζονται ποτέ.
-- Χρειάζεται το `GH_DISPATCH_TOKEN`· χωρίς αυτό δεν γίνονται αυτόματα updates.
+### Schedule (Greek time)
+GitHub delays its own scheduled runs by hours, so the whole schedule lives in the bot (Cloudflare cron):
+- **07:05 every day**: data update (both editions).
+- **10:05 on game days**: the report on Telegram, with a **👥 Πρόταση πεντάδας** (lineup proposal) button.
+- **3 hours before the day's first game**: an update, so the day's injuries and news reach the suggestions before the deadline (see `research/010`).
+- **2 hours before the day's first game**: a check of the team in the game; a message **only** if the five
+  differs from the proposal (with ✅ Apply) or if suggested trades are still pending (Turn 1).
+- **~2.5 hours after the day's last game**: an update with the results.
+- **Problems** (Gemini, a news source, the token, a failed update) reach Telegram only when they change;
+  the public edition never shows them.
+- An update you start yourself (`/update`) ends with «✅ Το update ολοκληρώθηκε»; the scheduled ones
+  send only the report, problems and failures.
+- Needs `GH_DISPATCH_TOKEN`; without it there are no scheduled updates.
 
 ### Telegram `/lineup`
-Προτείνει πεντάδα, 6ο και αρχηγό από την **πραγματική** σου ομάδα και, αν πατήσεις ✅, τα εφαρμόζει στο παιχνίδι.
-- Γράφει **μόνο** πεντάδα/πάγκο/αρχηγό, **ποτέ** μεταγραφές.
-- **Κανόνες μέσα στην αγωνιστική** (το παιχνίδι απαντά 422 «Illegal moves» αλλιώς):
-  όποιος έχει παίξει μπορεί μόνο να **βγει στον πάγκο** — δεν αλλάζει θέση μέσα στους 6 (π.χ. 6ος → πεντάδα);
-  όποιος έπαιξε από τον πάγκο μένει στον πάγκο· το x2 μπορεί να μεταφερθεί μόνο σε παίκτη που δεν έχει παίξει.
-- Πεντάδα και 6ος μόνο από παίκτες του τρέχοντος Turn· όσοι παίζουν σε επόμενο Turn μένουν στον πάγκο με πλάνο αλλαγής.
-- Πριν γράψει ελέγχει ότι διαβάζει σωστά την ομάδα (formation, σειρά θέσεων). Αν κάτι δεν ταιριάζει ή η πρόταση άλλαξε από τη στιγμή που την είδες, **σταματά χωρίς αλλαγές**.
-- Μετά την αποθήκευση ξαναδιαβάζει την ομάδα και επιβεβαιώνει κάθε θέση.
-- Χρειάζεται το `GH_DISPATCH_TOKEN` (ίδιο με το `/update`).
+Proposes the five, sixth man and captain from your **real** team and, if you press ✅, applies them in the game.
+- Writes the five/bench/captain **only**, **never** trades.
+- **Rules during a round** (otherwise the game answers 422 «Illegal moves»):
+  a player who has played can only **go to the bench** — he can't move within the 6 (e.g. 6th → five);
+  a player who played from the bench stays on the bench; the ×2 can only move to a player who hasn't played.
+- The five and the sixth man only from players of the current Turn; players of a later Turn stay on the bench with a swap plan.
+- Before writing, it checks that it reads the team correctly (formation, order of the places). If anything doesn't match, or the proposal changed since you saw it, it **stops without changes**.
+- After saving, it reads the team again and confirms every place.
+- Needs `GH_DISPATCH_TOKEN` (same as `/update`).
 
-### Cloudflare Access (κλείδωμα της προσωπικής σελίδας)
-Η `elf-dashboard.pages.dev` δείχνει την ομάδα σου και το report. Με το Access ανοίγει μόνο για σένα (email + κωδικός μίας χρήσης).
-Δύο «μηχανές» τη διαβάζουν χωρίς login, με ένα **service token**: το bot (όλα τα δεδομένα του) και το pipeline (το proxy `/feed`).
-Η δημόσια σελίδα (HoopsLab) δεν επηρεάζεται.
+### Cloudflare Access (locking the personal site)
+`elf-dashboard.pages.dev` shows your team and the report. With Access it opens only for you (email + one-time code).
+Two «machines» read it without a login, with a **service token**: the bot (all its data) and the pipeline (the `/feed` proxy).
+The public site (HoopsLab) is not affected.
 
-**Η σειρά μετράει**, αλλιώς σταματά το bot:
-1. Cloudflare → **Zero Trust** (δωρεάν έως 50 χρήστες· την πρώτη φορά ζητάει όνομα ομάδας και πλάνο Free).
-2. **Access → Service credentials → Service Tokens → Create**: όνομα `elf-bot`, διάρκεια χωρίς λήξη.
-   Αντέγραψε **αμέσως** το Client ID και το Client Secret (το secret δεν ξαναφαίνεται).
+**The order matters**, otherwise the bot stops:
+1. Cloudflare → **Zero Trust** (free up to 50 users; the first time it asks for a team name and the Free plan).
+2. **Access → Service credentials → Service Tokens → Create**: name `elf-bot`, no expiry.
+   Copy the Client ID and Client Secret **right away** (the secret is never shown again).
 3. GitHub → Secrets: `CF_ACCESS_CLIENT_ID`, `CF_ACCESS_CLIENT_SECRET`.
-4. Actions → **Deploy Telegram bot** → Run workflow (περνάει το token στο bot).
+4. Actions → **Deploy Telegram bot** → Run workflow (passes the token to the bot).
 5. **Access → Applications → Add → Self-hosted**:
-   - domains `elf-dashboard.pages.dev` **και** `*.elf-dashboard.pages.dev` (τα previews, π.χ. `dev.`)·
-   - session duration 1 μήνας (για να μη ζητάει κωδικό συνέχεια το iPhone)·
-   - policy 1 — **Allow**, Include → Emails → το email σου·
+   - domains `elf-dashboard.pages.dev` **and** `*.elf-dashboard.pages.dev` (the previews, e.g. `dev.`);
+   - session duration 1 month (so the iPhone doesn't keep asking for a code);
+   - policy 1 — **Allow**, Include → Emails → your email;
    - policy 2 — **Service Auth**, Include → Service Token → `elf-bot`.
-6. Έλεγχος: άνοιξε τη σελίδα σε ιδιωτικό παράθυρο (πρέπει να ζητήσει email), στείλε `/top` και `/health` στο bot (πρέπει να απαντήσουν κανονικά).
-   Αν το bot γράψει «Cloudflare Access 302», το token λείπει ή είναι λάθος: βήματα 3–4.
-7. Στο iPhone: άνοιξε μία φορά τη σελίδα από το εικονίδιο και κάνε login· μετά κρατάει για όσο είναι η session duration.
+6. Check: open the site in a private window (it must ask for an email), send `/top` and `/health` to the bot (they must answer as usual).
+   If the bot writes «Cloudflare Access 302», the token is missing or wrong: steps 3–4.
+7. On the iPhone: open the site once from the icon and log in; it then holds for the session duration.
 
-### Συγχρονισμός συσκευών (HoopsLab, D1)
+### Devices in step (HoopsLab, D1)
 
-Η ομάδα του HoopsLab ζει στη συσκευή· με έναν κωδικό (⋯ Επιλογές → Συγχρονισμός συσκευών) PC και κινητό
-κρατούν την ίδια ομάδα. Το `functions/api/sync/[[path]].js` την κρατά σε μια βάση **Cloudflare D1**
-(πίνακας `teams`: code, data, rev, updated_at, user_id — φτιάχνεται μόνος του στην πρώτη κλήση· SQL ώστε να
-περάσει αυτούσιος σε Supabase/Postgres όταν έρθουν λογαριασμοί). Μία φορά:
+A HoopsLab team lives on the device; with a code (⋯ Επιλογές → Συγχρονισμός συσκευών) a PC and a phone
+keep the same team. `functions/api/sync/[[path]].js` keeps it in a **Cloudflare D1** database
+(table `teams`: code, data, rev, updated_at, user_id — created on the first call; SQL so that it moves
+to Supabase/Postgres as it is when accounts come). Once:
 
-1. Cloudflare → Storage & Databases → D1 → Create: `hoopslab-sync` (και, για το dev, `hoopslab-sync-dev`).
-2. Workers & Pages → `hoopslab-beta` → Settings → Bindings → Add → D1 database: όνομα **`SYNC_DB`**,
+1. Cloudflare → Storage & Databases → D1 → Create: `hoopslab-sync` (and, for dev, `hoopslab-sync-dev`).
+2. Workers & Pages → `hoopslab-beta` → Settings → Bindings → Add → D1 database: name **`SYNC_DB`**,
    Production → `hoopslab-sync`, Preview → `hoopslab-sync-dev`.
-3. Ένα νέο deploy (το επόμενο update) το ενεργοποιεί. Χωρίς τη βάση η σελίδα λέει «δεν είναι ακόμα διαθέσιμος».
+3. A new deploy (the next update) turns it on. Without the database the page says it is «not available yet».
 
-Χωρίς λογαριασμούς ή προσωπικά στοιχεία: μόνο ids παικτών, τιμές, credits. Όποιος έχει τον κωδικό
-(12 χαρακτήρες, ~10^17 συνδυασμοί) βλέπει και αλλάζει την ομάδα. Σε αλλαγές και στις δύο συσκευές χωρίς
-συγχρονισμό ενδιάμεσα κερδίζει η πιο πρόσφατη.
+No accounts or personal data: only player ids, prices, credits. Whoever has the code
+(12 characters, ~10^17 combinations) sees and changes the team. When both devices change it without a
+sync in between, the newer change wins.
 
-### Στήλες fantasy (ειδικοί)
-Στο `sources.yaml` οι πηγές με `fantasy: true` (επίσημα Fantasy Tips, Basketball Sphere, EuroBallin)
-διαβάζονται ολόκληρες. Το Gemini καταγράφει ποιον προτείνει κάθε στήλη (pick / captain / avoid).
-- Επίδραση στο xFPT **μόνο της τρέχουσας αγωνιστικής**, σκόπιμα μικρή: +5% ανά στήλη (έως 2), +3% αν προτείνεται αρχηγός, −8% αν «avoid», όριο −15%/+13%.
-- Κάθε πρόταση γράφεται στο `data/public/expert_log.csv` μαζί με το xFPT του μοντέλου **πριν** την επίδραση — μετά από μερικές αγωνιστικές μετράμε αν οι στήλες προβλέπουν καλύτερα και ρυθμίζουμε τα ποσοστά.
-- Παίκτες χωρίς ιστορικό EuroLeague παίρνουν εκτίμηση από την τιμή τους (−20% για την αβεβαιότητα).
+### Fantasy columns (experts)
+The sources with `fantasy: true` in `sources.yaml` (the official Fantasy Tips, Basketball Sphere, EuroBallin)
+are read in full. Gemini records whom each column recommends (pick / captain / avoid); the names are mapped
+back to the roster's even when Gemini writes them in Greek (`news.resolve_names`).
+- Effect on the xFPT of the **current round only**, deliberately small: +5% per column (up to 2), +3% if suggested as captain, −8% if «avoid», capped at −15%/+13%.
+- Every pick is written to `data/public/expert_log.csv` with the model's xFPT **before** the effect — after a few rounds we measure whether the columns predict better and tune the percentages.
+- Players without EuroLeague history get an estimate from their price (−20% for the uncertainty).
 
-### $ — πρόβλεψη ανόδου τιμής
-- Μέχρι να υπάρξουν 2 αγωνιστικές τιμών: $ όταν το xFPT ξεπερνά αυτό που «αντιστοιχεί» στην τιμή κατά 3+ πόντους **και** 30%+ (οι φτηνοί ανεβαίνουν πιο εύκολα).
-- Μετά: το σύστημα μαθαίνει αυτόματα από το `prices.csv` πώς αλλάζει η τιμή με βάση πόντους και τιμή, και $ σημαίνει προβλεπόμενη άνοδο ≥ +0.3cr (↓$ πτώση).
+### $ — price rise prediction
+- Until there are 2 rounds of prices: $ when the xFPT beats what the price «implies» by 3+ points **and** 30%+ (cheap players rise more easily).
+- After that: the system learns from `prices.csv` how the price moves with points and price, and $ means a predicted rise ≥ +0.3cr (↓$ a fall).
 
-### Προτιμήσεις (`preferences.yaml`)
-`keep`: παίκτες που δεν θέλεις να σου προτείνει να πουλήσεις (π.χ. έχεις άποψη που το μοντέλο δεν ξέρει).
-`avoid`: παίκτες που δεν θέλεις να σου προτείνει. Αλλάζεις το αρχείο από το GitHub (✏️) και τρέχεις `/update`.
+### Preferences (`preferences.yaml`)
+`keep`: players you don't want to be told to sell (e.g. you know something the model doesn't).
+`avoid`: players you don't want suggested. Edit the file on GitHub (✏️) and run `/update`.
 
 ## Tests
-`python -m pytest` (≈30 δευτ., χωρίς δίκτυο — όλα τα εξωτερικά API είναι ψεύτικα). Καλύπτουν:
-- κανόνες βελτιστοποίησης: σύνθεση 4G/4F/2C/1HC, budget, ≥1 G/F/C στην πεντάδα, αρχηγός στην πεντάδα,
-  πεντάδα μόνο από το τρέχον Turn, κανόνες εντός αγωνιστικής, όριο μεταγραφών, `keep`
-- `/lineup` πάνω σε ψεύτικο παιχνίδι: πρόταση → εφαρμογή → επαλήθευση, και ότι **σταματά χωρίς να γράψει**
-  σε λάθος formation, άγνωστη διάταξη, παλιά επιβεβαίωση, άρνηση ή μη αποθήκευση από το παιχνίδι
-- ολόκληρο το pipeline πάνω στα πραγματικά δεδομένα του repo (έγκυρο JSON χωρίς NaN, νόμιμη ομάδα/μεταγραφές)
-- βάρη ορίζοντα/όριο απεριόριστων μεταγραφών, $, στήλες ειδικών, Gemini parsing, token, formations
-- το Telegram bot (`worker/`) σε node: μόνο ο ιδιοκτήτης, επιβεβαίωση μία φορά, πρόγραμμα σε ώρα Αθήνας
-- οι clients των εξωτερικών API (νέα, Gemini, EuroLeague, Dunkest, Telegram) και ότι τα μηνύματα είναι έγκυρο Telegram HTML
-- οι εφεδρικές διαδρομές: Gemini κάτω → προηγούμενη σύνοψη, βελτιστοποίηση που σκάει → απλές μεταγραφές,
-  αγωνιστική σε εξέλιξη → κανόνες εντός αγωνιστικής, `my_team.yaml` όταν πέσει το API του παιχνιδιού
-- ο έλεγχος δεδομένων του update (`elf/validate.py`: σταματά πριν το commit αν τα δεδομένα της μέρας είναι χαλασμένα)
-- το δημόσιο repo (`tests/test_public_repo.py`): τίποτα προσωπικό ή κείμενο άρθρου στα αρχεία του, σωστή σειρά
-  των βημάτων του `update.yml`, ίδια λίστα ιδιωτικών αρχείων σε `publish.py` / `update.yml` / `.gitignore`
+`python -m pytest` (≈30 s, no network — every external API is faked). They cover:
+- optimizer rules: squad of 4G/4F/2C/1HC, budget, ≥1 G/F/C in the five, captain in the five,
+  the five only from the current Turn, in-round rules, trade limit, `keep`, at most 6 per club
+- `/lineup` against a fake game: proposal → apply → verify, and that it **stops without writing**
+  on a wrong formation, an unknown layout, a stale confirmation, a refusal or a save the game didn't keep
+- the whole pipeline on the repo's real data (valid JSON without NaN, a legal team/trades)
+- horizon weights / unlimited-trades limit, $, expert columns, Gemini parsing and names, token, formations
+- the Telegram bot (`worker/`) in node: owner only, confirm once, schedule in Athens time
+- the clients of the external APIs (news, Gemini, EuroLeague, Dunkest, Telegram) and that messages are valid Telegram HTML
+- the fallbacks: Gemini down → previous summary, an optimizer crash → simple trades,
+  a round under way → in-round rules, `my_team.yaml` when the game's API is down
+- the update's data check (`elf/validate.py`: stops before the commit if the day's data are broken)
+- the public repo (`tests/test_public_repo.py`): nothing personal or article text in its files, the order
+  of the `update.yml` steps, the same list of private files in `publish.py` / `update.yml` / `.gitignore`
+- the HoopsLab sync function (`tests/test_sync.py`, in node against an in-memory D1)
 
-Στο CI το coverage του `elf/` δεν πρέπει να πέσει κάτω από το όριο του `.coveragerc` (`python -m pytest --cov`
-το δείχνει τοπικά, μαζί με τις γραμμές χωρίς test): νέος κώδικας έρχεται με τα tests του.
+In CI the coverage of `elf/` must not drop below the floor in `.coveragerc` (`python -m pytest --cov`
+shows it locally, with the lines lacking a test): new code comes with its tests.
 
-Τρέχουν αυτόματα σε κάθε PR, ως συνδυασμός με το τρέχον main (workflow **Tests**· όχι ξανά μετά το merge, ούτε
-σε push χωρίς PR — για έλεγχο από νωρίς άνοιξε το PR ως draft) και **πριν από κάθε `/lineup` apply**: αν αποτύχουν,
-δεν γράφεται τίποτα στο παιχνίδι και έρχεται ❌ στο Telegram.
+They run on every PR, merged with the current main (workflow **Tests**; not again after the merge, nor on
+a push without a PR — open the PR as a draft for early checks), and **before every `/lineup` apply**: if they
+fail, nothing is written to the game and a ❌ comes on Telegram.
 
-UI tests (Playwright, PC + iPhone + δύο Android, και οι δύο εκδόσεις): `tests/ui/`, βλ. `tests/ui/README.md`.
+UI tests (Playwright, PC + iPhone + two Androids, both editions): `tests/ui/`, see `tests/ui/README.md`.
 
-## Ροή αλλαγών (main = live)
-- **`main`** είναι το live: από εκεί τρέχουν τα προγραμματισμένα updates (το bot ξεκινάει πάντα το default
-  branch), γράφονται τα δεδομένα και ανεβαίνουν οι δύο σελίδες.
-- **Branch εργασίας** (το `claude/…`): οι αλλαγές ανεβαίνουν εκεί χωρίς αναμονή. Ένα update από αυτό είναι
-  **preview**: ανεβαίνει στο `https://dev.elf-dashboard.pages.dev` και στο `https://dev.<δημόσιο project>.pages.dev`,
-  δεν γράφει δεδομένα και δεν στέλνει τίποτα στο Telegram.
-- Όταν μαζευτούν αλλαγές: **PR προς `main`** → τρέχουν όλα τα tests (Python + UI· τα UI μόνο αν άλλαξε κάτι που
-  φτάνει στο dashboard) → merge μόνο αν είναι πράσινα.
-  Με το merge ανεβαίνει μόνο του και το bot, αν άλλαξε το `worker/`· για νέα δεδομένα στο live τρέχει ένα update από το `main`.
-- Το `main` προχωράει μόνο του (κάθε update γράφει δεδομένα), οπότε το branch εργασίας συγχρονίζεται με το `main` πριν από κάθε νέα αλλαγή.
-- Επείγον (π.χ. λάθος στις μεταγραφές πριν κλείσει η αγωνιστική): μικρή διόρθωση απευθείας στο `main`.
+## Change flow (main = live)
+- **`main`** is live: the scheduled updates run from it (the bot always starts the default
+  branch), the data are written and both sites are deployed.
+- **Work branch** (`claude/…`): changes are pushed there freely. An update from it is a
+  **preview**: it deploys to `https://dev.elf-dashboard.pages.dev` and `https://dev.<public project>.pages.dev`,
+  commits no data and sends nothing to Telegram.
+- When changes add up: **PR to `main`** → all tests run (Python + UI; UI only if something that reaches
+  the dashboard changed) → merge only when green.
+  On merge the bot deploys itself if `worker/` changed; for new data on live, run an update from `main`.
+- `main` moves on its own (every update commits data), so the work branch syncs with `main` before every new change.
+- Urgent (e.g. a wrong trade before the round closes): a small fix straight on `main`.
 
-## Τοπικά
+## Local
 ```
 pip install -r requirements.txt
-python -m elf.history 2025 2026     # κατέβασμα ιστορικού
-python -m elf.backtest 2025 --save  # ρύθμιση βαρών
-python -m elf.run                   # πλήρες pipeline
-python -m elf.fantasy dump          # debug: τι επιστρέφει το fantasy API (θέλει FANTASY_TOKEN)
+python -m elf.history 2025 2026     # download history
+python -m elf.backtest 2025 --save  # fit the weights
+python -m elf.run                   # full pipeline
+python -m elf.fantasy dump          # debug: what the fantasy API returns (needs FANTASY_TOKEN)
 ```

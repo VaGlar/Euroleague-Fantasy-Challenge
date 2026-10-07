@@ -1,50 +1,50 @@
-# 008 — Πολιτική μεταγραφών σε προσομοίωση ολόκληρης σεζόν
+# 008 — Trade policy in a whole-season simulation
 
-**Ημερομηνία:** 28/9/2026 · **Κατάσταση:** ❌ δεν χρειάστηκε αλλαγή (οι τωρινές ρυθμίσεις είναι στις καλύτερες)
+**Date:** 28/9/2026 · **Status:** ❌ no change needed (the current settings are among the best)
 
-## Ερώτημα
-Οι ρυθμίσεις του βελτιστοποιητή μεταγραφών ορίστηκαν με λογική, όχι με δεδομένα:
-- βάρη ορίζοντα 1 / 0,6 / 0,35 για την τρέχουσα και τις δύο επόμενες αγωνιστικές,
-- ελάχιστο κέρδος +2 ανά μεταγραφή,
-- έως 4 μεταγραφές ανά αγωνιστική.
+## Question
+The trade optimizer's settings were set by reasoning, not by data:
+- horizon weights 1 / 0.6 / 0.35 for the current and the next two rounds,
+- a minimum gain of +2 per trade,
+- up to 4 trades per round.
 
-Είναι σωστές;
+Are they right?
 
-## Μέθοδος
-- **Κάθε πολιτική παίζει ολόκληρη σεζόν**, από την αγωνιστική 3 ως το τέλος.
-- **Αρχή:** καλύτερη ομάδα με budget 93 credits (100 μείον ~7 για τον coach).
-- **Κάθε αγωνιστική:**
-  - οι μεταγραφές που θα πρότεινε ο **ίδιος βελτιστοποιητής** με την πραγματική λειτουργία (`optimize.transfers`),
-  - πεντάδα, 6ος και αρχηγός (`optimize.lineup`),
-  - οι πραγματικοί fantasy πόντοι. Όποιος δεν αγωνίστηκε φέρνει 0.
-- **Κανόνες:** απεριόριστες αλλαγές μετά τις αγωνιστικές 6, 13, 18, 23, 28, 34, όπως στο παιχνίδι.
-- **Προβλέψεις** για την τρέχουσα και τις δύο επόμενες αγωνιστικές, μόνο με όσα ήταν γνωστά πριν από κάθε αγωνιστική (`_lib.build_horizon`).
-- **Τιμές** εκτιμώμενες και σταθερές, όπως στο 004. Δύο σεζόν.
+## Method
+- **Each policy plays a whole season**, from round 3 to the end.
+- **Start:** the best squad with a budget of 93 credits (100 minus ~7 for the coach).
+- **Each round:**
+  - the trades the **same optimizer** as live operation would propose (`optimize.transfers`),
+  - five, 6th man and captain (`optimize.lineup`),
+  - the real fantasy points. A player who didn't play brings 0.
+- **Rules:** unlimited changes after rounds 6, 13, 18, 23, 28, 34, as in the game.
+- **Predictions** for the current and the next two rounds, only with what was known before each round (`_lib.build_horizon`).
+- **Prices** estimated and fixed, as in 004. Two seasons.
 
-## Αποτελέσματα: σύνολο πόντων σεζόν (διαφορά από τις τωρινές ρυθμίσεις ± τυπικό σφάλμα)
+## Results: season points total (difference from the current settings ± standard error)
 
-| Πολιτική | 2025–26 (αγ. 3–38) | 2024–25 (αγ. 3–34) | Μεταγραφές |
+| Policy | 2025–26 (rounds 3–38) | 2024–25 (rounds 3–34) | Trades |
 |---|---|---|---|
-| **Τωρινή** (1/.6/.35, κέρδος 2, 4 μεταγραφές) | **5.303** | **4.699** | 65 / 51 |
-| Μόνο η επόμενη αγωνιστική | +35 ± 87 | +8 ± 167 | 59 / 59 |
-| Ορίζοντας ίσος (1/1/1) | −165 ± 119 | −274 ± 139 | 72 / 72 |
-| Ορίζοντας μακρύτερος (1/.8/.6) | −178 ± 96 | −162 ± 118 | 67 / 71 |
-| Ελάχιστο κέρδος 0 | +59 ± 85 | −38 ± 118 | 81 / 93 |
-| Ελάχιστο κέρδος 4 | −68 ± 95 | −72 ± 183 | 39 / 40 |
-| Ελάχιστο κέρδος 6 | **−338 ± 151** | **−329 ± 189** | 27 / 16 |
-| Έως 2 μεταγραφές | **−313 ± 104** | **−268 ± 146** | 45 / 40 |
-| Καμία μεταγραφή (μόνο στα «παράθυρα») | **−489 ± 182** | **−590 ± 205** | 0 / 0 |
+| **Current** (1/.6/.35, gain 2, 4 trades) | **5,303** | **4,699** | 65 / 51 |
+| Next round only | +35 ± 87 | +8 ± 167 | 59 / 59 |
+| Flat horizon (1/1/1) | −165 ± 119 | −274 ± 139 | 72 / 72 |
+| Longer horizon (1/.8/.6) | −178 ± 96 | −162 ± 118 | 67 / 71 |
+| Minimum gain 0 | +59 ± 85 | −38 ± 118 | 81 / 93 |
+| Minimum gain 4 | −68 ± 95 | −72 ± 183 | 39 / 40 |
+| Minimum gain 6 | **−338 ± 151** | **−329 ± 189** | 27 / 16 |
+| Up to 2 trades | **−313 ± 104** | **−268 ± 146** | 45 / 40 |
+| No trades (only in the «windows») | **−489 ± 182** | **−590 ± 205** | 0 / 0 |
 
-## Συμπεράσματα
-- **Οι μεταγραφές αξίζουν πολύ.** Χωρίς αυτές χάνεις ~500–600 πόντους τη σεζόν (~10–12%), και στις δύο σεζόν.
-- **Χρησιμοποίησε και τις 4.** Το όριο των 2 κοστίζει ~270–310 πόντους.
-- **Τα αυστηρά όρια κοστίζουν.** Με ελάχιστο κέρδος 6 χάνεις ~330 πόντους. Ανάμεσα στο 0 και στο 4 οι διαφορές είναι θόρυβος. Το 2 είναι στη μέση της καλής περιοχής.
-- **Ο μακρύς ορίζοντας βλάπτει.** Όταν οι επόμενες αγωνιστικές μετράνε σχεδόν όσο η τρέχουσα, χάνεις ~160–270 πόντους, με το ίδιο πρόσημο και στις δύο σεζόν. Οι προβλέψεις για 2–3 εβδομάδες μετά είναι λιγότερο αξιόπιστες (αλλάζουν φόρμα, τραυματισμοί), και ο ορίζοντας τις μετράει σαν σίγουρες. Το τωρινό 1/.6/.35 δεν διαφέρει στατιστικά από το «μόνο η επόμενη».
+## Conclusions
+- **Trades are worth a lot.** Without them you lose ~500–600 points a season (~10–12%), in both seasons.
+- **Use all 4.** A limit of 2 costs ~270–310 points.
+- **Strict thresholds cost.** With a minimum gain of 6 you lose ~330 points. Between 0 and 4 the differences are noise. 2 sits in the middle of the good range.
+- **A long horizon hurts.** When the next rounds count almost as much as the current one, you lose ~160–270 points, with the same sign in both seasons. Predictions 2–3 weeks out are less reliable (form changes, injuries), and the horizon counts them as certain. The current 1/.6/.35 is statistically no different from «next round only».
 
-## Περιορισμοί
-- Οι τιμές δεν αλλάζουν. Στο παιχνίδι οι αλλαγές τιμών δίνουν επιπλέον αξία σε μεταγραφές νωρίς, πριν ανέβει κάποιος.
-- Χωρίς turns, χωρίς coach, χωρίς γνώση τραυματισμών ή νέων: η πραγματική λειτουργία τα ξέρει.
-- Το τυπικό σφάλμα είναι μεγάλο, γιατί η σεζόν είναι μία. Αξιόπιστα θεωρούνται μόνο όσα βγαίνουν με το ίδιο πρόσημο και στις δύο σεζόν.
+## Limits
+- Prices don't change. In the game, price changes add value to trading early, before a player rises.
+- No turns, no coach, no knowledge of injuries or news: live operation knows them.
+- The standard error is large, because the season is one. Only what comes out with the same sign in both seasons counts as reliable.
 
-## Απόφαση
-Οι τωρινές ρυθμίσεις μένουν. Δεν μακραίνουμε τον ορίζοντα. Μια μικρή μείωση του βάρους των επόμενων αγωνιστικών θα μπορούσε να δοκιμαστεί φέτος με το tracking, αλλά τα δεδομένα δεν τη δικαιολογούν ακόμα.
+## Decision
+The current settings stay. We don't lengthen the horizon. A slight reduction of the next rounds' weight could be tried this season with the tracking, but the data don't justify it yet.

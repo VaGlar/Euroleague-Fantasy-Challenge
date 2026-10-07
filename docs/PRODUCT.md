@@ -1,197 +1,205 @@
-# Δημόσια έκδοση — σχέδιο προϊόντος
+# Public edition — product plan
 
-Δημόσια εφαρμογή ανάλυσης για το fantasy μπάσκετ της EuroLeague: report ημέρας, νέα, στατιστικά,
-ανάλυση ομάδων και προσωπικός βοηθός για την ομάδα κάθε χρήστη (πεντάδα, αρχηγός, Turns, μεταγραφές).
+A public analysis app for EuroLeague fantasy basketball: a daily report, news, stats,
+team analysis and a personal assistant for each user's team (five, captain, Turns, trades).
 
-Το αποθετήριο είναι **ιδιωτικό** και περιέχει **έναν** μηχανισμό (engine) με **δύο εκδόσεις**:
-την προσωπική (υφιστάμενο σύστημα) και τη δημόσια. Στο κοινό δημοσιεύονται μόνο αποτελέσματα.
+The repository holds **one** engine with **two editions**: the personal one (the existing system)
+and the public one. Only results are published. The repository itself went public in October 2026;
+the owner's data and the article archive live in a private data repo (see the README, «Public repo
+and private data»).
 
-> Όνομα προϊόντος: **HoopsLab** (beta). Το όνομα **δεν** περιέχει τη λέξη «EuroLeague» ούτε
-> λογότυπα της διοργάνωσης (βλ. «Νομικά και φορολογικά»).
-
----
-
-## 1. Όραμα και αξία
-
-- Η αξία του προϊόντος βρίσκεται στην **ανάλυση και στα συγκεντρωμένα στατιστικά**, όχι σε
-  «μαγικές» προβλέψεις. Το μοντέλο είναι τεκμηριωμένα καλύτερο από τον απλό μέσο όρο (backtest
-  2025-26: μέσο σφάλμα 5,33 έναντι 5,43 PIR), αλλά η βελτίωση είναι μικρή· η επικοινωνία του
-  προϊόντος πρέπει να είναι ανάλογα μετριοπαθής.
-- Η εφαρμογή μετρά δημόσια την ακρίβειά της ανά αγωνιστική (tab «Μοντέλο»). Η διαφάνεια αυτή
-  αποτελεί μέρος της αξίας.
-
-## 2. Εκδόσεις
-
-| | Προσωπική έκδοση (υφιστάμενο σύστημα) | Δημόσια έκδοση |
-|---|---|---|
-| Ομάδα | Διαβάζεται αυτόματα από το παιχνίδι | Καταχωρίζεται **χειροκίνητα** από τον χρήστη |
-| Αλλαγές στο παιχνίδι (`/lineup`) | Ναι | **Όχι** — ο χρήστης κάνει τις αλλαγές στο παιχνίδι |
-| Telegram | Ναι | Όχι (στην πρώτη φάση) |
-| Report, νέα, παίκτες, ομάδες, σύγκριση, μοντέλο | Ναι | Ναι |
-| Πεντάδα, αρχηγός, πλάνο Turns, μεταγραφές | Ναι | Ναι, υπολογίζονται στον browser του χρήστη |
-
-Όταν ο χρήστης κάνει μεταγραφές ή αλλαγές στο παιχνίδι, τις καταχωρίζει και στην εφαρμογή
-(«αντικατάσταση παίκτη», «ποιος είναι στην πεντάδα»).
-
-## 3. Επιχειρηματικό μοντέλο
-
-- **Αγωνιστικές 1–10: δωρεάν για όλους**, χωρίς λογαριασμό.
-- **Από την 11η αγωνιστική: πρόσβαση με σύνδεση μέσω Patreon** (ενεργή συνδρομή).
-  - Αυτόματη έγκριση όσων έχουν ενεργή συνδρομή· **λίστα εξαιρέσεων** (π.χ. διαχειριστές της
-    ομάδας, συνεργάτες) που ελέγχει αποκλειστικά ο διαχειριστής.
-  - Ο διαχειριστής μπορεί να ανακαλέσει πρόσβαση ανά πάσα στιγμή.
-- **Προς απόφαση:** τι παραμένει δωρεάν μετά την 10η αγωνιστική. Πρόταση: report και νέα
-  δωρεάν· «Η ομάδα μου», σύγκριση και μεταγραφές για συνδρομητές.
-- Προτείνεται συνεργασία με τους διαχειριστές της ομάδας «EuroLeague Fantasy Greece»
-  (π.χ. ποσοστό ή δωρεάν πρόσβαση), όχι απλή ανάρτηση.
-- Ρεαλιστική εκτίμηση: από 70.000 μέλη, 2.000–5.000 χρήστες και 1–5% συνδρομητές.
-
-## 4. Αρχιτεκτονική
-
-```
-                 ένα run (10:05 + μετά τους αγώνες) — elf/run.py
-   δεδομένα EuroLeague + τιμές (ειδικός λογαριασμός) + νέα + Gemini + μοντέλο
-                  │                                        │
-        κοινά αποτελέσματα                          προσωπικό κομμάτι
-  (report, νέα, παίκτες, ομάδες,             (η ομάδα μου, /lineup, Telegram,
-   σύγκριση, μοντέλο)                         προσωπικό token, logs πεντάδας)
-                  │                                        │
-   elf/publish.py: λευκή λίστα αρχείων,        data/public όπως είναι
-   αφαίρεση προσωπικών πεδίων                             │
-                  │                                        │
-   δημόσιο site (Cloudflare Pages)            προσωπικό dashboard + bot
-   • χειροκίνητη ομάδα, βελτιστοποίηση         (πίσω από Cloudflare Access)
-     στον browser (HiGHS/GLPK σε WASM)
-   • από την 11η αγωνιστική: Worker με
-     σύνδεση Patreon, λίστα εξαιρέσεων, D1
-```
-
-**Γιατί ένα engine:** κάθε διόρθωση ισχύει αμέσως και στις δύο εκδόσεις, τα ίδια tests τις
-προστατεύουν, και ένα run εξυπηρετεί και τις δύο (μισά λεπτά Actions, μία ανάγνωση τιμών, μία κλήση
-Gemini). Οι προβλέψεις είναι ίδιες, άρα η δημόσια μέτρηση ακρίβειας αφορά και το προϊόν.
-
-**Γιατί υπολογισμός στον browser:** ο προσωπικός υπολογισμός κάθε χρήστη γίνεται στη συσκευή του·
-δεν απαιτείται server ανά χρήστη και το κόστος παραμένει μηδενικό έως μερικές χιλιάδες χρήστες.
-
-### Διαχωρισμός εκδόσεων (υλοποιημένο)
-- `elf/publish.py`: **λευκή λίστα** αρχείων για το κοινό (`PUBLIC_FILES`)· ό,τι δεν αναφέρεται ρητά
-  δεν αντιγράφεται ποτέ, οπότε ένα νέο προσωπικό αρχείο δεν μπορεί να διαρρεύσει κατά λάθος.
-  Αφαιρούνται: η ομάδα μου, οι σημειώσεις λειτουργίας (token, λογαριασμός), τα logs πεντάδας.
-- `report_public.json`: το ίδιο report χωρίς τα προσωπικά τμήματα (πεντάδα, μεταγραφές, αρχηγός
-  της ομάδας μου) — δημοσιεύεται ως `report.json`.
-- Test (`test_public_edition_has_nothing_personal`) που αποτυγχάνει αν διαρρεύσει οτιδήποτε
-  προσωπικό· ελέγχθηκε ότι πιάνει σκόπιμη διαρροή.
-- Workflow: το βήμα «Deploy public edition» είναι **ανενεργό** έως ότου οριστεί η μεταβλητή
-  `PUBLIC_PROJECT` (όνομα Cloudflare Pages project)· προαιρετικά `PUBLIC_URL` για τον σύνδεσμο
-  στο report.
-
-### Αποθήκευση ομάδας (δωρεάν περίοδος)
-- Τοπική αποθήκευση στη συσκευή, με προτροπή «Προσθήκη στην αρχική οθόνη».
-  **Σημαντικό:** το Safari διαγράφει τα δεδομένα ιστοσελίδας μετά από 7 ημέρες χωρίς χρήση,
-  εκτός εάν η εφαρμογή έχει προστεθεί στην αρχική οθόνη.
-- **Κωδικός/σύνδεσμος αντιγράφου ασφαλείας** (π.χ. `…/#t=A7K2…`): επαναφέρει την ομάδα σε
-  οποιαδήποτε συσκευή, χωρίς λογαριασμό και χωρίς προσωπικά δεδομένα.
-- Μετά τη σύνδεση Patreon: η ομάδα αποθηκεύεται και στον server (Cloudflare D1).
-
-### Ενημερώσεις δεδομένων (υλοποιημένο)
-- **07:00** κάθε μέρα, **3 ώρες πριν τον πρώτο αγώνα** κάθε ημέρας αγώνων (φρέσκοι τραυματισμοί πριν τη λήξη) και **~2,5 ώρες μετά τον τελευταίο αγώνα** κάθε ημέρας αγώνων (αποτελέσματα,
-  πραγματικοί πόντοι, μέτρηση ακρίβειας). Κάθε run ενημερώνει και τις δύο εκδόσεις.
-- Ο χρονισμός γίνεται από Cloudflare cron (τα προγραμματισμένα runs του GitHub καθυστερούν ώρες).
-- Σφάλματα (π.χ. Gemini, πηγές νέων, token) **δεν** εμφανίζονται στη δημόσια έκδοση· ειδοποιείται ο
-  διαχειριστής στο Telegram, μόνο όταν αλλάζει η κατάσταση.
-
-### Εγκατάσταση στο κινητό (υλοποιημένο)
-- Όνομα **HoopsLab** (beta) στη δημόσια έκδοση, εικονίδιο PNG για την οθόνη Αφετηρίας.
-- Αναδυόμενες οδηγίες «Βάλ' το στην οθόνη σου» (iPhone/Android) στην πρώτη επίσκεψη.
-
-### Όρια δωρεάν υπηρεσιών (ενδεικτικά — επιβεβαιώνονται πριν το launch)
-| Υπηρεσία | Όριο | Εκτίμηση χρήσης |
-|---|---|---|
-| Cloudflare Pages | στατικά αρχεία, πρακτικά χωρίς όριο | — |
-| Cloudflare Workers | 100.000 αιτήματα/ημέρα | ~5 ανά ενεργό χρήστη/ημέρα |
-| Cloudflare D1 | 5 GB, 5 εκατ. αναγνώσεις/ημέρα | μικρή |
-| GitHub Actions (ιδιωτικό repo) | 2.000 λεπτά/μήνα | ~400–800 (runs + tests, και για τις δύο εκδόσεις) |
-| Gemini (δωρεάν επίπεδο) | ανά λεπτό/ημέρα | 1 σύνοψη ανά run, κοινή για όλους |
-
-## 5. Πηγές δεδομένων και κίνδυνοι
-
-- **EuroLeague** (δημόσια API): αγώνες, box scores, ρόστερ, νέα.
-- **Τιμές fantasy (Dunkest):** απαιτούν token (επιβεβαιωμένο: `401 Unauthenticated` χωρίς token).
-  - Χρησιμοποιείται **αποκλειστικά ειδικός λογαριασμός**, όχι ο προσωπικός.
-  - Μία ανάγνωση ημερησίως.
-  - Εφεδρεία: ο χρήστης μπορεί να καταχωρίσει ή να διορθώσει την τιμή των δικών του παικτών.
-- **Νέα / στήλες fantasy:** RSS και δημόσιες σελίδες· σύνοψη μέσω Gemini.
-- Κίνδυνος: αλλαγή ή περιορισμός των ανεπίσημων API χωρίς προειδοποίηση. Η υγεία των πηγών
-  εμφανίζεται στην εφαρμογή («Κατάσταση»).
-
-## 6. Ασφάλεια
-
-> **Κανόνας tokens fantasy:** κάθε λογαριασμός μένει συνδεδεμένος σε δικό του browser· **ποτέ logout**
-> μετά την αντιγραφή του token (το logout ακυρώνει το token). Το login γίνεται μέσω κοινού site
-> σύνδεσης, οπότε δύο λογαριασμοί στον ίδιο browser «μπερδεύονται».
-
-- [x] Αποθετήριο **ιδιωτικό**.
-- [ ] Προσωπικό dashboard πίσω από **Cloudflare Access** (δωρεάν έως 50 χρήστες· πρόσβαση μόνο με το email του διαχειριστή). **Πριν ανοίξει το HoopsLab σε κόσμο:** σήμερα το `elf-dashboard.pages.dev` είναι ανοιχτό σε όποιον έχει το link (ομάδα, προτάσεις, `predictions.json` με `my_team`). Χρειάζεται πρώτα service token για το bot, ώστε ο Worker να διαβάζει τα δεδομένα πίσω από το Access.
-- [ ] **2FA** σε GitHub, Cloudflare, Patreon, Google (Gemini).
-- [ ] Tokens με **ελάχιστα δικαιώματα και ημερομηνία λήξης** (GitHub fine-grained, Cloudflare
-      scoped). Οι τιμές διαβάζονται με το token του **ειδικού λογαριασμού** (secret `FANTASY_DATA_TOKEN`)· το
-      προσωπικό token (`FANTASY_TOKEN`) μόνο για την προσωπική έκδοση (`/lineup`, ανάγνωση ομάδας).
-      Χωρίς `FANTASY_DATA_TOKEN` οι τιμές διαβάζονται προσωρινά με το προσωπικό.
-- [ ] **Προστασία του `main`**: αλλαγές μόνο μέσω pull request με επιτυχή tests.
-- [ ] **Secret scanning**, **Dependabot**, GitHub Actions κλειδωμένα σε συγκεκριμένη έκδοση (SHA).
-- [x] Λευκή λίστα δημοσίευσης + test διαρροής (`elf/publish.py`).
-- [ ] Worker: **rate limiting**, έλεγχος προέλευσης, υπογεγραμμένα session cookies· **κανένα
-      password** δεν αποθηκεύεται (σύνδεση μόνο μέσω Patreon).
-- [ ] Προστατευμένα δεδομένα μόνο μέσω Worker μετά από έλεγχο συνδρομής (το κλείδωμα μόνο στην
-      εφαρμογή παρακάμπτεται εύκολα).
-- [ ] Ελάχιστα προσωπικά δεδομένα· **πολιτική απορρήτου** (GDPR) πριν ενεργοποιηθούν οι συνδέσεις.
-
-## 6α. Analytics
-
-Κάθε πρωί στις 09:05 ο Worker ξεκινά το `analytics.yml` → `elf/analytics.py`: στέλνει στο Telegram τις επισκέψεις/προβολές της χθεσινής μέρας ανά site, την εβδομάδα έναντι της προηγούμενης, και για το HoopsLab χώρες, συσκευές και από πού ήρθαν. Χρειάζεται Cloudflare Web Analytics ενεργό στα Pages projects και secret `CF_ANALYTICS_TOKEN` (API token με μόνο *Account Analytics: Read*).
-
-## 7. Νομικά και φορολογικά
-
-> Οι παρακάτω σημειώσεις δεν αποτελούν νομική ή φορολογική συμβουλή· απαιτείται επιβεβαίωση
-> από λογιστή πριν την έναρξη συνδρομών.
-
-- Το **Patreon** αναλαμβάνει την είσπραξη πληρωμών και, κατά κανόνα, τον ΦΠΑ για συνδρομητές
-  στην ΕΕ. **Δεν** καλύπτει τη φορολόγηση του εισοδήματος στην Ελλάδα· πιθανώς απαιτείται
-  έναρξη εργασιών.
-- Να ελεγχθούν οι **όροι χρήσης** του Dunkest και της EuroLeague για εμπορική χρήση δεδομένων.
-- Όνομα και εικαστικά **χωρίς** σήματα της EuroLeague· ρητή δήλωση ότι η εφαρμογή είναι
-  ανεπίσημη και δεν συνδέεται με τη διοργάνωση.
-
-## 8. Φάσεις υλοποίησης
-
-| Φάση | Περιεχόμενο | Κατάσταση |
-|---|---|---|
-| 0. Υποδομή & ασφάλεια | ✅ ιδιωτικό repo · ✅ διαχωρισμός εκδόσεων (publish + test) · ✅ ειδικός λογαριασμός fantasy (`FANTASY_DATA_TOKEN`, σε ξεχωριστό browser) · Cloudflare Access · 2FA · προστασία `main` | σε εξέλιξη |
-| 1. Δημόσια εφαρμογή (MVP) | ✅ χειροκίνητη ομάδα (αναζήτηση, τιμές, υπόλοιπο) · ✅ αποθήκευση στη συσκευή + σύνδεσμος αντιγράφου · ✅ «πεντάδα όπως στο παιχνίδι» · ✅ βελτιστοποίηση στον browser (`web/opt.js`, ελεγμένη έναντι του Python) · ✅ «✓ Την έκανα» στις μεταγραφές · ✅ ενεργοποίηση `PUBLIC_PROJECT` · ✅ νέα «Η ομάδα μου» (`web/team.js` v2): στήσιμο σε άδειο γήπεδο, λίστα «Τι κάνω τώρα» (μεταγραφές → πεντάδα → αρχηγός, μετράει όσες μεταγραφές έγιναν), σύρσιμο παικτών για αλλαγή θέσης με αυτόματο scroll, καρτέλα παίκτη με ενέργειες, μενού ⋯ · ✅ η ίδια οθόνη και στην προσωπική έκδοση (ομάδα από το παιχνίδι, μεταγραφές από το Python, εφαρμογή με /lineup) | έτοιμη |
-| 2. Κλειστή δοκιμή | 20–50 μέλη της ομάδας για 1–2 αγωνιστικές | — |
-| 3. Δημόσιο launch | Ανακοίνωση στην ομάδα | — |
-| 4. Συνδρομές | Σύνδεση Patreon, λίστα εξαιρέσεων, αποθήκευση ομάδας στον server, πολιτική απορρήτου — **πριν την 10η αγωνιστική** | — |
-
-**Χρονοδιάγραμμα:** κάθε εβδομάδα καθυστέρησης μειώνει τη δωρεάν περίοδο (π.χ. launch στην 4η
-αγωνιστική σημαίνει 6–7 δωρεάν αγωνιστικές).
-
-## 9. Ανοιχτές αποφάσεις
-
-1. Τελικό όνομα προϊόντος.
-2. Τι παραμένει δωρεάν μετά την 10η αγωνιστική.
-3. Τιμή και βαθμίδες συνδρομής στο Patreon.
-4. Συνεργασία με τους διαχειριστές της ομάδας.
-5. Ειδοποιήσεις (π.χ. δημόσιο κανάλι Telegram ή web push) σε μεταγενέστερη φάση.
-6. **`/ρωτα` πάνω στο ιστορικό άρθρων (μόνο προσωπική έκδοση) — σε αναμονή.** Το αρχείο άρθρων μαζεύεται ήδη
-   (`data/archive/`, ιδιωτικό). Αν γίνει: φίλτρο ονόματος/ημερομηνίας πρώτα, embeddings αργότερα σε απλό αρχείο
-   (όχι ChromaDB), εκτέλεση όπως το `/lineup` (Worker → GitHub Action → Telegram). Η ημερήσια σύνοψη **μένει ως έχει**:
-   διαβάζει μόνο 4–7 μέρες (~3% του context) και η διαθεσιμότητα θέλει όλα τα πρόσφατα άρθρα, όχι top-k.
-   Περιορισμός: για τις μη-fantasy πηγές κρατάμε μόνο 600 χαρακτήρες ανά άρθρο.
-7. **Επιλογή γλώσσας στην αρχή (επόμενο βήμα).** Στην πρώτη επίσκεψη ο χρήστης διαλέγει γλώσσα (Ελληνικά / English),
-   με αλλαγή αργότερα από τις ρυθμίσεις. Χρειάζεται: όλα τα κείμενα της σελίδας (`web/index.html`, `web/team.js`) σε
-   λεξικό ανά γλώσσα, οι επεξηγήσεις ⓘ, οι οδηγίες εγκατάστασης και η σύνοψη ειδήσεων (το Gemini τη γράφει ήδη
-   στα ελληνικά: δεύτερη έκδοση ή μετάφραση). Οι όροι του παιχνιδιού (Credits, Trades, CAP, xFPT…) μένουν ίδιοι.
+> Product name: **HoopsLab** (beta). The name does **not** contain the word «EuroLeague» nor
+> the competition's logos (see «Legal and tax»). The product speaks Greek: its audience is
+> Greek-speaking managers.
 
 ---
 
-Τεχνικές οδηγίες (εγκατάσταση, εντολές, secrets): βλ. το κεντρικό `README.md`.
+## 1. Vision and value
+
+- The product's value lies in **analysis and aggregated stats**, not in «magic»
+  predictions. The model is demonstrably better than a plain average (backtest
+  2025-26: mean error 5.33 vs 5.43 PIR), but the improvement is small; the product's
+  messaging must be equally modest.
+- The app publicly measures its own accuracy per round (the «Μοντέλο» tab). That transparency
+  is part of the value.
+
+## 2. Editions
+
+| | Personal edition (existing system) | Public edition |
+|---|---|---|
+| Team | Read automatically from the game | Entered **by hand** by the user |
+| Changes in the game (`/lineup`) | Yes | **No** — the user makes the changes in the game |
+| Telegram | Yes | No (in the first phase) |
+| Report, news, players, teams, compare, model | Yes | Yes |
+| Five, captain, Turn plan, trades | Yes | Yes, computed in the user's browser |
+| Devices in step | — (the team comes from the game) | Yes, with a sync code (Cloudflare D1) |
+
+When users make trades or changes in the game, they record them in the app too
+(«replace player», «who is in the five»).
+
+## 3. Business model
+
+- **Rounds 1–10: free for everyone**, no account.
+- **From round 11: access by signing in with Patreon** (an active membership).
+  - Members with an active membership are approved automatically; an **exceptions list** (e.g. the
+    group's admins, partners) is controlled by the admin only.
+  - The admin can revoke access at any time.
+- **To decide:** what stays free after round 10. Proposal: the report and news
+  free; «Η ομάδα μου» (my team), compare and trades for members.
+- A partnership with the admins of the «EuroLeague Fantasy Greece» group is suggested
+  (e.g. a share or free access), rather than a plain post.
+- A realistic estimate: out of 70,000 members, 2,000–5,000 users and 1–5% paying members.
+
+## 4. Architecture
+
+```
+                 one run (10:05 + after the games) — elf/run.py
+   EuroLeague data + prices (dedicated account) + news + Gemini + model
+                  │                                        │
+        shared results                             personal part
+  (report, news, players, teams,             (my team, /lineup, Telegram,
+   compare, model)                            personal token, lineup logs)
+                  │                                        │
+   elf/publish.py: allow-list of files,        data/public as it is
+   personal fields removed                                │
+                  │                                        │
+   public site (Cloudflare Pages)             personal dashboard + bot
+   • team entered by hand, optimizer           (behind Cloudflare Access)
+     in the browser (web/opt.js)
+   • devices in step: Pages Function + D1
+   • from round 11: Worker with
+     Patreon sign-in, exceptions list, D1
+```
+
+**Why one engine:** every fix applies to both editions at once, the same tests
+protect them, and one run serves both (half the Actions minutes, one price read, one Gemini
+call). The predictions are the same, so the public accuracy measurement also covers the product.
+
+**Why compute in the browser:** each user's personal computation runs on their device;
+no per-user server is needed and the cost stays at zero up to a few thousand users.
+
+### Splitting the editions (done)
+- `elf/publish.py`: an **allow-list** of files for the public (`PUBLIC_FILES`); anything not listed
+  is never copied, so a new personal file can't leak by mistake.
+  Removed: my team, the operational notes (token, account), the lineup logs.
+- `report_public.json`: the same report without the personal parts (five, trades, captain
+  of my team) — published as `report.json`.
+- A test (`test_public_edition_has_nothing_personal`) that fails if anything personal
+  leaks; checked to catch a deliberate leak.
+- Workflow: the «Deploy public edition» step stays **off** until the `PUBLIC_PROJECT` variable
+  (the Cloudflare Pages project name) is set; optionally `PUBLIC_URL` for the link
+  in the report.
+
+### Storing the team (free period)
+- Stored locally on the device, with an «Add to Home Screen» prompt.
+  **Important:** Safari deletes a site's data after 7 days without use,
+  unless the app was added to the home screen.
+- A **backup code/link** (e.g. `…/#t=A7K2…`): restores the team on
+  any device, with no account and no personal data.
+- **Devices in step (done):** a sync code keeps a PC and a phone on the same team (Cloudflare D1,
+  `functions/api/sync`). The table has a `user_id` column for when accounts come.
+- After Patreon sign-in: the team is stored on the server too (Cloudflare D1).
+
+### Data updates (done)
+- **07:05** every day, **3 hours before the first game** of each game day (fresh injuries before the deadline) and **~2.5 hours after the last game** of each game day (results,
+  real points, accuracy measurement). Every run updates both editions.
+- The timing comes from a Cloudflare cron (GitHub's scheduled runs are hours late).
+- Errors (e.g. Gemini, news sources, the token) are **not** shown in the public edition; the
+  admin is notified on Telegram, only when the state changes.
+
+### Installing on a phone (done)
+- The name **HoopsLab** (beta) in the public edition, a PNG icon for the Home Screen.
+- A pop-up «Βάλ' το στην οθόνη σου» (put it on your screen) guide for iPhone/Android on the first visit.
+
+### Free-tier limits (indicative — to be confirmed before launch)
+| Service | Limit | Estimated use |
+|---|---|---|
+| Cloudflare Pages | static files, practically unlimited | — |
+| Cloudflare Workers / Functions | 100,000 requests/day | ~5 per active user/day |
+| Cloudflare D1 | 5 GB, 5M reads/day, ~100k writes/day | small |
+| GitHub Actions | free for a public repo | — |
+| Gemini (free tier) | per minute/day | 1 summary per run, shared by all |
+
+## 5. Data sources and risks
+
+- **EuroLeague** (public APIs): games, box scores, rosters, news.
+- **Fantasy prices (Dunkest):** need a token (confirmed: `401 Unauthenticated` without one).
+  - **Only a dedicated account** is used, not the personal one.
+  - One read per day.
+  - Fallback: users can enter or correct the price of their own players.
+- **News / fantasy columns:** RSS and public pages; summarized with Gemini.
+- Risk: the unofficial APIs can change or be restricted without notice. Source health
+  is shown in the app («Κατάσταση»).
+
+## 6. Security
+
+> **Fantasy tokens rule:** each account stays signed in in its own browser; **never log out**
+> after copying the token (logging out revokes it). Sign-in goes through a shared login
+> site, so two accounts in the same browser «get mixed up».
+
+- [x] Private data in a **private** data repo (`elf-data`); the code repo is public and sanitized,
+      with a test that fails on anything personal (`tests/test_public_repo.py`).
+- [ ] Personal dashboard behind **Cloudflare Access** (free up to 50 users; access only with the admin's email). **Before HoopsLab opens to the public:** `elf-dashboard.pages.dev` is open to anyone with the link today (team, suggestions, `predictions.json` with `my_team`). The bot needs a service token first, so the Worker can read the data behind Access.
+- [ ] **2FA** on GitHub, Cloudflare, Patreon, Google (Gemini).
+- [ ] Tokens with **least privilege and an expiry** (GitHub fine-grained, Cloudflare
+      scoped). Prices are read with the **dedicated account's** token (secret `FANTASY_DATA_TOKEN`); the
+      personal token (`FANTASY_TOKEN`) only for the personal edition (`/lineup`, reading the team).
+      Without `FANTASY_DATA_TOKEN` prices are read with the personal one for now.
+- [x] **`main` protected**: changes only through a pull request with passing tests.
+- [ ] **Secret scanning**, **Dependabot**, GitHub Actions pinned to a specific version (SHA).
+- [x] Publishing allow-list + leak test (`elf/publish.py`).
+- [ ] Worker: **rate limiting**, origin checks, signed session cookies; **no
+      password** is ever stored (sign-in through Patreon only).
+- [ ] Protected data only through a Worker after a membership check (a lock in the
+      app alone is easy to bypass).
+- [ ] Minimal personal data; a **privacy policy** (GDPR) before sign-ins are turned on.
+
+## 6a. Analytics
+
+Every morning at 09:05 the Worker starts `analytics.yml` → `elf/analytics.py`: it sends to Telegram yesterday's visits/views per site, the week vs the previous one, and for HoopsLab the countries, devices and referrers. Needs Cloudflare Web Analytics on the Pages projects and the `CF_ANALYTICS_TOKEN` secret (an API token with *Account Analytics: Read* only).
+
+## 7. Legal and tax
+
+> The notes below are not legal or tax advice; an accountant must confirm them
+> before memberships start.
+
+- **Patreon** collects the payments and, as a rule, the VAT for members
+  in the EU. It does **not** cover income tax in Greece; registering as self-employed
+  is probably required.
+- Check the **terms of use** of Dunkest and EuroLeague for commercial use of the data.
+- Name and artwork **without** EuroLeague trademarks; an explicit statement that the app is
+  unofficial and not affiliated with the competition.
+
+## 8. Phases
+
+| Phase | Content | Status |
+|---|---|---|
+| 0. Infrastructure & security | ✅ split editions (publish + test) · ✅ dedicated fantasy account (`FANTASY_DATA_TOKEN`, in its own browser) · ✅ public code repo + private data repo · ✅ `main` protected · Cloudflare Access · 2FA | in progress |
+| 1. Public app (MVP) | ✅ team entered by hand (search, prices, credits) · ✅ stored on the device + backup link · ✅ «five as in the game» · ✅ optimizer in the browser (`web/opt.js`, checked against Python) · ✅ «✓ Το έκανα» (done) on trades · ✅ `PUBLIC_PROJECT` on · ✅ the new «Η ομάδα μου» (`web/team.js` v2): set-up on an empty court, the «To do» list (trades → five → captain, counting the trades made), drag players to swap places with auto-scroll, player sheet with actions, ⋯ menu · ✅ the same screen in the personal edition (team from the game, trades from Python, applied with /lineup) · ✅ ✕ as in the game (take players off, fill the places) · ✅ devices in step (sync code, D1) | done |
+| 2. Closed beta | 20–50 members of the group for 1–2 rounds | — |
+| 3. Public launch | Announcement in the group | — |
+| 4. Memberships | Patreon sign-in, exceptions list, team stored on the server, privacy policy — **before round 10** | — |
+
+**Timeline:** every week of delay shortens the free period (e.g. a launch in round 4
+means 6–7 free rounds).
+
+## 9. Open decisions
+
+1. The final product name.
+2. What stays free after round 10.
+3. Price and tiers of the Patreon membership.
+4. The partnership with the group's admins.
+5. Notifications (e.g. a public Telegram channel or web push) in a later phase.
+6. **`/ρωτα` (ask) over the article history (personal edition only) — on hold.** The article archive is already being collected
+   (`archive/`, in the private data repo). If it happens: a name/date filter first, embeddings later in a plain file
+   (not ChromaDB), run like `/lineup` (Worker → GitHub Action → Telegram). The daily summary **stays as it is**:
+   it reads only 4–7 days (~3% of the context) and availability needs all recent articles, not a top-k.
+   Limit: for non-fantasy sources we keep only 600 characters per article.
+7. **Choosing a language at the start (next step).** On the first visit the user picks a language (Ελληνικά / English),
+   changeable later in the settings. Needs: every text of the page (`web/index.html`, `web/team.js`) in a
+   dictionary per language, the ⓘ explanations, the install guide and the news summary (Gemini writes it in
+   Greek today: a second version or a translation). The game's terms (Credits, Trades, CAP, xFPT…) stay the same.
+
+---
+
+Technical instructions (setup, commands, secrets): see the main `README.md`.

@@ -1,52 +1,53 @@
-# 012(c) — Επιστροφή από απουσία: παίζει, αλλά πόσο;
+# 012(c) — Return from absence: he plays, but how much?
 
-**Αφορμή:** στο 015 φάνηκε παράπλευρα ότι παίκτες με περσινή σεζόν αλλά λίγα φετινά ματς στη μέση της σεζόν
-υπερεκτιμώνται. Η φόρμα μετράει μόνο τα ματς που **έπαιξε**, οπότε μετά από εβδομάδες εκτός ο παίκτης
-προβλέπεται στο «υγιές» του επίπεδο, ενώ συνήθως επιστρέφει με λιγότερα λεπτά.
+**Why:** 015 showed, as a side finding, that players with a previous season but few games this season mid-season
+are overestimated. The form counts only the games he **played**, so after weeks out the player
+is predicted at his «healthy» level, while he usually returns with fewer minutes.
 
-## Μέθοδος
-- **Χαρακτηριστικό, γνωστό πριν την αγωνιστική:** `miss3` = σε πόσα από τα 3 τελευταία ματς της ομάδας του
-  ο παίκτης δεν πάτησε παρκέ (καμία γραμμή στο box score ή 0 λεπτά).
-- **Δίκαιο τεστ:** η εφαρμογή ξέρει ποιος είναι ακόμα εκτός (η διαθεσιμότητα του παιχνιδιού τον μηδενίζει), ενώ
-  τα ιστορικά δεδομένα όχι. Γι' αυτό και το σημερινό μοντέλο και η διόρθωση παίρνουν την ίδια «γνώση»: όποιος δεν
-  αγωνίστηκε προβλέπεται 0. Κρίνεται μόνο το «παίζει, αλλά πόσο».
-- **Διόρθωση:** `βάση × c[miss3]`. Το `c` υπολογίζεται στη μία σεζόν (λόγος μέσων) και κρίνεται στην άλλη
-  (2024 ↔ 2025, walk-forward από την 3η αγωνιστική).
+## Method
+- **A feature known before the round:** `miss3` = in how many of his team's last 3 games
+  the player didn't set foot on court (no row in the box score or 0 minutes).
+- **A fair test:** the app knows who is still out (the game's availability sets him to 0), while
+  the historical data don't. So both the current model and the correction get the same «knowledge»: a player who didn't
+  play is predicted 0. Only «he plays, but how much» is judged.
+- **Correction:** `base × c[miss3]`. `c` is computed on one season (ratio of means) and judged on the other
+  (2024 ↔ 2025, walk-forward from round 3).
 
-## Αποτελέσματα
-**Διαγνωστικό** (όσοι αγωνίστηκαν· «καλοί» = πρόβλεψη ≥ 10):
+## Results
+**Diagnostic** (players who played; «good» = prediction ≥ 10):
 
-| Έλειψε από τα 3 τελευταία | 2024: πρόβλεψη → πραγματικό | 2025: πρόβλεψη → πραγματικό |
+| Missed of the last 3 | 2024: predicted → actual | 2025: predicted → actual |
 |---|---|---|
-| 0 (όλοι) | 8.8 → 9.7 | 9.1 → 9.7 |
-| 1 (καλοί) | 13.5 → 13.4 | 13.9 → 12.9 |
-| 2 (καλοί) | 14.1 → 12.5 | 14.3 → 15.0 |
-| **3 (καλοί)** | **13.5 → 9.5** (n=34) | **13.4 → 10.1** (n=37) |
+| 0 (all) | 8.8 → 9.7 | 9.1 → 9.7 |
+| 1 (good) | 13.5 → 13.4 | 13.9 → 12.9 |
+| 2 (good) | 14.1 → 12.5 | 14.3 → 15.0 |
+| **3 (good)** | **13.5 → 9.5** (n=34) | **13.4 → 10.1** (n=37) |
 
-- Όσοι επιστρέφουν μετά από **3/3 απουσίες** παίρνουν **25–30% λιγότερα** από την πρόβλεψη, και στις δύο σεζόν
-  (≈3 τυπικά σφάλματα η καθεμία). Όσοι έλειψαν 1–2 ματς προβλέπονται σωστά.
-- Συντελεστής από τη μία σεζόν: 0.72 (από το 2024), 0.82 (από το 2025).
+- Players returning after **3/3 absences** score **25–30% below** the prediction, in both seasons
+  (≈3 standard errors each). Players who missed 1–2 games are predicted correctly.
+- Coefficient from one season: 0.72 (from 2024), 0.82 (from 2025).
 
-**Εκτός δείγματος** (`result.json`, `result_only3.json`):
+**Out of sample** (`result.json`, `result_only3.json`):
 
-| Διόρθωση | Κρίνεται 2025: σφάλμα / πόντοι ομάδας | Κρίνεται 2024: σφάλμα / πόντοι ομάδας |
+| Correction | Judged on 2025: error / squad points | Judged on 2024: error / squad points |
 |---|---|---|
-| καμία (σήμερα) | 5.609 / 5896 | 5.459 / 4967 |
-| c για miss3 = 1, 2, 3 | 5.600 / 5904 | 5.446 / **4894** |
-| **μόνο miss3 = 3** | **5.594 / 5899** | **5.448 / 4979** |
-| μόνο miss3 = 3, σταθερό 0.8 | 5.597 / 5897 | 5.447 / 4979 |
+| none (today) | 5.609 / 5896 | 5.459 / 4967 |
+| c for miss3 = 1, 2, 3 | 5.600 / 5904 | 5.446 / **4894** |
+| **miss3 = 3 only** | **5.594 / 5899** | **5.448 / 4979** |
+| miss3 = 3 only, fixed 0.8 | 5.597 / 5897 | 5.447 / 4979 |
 
-- Διόρθωση και στα 1–2 ματς απουσίας: μικτή (−73 πόντοι το 2024). Εκεί δεν υπάρχει πρόβλημα.
-- Διόρθωση **μόνο** για επιστροφή μετά από 3/3: κερδίζει και στις δύο σεζόν, αλλά **λίγο**: −0.01 στο σφάλμα
-  (κάτω από το όριο θορύβου 0.03) και +3 / +13 πόντοι ομάδας σε όλη τη σεζόν. Η ομάδα είναι μικρή (~1 παίκτης
-  ανά αγωνιστική), οπότε το συνολικό κέρδος είναι μικρό, παρότι το λάθος για τον συγκεκριμένο παίκτη είναι μεγάλο.
+- Correcting 1–2 missed games too: mixed (−73 points in 2024). There's no problem there.
+- Correcting **only** the return after 3/3: wins in both seasons, but **a little**: −0.01 in error
+  (below the noise floor of 0.03) and +3 / +13 squad points over a season. The group is small (~1 player
+  per round), so the overall gain is small, even though the error for that player is large.
 
-## Απόφαση
-✅ **Υλοποιήθηκε (επιλογή του ιδιοκτήτη, 29/09/2026)**, με σκεπτικό: η μεροληψία είναι σταθερή και μεγάλη για τον
-συγκεκριμένο παίκτη (−3.5 έως −4 πόντοι) και αφορά ακριβή απόφαση (αγορά σταρ που μόλις γύρισε). Το συνολικό κέρδος
-φαίνεται μικρό επειδή η περίπτωση είναι σπάνια, όχι επειδή το λάθος είναι μικρό.
-- **Μοντέλο:** `βάση × 0.8` όταν ο παίκτης δεν έπαιξε σε κανένα από τα 3 τελευταία ματς της ομάδας του
-  (`model.absent_last3`, `return_factor` στο `config.py`). Σταθερή τιμή ανάμεσα στις δύο εκτιμήσεις, όχι
-  προσαρμοσμένη σε καμία σεζόν. Όσοι έλειψαν 1–2 ματς δεν αλλάζουν.
-- **Εφαρμογή:** σήμα «↩ επιστρέφει» με ⓘ (λίστα παικτών, κάρτα, γήπεδο, μεταγραφές).
-- ⏳ **Επανέλεγχος** με τα φετινά δεδομένα στη μέση της σεζόν (μαζί με το 005).
+## Decision
+✅ **Shipped (the owner's choice, 29/09/2026)**, reasoning: the bias is stable and large for that
+player (−3.5 to −4 points) and concerns an expensive decision (buying a star who just came back). The overall gain
+looks small because the case is rare, not because the error is small.
+- **Model:** `base × 0.8` when the player played none of his team's last 3 games
+  (`model.absent_last3`, `return_factor` in `config.py`). A fixed value between the two estimates, not
+  fitted to either season. Players who missed 1–2 games don't change.
+- **App:** a «↩ επιστρέφει» (returning) flag with ⓘ (players list, card, court, trades).
+- ⏳ **Recheck** with this season's data mid-season (together with 005).
+- 1/10: together with participation (020) the two corrections stacked; see 022.

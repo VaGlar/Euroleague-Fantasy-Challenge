@@ -1,38 +1,39 @@
-# 019 — Πόσο ακριβής είναι η διαθεσιμότητα;
+# 019 — How accurate is availability?
 
-**Ημερομηνία:** 29/9/2026 · **Κατάσταση:** ✅ βρέθηκε και διορθώθηκε σφάλμα · ⏳ η βαθμονόμηση ξανά σε 4–5 αγωνιστικές
+**Date:** 29/9/2026 · **Status:** ✅ a bug found and fixed · ⏳ the calibration again in 4–5 rounds
 
-## Ερώτημα
-Το 010, το 017 και το 018 καταλήγουν στο ίδιο: η αξία είναι στο να ξέρεις ποιος παίζει, όχι στο blend της φόρμας. Η εφαρμογή παίρνει τη διαθεσιμότητα από δύο πηγές:
-- **το παιχνίδι:** `prob_play` / `is_injured`, από όπου βγαίνει 1, 0,5 ή 0 για τον αγώνα του παίκτη,
-- **τα νέα:** η σύνοψη του Gemini δίνει out / doubtful / questionable.
+## Question
+010, 017 and 018 all end up in the same place: the value is in knowing who plays, not in the form blend. The app takes availability from two sources:
+- **the game:** `prob_play` / `is_injured`, which give 1, 0.5 or 0 for the player's game,
+- **the news:** Gemini's summary gives out / doubtful / questionable.
 
-Και με τις δύο, το xFPT του γύρου πολλαπλασιάζεται με τον αντίστοιχο συντελεστή. Πόσο σωστά είναι όλα αυτά;
+With both, the round's xFPT is multiplied by the matching factor. How right is all this?
 
-## Μέθοδος
-- Για κάθε αγώνα που έχει παιχτεί, παίρνουμε το τελευταίο στιγμιότυπο του `predictions.json` πριν το τζάμπολ (ιστορικό git του main, κατά μέσο όρο ~4 ώρες πριν) και το συγκρίνουμε με το box score. Κάθε παίκτης καταλήγει σε μία από τρεις κατηγορίες: έπαιξε, 0 λεπτά, εκτός box score.
-- Για τα νέα: σε κάθε αποθηκευμένη σύνοψη, πόσες από τις καταστάσεις που έγραψε αντιστοιχίστηκαν σε παίκτη του ρόστερ.
+## Method
+- For each game played, we take the last `predictions.json` snapshot before tip-off (git history of main, ~4 hours before on average) and compare it with the box score. Each player ends up in one of three categories: played, 0 minutes, not in the box score.
+- For the news: in each saved summary, how many of the statuses it wrote were matched to a roster player.
 
-## Αποτελέσματα (Round 1: 10 αγώνες, 331 παίκτες)
+## Results (Round 1: 10 games, 331 players)
 
-**Διαθεσιμότητα από το παιχνίδι:**
+**Availability from the game:**
 
-| avail_game | Παίκτες | Έπαιξαν | Σημαντικοί (xFPT ≥ 8) | Έπαιξαν (σημαντικοί) |
+| avail_game | Players | Played | Relevant (xFPT ≥ 8) | Played (relevant) |
 |---|---|---|---|---|
 | 0 | 17 | 0% | 5 | 0% |
-| 0,5 | 16 | 50% | 9 | 67% |
+| 0.5 | 16 | 50% | 9 | 67% |
 | 1 | 298 | 73% | 105 | 96% |
 
-- Το **0** είναι πάντα σωστό: κανείς δεν έπαιξε, άρα δεν χάθηκαν πόντοι.
-- Το **0,5** είναι σωστά βαθμονομημένο: έπαιξε ο μισός.
-- Στο **1** υπήρξαν 4 «εκπλήξεις» ανάμεσα σε 105 σημαντικούς (3,8%): Nebo, Leaf, Coffey, D. Washington, με 47,5 xFPT που μετρήσαμε ενώ δεν έπαιξαν. Από τις προτάσεις, δεν έπαιξε ο Dessert (5άδα στην ομάδα του owner) και ο Akele (πάγκος).
+- **0** is always right: nobody played, so no points were lost.
+- **0.5** is well calibrated: half played.
+- At **1** there were 4 «surprises» among 105 relevant players (3.8%): Nebo, Leaf, Coffey, D. Washington, with 47.5 xFPT counted while they didn't play. Among the suggestions, Dessert (five in the owner's team) and Akele (bench) didn't play.
 
-**Διαθεσιμότητα από τα νέα: εδώ ήταν το σφάλμα.**
-- Το Gemini γράφει συχνά το όνομα ως «Josh Nebo», ενώ το ρόστερ έχει «NEBO, JOSH». Η αντιστοίχιση γινόταν με ακριβή σειρά λέξεων.
-- Από τις **67** διαφορετικές καταστάσεις «εκτός / αμφίβολος» στις συνόψεις της σεζόν, εφαρμόζονταν **μόνο οι 34**. Οι **33 (49%) αγνοούνταν σιωπηλά**, χωρίς σφάλμα και χωρίς ειδοποίηση.
-- Παράδειγμα: ο Nebo. Η σύνοψη της 25/9, 15:47 έγραφε «εκτός για 2–3 εβδομάδες (Gazzetta)», πριν τον αγώνα του. Το μοντέλο τον μέτρησε με 14,6 xFPT.
+**Availability from the news: here was the bug.**
+- Gemini often writes the name as «Josh Nebo», while the roster has «NEBO, JOSH». The matching used the exact word order.
+- Of the **67** distinct «out / doubtful» statuses in the season's summaries, **only 34** were applied. **33 (49%) were silently ignored**, with no error and no alert.
+- Example: Nebo. The summary of 25/9, 15:47 said «out for 2–3 weeks (Gazzetta)», before his game. The model counted him at 14.6 xFPT.
 
-## Απόφαση
-- **Διόρθωση (υλοποιήθηκε):** τα ονόματα που επιστρέφει το Gemini αντιστοιχίζονται ανεξάρτητα από τη σειρά των λέξεων και τις καταλήξεις (Jr., III). Αυτό ισχύει για τη διαθεσιμότητα και για τις προτάσεις των ειδικών. Με τη διόρθωση εφαρμόζονται και οι 67 καταστάσεις.
-- Ένα τεστ επιβεβαιώνει ότι ένα «εκτός» γραμμένο ως «Όνομα Επώνυμο Jr.» βγάζει τον παίκτη με 0.
-- **Περιορισμός:** μόνο μία αγωνιστική. Η βαθμονόμηση (0,5 → 50%, οι εκπλήξεις του 1) θέλει 4–5 αγωνιστικές για να κριθεί. `run.py` ξανατρέχει οποτεδήποτε.
+## Decision
+- **Fix (shipped):** the names Gemini returns are matched regardless of word order and suffixes (Jr., III). This applies to availability and to the experts' picks. With the fix all 67 statuses are applied.
+- A test confirms that an «out» written as «First Last Jr.» sets the player to 0.
+- **Limit:** a single round. The calibration (0.5 → 50%, the surprises at 1) needs 4–5 rounds to be judged. `run.py` can be run again at any time.
+- **1/10:** the same silent failure in another form: Gemini wrote **every** name in Greek («ΛΕΣΟΡ, ΜΑΘΙΑΣ»), so no injury from the news and no expert pick matched. `news.resolve_names` maps them back to the roster (a sound-alike Latin skeleton, the closest name only when it clearly stands out; 26/26 on the live digest), and the prompt now asks for the roster's Latin names.

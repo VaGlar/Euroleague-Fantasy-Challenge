@@ -1,51 +1,51 @@
-# 010 — Πού πάνε τα λεπτά; Απουσίες συμπαικτών, αλλαγή ρόλου, βάθος ροτάσιον
+# 010 — Where do the minutes go? Teammates' absences, role change, rotation depth
 
-**Ημερομηνία:** 28/9/2026 · **Κατάσταση:** ❌ τα τρία σήματα απορρίφθηκαν · ✅ παράπλευρο εύρημα: η γνώση των απουσιών αξίζει πολύ
+**Date:** 28/9/2026 · **Status:** ❌ the three signals rejected · ✅ side finding: knowing the absences is worth a lot
 
-## Ερώτημα
-Το 009 έδειξε ότι το σήμα που λείπει είναι στα λεπτά του κάθε αγώνα. Εξηγούν τρία σήματα, γνωστά πριν τον αγώνα, μέρος του σφάλματος;
-- **(a) Απουσία συμπαίκτη.** Όταν λείπει ένας βασικός (15+ λεπτά ανά αγώνα), τα λεπτά του πάνε κυρίως σε όσους παίζουν στη θέση του. Δύο εκδοχές: ανά θέση, και χωρίς θέση (ανάλογα με τα λεπτά όλων).
-- **(b) Αλλαγή ρόλου.** Ξεκίνησε βασικός στους 2 τελευταίους αγώνες, ενώ πριν ξεκινούσε λιγότερο από 40% (ή το αντίστροφο). Επιπλέον, η τάση των λεπτών του (2 τελευταίοι αγώνες έναντι σεζόν).
-- **(e) Βάθος ροτάσιον.** Πόσοι παίζουν 10+ λεπτά στην ομάδα, για τους παίκτες με λίγα λεπτά.
+## Question
+009 showed that the missing signal is in each game's minutes. Do three signals, known before the game, explain part of the error?
+- **(a) A teammate's absence.** When a starter (15+ minutes per game) is out, his minutes go mostly to the players at his position. Two versions: by position, and without position (in proportion to everyone's minutes).
+- **(b) Role change.** He started the last 2 games, while before he started less than 40% of the time (or the reverse). Plus the trend of his minutes (last 2 games vs season).
+- **(e) Rotation depth.** How many play 10+ minutes on the team, for players with few minutes.
 
-## Μέθοδος
-- **Στόχος:** το σφάλμα του τωρινού μοντέλου (πραγματικό PIR μείον πρόβλεψη), σε όσους αγωνίστηκαν.
-- **Εκπαίδευση:** πρώτο μισό 2025–26. **Έλεγχος:** δεύτερο μισό 2025–26 και ολόκληρο το 2024–25.
-- **Τεστ ομάδας με budget** (`_lib.squad_points`): και οι δύο εκδοχές *ξέρουν ποιος λείπει* (ο απών → 0, όπως κάνει η πραγματική λειτουργία με τραυματίες και νέα). Η μία προσθέτει και τα τρία σήματα. Έτσι μετριέται μόνο η μοιρασιά των λεπτών, όχι η γνώση της απουσίας.
-- **Περιορισμός:** οι απουσίες βγαίνουν από το box score, με γνώση του αποτελέσματος. Οι περισσότερες ανακοινώνονται πριν τον αγώνα, κάποιες όμως τελευταία στιγμή, οπότε το κέρδος του (a) είναι ανώτατο όριο.
+## Method
+- **Target:** the current model's error (real PIR minus prediction), for players who played.
+- **Training:** first half of 2025–26. **Test:** second half of 2025–26 and the whole of 2024–25.
+- **Budget squad test** (`_lib.squad_points`): both versions *know who is out* (the absentee → 0, as live operation does with injuries and news). One adds the three signals too. That way only the sharing of the minutes is measured, not the knowledge of the absence.
+- **Limit:** the absences come from the box score, knowing the outcome. Most are announced before the game, some at the last minute, so the gain of (a) is an upper bound.
 
-## Αποτελέσματα
+## Results
 
-Συντελεστές (εκπαίδευση, ± τυπικό σφάλμα) και αλλαγή μέσου σφάλματος εκτός δείγματος:
+Coefficients (training, ± standard error) and the change in mean error out of sample:
 
-| Σήμα | Συντελεστής | ΔMAE 2025–26 β' μισό | ΔMAE 2024–25 |
+| Signal | Coefficient | ΔMAE 2025–26 2nd half | ΔMAE 2024–25 |
 |---|---|---|---|
-| (a) ίδια θέση | **0,13 ± 0,05** | −0,011 | −0,003 |
-| (a) άλλες θέσεις | −0,15 ± 0,11 | (μαζί) | (μαζί) |
-| (a) χωρίς θέση | 0,02 ± 0,09 | −0,002 | −0,001 |
-| (b) έγινε βασικός | +0,37 ± 0,46 | −0,012 | −0,007 |
-| (b) έγινε αναπληρωματικός | −0,78 ± 0,52 | (μαζί) | (μαζί) |
-| (b) τάση λεπτών | +0,09 ± 0,07 | (μαζί) | (μαζί) |
-| (e) βάθος ροτάσιον | −0,06 ± 0,06 | −0,006 | 0,000 |
-| **Όλα μαζί** | | **−0,027** | **−0,010** |
+| (a) same position | **0.13 ± 0.05** | −0.011 | −0.003 |
+| (a) other positions | −0.15 ± 0.11 | (together) | (together) |
+| (a) no position | 0.02 ± 0.09 | −0.002 | −0.001 |
+| (b) became a starter | +0.37 ± 0.46 | −0.012 | −0.007 |
+| (b) became a substitute | −0.78 ± 0.52 | (together) | (together) |
+| (b) minutes trend | +0.09 ± 0.07 | (together) | (together) |
+| (e) rotation depth | −0.06 ± 0.06 | −0.006 | 0.000 |
+| **All together** | | **−0.027** | **−0.010** |
 
-Πόντοι ομάδας ανά αγωνιστική, δεύτερο μισό σεζόν (± τυπικό σφάλμα):
+Squad points per round, second half of the season (± standard error):
 
 | | 2025–26 | 2024–25 |
 |---|---|---|
-| Χωρίς γνώση απουσιών (τωρινό backtest) | 149,9 | 161,1 |
-| **Με γνώση απουσιών** | **169,1 (+19,2 ± 4,6)** | **171,2 (+10,1 ± 3,2)** |
-| + τα τρία σήματα | 166,1 (−3,0 ± 3,0) | 169,4 (−1,7 ± 4,4) |
+| Without knowing the absences (current backtest) | 149.9 | 161.1 |
+| **Knowing the absences** | **169.1 (+19.2 ± 4.6)** | **171.2 (+10.1 ± 3.2)** |
+| + the three signals | 166.1 (−3.0 ± 3.0) | 169.4 (−1.7 ± 4.4) |
 
-Στο 59% των γραμμών κάποιος βασικός συμπαίκτης έλειπε.
+In 59% of the rows some starting teammate was out.
 
-## Συμπεράσματα
-- **(a) Η θέση μετράει.** Η εκδοχή ανά θέση έχει το μόνο στατιστικά σημαντικό αποτέλεσμα, και η εκδοχή χωρίς θέση κανένα, όπως ήταν η διαίσθηση. **Το μέγεθος όμως είναι μικρό:** μόλις ~13% από το «αναμενόμενο» επιπλέον PIR εμφανίζεται. Τα λεπτά ενός απόντα μοιράζονται σε πολλούς, με τρόπους που δεν φαίνονται στις θέσεις (ψηλά/χαμηλά σχήματα, προπονητής).
-- **(b) Τα πρόσημα είναι τα αναμενόμενα, αλλά χωρίς στατιστική σημασία.** Οι αλλαγές ρόλου είναι σπάνιες (~5% των γραμμών) και έχουν ήδη αρχίσει να περνούν στη φόρμα.
-- **(e) Κανένα σήμα.** Το βάθος της ροτάσιον περιέχεται ήδη στο ιστορικό κάθε παίκτη (τα 0 λεπτά μετράνε στη φόρμα).
-- **Όλα μαζί:** −0,01 έως −0,03 στο μέσο σφάλμα, δηλαδή κάτω από το όριο θορύβου (0,03). Στους πόντους ομάδας, ελαφρώς αρνητικό.
-- **Παράπλευρο, και το πιο σημαντικό εύρημα μέχρι τώρα:** **να ξέρεις ποιος λείπει** αξίζει **+10 έως +19 πόντους ανά αγωνιστική** (+7 έως +13%). Είναι πάνω από δύο φορές όσο κερδίζει το μοντέλο έναντι του απλού μέσου όρου (~4). Είναι ανώτατο όριο (box score), αλλά δείχνει πού είναι η αξία: στην **ακρίβεια και στην έγκαιρη ενημέρωση της διαθεσιμότητας**, όχι στο μοντέλο.
+## Conclusions
+- **(a) Position matters.** The by-position version has the only statistically significant effect, and the version without position none, as intuition said. **But the size is small:** only ~13% of the «expected» extra PIR shows up. An absentee's minutes are shared among many, in ways the positions don't show (big/small line-ups, the coach).
+- **(b) The signs are as expected, but not significant.** Role changes are rare (~5% of rows) and have already started to show in the form.
+- **(e) No signal.** Rotation depth is already in each player's history (0 minutes count in the form).
+- **All together:** −0.01 to −0.03 in mean error, i.e. below the noise floor (0.03). In squad points, slightly negative.
+- **Side finding, and the most important one so far:** **knowing who is out** is worth **+10 to +19 points per round** (+7 to +13%). That's more than twice what the model gains over the plain average (~4). It's an upper bound (box score), but it shows where the value is: in the **accuracy and timeliness of availability**, not in the model.
 
-## Απόφαση
-- Τα σήματα (a), (b), (e) δεν μπαίνουν στο μοντέλο.
-- Νέα κατεύθυνση (011): **η φρεσκάδα των στοιχείων διαθεσιμότητας.** Σήμερα το update τρέχει στις 07:00 και μετά τους αγώνες. Τραυματισμοί που ανακοινώνονται μέσα στη μέρα του αγώνα δεν φτάνουν στις προτάσεις πριν τη λήξη.
+## Decision
+- Signals (a), (b), (e) don't go into the model.
+- New direction (011): **fresh availability data.** Today the update runs at 07:00 and after the games. Injuries announced during game day don't reach the suggestions before the deadline.

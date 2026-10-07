@@ -1,37 +1,40 @@
-# 015 — Νέοι στη EuroLeague: ένα ματς δεν είναι επίπεδο
+# 015 — Newcomers to the EuroLeague: one game is not a level
 
-**Αφορμή:** στη 2η αγωνιστική του 2026 το μοντέλο πρότεινε Crowder (25 PIR στο 1ο ματς, καμία περσινή σεζόν
-στη EuroLeague) και Fodzo Dada. Όταν λείπει η περσινή σεζόν, η «βάση» του παίκτη είναι μόνο τα φετινά ματς, δηλαδή
-ένα.
+**Why:** in round 2 of 2026 the model suggested Crowder (25 PIR in his 1st game, no previous EuroLeague season)
+and Fodzo Dada. When the previous season is missing, the player's «base» is only this season's games, i.e.
+one.
 
-## Μέθοδος
-Αγωνιστικές 2–8 των σεζόν 2024 και 2025 (walk-forward, όπως στο `_lib`). Οι ρυθμίσεις επιλέγονται στη μία σεζόν
-και κρίνονται στην άλλη.
+## Method
+Rounds 2–8 of the 2024 and 2025 seasons (walk-forward, as in `_lib`). The settings are chosen on one season
+and judged on the other.
 
-1. **Συρρίκνωση προς αρχική εκτίμηση** (`run.py`): `βάση = (g·φόρμα + k·prior)/(g + k)`. Ως prior, ο μέσος όρος
-   των νεοφερμένων της άλλης σεζόν ανά θέση. Δεν χρησιμοποιήθηκε η τιμή, γιατί για παλιές σεζόν δεν την έχουμε
-   χωρίς να «κρυφοκοιτάζει» τα πρώτα ματς.
-2. **Βαθμονόμηση και διόρθωση** (`calib.py`): πρόβλεψη έναντι πραγματικού ανά αριθμό ματς. Μετά γραμμική διόρθωση
-   `a + b·πρόβλεψη` για νεοφερμένους με ≤5 ματς.
+1. **Shrinkage towards a starting estimate** (`run.py`): `base = (g·form + k·prior)/(g + k)`. As the prior, the mean
+   of the other season's newcomers per position. The price wasn't used, because for old seasons we don't have it
+   without «peeking» at the first games.
+2. **Calibration and correction** (`calib.py`): prediction vs actual by number of games. Then a linear correction
+   `a + b·prediction` for newcomers with ≤5 games.
 
-## Αποτελέσματα
-- **Υπερεκτίμηση των «καλών» νεοφερμένων με λίγα ματς** (πρόβλεψη ≥12): το 2025 είναι ισχυρή (1 ματς: 17.8 → 11.96,
-  2: 16.7 → 10.3, 3: 16.3 → 9.7), ενώ το 2024 δεν εμφανίζεται (16.6 → 15.3, 18.2 → 19.6). Τα δείγματα είναι μικρά
-  (10–23 ανά ομάδα).
-- **Συρρίκνωση προς τον μέσο όρο της θέσης:** χειρότερο σφάλμα σε όλες τις τιμές του k. Ο μέσος όρος (3–5 PIR)
-  περιέχει τους αναπληρωματικούς και τραβάει προς τα κάτω και τους καλούς. Στους πόντους ομάδας: +65 το 2024,
-  −16 το 2025.
-- **Γραμμική διόρθωση:** +34 πόντοι ομάδας και μικρότερο σφάλμα όταν κρίνεται το 2025. −9 πόντοι και μεγαλύτερο
-  σφάλμα όταν κρίνεται το 2024.
-- **Παράπλευρο:** υπερεκτιμώνται και οι παίκτες με περσινή σεζόν αλλά με μόνο 4–5 ματς **στη μέση της σεζόν**
-  (14.8 → 7.4 το 2024, 15.5 → 9.8 το 2025). Είναι σχεδόν σίγουρα παίκτες που γυρίζουν από τραυματισμό ή βγήκαν από
-  τη ροτάσιον, δηλαδή το 012(c).
+## Results
+- **The «good» newcomers with few games are overestimated** (prediction ≥12): strongly in 2025 (1 game: 17.8 → 11.96,
+  2: 16.7 → 10.3, 3: 16.3 → 9.7), while in 2024 it doesn't show (16.6 → 15.3, 18.2 → 19.6). The samples are small
+  (10–23 per group).
+- **Shrinkage towards the position mean:** a worse error for every value of k. The mean (3–5 PIR)
+  includes the substitutes and drags the good ones down too. In squad points: +65 in 2024,
+  −16 in 2025.
+- **Linear correction:** +34 squad points and a smaller error when judged on 2025. −9 points and a larger
+  error when judged on 2024.
+- **Side finding:** players with a previous season but only 4–5 games **mid-season** are overestimated too
+  (14.8 → 7.4 in 2024, 15.5 → 9.8 in 2025). They are almost certainly players back from injury or out of
+  the rotation, i.e. 012(c).
 
-## Απόφαση
-❌ **Καμία αλλαγή στο μοντέλο.** Καμία διόρθωση δεν κερδίζει καθαρά και στις δύο σεζόν.
+## Decision
+❌ **No model change.** No correction wins clearly in both seasons.
 
-✅ **Στην εφαρμογή:** σήμα «νέος · N ματς» με ⓘ στους παίκτες χωρίς περσινή σεζόν στη EuroLeague και με ≤4 ματς.
-Η πρόβλεψή τους είναι αβέβαιη και ο χρήστης πρέπει να το ξέρει.
+✅ **In the app:** a «νέος · N ματς» (new · N games) flag with ⓘ on players without a previous EuroLeague season and with ≤4 games.
+Their prediction is uncertain and the user should know it.
 
-⏳ **Επόμενο:** η ίδια δοκιμή με **πραγματική τιμή** ως prior, στα δεδομένα του 2026 (το `prices.csv` μαζεύει
-τιμές από τη 1η αγωνιστική). Μετά από ~6 αγωνιστικές, μαζί με το 013/014.
+⏳ **Next:** the same test with the **real price** as the prior, on the 2026 data (`prices.csv` collects
+prices since round 1). After ~6 rounds, together with 013/014.
+
+**30/9 (see 021):** shipped without a backtest — no old prices exist — as a price-based estimate that counts as
+extra games and fades game by game, first for newcomers, then for everyone with few games this season.

@@ -1,41 +1,41 @@
-# 016 — Τύχη στο σουτ: φουσκώνει η φόρμα όποιος ευστοχεί ασυνήθιστα;
+# 016 — Shooting luck: does an unusually hot shooter inflate his form?
 
-**Ερώτημα:** το PIR ανταμείβει κάθε εύστοχο σουτ (δίποντο +3 έναντι άστοχου, τρίποντο +4, βολή +2). Τα ποσοστά
-ευστοχίας επιστρέφουν στον μέσο όρο. Άρα όποιος σουτάρει ασυνήθιστα καλά για λίγα ματς μάλλον υπερεκτιμάται από
-τη φόρμα, και όποιος σουτάρει άσχημα υποεκτιμάται.
+**Question:** PIR rewards every made shot (a two +3 vs a miss, a three +4, a free throw +2). Shooting
+percentages regress to the mean. So a player who shoots unusually well for a few games is probably overestimated by
+the form, and one who shoots badly is underestimated.
 
-## Μέθοδος (`run.py`)
-- **«Διορθωμένο» PIR ανά αγώνα:** τα εύστοχα αντικαθίστανται με τα αναμενόμενα, με ποσοστό που «μαζεύεται» προς
-  ένα prior: `p = (εύστοχα + k·p0) / (προσπάθειες + k)`, χωριστά για δίποντα, τρίποντα και βολές.
-  Το `p0` είναι το περσινό ποσοστό του παίκτη, συρρικνωμένο προς της λίγκας (100 προσπάθειες), αλλιώς της λίγκας.
-- Ο μέσος όρος σεζόν και των 3 τελευταίων υπολογίζονται με το διορθωμένο PIR. Το υπόλοιπο μοντέλο μένει ίδιο.
-- Walk-forward (μόνο ό,τι ήταν γνωστό πριν από κάθε αγωνιστική), σεζόν 2024 και 2025. Το `k` επιλέγεται στη μία
-  σεζόν (πόντοι ομάδας) και κρίνεται στην άλλη.
-- Το `k = 0` δεν είναι ακριβώς το σημερινό μοντέλο: ο μέσος όρος σεζόν μένει ίδιος, αλλά τα 3 τελευταία
-  «εξομαλύνονται» με το φετινό ποσοστό του παίκτη.
+## Method (`run.py`)
+- **«Corrected» PIR per game:** made shots are replaced with the expected ones, at a percentage «pulled» towards
+  a prior: `p = (made + k·p0) / (attempts + k)`, separately for twos, threes and free throws.
+  `p0` is the player's last-season percentage, shrunk towards the league's (100 attempts), otherwise the league's.
+- The season mean and the last-3 mean are computed with the corrected PIR. The rest of the model stays the same.
+- Walk-forward (only what was known before each round), seasons 2024 and 2025. `k` is chosen on one
+  season (squad points) and judged on the other.
+- `k = 0` isn't exactly today's model: the season mean stays the same, but the last 3 are
+  «smoothed» with the player's percentage this season.
 
-## Αποτελέσματα (`result.json`)
+## Results (`result.json`)
 
-| k | 2024: σφάλμα / πόντοι ομάδας | 2025: σφάλμα / πόντοι ομάδας |
+| k | 2024: error / squad points | 2025: error / squad points |
 |---|---|---|
-| σήμερα | 5.249 / 4652 | 5.165 / 5387 |
+| today | 5.249 / 4652 | 5.165 / 5387 |
 | 0 | 5.258 / 4734 | 5.160 / 5418 |
 | 25 | 5.265 / 4790 | 5.182 / 5290 |
 | 50 | 5.271 / 4800 | 5.189 / 5148 |
 | 100 | 5.277 / 4765 | 5.195 / 5167 |
-| πλήρης (∞) | 5.294 / 4623 | 5.211 / 5133 |
+| full (∞) | 5.294 / 4623 | 5.211 / 5133 |
 
-- **Το σφάλμα χειροτερεύει σε κάθε k > 0 και στις δύο σεζόν.**
-- **Εκτός δείγματος:** το `k` του 2024 (50) κρινόμενο στο 2025 δίνει **−238** πόντους ομάδας. Το `k` του 2025
-  (25) κρινόμενο στο 2024 δίνει **+138**. Αντίθετα πρόσημα, άρα θόρυβος.
-- Στους «καλούς» (πρόβλεψη ≥ 12) το σφάλμα βελτιώνεται λίγο το 2025 και χειροτερεύει το 2024.
+- **The error gets worse for every k > 0 in both seasons.**
+- **Out of sample:** the `k` of 2024 (50) judged on 2025 gives **−238** squad points. The `k` of 2025
+  (25) judged on 2024 gives **+138**. Opposite signs, so noise.
+- For the «good» ones (prediction ≥ 12) the error improves a little in 2025 and gets worse in 2024.
 
-**Γιατί δεν δουλεύει:** το σουτ στο PIR είναι σε μεγάλο βαθμό **ικανότητα** (ποιος σουτάρει, από πού, με ποιον
-ρόλο), όχι τύχη. Επιπλέον η φόρμα ήδη «μαζεύει» προς τον μέσο όρο: ο μέσος όρος σεζόν και η περσινή σεζόν έχουν
-βάρος. Η επιπλέον συρρίκνωση των ποσοστών αφαιρεί πραγματικό σήμα.
+**Why it doesn't work:** shooting in PIR is largely **skill** (who shoots, from where, in what
+role), not luck. Also the form already pulls towards the mean: the season mean and last season carry
+weight. Shrinking the percentages further removes real signal.
 
-## Απόφαση
-❌ **Καμία αλλαγή στο μοντέλο.** Χειρότερο σφάλμα και στις δύο σεζόν, αντίθετα αποτελέσματα στους πόντους ομάδας.
+## Decision
+❌ **No model change.** A worse error in both seasons, opposite results in squad points.
 
-Τα δεδομένα θέσης σουτ (shot data του API της EuroLeague) θα έδιναν πιο καθαρή «ποιότητα σουτ», αλλά αφού η πιο
-απλή εκδοχή δεν δείχνει κανένα σήμα, δεν αξίζει ο κόπος τώρα.
+Shot location data (the EuroLeague API's shot data) would give a cleaner «shot quality», but since the
+simpler version shows no signal, it isn't worth the effort now.

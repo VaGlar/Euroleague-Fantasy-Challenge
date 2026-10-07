@@ -1,34 +1,34 @@
-# 002 — Machine learning (gradient boosting) και λεπτά συμμετοχής
+# 002 — Machine learning (gradient boosting) and minutes played
 
-**Ημερομηνία:** 27/9/2026 · **Κατάσταση:** ❌ απορρίφθηκε
+**Date:** 27/9/2026 · **Status:** ❌ rejected
 
-## Ερώτημα
-Προβλέπει καλύτερα ένα πιο ευέλικτο μοντέλο ML; Αν ναι, το κέρδος οφείλεται στον αλγόριθμο ή σε νέα χαρακτηριστικά, όπως τα λεπτά συμμετοχής;
+## Question
+Does a more flexible ML model predict better? If so, is the gain down to the algorithm or to new features, such as minutes played?
 
-## Μέθοδος
-- **Τεστ:** οι αγωνιστικές 20–38 του 2025–26. **Εκπαίδευση:** μόνο σε ό,τι ήταν γνωστό πριν από αυτές (όλο το 2024–25 και οι αγωνιστικές 1–19 του 2025–26), 11.569 γραμμές. **Έλεγχος:** 4.477 γραμμές.
-- **Μοντέλα:**
-  - το τωρινό,
-  - gradient boosting (`HistGradientBoostingRegressor`) με τα ίδια χαρακτηριστικά,
-  - gradient boosting με λεπτά συμμετοχής (μέσος όρος σεζόν, τελευταίοι 3, τελευταίος αγώνας, πέρσι),
-  - γραμμικό μοντέλο με τα ίδια λεπτά.
-- **Συνάρτηση κόστους:** ελέγχθηκαν δύο, απόλυτο και τετραγωνικό σφάλμα (βλ. παρακάτω).
+## Method
+- **Test:** rounds 20–38 of 2025–26. **Training:** only on what was known before them (all of 2024–25 and rounds 1–19 of 2025–26), 11,569 rows. **Test set:** 4,477 rows.
+- **Models:**
+  - the current one,
+  - gradient boosting (`HistGradientBoostingRegressor`) with the same features,
+  - gradient boosting with minutes played (season mean, last 3, last game, last season),
+  - a linear model with the same minutes.
+- **Loss function:** two were tried, absolute and squared error (see below).
 
-## Αποτελέσματα
+## Results
 
-| Μοντέλο | Μέσο σφάλμα | RMSE | Spearman | Top-20 hit | Μέση πρόβλεψη (πραγματικό 7,92) |
+| Model | Mean error | RMSE | Spearman | Top-20 hit | Mean prediction (actual 7.92) |
 |---|---|---|---|---|---|
-| **Τωρινό** | 5,295 | 6,965 | 0,541 | 0,300 | 7,70 |
-| GBM, ίδια χαρακτηριστικά | 5,294 | – | 0,536 | 0,305 | – |
-| GBM + λεπτά (τετραγωνικό κόστος) | 5,342 | 6,976 | 0,541 | 0,297 | 8,03 |
-| GBM + λεπτά (απόλυτο κόστος) | 5,214 | 6,993 | 0,544 | 0,313 | **7,33** |
-| Γραμμικό + λεπτά | 5,316 | 6,931 | 0,548 | 0,292 | 8,17 |
+| **Current** | 5.295 | 6.965 | 0.541 | 0.300 | 7.70 |
+| GBM, same features | 5.294 | – | 0.536 | 0.305 | – |
+| GBM + minutes (squared loss) | 5.342 | 6.976 | 0.541 | 0.297 | 8.03 |
+| GBM + minutes (absolute loss) | 5.214 | 6.993 | 0.544 | 0.313 | **7.33** |
+| Linear + minutes | 5.316 | 6.931 | 0.548 | 0.292 | 8.17 |
 
-## Συμπεράσματα
-- **Ο αλγόριθμος μόνος του δεν προσφέρει τίποτα.** Με τα ίδια χαρακτηριστικά, το GBM ισοφαρίζει το τωρινό μοντέλο.
-- **Ούτε τα λεπτά συμμετοχής βοηθούν.** Το PIR περιέχει ήδη την επίδρασή τους. Θα βοηθούσε μόνο η πρόβλεψη *αλλαγής* ρόλου, που δεν φαίνεται στα στατιστικά πριν συμβεί.
-- **Παγίδα:** το GBM με απόλυτο κόστος φαίνεται να κερδίζει 1,5% σε μέσο σφάλμα, αλλά μόνο επειδή προβλέπει τη **διάμεσο** (7,33 έναντι 7,92 πραγματικού μέσου όρου). Για το fantasy χρειάζεται ο αναμενόμενος (μέσος) αριθμός πόντων. Με τετραγωνικό κόστος το κέρδος εξαφανίζεται.
-- **Εύρημα για το τωρινό μοντέλο:** για τους 20 κορυφαίους κάθε αγωνιστικής προέβλεπε 17,23 PIR και έφεραν 16,04, περίπου 7% λιγότερο («κατάρα του νικητή»). Δεν αλλάζει τις επιλογές, αλλά φουσκώνει το xPTS που βλέπει ο χρήστης.
+## Conclusions
+- **The algorithm alone offers nothing.** With the same features, the GBM ties the current model.
+- **Minutes played don't help either.** PIR already contains their effect. Only predicting a *change* of role would help, and that doesn't show in the stats before it happens.
+- **Trap:** the GBM with absolute loss seems to win 1.5% in mean error, but only because it predicts the **median** (7.33 vs an actual mean of 7.92). Fantasy needs the expected (mean) number of points. With squared loss the gain disappears.
+- **Finding for the current model:** for each round's top 20 it predicted 17.23 PIR and they brought 16.04, about 7% less («winner's curse»). It doesn't change the picks, but it inflates the xPTS the user sees.
 
-## Απόφαση
-Δεν προσθέτουμε ML. Νέα πειράματα: 003 (βαθμονόμηση των υψηλών προβλέψεων) και 004 (μέτρο αξιολόγησης). Ξανά στο τέλος της σεζόν με 3 σεζόν δεδομένων (007).
+## Decision
+No ML. New experiments: 003 (calibrating the high predictions) and 004 (the evaluation metric). Again at the end of the season with 3 seasons of data (007).
