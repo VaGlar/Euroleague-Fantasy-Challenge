@@ -453,8 +453,8 @@
      "person_id": "003469",
      "name": "VEZENKOV, SASHA",
      "team": "OLY",
-     "role": "5άδα",
-     "captain": true,
+     "role": "πάγκος",
+     "captain": false,
      "x_now": 25.4
     },
     {
@@ -465,7 +465,7 @@
      "name": "JONES, CARLIK",
      "team": "PAR",
      "role": "5άδα",
-     "captain": false,
+     "captain": true,
      "x_now": 19.2
     },
     {
@@ -497,7 +497,7 @@
      "person_id": "014108",
      "name": "DIARRA, ALIOU",
      "team": "VIR",
-     "role": "6ος",
+     "role": "5άδα",
      "captain": false,
      "x_now": 13.8
     },
@@ -511,6 +511,150 @@
      "role": "πάγκος",
      "captain": false,
      "x_now": 12.5
+    },
+    {
+     "id": 4061,
+     "price": 5.5,
+     "position": "Forward",
+     "person_id": "008084",
+     "name": "MANTZOUKAS, ELEFTHERIOS",
+     "team": "PAN",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 10.9
+    },
+    {
+     "id": 4255,
+     "price": 7.9,
+     "position": "Head Coach",
+     "person_id": "009154",
+     "name": "ALBERT, XAVIER",
+     "team": "PAM",
+     "role": "coach",
+     "captain": false,
+     "x_now": 9.7
+    },
+    {
+     "id": 11521,
+     "price": 4.9,
+     "position": "Guard",
+     "person_id": "015161",
+     "name": "FODZO DADA, MARC-OWEN",
+     "team": "ASV",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 5.4
+    },
+    {
+     "id": 4012,
+     "price": 4.3,
+     "position": "Forward",
+     "person_id": "001518",
+     "name": "RICCI, GIAMPAOLO",
+     "team": "MIL",
+     "role": "6ος",
+     "captain": false,
+     "x_now": 3.4
+    },
+    {
+     "id": 3886,
+     "price": 4.2,
+     "position": "Guard",
+     "person_id": "001844",
+     "name": "HACKETT, DANIEL",
+     "team": "VIR",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 1.8
+    }
+   ],
+   "x_total": 150.3,
+   "decided_at": "2026-10-07T15:49+00:00",
+   "moves": {
+    "2": {
+     "in": [
+      4061,
+      4012
+     ],
+     "out": [
+      3766,
+      11521
+     ],
+     "captain": 3791,
+     "at": "2026-10-07T22:09+00:00"
+    }
+   }
+  },
+  {
+   "round": 5,
+   "trades": 2,
+   "bank": 0.0,
+   "squad": [
+    {
+     "id": 3766,
+     "price": 18.1,
+     "position": "Forward",
+     "person_id": "003469",
+     "name": "VEZENKOV, SASHA",
+     "team": "OLY",
+     "role": "5άδα",
+     "captain": true,
+     "x_now": 25.4
+    },
+    {
+     "id": 3791,
+     "price": 14.9,
+     "position": "Guard",
+     "person_id": "013369",
+     "name": "JONES, CARLIK",
+     "team": "PAR",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 19.3
+    },
+    {
+     "id": 3850,
+     "price": 11.2,
+     "position": "Guard",
+     "person_id": "007027",
+     "name": "MALEDON, THEO",
+     "team": "MAD",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 19.1
+    },
+    {
+     "id": 11504,
+     "price": 11.4,
+     "position": "Center",
+     "person_id": "003958",
+     "name": "THIEMANN, JOHANNES",
+     "team": "MUN",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 18.9
+    },
+    {
+     "id": 11519,
+     "price": 9.2,
+     "position": "Guard",
+     "person_id": "015164",
+     "name": "BESSON, HUGO",
+     "team": "ASV",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 14.5
+    },
+    {
+     "id": 7424,
+     "price": 8.2,
+     "position": "Center",
+     "person_id": "014108",
+     "name": "DIARRA, ALIOU",
+     "team": "VIR",
+     "role": "6ος",
+     "captain": false,
+     "x_now": 14.4
     },
     {
      "id": 4061,
@@ -535,17 +679,6 @@
      "x_now": 9.7
     },
     {
-     "id": 11521,
-     "price": 4.9,
-     "position": "Guard",
-     "person_id": "015161",
-     "name": "FODZO DADA, MARC-OWEN",
-     "team": "ASV",
-     "role": "5άδα",
-     "captain": false,
-     "x_now": 5.4
-    },
-    {
      "id": 4012,
      "price": 4.3,
      "position": "Forward",
@@ -557,6 +690,17 @@
      "x_now": 3.4
     },
     {
+     "id": 3867,
+     "price": 4.1,
+     "position": "Forward",
+     "person_id": "001255",
+     "name": "PAPANIKOLAOU, KOSTAS",
+     "team": "OLY",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 2.8
+    },
+    {
      "id": 3886,
      "price": 4.2,
      "position": "Guard",
@@ -565,11 +709,11 @@
      "team": "VIR",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 1.8
+     "x_now": 1.7
     }
    ],
-   "x_total": 150.3,
-   "decided_at": "2026-10-07T15:49+00:00"
+   "x_total": 156.4,
+   "decided_at": "2026-10-07T22:09+00:00"
   }
  ],
  "seed_id": "5a453a755a9b",
@@ -580,5 +724,5 @@
   "raw": 295.0,
   "avg_raw": 214.9
  },
- "generated": "2026-10-07T15:49:53.768795+00:00"
+ "generated": "2026-10-07T22:09:24.814789+00:00"
 }
