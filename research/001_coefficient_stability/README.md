@@ -1,50 +1,50 @@
-# 001 — Σταθερότητα παραμέτρων και δεύτερη σεζόν
+# 001 — Parameter stability and a second season
 
-**Ημερομηνία:** 27/9/2026 · **Κατάσταση:** ❌ δεν υλοποιήθηκε (τίποτα δεν κέρδισε το τωρινό)
+**Date:** 27/9/2026 · **Status:** ❌ not shipped (nothing beat the current model)
 
-## Ερωτήματα
-1. Αν τρέξουμε το backtest στη σεζόν 2024–25, βγαίνουν οι ίδιες παράμετροι με το 2025–26;
-2. Αλλάζουν οι παράμετροι μέσα στη σεζόν (αρχή / μέση / τέλος);
-3. Βελτιώνει την πρόβλεψη να εκπαιδεύσουμε και με το 2024–25;
+## Questions
+1. If we run the backtest on the 2024–25 season, do we get the same parameters as for 2025–26?
+2. Do the parameters change within a season (start / middle / end)?
+3. Does training on 2024–25 as well improve the prediction?
 
-## Μέθοδος
-- Walk-forward backtest (`elf/backtest.py`) στις σεζόν 2024–25 και 2025–26. Για τη 2024–25 κατέβηκαν και τα δεδομένα του 2023–24, που χρησιμοποιούνται ως «προηγούμενη σεζόν».
-- Τα βάρη φόρμας βρίσκονται με grid search. Οι συντελεστές πλαισίου βρίσκονται με ridge regression.
-- Τεστ εκτός δείγματος: το δεύτερο μισό του 2025–26, με συντελεστές από διαφορετικές πηγές.
+## Method
+- Walk-forward backtest (`elf/backtest.py`) on the 2024–25 and 2025–26 seasons. For 2024–25 the 2023–24 data were downloaded too, used as «previous season».
+- The form weights come from a grid search. The context coefficients come from ridge regression.
+- Out-of-sample test: the second half of 2025–26, with coefficients from different sources.
 
-## Αποτελέσματα
+## Results
 
-Παράμετροι ανά σεζόν:
+Parameters per season:
 
 | | 2024–25 | 2025–26 |
 |---|---|---|
-| Βάρη φόρμας (3 τελευταίοι / σεζόν / πέρσι) | 0,09 / 0,45 / 0,45 | 0,11 / 0,37 / 0,53 |
-| Άμυνα ανά θέση | 0,11 | 0,49 |
-| Ρυθμός | 0,90 | 0,50 |
-| Έδρα | +0,03 | +0,045 |
+| Form weights (last 3 / season / last season) | 0.09 / 0.45 / 0.45 | 0.11 / 0.37 / 0.53 |
+| Defence by position | 0.11 | 0.49 |
+| Pace | 0.90 | 0.50 |
+| Home | +0.03 | +0.045 |
 
-Παράμετροι ανά τρίτο του 2025–26:
+Parameters per third of 2025–26:
 
-| Αγωνιστικές | Άμυνα | Ρυθμός | Έδρα | Σεζόν / πέρσι |
+| Rounds | Defence | Pace | Home | Season / last season |
 |---|---|---|---|---|
-| 1–13 | 0,28 | −0,20 | 0,07 | 0,37 / 0,56 |
-| 14–26 | 0,60 | 0,10 | 0,02 | 0,37 / 0,56 |
-| 27–38 | 0,60 | 0,64 | 0,05 | 0,64 / 0,18 |
+| 1–13 | 0.28 | −0.20 | 0.07 | 0.37 / 0.56 |
+| 14–26 | 0.60 | 0.10 | 0.02 | 0.37 / 0.56 |
+| 27–38 | 0.60 | 0.64 | 0.05 | 0.64 / 0.18 |
 
-Δεύτερο μισό του 2025–26, εκτός δείγματος (μέσο σφάλμα PIR):
+Second half of 2025–26, out of sample (mean PIR error):
 
-| Συντελεστές από | Σφάλμα |
+| Coefficients from | Error |
 |---|---|
-| Πρώτο μισό 2025–26 (όπως σήμερα) | **5,262** |
-| 2024–25 + πρώτο μισό 2025–26 | 5,274 |
-| Μόνο 2024–25 | 5,286 |
-| Χωρίς πλαίσιο (μόνο φόρμα) | 5,295 |
+| First half of 2025–26 (as today) | **5.262** |
+| 2024–25 + first half of 2025–26 | 5.274 |
+| 2024–25 only | 5.286 |
+| No context (form only) | 5.295 |
 
-## Συμπεράσματα
-- **Τα βάρη φόρμας είναι σταθερά** σε δύο σεζόν: η φόρμα των 3 τελευταίων αγώνων προβλέπει ελάχιστα. Είναι αξιόπιστο εύρημα.
-- **Οι συντελεστές πλαισίου δεν είναι σταθεροί.** Ο ρυθμός αλλάζει ακόμα και πρόσημο ανάμεσα στα τρίτα. Είναι θόρυβος: φαινόμενα της τάξης του 5% δεν μετριούνται σταθερά με ~3.000 παρατηρήσεις και θόρυβο ~5 PIR. Δεν ερμηνεύουμε τους συντελεστές έναν-έναν.
-- **Στο τέλος της σεζόν μετράει περισσότερο η φετινή σεζόν.** Το μοντέλο το καλύπτει ήδη, αφού το βάρος της περσινής φθίνει με κάθε αγώνα.
-- **Η 2024–25 δεν βελτιώνει την εκπαίδευση.** Οι διαφορές είναι μέσα στον θόρυβο.
+## Conclusions
+- **The form weights are stable** across two seasons: the form of the last 3 games predicts very little. A reliable finding.
+- **The context coefficients are not stable.** Pace even changes sign between thirds. It's noise: effects of the order of 5% can't be measured steadily with ~3,000 observations and noise of ~5 PIR. We don't interpret the coefficients one by one.
+- **Late in the season this season counts more.** The model already covers that, as the weight of last season fades with every game.
+- **2024–25 doesn't improve training.** The differences are within the noise.
 
-## Απόφαση
-Οι παράμετροι μένουν κλειδωμένες. Προγραμματίζεται ξανα-fit στη μέση της φετινής σεζόν (πείραμα 005), που θα υλοποιηθεί μόνο αν κερδίζει εκτός δείγματος. Τα δεδομένα 2023–24 μένουν στο repo για μελλοντικούς ελέγχους.
+## Decision
+The parameters stay locked. A mid-season refit of this season is planned (experiment 005), to ship only if it wins out of sample. The 2023–24 data stay in the repo for future checks.

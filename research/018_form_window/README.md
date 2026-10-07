@@ -1,35 +1,35 @@
-# 018 — Παράθυρο φόρμας: βοηθά ένας μέσος όρος 8–10 αγώνων;
+# 018 — Form window: does a mean of 8–10 games help?
 
-**Ημερομηνία:** 29/9/2026 · **Κατάσταση:** ❌ απορρίφθηκε · ✅ εξηγεί το παράπλευρο εύρημα του 017
+**Date:** 29/9/2026 · **Status:** ❌ rejected · ✅ explains the side finding of 017
 
-## Ερώτημα
-Στο 017, ο μέσος όρος «από μια ημερομηνία» (≤ 10 αγώνες ομάδας) μείωσε το σφάλμα κατά ~0,15–0,19 για όλες τις ομάδες. Εκείνος ο μέσος όρος όμως μετρούσε ως 0 τους αγώνες που ο παίκτης **έλειψε**, ενώ ο μέσος όρος σεζόν του μοντέλου μετρά μόνο τις εμφανίσεις. Τα δύο εφέ ελέγχονται χωριστά:
-- **(a) Πρόσφατη φόρμα:** μέσος όρος PIR των τελευταίων N εμφανίσεων (N = 8, 10), ως 4ος όρος του blend.
-- **(b) Απουσίες ως 0:** το ίδιο πάνω στους τελευταίους N αγώνες της ομάδας του, όπου απουσία = 0.
+## Question
+In 017, the mean «since a date» (≤ 10 team games) cut the error by ~0.15–0.19 for all teams. That mean, however, counted the games the player **missed** as 0, while the model's season mean counts only appearances. The two effects are checked separately:
+- **(a) Recent form:** the mean PIR of the last N appearances (N = 8, 10), as a 4th term of the blend.
+- **(b) Absences as 0:** the same over his team's last N games, where an absence = 0.
 
-## Μέθοδος
-- **Το κρίσιμο:** στη ζωντανή λειτουργία όποιος λείπει είναι γνωστός (λίστα τραυματιών, νέα) και παίρνει 0. Γι' αυτό το τεστ γίνεται **με γνωστές απουσίες**: όποιος δεν είναι στο box score προβλέπεται 0, και το σφάλμα μετριέται στους υπόλοιπους.
-- **Βάρη:** το βάρος w του 4ου όρου από το πλέγμα 0,1–0,75. Επιλέγεται στη μία σεζόν με το MAE (το 004 έδειξε ότι η επιλογή με πόντους ομάδας κάνει overfitting) και κρίνεται στην άλλη.
-- **Μέτρα:** MAE, MAE όσων μετράνε (πρόβλεψη ≥ 12), πόντοι ομάδας με budget.
+## Method
+- **The crux:** in live operation a player who is out is known (injury list, news) and gets 0. So the test runs **with known absences**: a player missing from the box score is predicted 0, and the error is measured on the rest.
+- **Weights:** the weight w of the 4th term from the grid 0.1–0.75. Chosen on one season by MAE (004 showed that choosing by squad points overfits) and judged on the other.
+- **Metrics:** MAE, MAE of those who matter (prediction ≥ 12), budget squad points.
 
-## Αποτελέσματα
+## Results
 
-Εκτός δείγματος (βάρος επιλεγμένο στην άλλη σεζόν):
+Out of sample (weight chosen on the other season):
 
-| | ΔMAE | ΔMAE (≥ 12) | Δ πόντοι ομάδας |
+| | ΔMAE | ΔMAE (≥ 12) | Δ squad points |
 |---|---|---|---|
-| 2025–26, (a) 10 εμφανίσεις, w = 0,1 | −0,005 | −0,045 | **−94** |
-| 2025–26, (b) 10 αγώνες ομάδας, w = 0,1 | −0,014 | −0,031 | **−168** |
-| 2024–25, (a) 10 εμφανίσεις, w = 0,1 | −0,002 | −0,034 | +0,2 |
-| 2024–25, (b) 10 αγώνες ομάδας, w = 0,2 | −0,008 | +0,058 | −35 |
+| 2025–26, (a) 10 appearances, w = 0.1 | −0.005 | −0.045 | **−94** |
+| 2025–26, (b) 10 team games, w = 0.1 | −0.014 | −0.031 | **−168** |
+| 2024–25, (a) 10 appearances, w = 0.1 | −0.002 | −0.034 | +0.2 |
+| 2024–25, (b) 10 team games, w = 0.2 | −0.008 | +0.058 | −35 |
 
-- Σε όλο το πλέγμα, το 2025–26 **κάθε** παραλλαγή χάνει πόντους ομάδας (−15 έως −287). Το 2024–25 τα αποτελέσματα είναι ανάμεικτα (−45 έως +89).
-- Κανένα ΔMAE δεν ξεπερνά το όριο θορύβου (0,03).
+- Across the whole grid, in 2025–26 **every** variant loses squad points (−15 to −287). In 2024–25 the results are mixed (−45 to +89).
+- No ΔMAE exceeds the noise floor (0.03).
 
-## Συμπεράσματα
-- **Η πρόσφατη φόρμα δεν προσθέτει τίποτα.** Το blend (τελευταίοι 3, σεζόν, περσινή) ήδη καλύπτει ό,τι δίνει ένα παράθυρο 8–10 αγώνων.
-- **Το κέρδος του 017 ήταν οι απουσίες, όχι η φόρμα.** Με γνωστές απουσίες, όπως στη ζωντανή λειτουργία, το ~0,15–0,19 πέφτει στο ~0,01. Στη ζωντανή λειτουργία το σήμα αυτό το έχουμε ήδη από τη λίστα τραυματιών.
-- Αυτό επιβεβαιώνει ξανά το 010: η αξία βρίσκεται στην **ακρίβεια και την έγκαιρη ενημέρωση της διαθεσιμότητας**, όχι στο blend.
+## Conclusions
+- **Recent form adds nothing.** The blend (last 3, season, last season) already covers what an 8–10 game window gives.
+- **The gain in 017 was the absences, not the form.** With known absences, as in live operation, the ~0.15–0.19 drops to ~0.01. In live operation we already have that signal from the injury list.
+- This confirms 010 again: the value lies in the **accuracy and timeliness of availability**, not in the blend.
 
-## Απόφαση
-Καμία αλλαγή στο μοντέλο.
+## Decision
+No model change.

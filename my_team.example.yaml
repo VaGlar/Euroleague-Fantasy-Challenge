@@ -1,5 +1,5 @@
-# Fallback αν το fantasy API δεν είναι διαθέσιμο (token έληξε κ.λπ.).
-# Μετονόμασε σε my_team.yaml. Μορφή: "Επώνυμο (ΚΩΔΙΚΟΣ ΟΜΑΔΑΣ EuroLeague)".
+# Fallback when the fantasy API isn't available (expired token etc.).
+# Rename to my_team.yaml. Format: "Surname (EuroLeague CLUB CODE)". The name below is shown to the user.
 name: Η ομάδα μου
 players:
   - Francisco (PAN)

@@ -1,59 +1,59 @@
-# 017 — Λεπτά: φάουλ και αλλαγή προπονητή
+# 017 — Minutes: fouls and a coaching change
 
-**Ημερομηνία:** 29/9/2026 · **Κατάσταση:** ❌ απορρίφθηκαν και τα δύο · 🔬 παράπλευρο εύρημα για τη φόρμα → 018
+**Date:** 29/9/2026 · **Status:** ❌ both rejected · 🔬 side finding about the form → 018
 
-## Ερώτημα
-- **(A) Φάουλ.** Όποιος κάνει πολλά φάουλ παίζει λιγότερο. Αυτό όμως είναι ήδη στο ιστορικό του (λεπτά, και PIR που αφαιρεί τα φάουλ). Το ιστορικό δεν ξέρει τον **αντίπαλο της βραδιάς**: μια ομάδα που κερδίζει πολλά φάουλ (υψηλό `pfd`) βάζει σε μπελάδες όποιον σφυρίζεται εύκολα.
-- **(C) Αλλαγή προπονητή.** Μετά από νέο (ή υπηρεσιακό) προπονητή, το παλιό ιστορικό περιγράφει άλλη ροτάσιον. Το στυλ του προπονητή γενικά (κλειστή/ανοιχτή ροτάσιον) το έλεγξε ήδη το 010(e): είναι μέσα στο ιστορικό κάθε παίκτη.
+## Question
+- **(A) Fouls.** A player who fouls a lot plays less. But that is already in his history (minutes, and PIR subtracts the fouls). The history doesn't know **the night's opponent**: a team that draws many fouls (high `pfd`) gets a player who is whistled easily into trouble.
+- **(C) A coaching change.** After a new (or interim) coach, the old history describes another rotation. The coach's style in general (tight/loose rotation) was already checked by 010(e): it's in each player's history.
 
-## Μέθοδος
-- **A:** τρία σήματα, γνωστά πριν τον αγώνα:
-  - `opp_pfd`: φάουλ που κερδίζει ο αντίπαλος ανά αγώνα έναντι του μέσου όρου,
-  - `foul_x_opp`: (φάουλ ανά λεπτό του παίκτη / μέσος όρος − 1) × `opp_pfd` × λεπτά × PIR ανά λεπτό,
-  - `fouled_out`: αποβλήθηκε με 5 φάουλ στον προηγούμενο αγώνα.
+## Method
+- **A:** three signals, known before the game:
+  - `opp_pfd`: fouls the opponent draws per game vs the average,
+  - `foul_x_opp`: (the player's fouls per minute / average − 1) × `opp_pfd` × minutes × PIR per minute,
+  - `fouled_out`: fouled out with 5 fouls in the previous game.
 
-  Εκπαίδευση στο πρώτο μισό του 2025–26, έλεγχος στο δεύτερο μισό και σε όλο το 2024–25, όπως στο 010. Η υπόθεση ελέγχθηκε και απευθείας στα λεπτά του αγώνα. Ακολούθησε τεστ ομάδας με budget.
-- **C:** οι αλλαγές προπονητή βγαίνουν από τα δεδομένα: προπονητής με ημερομηνία έναρξης μετά την αρχή της σεζόν. Ήταν 5 αλλαγές το 2024–25 και 14 το 2025–26, με τους υπηρεσιακούς.
-  - Για τους 10 επόμενους αγώνες της ομάδας, ο μέσος όρος σεζόν γίνεται μείγμα: w · (μέσος όρος μετά την αλλαγή) + (1 − w) · (παλιός), με w = n / (n + k).
-  - Το k επιλέχθηκε στη μία σεζόν και κρίθηκε στην άλλη.
-  - **Τεστ ελέγχου (placebo):** η ίδια συνταγή, στις ίδιες ημερομηνίες, στις ομάδες που **δεν** άλλαξαν προπονητή.
+  Trained on the first half of 2025–26, tested on the second half and the whole of 2024–25, as in 010. The hypothesis was also checked directly on the game's minutes. A budget squad test followed.
+- **C:** the coaching changes come from the data: a coach with a start date after the start of the season. There were 5 changes in 2024–25 and 14 in 2025–26, interims included.
+  - For the team's next 10 games, the season mean becomes a mix: w · (mean after the change) + (1 − w) · (old), with w = n / (n + k).
+  - k was chosen on one season and judged on the other.
+  - **Placebo test:** the same recipe, on the same dates, on the teams that did **not** change coach.
 
-## Αποτελέσματα
+## Results
 
-**A — φάουλ:** κανένα σήμα.
+**A — fouls:** no signal.
 
-| | Συντελεστής (± τ.σ.) | ΔMAE 2025 β' μισό | ΔMAE 2024 |
+| | Coefficient (± s.e.) | ΔMAE 2025 2nd half | ΔMAE 2024 |
 |---|---|---|---|
-| Λεπτά: φάουλ × αντίπαλος | −0,6 ± 0,5 λεπτά | — | — |
-| `opp_pfd` | −2,2 ± 1,7 PIR | +0,002 | −0,002 |
-| `foul_x_opp` | −0,4 ± 1,0 | −0,001 | +0,001 |
-| `fouled_out` | +1,4 ± 0,6 (!) | −0,002 | −0,001 |
-| Πόντοι ομάδας/αγωνιστική | | −0,5 ± 2,0 | +0,9 ± 1,4 |
+| Minutes: fouls × opponent | −0.6 ± 0.5 minutes | — | — |
+| `opp_pfd` | −2.2 ± 1.7 PIR | +0.002 | −0.002 |
+| `foul_x_opp` | −0.4 ± 1.0 | −0.001 | +0.001 |
+| `fouled_out` | +1.4 ± 0.6 (!) | −0.002 | −0.001 |
+| Squad points/round | | −0.5 ± 2.0 | +0.9 ± 1.4 |
 
-- Το πρόσημο στα λεπτά είναι το αναμενόμενο, αλλά μέσα στον θόρυβο.
-- Όποιος αποβλήθηκε με φάουλ παίζει **καλύτερα** στον επόμενο αγώνα: επιστροφή στον μέσο όρο, όχι «πρόβλημα φάουλ» που συνεχίζεται.
+- The sign on the minutes is as expected, but within the noise.
+- A player who fouled out plays **better** in the next game: regression to the mean, not a «foul problem» that continues.
 
-**C — αλλαγή προπονητή:**
+**C — coaching change:**
 
 | | 2025–26 | 2024–25 |
 |---|---|---|
-| Γραμμές μετά από αλλαγή | 1.342 | 624 |
-| Μετατόπιση λεπτών βασικών (5 πριν / 5 μετά): στην αλλαγή · αλλού | 5,9 · 4,6 | 3,1 · 4,8 |
-| ΔMAE, εκτός δείγματος | −0,31 (k=2) | −0,15 (k=0) |
-| **ΔMAE του placebo** (ομάδες χωρίς αλλαγή) | **−0,16** | **−0,19** |
-| ΔMAE όσων μετράνε (πρόβλεψη ≥ 12) | −0,68 | +0,11 |
-| Πόντοι ομάδας στις αγωνιστικές μετά από αλλαγή | **−155** | +15 |
+| Rows after a change | 1,342 | 624 |
+| Starters' minutes shift (5 before / 5 after): at the change · elsewhere | 5.9 · 4.6 | 3.1 · 4.8 |
+| ΔMAE, out of sample | −0.31 (k=2) | −0.15 (k=0) |
+| **ΔMAE of the placebo** (teams without a change) | **−0.16** | **−0.19** |
+| ΔMAE of those who matter (prediction ≥ 12) | −0.68 | +0.11 |
+| Squad points in the rounds after a change | **−155** | +15 |
 
-## Συμπεράσματα
-- **(A) Απορρίπτεται.** Η φυσική εξήγηση ισχύει μέσα στον αγώνα, αλλά δεν προβλέπεται πριν από αυτόν. Τα φάουλ ενός παίκτη είναι ήδη στο ιστορικό του, και το matchup δεν προσθέτει τίποτα μετρήσιμο.
-- **(C) Απορρίπτεται.**
-  - Το 2024–25 η αλλαγή προπονητή δεν κάνει τίποτα περισσότερο από το placebo. Τα λεπτά μάλιστα κινήθηκαν λιγότερο από ό,τι σε τυχαία σημεία.
-  - Το 2025–26 υπάρχει ένα μικρό επιπλέον κέρδος στο σφάλμα, αλλά οι πόντοι ομάδας πέφτουν.
-  - Με 5–14 αλλαγές τον χρόνο, το δείγμα είναι πολύ μικρό για να στηρίξει κανόνα.
-- **Παράπλευρο, και πιο ενδιαφέρον:** το placebo δείχνει ότι ο μέσος όρος των τελευταίων ≤ 10 αγώνων, στη θέση του μέσου όρου σεζόν, μειώνει το σφάλμα κατά ~0,15–0,19 **για όλες τις ομάδες**. Αυτό είναι πάνω από το όριο θορύβου (0,03). Ίσως η φόρμα βαραίνει πολύ τη σεζόν στη μέση της χρονιάς.
-  - Προσοχή: το 004 έδειξε ότι βάρη που κερδίζουν στο σφάλμα μπορεί να χάνουν σε πόντους ομάδας.
-  - Άρα χρειάζεται δικό του τεστ, με πόντους ομάδας και στις δύο σεζόν → **018**.
+## Conclusions
+- **(A) Rejected.** The physical explanation holds within a game, but it isn't predictable before it. A player's fouls are already in his history, and the matchup adds nothing measurable.
+- **(C) Rejected.**
+  - In 2024–25 a coaching change does nothing more than the placebo. The minutes even moved less than at random points.
+  - In 2025–26 there's a small extra gain in error, but squad points fall.
+  - With 5–14 changes a year, the sample is far too small to support a rule.
+- **Side finding, and more interesting:** the placebo shows that the mean of the last ≤ 10 games, in place of the season mean, cuts the error by ~0.15–0.19 **for all teams**. That's above the noise floor (0.03). Maybe the form weighs the season too much mid-year.
+  - Caution: 004 showed that weights that win on error can lose on squad points.
+  - So it needs its own test, with squad points in both seasons → **018**.
 
-## Απόφαση
-- Καμία αλλαγή στο μοντέλο.
-- Νέο πείραμα **018: παράθυρο φόρμας.** Ένας μέσος όρος πρόσφατων αγώνων (π.χ. τελευταίοι 8–10) ως τέταρτος όρος του blend ή στη θέση της σεζόν, με τεστ σε σφάλμα **και** σε πόντους ομάδας.
+## Decision
+- No model change.
+- New experiment **018: form window.** A mean of recent games (e.g. the last 8–10) as a fourth term of the blend or in place of the season, tested on error **and** on squad points.

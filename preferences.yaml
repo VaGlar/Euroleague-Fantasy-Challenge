@@ -1,6 +1,6 @@
-# Οι δικές σου προτιμήσεις: υπερισχύουν του μοντέλου στις προτάσεις αλλαγών.
-# Γράψε επώνυμα όπως στο παιχνίδι (κεφαλαία/τόνοι δεν έχουν σημασία).
-keep:        # δεν θα προταθεί να τους πουλήσεις
+# Your own preferences: they override the model in the trade suggestions.
+# Write surnames as in the game (case and accents don't matter).
+keep:        # never suggested for selling
   []
-avoid:       # δεν θα προταθεί να τους αγοράσεις
+avoid:       # never suggested for buying
   []
