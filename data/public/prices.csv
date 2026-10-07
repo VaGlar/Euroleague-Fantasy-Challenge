@@ -1057,20 +1057,20 @@ fantasy_id,person_id,first_name,last_name,team,position,price,matchday,is_injure
 12517,012879,Abdu,Kone,BAR,Center,4.0,3,False,1.0,,2.7
 3766,003469,Sasha,Vezenkov,OLY,Forward,18.1,4,False,1.0,,46.6
 3903,009846,Elijah,Bryant,HTA,Guard,17.1,4,False,1.0,,11.2
-11549,000898,Jonas,Valanciunas,ZAL,Center,15.9,4,False,1.0,,23.3
-3765,005985,Mike,James,IST,Guard,15.7,4,True,0.0,,0.9
+11549,000898,Jonas,Valanciunas,ZAL,Center,15.9,4,False,1.0,,23.2
+3765,005985,Mike,James,IST,Guard,15.7,4,True,0.0,,0.8
 3795,012608,TJ,Shorts,PAM,Guard,15.6,4,False,1.0,,16.1
-3768,003842,Mathias,Lessort,PAN,Center,15.1,4,False,1.0,,16.4
+3768,003842,Mathias,Lessort,PAN,Center,15.1,4,False,1.0,,16.3
 3770,012201,Chima,Moneke,RED,Forward,15.1,4,False,1.0,,1.9
-3887,007975,Sylvain,Francisco,PAN,Guard,15.0,4,False,1.0,,16.7
-3791,013369,Carlik,Jones,PAR,Guard,14.9,4,False,1.0,,32.5
+3887,007975,Sylvain,Francisco,PAN,Guard,15.0,4,False,1.0,,16.5
+3791,013369,Carlik,Jones,PAR,Guard,14.9,4,False,1.0,,32.4
 4233,012796,Mfiondu,Kabengele,DUB,Center,14.8,4,False,1.0,,6.9
 11487,003112,Dario,Saric,IST,Forward,14.8,4,False,1.0,,3.1
 3769,005791,Walter,Tavares,MAD,Center,14.7,4,False,1.0,,3.1
 3794,009862,Kevin,Punter,BAR,Guard,14.7,4,False,1.0,,7.1
 3771,009863,Wade,Baldwin,ULK,Guard,14.6,4,False,1.0,,2.1
 3782,003941,Nikola,Milutinov,OLY,Center,14.6,4,False,0.5,,1.0
-3834,012640,Nadir,Hifi,PRS,Guard,14.4,4,False,1.0,,5.7
+3834,012640,Nadir,Hifi,PRS,Guard,14.4,4,False,1.0,,5.8
 3805,012774,Kendrick,Nunn,PAN,Guard,14.3,4,True,0.0,,0.2
 11526,010357,Guerschon,Yabusele,PAN,Forward,14.3,4,False,1.0,,5.0
 3857,012788,Dan,Oturu,HTA,Center,14.1,4,False,1.0,,4.8
@@ -1085,13 +1085,13 @@ fantasy_id,person_id,first_name,last_name,team,position,price,matchday,is_injure
 3772,005928,Facundo,Campazzo,MAD,Guard,13.2,4,False,1.0,,1.6
 4096,012606,Mckinley,Wright,DUB,Guard,13.2,4,False,1.0,,1.2
 4252,010042,Jean,Montero,OLY,Guard,13.2,4,False,1.0,,12.3
-8567,014124,Talen,Horton-Tucker,ULK,Guard,13.1,4,False,1.0,,5.9
-3790,006540,Dzanan,Musa,DUB,Guard,13.0,4,True,0.0,,0.2
-11514,015163,Patty,Mills,ASV,Guard,12.9,4,False,1.0,,4.0
-7218,011217,Kameron,Taylor,PAM,Forward,12.7,4,False,1.0,,4.0
+8567,014124,Talen,Horton-Tucker,ULK,Guard,13.1,4,False,1.0,,5.8
+3790,006540,Dzanan,Musa,DUB,Guard,13.0,4,True,0.0,,0.1
+11514,015163,Patty,Mills,ASV,Guard,12.9,4,False,1.0,,4.1
+7218,011217,Kameron,Taylor,PAM,Forward,12.7,4,False,1.0,,3.9
 3793,013363,Jordan,Nwora,RED,Forward,12.6,4,False,1.0,,7.2
-3773,000796,Nikola,Mirotic,PAM,Forward,12.5,4,False,1.0,,7.2
-7221,008192,Azuolas,Tubelis,ZAL,Forward,12.5,4,False,1.0,,27.5
+3773,000796,Nikola,Mirotic,PAM,Forward,12.5,4,False,1.0,,7.3
+7221,008192,Azuolas,Tubelis,ZAL,Forward,12.5,4,False,1.0,,27.6
 3774,001133,Tornike,Shengelia,DUB,Forward,12.3,4,False,1.0,,0.9
 3785,011199,Josh,Nebo,BAR,Center,12.2,4,True,0.0,,0.4
 11507,015153,Amir,Coffey,HTA,Forward,12.2,4,True,0.0,,0.1
@@ -1104,14 +1104,14 @@ fantasy_id,person_id,first_name,last_name,team,position,price,matchday,is_injure
 4247,010568,Chris,Jones,RED,Guard,11.8,4,False,1.0,,2.7
 3926,011194,Filip,Petrusev,DUB,Forward,11.7,4,False,1.0,,1.2
 3777,004888,Will,Clyburn,ULK,Forward,11.6,4,False,1.0,,1.6
-7193,002580,Vasilije,Micic,HTA,Guard,11.6,4,False,1.0,,2.0
+7193,002580,Vasilije,Micic,HTA,Guard,11.6,4,False,1.0,,2.1
 7202,014008,Justin,Robinson,BAR,Guard,11.6,4,False,1.0,,0.6
 3864,012080,Timothé,Luwawu-Cabarrot,MAD,Forward,11.5,4,False,1.0,,4.0
-11504,003958,Johannes,Thiemann,MUN,Center,11.4,4,False,1.0,,5.3
+11504,003958,Johannes,Thiemann,MUN,Center,11.4,4,False,1.0,,5.4
 3825,012712,Juancho,Hernangomez,PAN,Forward,11.3,4,False,0.5,,0.7
-3850,007027,Theo,Maledon,MAD,Guard,11.2,4,False,1.0,,22.6
+3850,007027,Theo,Maledon,MAD,Guard,11.2,4,False,1.0,,22.8
 3899,011987,Carsen,Edwards,ZAL,Guard,11.2,4,False,1.0,,3.8
-3868,WBC,Zeljko,Obradovic,PAN,Head Coach,11.1,4,False,1.0,,12.4
+3868,WBC,Zeljko,Obradovic,PAN,Head Coach,11.1,4,False,1.0,,12.3
 11527,015168,Tj,Warren,PRS,Forward,11.1,4,False,1.0,,1.3
 3870,011981,Tyrique,Jones,OLY,Center,10.9,4,False,1.0,,1.4
 3888,012720,Sterling,Brown,ZAL,Guard,10.9,4,False,1.0,,3.4
@@ -1124,7 +1124,7 @@ fantasy_id,person_id,first_name,last_name,team,position,price,matchday,is_injure
 11545,012707,Marcus,Carr,VIR,Guard,10.5,4,False,1.0,,2.6
 3779,001926,Kostas,Sloukas,PAN,Guard,10.4,4,True,0.0,,0.2
 3792,009754,Jordan,Loyd,IST,Guard,10.4,4,False,1.0,,1.4
-3821,011196,Donta,Hall,OLY,Center,10.4,4,False,1.0,,3.3
+3821,011196,Donta,Hall,OLY,Center,10.4,4,False,1.0,,3.2
 3833,013384,Armoni,Brooks,PAM,Guard,10.4,4,False,1.0,,3.0
 4180,013285,Devon,Dotson,BES,Guard,10.4,4,False,1.0,,1.4
 7269,013278,Austin,Wiley,MUN,Center,10.4,4,False,1.0,,0.2
@@ -1142,7 +1142,7 @@ fantasy_id,person_id,first_name,last_name,team,position,price,matchday,is_injure
 3815,013367,Trent,Forrest,ULK,Guard,9.9,4,False,1.0,,0.7
 3885,001869,Georgios,Bartzokas,OLY,Head Coach,9.9,4,False,1.0,,8.4
 8808,014207,Eugene,Omoruyi,BES,Forward,9.9,4,False,1.0,,1.4
-11516,015166,Jae,Crowder,ASV,Forward,9.9,4,False,1.0,,4.3
+11516,015166,Jae,Crowder,ASV,Forward,9.9,4,False,1.0,,4.4
 3822,009035,Joel,Bolomboy,ASV,Center,9.8,4,False,1.0,,1.8
 3875,004004,Marko,Guduric,MIL,Guard,9.8,4,False,0.5,,2.4
 7204,014012,TJ,Leaf,TEL,Forward,9.8,4,False,1.0,,0.2
@@ -1162,7 +1162,7 @@ fantasy_id,person_id,first_name,last_name,team,position,price,matchday,is_injure
 11512,014734,Aj,Lawson,BAS,Guard,9.5,4,False,1.0,,3.4
 11529,015160,Alize,Johnson,PRS,Forward,9.5,4,False,1.0,,0.2
 3897,ADG,Saras,Jasikevicius,ULK,Head Coach,9.4,4,False,1.0,,4.5
-4360,013380,Evan,Fournier,OLY,Guard,9.4,4,False,1.0,,7.2
+4360,013380,Evan,Fournier,OLY,Guard,9.4,4,False,1.0,,7.1
 4675,013402,Antonio,Blakeney,HTA,Guard,9.4,4,False,1.0,,0.6
 11492,014786,Jaylen,Nowell,BES,Guard,9.4,4,False,1.0,,0.5
 3860,007056,Devin,Booker,MIL,Center,9.3,4,False,1.0,,0.9
@@ -1171,7 +1171,7 @@ fantasy_id,person_id,first_name,last_name,team,position,price,matchday,is_injure
 11546,014738,Bobi,Klintman,VIR,Center,9.3,4,False,1.0,,0.1
 3841,002939,Tomas,Satoransky,HTA,Guard,9.2,4,False,1.0,,0.4
 3853,011204,Jerian,Grant,PAN,Guard,9.2,4,False,1.0,,2.2
-8762,014178,Jared,Rhoden,PRS,Guard,9.2,4,False,1.0,,0.9
+8762,014178,Jared,Rhoden,PRS,Guard,9.2,4,False,1.0,,1.0
 11519,015164,Hugo,Besson,ASV,Guard,9.2,4,False,1.0,,0.4
 3884,010545,Neal,Sako,PAM,Center,9.1,4,False,1.0,,0.7
 11491,013250,David,Dejulius,BES,Guard,9.1,4,False,1.0,,0.4
@@ -1220,14 +1220,14 @@ fantasy_id,person_id,first_name,last_name,team,position,price,matchday,is_injure
 4192,013289,Marcio,Santos,BAS,Center,8.2,4,False,1.0,,0.1
 7212,014005,Derrick,Alston Jr.,VIR,Forward,8.2,4,False,1.0,,1.2
 7215,010581,Dylan,Osetkowski,PAM,Forward,8.2,4,False,1.0,,0.9
-7424,014108,Aliou,Diarra,VIR,Center,8.2,4,False,1.0,,19.9
+7424,014108,Aliou,Diarra,VIR,Center,8.2,4,False,1.0,,20.2
 11490,014783,Garrison,Mathews,MIL,Guard,8.2,4,False,1.0,,0.1
 11537,014740,Gonzalo,Corbalan,PAM,Guard,8.2,4,False,1.0,,0.1
 12145,015244,Nick,Smith Jr,MAD,Guard,8.2,4,False,1.0,,0.2
 3780,005763,Furkan,Korkmaz,BES,Forward,8.1,4,False,1.0,,0.4
-3872,CWX,Pedro,Martinez,MAD,Head Coach,8.1,4,False,1.0,,7.1
+3872,CWX,Pedro,Martinez,MAD,Head Coach,8.1,4,False,1.0,,7.2
 3909,003516,Aleksander,Sekulic,BAR,Head Coach,8.1,4,False,1.0,,0.7
-4097,005637,Nikola,Tanaskovic,PAR,Center,8.1,4,False,1.0,,2.7
+4097,005637,Nikola,Tanaskovic,PAR,Center,8.1,4,False,1.0,,2.6
 4257,010393,Jaime,Pradilla,MAD,Forward,8.1,4,False,1.0,,1.0
 7203,014134,Miles,Norris,MUN,Forward,8.1,4,False,1.0,,0.2
 7226,014010,Allan,Dokossi,PRS,Center,8.1,4,False,1.0,,1.0
@@ -1238,14 +1238,14 @@ fantasy_id,person_id,first_name,last_name,team,position,price,matchday,is_injure
 3881,008985,Leandro,Bolmaro,MIL,Guard,7.9,4,False,1.0,,0.4
 3963,006739,Alessandro,Pajola,PAR,Guard,7.9,4,False,1.0,,3.2
 4246,011982,Semi,Ojeleye,RED,Forward,7.9,4,False,1.0,,3.0
-4255,009154,Xavier,Albert,PAM,Head Coach,7.9,4,False,1.0,,6.4
-7235,KOW,Xavi,Pascual,DUB,Head Coach,7.9,4,False,1.0,,7.2
+4255,009154,Xavier,Albert,PAM,Head Coach,7.9,4,False,1.0,,6.3
+7235,KOW,Xavi,Pascual,DUB,Head Coach,7.9,4,False,1.0,,7.3
 3776,013383,Wenyen,Gabriel,BES,Center,7.8,4,False,1.0,,0.6
 3803,009005,Gabriel,Deck,MAD,Forward,7.8,4,False,1.0,,0.6
 3880,009664,Derek ,Willis,PAR,Forward,7.8,4,True,0.0,,0.2
 3905,010781,Iffe,Lundberg,TEL,Guard,7.8,4,False,1.0,,1.6
 3818,012096,Bruno,Caboclo,HTA,Center,7.7,4,False,1.0,,0.8
-3883,007201,Johannes,Voigtmann,MUN,Center,7.7,4,False,1.0,,1.6
+3883,007201,Johannes,Voigtmann,MUN,Center,7.7,4,False,1.0,,1.5
 4251,007527,Brancou,Badio,PAN,Guard,7.7,4,False,1.0,,3.4
 7243,011980,Nathan,Sestina,ASV,Forward,7.7,4,False,1.0,,0.3
 7338,013900,Both,Gach,ASV,Forward,7.7,4,False,1.0,,0.2
@@ -1268,7 +1268,7 @@ fantasy_id,person_id,first_name,last_name,team,position,price,matchday,is_injure
 7217,011305,Tyson,Carter,RED,Guard,7.1,4,False,1.0,,3.5
 8834,014220,Chris,Silva,ULK,Center,7.1,4,False,1.0,,0.6
 3921,BSS,Pablo,Laso,IST,Head Coach,7.0,4,False,1.0,,0.9
-4006,ACX,Tomas,Masiulis,ZAL,Head Coach,7.0,4,False,1.0,,4.7
+4006,ACX,Tomas,Masiulis,ZAL,Head Coach,7.0,4,False,1.0,,4.6
 11558,015142,Justin,Minaya,BAR,Forward,7.0,4,False,1.0,,0.2
 4375,002676,Arnas,Butkevicius,ZAL,Forward,6.9,4,False,1.0,,1.0
 11520,006832,Yves,Pons,ASV,Forward,6.9,4,False,1.0,,0.2
@@ -1280,11 +1280,11 @@ fantasy_id,person_id,first_name,last_name,team,position,price,matchday,is_injure
 4212,011935,Yoan,Makoundou,BAR,Center,6.7,4,True,0.0,,0.1
 7867,014015,Armando,Bacot,TEL,Center,6.7,4,False,1.0,,0.4
 3852,002329,Edgaras,Ulanovas,ZAL,Forward,6.5,4,False,1.0,,1.4
-3938,000019,Ibon,Navarro,RED,Head Coach,6.5,4,False,1.0,,4.6
+3938,000019,Ibon,Navarro,RED,Head Coach,6.5,4,False,1.0,,4.5
 3952,002581,Mam,Jaiteh,DUB,Center,6.5,4,True,0.0,,0.1
 4129,013269,Myles,Cale,ASV,Guard,6.5,4,False,1.0,,0.2
 7390,010726,Tobias,Jensen,MUN,Guard,6.5,4,False,1.0,,0.1
-3924,002083,Giuseppe,Poeta,MIL,Head Coach,6.4,4,False,1.0,,3.0
+3924,002083,Giuseppe,Poeta,MIL,Head Coach,6.4,4,False,1.0,,2.9
 7238,005713,Rodions,Kurucs,BAS,Forward,6.4,4,False,1.0,,0.7
 7328,013845,Kaodirichi,Akobundu-Ehiogu,ZAL,Center,6.4,4,False,1.0,,0.5
 11506,006896,Ignas,Sargiunas,ULK,Guard,6.4,4,False,1.0,,1.3
@@ -1293,11 +1293,11 @@ fantasy_id,person_id,first_name,last_name,team,position,price,matchday,is_injure
 7225,006482,David,Kramer,RED,Guard,6.3,4,False,1.0,,3.6
 8993,014316,Cory,Joseph,OLY,Guard,6.3,4,False,1.0,,1.2
 3836,007866,Konstantinos,Mitoglou,PAN,Forward,6.2,4,False,1.0,,14.3
-3851,011247,Andres,Feliz,MAD,Guard,6.2,4,False,1.0,,10.7
+3851,011247,Andres,Feliz,MAD,Guard,6.2,4,False,1.0,,10.6
 3904,012795,Justin,Anderson,DUB,Forward,6.2,4,False,1.0,,0.8
 3918,002328,Marius,Grigonis,ZAL,Forward,6.2,4,False,1.0,,2.1
 3967,009992,Dario,Brizuela,BAR,Guard,6.2,4,False,1.0,,5.4
-7229,012403,Mouhamed,Faye,PRS,Center,6.2,4,False,1.0,,0.8
+7229,012403,Mouhamed,Faye,PRS,Center,6.2,4,False,1.0,,0.9
 7234,005596,Yankuba,Sima,PAM,Center,6.2,4,False,1.0,,0.4
 11525,015126,Antonis,Karagiannidis,OLY,Center,6.2,4,False,1.0,,0.2
 3869,012613,Mikael,Jantunen,MAD,Forward,6.1,4,False,1.0,,5.4
@@ -1328,11 +1328,11 @@ fantasy_id,person_id,first_name,last_name,team,position,price,matchday,is_injure
 7231,010318,Brice,Dessert,IST,Center,5.2,4,False,1.0,,1.0
 3962,007632,Mario,Nakic,PAR,Forward,5.1,4,False,1.0,,0.8
 4014,003550,Tony,Parker,ASV,Head Coach,5.1,4,False,1.0,,1.9
-3933,013373,Leopold,Cavaliere,PRS,Forward,5.0,4,False,1.0,,2.9
+3933,013373,Leopold,Cavaliere,PRS,Forward,5.0,4,False,1.0,,3.0
 7216,003458,Davis,Bertans,DUB,Forward,5.0,4,False,1.0,,2.7
 3936,011085,Nikos,Rogkavopoulos,PAN,Forward,4.9,4,False,1.0,,11.5
 3950,004007,Ognjen,Dobric,RED,Forward,4.9,4,False,1.0,,6.6
-4546,006904,Joel,Ayayi,PRS,Guard,4.9,4,False,1.0,,1.1
+4546,006904,Joel,Ayayi,PRS,Guard,4.9,4,False,1.0,,1.2
 7223,014026,Clement,Frisch,BAS,Forward,4.9,4,False,1.0,,0.5
 11521,015161,Marc-owen,Fodzo Dada,ASV,Guard,4.9,4,False,1.0,,11.1
 3964,BFJ,Alex,Mumbru,VIR,Head Coach,4.7,4,False,1.0,,1.9
@@ -1345,7 +1345,7 @@ fantasy_id,person_id,first_name,last_name,team,position,price,matchday,is_injure
 3972,009513,Justus,Hollatz,MUN,Guard,4.5,4,False,1.0,,0.7
 3984,002968,Sertac,Sanli,ULK,Center,4.5,4,False,1.0,,18.3
 11495,010262,Nikola,Djurisic,RED,Guard,4.5,4,True,0.0,,0.5
-3995,015170,Maxime,Lefevre,PRS,Head Coach,4.4,4,False,1.0,,8.2
+3995,015170,Maxime,Lefevre,PRS,Head Coach,4.4,4,False,1.0,,8.3
 11540,011706,Mario,Saint-supery,PAM,Guard,4.4,4,False,1.0,,20.5
 3974,001252,Anton,Gavel,MUN,Head Coach,4.3,4,False,1.0,,6.0
 3991,003733,Alberto,Abalde,MAD,Forward,4.3,4,False,1.0,,6.6
@@ -1382,7 +1382,7 @@ fantasy_id,person_id,first_name,last_name,team,position,price,matchday,is_injure
 4026,004093,Burakcan,Yildizli,IST,Forward,4.0,4,False,1.0,,1.0
 4174,013283,Guy,Palatin,HTA,Guard,4.0,4,False,1.0,,0.4
 4175,009877,Oz,Blayzer,HTA,Forward,4.0,4,False,1.0,,0.6
-4378,013381,William,Rayman,TEL,Forward,4.0,4,False,1.0,,2.5
+4378,013381,William,Rayman,TEL,Forward,4.0,4,False,1.0,,2.6
 4551,004846,Bar,Timor,HTA,Guard,4.0,4,False,1.0,,0.6
 7245,008176,David,Mutaf,IST,Guard,4.0,4,False,1.0,,0.5
 7246,014094,Stefan,Miljenovic,RED,Guard,4.0,4,False,1.0,,7.5
