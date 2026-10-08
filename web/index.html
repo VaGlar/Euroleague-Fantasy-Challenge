@@ -492,6 +492,8 @@ body > header nav button.on { color: var(--bar-fg); border-color: var(--bar-line
 
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+// a link from a feed goes into href only if it is a web address (not «javascript:», «data:», …)
+const safeUrl = (u) => (/^https?:\/\//i.test(String(u ?? "").trim()) ? esc(String(u).trim()) : "#");
 const nm = (n) => { const [s, f] = String(n || "").split(","); return (f ? f.trim()[0] + ". " : "") + (s || "").toLowerCase().replace(/(^|[\s-])\S/g, (m) => m.toUpperCase()); };
 const f1 = (x) => (x == null ? "–" : Number(x).toFixed(1));
 // the game to show next to a player: this round's, or his next one once this round's is played
@@ -749,7 +751,7 @@ function expertsHtml(list, track) {
   return `<div class="card"><h2>Ειδικοί ${track.length ? `<small class="muted">πρώτη η στήλη με τις καλύτερες προτάσεις ως τώρα</small>` : ""}</h2>${srcs.map(block).join("")}</div>`;
 }
 function articlesHtml(arts) {
-  const li = (a) => `<li><a href="${esc(a.url)}" target="_blank" rel="noopener">${esc(a.title)}</a><br><span class="muted">${esc(a.source)} · ${a.date ? new Date(a.date).toLocaleString("el-GR") : ""}</span></li>`;
+  const li = (a) => `<li><a href="${safeUrl(a.url)}" target="_blank" rel="noopener noreferrer">${esc(a.title)}</a><br><span class="muted">${esc(a.source)} · ${a.date ? new Date(a.date).toLocaleString("el-GR") : ""}</span></li>`;
   const fan = arts.filter((a) => a.fantasy), rest = arts.filter((a) => !a.fantasy).slice(0, 60);
   return `<div class="card"><h2>Άρθρα fantasy</h2>${fan.length ? `<ul class="news">${fan.map(li).join("")}</ul>` : `<p class="muted">Κανένα αυτή τη στιγμή.</p>`}
     ${rest.length ? `<details class="td-more"><summary>Όλα τα άρθρα (${rest.length})</summary><ul class="news">${rest.map(li).join("")}</ul></details>` : ""}</div>`;
