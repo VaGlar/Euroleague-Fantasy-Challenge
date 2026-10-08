@@ -8,7 +8,8 @@
   const COURT = ["Guard", "Forward", "Center"];
   const SQUAD = { Guard: 4, Forward: 4, Center: 2, "Head Coach": 1 };
   const BENCH = 0.5;
-  const LATER_PENALTY = 1000;
+  const LATER_PENALTY = 1000;      // per later-turn starter, per turn after the current one
+  const CAP_LATER_PENALTY = 100;   // the armband on a later-turn player, per turn (as optimize.py)
   const PLAN_MIN_X = 5;
   const MAX_PER_CLUB = 6;   // the game's rule: up to 6 players from the same EuroLeague club (as optimize.py)
   const num = (v) => (typeof v === "number" && isFinite(v) ? v : 0);
@@ -24,14 +25,20 @@
   const C10_5 = combos(10, 5);
   const covers = (ps) => COURT.every((pos) => ps.some((p) => p.position === pos));
 
-  // players who play after the current turn (earliest turn among unplayed court players)
-  function laterTurnIds(squad) {
+  // players who play after the current turn (earliest turn among unplayed court players):
+  // id -> how many turns later (as optimize.later_turn_steps)
+  function laterTurnSteps(squad) {
     const court = squad.filter((p) => p.position !== "Head Coach" && !p.played);
     const turns = court.map((p) => p.turn).filter(Boolean);
-    if (!turns.length) return new Set();
+    const out = new Map();
+    if (!turns.length) return out;
     const first = Math.min(...turns);
     // a player with nothing expected (out of the roster, injured) starts only if nobody else can (as optimize.py)
-    return new Set(court.filter((p) => (p.turn || first) > first || num(p.x_now) <= 0).map((p) => p.id));
+    for (const p of court) {
+      const d = (p.turn || first) - first;
+      if (d > 0 || num(p.x_now) <= 0) out.set(p.id, Math.max(1, d));
+    }
+    return out;
   }
 
   // Best five / sixth man / captain for a fixed squad of 10 court players + coach.
@@ -41,7 +48,7 @@
     const court = squad.filter((p) => p.position !== "Head Coach");
     const coach = squad.filter((p) => p.position === "Head Coach");
     if (court.length !== 10) return null;
-    const later = laterTurnIds(squad);
+    const later = laterTurnSteps(squad);
     const v = court.map((p) => num(p[value])), x = court.map((p) => num(p[now]));
     let best = null;
     for (const five of C10_5) {
@@ -65,13 +72,14 @@
         for (let i = 0; i < 10; i++) {
           const full = inFive.has(i) || i === s;
           base += full ? v[i] : BENCH * v[i];
-          if (full && later.has(court[i].id)) pen += LATER_PENALTY;
+          if (full && later.has(court[i].id)) pen += LATER_PENALTY * later.get(court[i].id);
         }
         for (const c of five) {
           const p = court[c];
           if (inRound && p.played && !p.cur_captain) continue;
-          const obj = base + x[c] - pen;
-          if (!best || obj > best.obj + 1e-9) best = { obj, five, s, c, pen };
+          const capPen = CAP_LATER_PENALTY * (later.get(p.id) || 0);
+          const obj = base + x[c] - pen - capPen;
+          if (!best || obj > best.obj + 1e-9) best = { obj, five, s, c, pen: pen + capPen };
         }
       }
     }
@@ -215,7 +223,8 @@
       bankAfter: budget - best.cost, squad: best.squad };
   }
 
-  const api = { lineup, deferLaterTurns, transfers, squadValue, laterTurnIds, SQUAD, COURT, MAX_PER_CLUB };
+  const laterTurnIds = (squad) => new Set(laterTurnSteps(squad).keys());
+  const api = { lineup, deferLaterTurns, transfers, squadValue, laterTurnIds, laterTurnSteps, SQUAD, COURT, MAX_PER_CLUB };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else root.ELFOPT = api;
 })(typeof window !== "undefined" ? window : globalThis);

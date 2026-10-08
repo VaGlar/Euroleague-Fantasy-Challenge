@@ -119,9 +119,10 @@ jobs:
           git config user.email "elf-bot@users.noreply.github.com"
           git add -A
           git diff --cached --quiet || git commit -q -m "data: update $(date -u +%F\ %H:%M)"
-          for i in 1 2 3; do
+          # GitHub answers a push with a 500 now and then (7/10: three in a row within 35 s)
+          for i in 1 2 3 4 5; do
             git pull -q --rebase -X theirs && git push -q && exit 0
-            sleep $((i * 5))
+            sleep $((i * 15))
           done
           exit 1
 
@@ -144,9 +145,9 @@ jobs:
           # the branch may have moved while the pipeline ran (code pushes): replay the
           # data commit on top; on a data conflict keep this run's (newer) files
           branch="${GITHUB_REF_NAME}"
-          for i in 1 2 3; do
+          for i in 1 2 3 4 5; do
             git pull --rebase -X theirs origin "$branch" && git push origin "HEAD:$branch" && exit 0
-            sleep $((i * 5))
+            sleep $((i * 15))
           done
           exit 1
 

@@ -109,6 +109,33 @@ def test_lineup_falls_back_to_one_later_player_when_no_turn1_center():
     assert [p["position"] for p in later] == ["Center"], "μόνο ο αναγκαίος C από το T2"
 
 
+def test_armband_stays_on_the_current_turn_when_a_later_player_must_start():
+    """Round 4, T2 day: no T2 Forward, so the best T3 Forward starts; the armband goes to the T2
+    Guard, not to him (if the Guard flops, it moves to the Forward before T3)."""
+    sq = [player(1, "Guard", 20, 2), player(2, "Guard", 10, 2), player(3, "Guard", 8, 2),
+          player(4, "Guard", 3, 3), player(5, "Forward", 30, 3), player(6, "Forward", 12, 3),
+          player(7, "Forward", 9, 3), player(8, "Forward", 4, 3), player(9, "Center", 10, 2),
+          player(10, "Center", 6, 3), player(11, "Head Coach", 5, 2)]
+    team = optimize.lineup(sq)["team"]
+    check_lineup(team)
+    assert 5 in roles(team, "5άδα")
+    assert next(p["id"] for p in team if p["captain"]) == 1
+    live = optimize.lineup_in_round(sq)["team"]
+    assert next(p["id"] for p in live if p["captain"]) == 1
+
+
+def test_with_three_turns_a_forced_starter_comes_from_the_nearest_turn():
+    """No T1 Center: the T2 Center starts, the stronger T3 one waits on the bench as the option."""
+    sq = squad_t1_t2()
+    for p in sq:
+        if p["id"] == 9:
+            p["turn"], p["x_now"] = 3, 25
+    team = optimize.lineup(sq)["team"]
+    check_lineup(team)
+    assert optimize.later_turn_steps(sq)[9] == 2 and optimize.later_turn_steps(sq)[10] == 1
+    assert roles_of(team, 10) in ("5άδα", "6ος") and roles_of(team, 9) == "πάγκος"
+
+
 def test_swap_plan_pairs_later_players_with_weakest_compatible_starter():
     team, plan = optimize.defer_later_turns(optimize.lineup(squad_t1_t2())["team"])
     pairs = {(pl["bench"]["id"], pl["start"]["id"]) for pl in plan}

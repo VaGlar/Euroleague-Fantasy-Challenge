@@ -25,6 +25,17 @@ jobs:
       HAS_DATA_REPO: ${{ secrets.DATA_REPO_TOKEN != '' }}
     steps:
       - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r requirements.txt pytest
+      # never write to the game with code that breaks the lineup rules.
+      # Before the private data is restored: the tests check that the repo's own copy is the
+      # sanitized one, and their failure output would print the private files to a public log.
+      - name: Tests
+        if: inputs.mode == 'apply'
+        run: python -m pytest -q
       # the owner's team (pending trades for the reminder) lives in the private data repo
       - name: Private data repo
         if: ${{ env.HAS_DATA_REPO == 'true' }}
@@ -36,15 +47,6 @@ jobs:
       - name: Restore the private data
         if: ${{ env.HAS_DATA_REPO == 'true' }}
         run: '[ -d private/public ] && cp -r private/public/. data/public/ || true'
-      - uses: actions/setup-python@v7
-        with:
-          python-version: "3.11"
-          cache: pip
-      - run: pip install -r requirements.txt pytest
-      # never write to the game with code that breaks the lineup rules
-      - name: Tests
-        if: inputs.mode == 'apply'
-        run: python -m pytest -q
       - name: Lineup
         env:
           FANTASY_TOKEN: ${{ secrets.FANTASY_TOKEN }}

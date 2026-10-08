@@ -159,6 +159,7 @@ details.fbox > summary::-webkit-details-marker { display: none; }
 .tb { border-radius: 4px; padding: 0 4px; font-weight: 700; }
 .tb.t1 { background: color-mix(in srgb, var(--series-1) 18%, transparent); }
 .tb.t2 { background: color-mix(in srgb, var(--accent) 22%, transparent); }
+.tb.t3 { background: color-mix(in srgb, var(--good) 22%, transparent); }
 .lanes { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 10px; }
 .lane h3 { font-size: 12px; font-weight: 600; color: var(--text-secondary); margin: 0 0 6px; }
 .lane .crow { justify-content: flex-start; flex-wrap: wrap; }
@@ -584,7 +585,7 @@ const INFO = {
   ptot: "Σύνολο: τα fantasy points του φέτος μέχρι τώρα (PIR, +10% στη νίκη· coach από τη διαφορά σκορ).",
   value: "Value: xFPT3 ανά credit, πόσα points δίνει κάθε credit του price του.",
   dollar: "$: πιθανή άνοδος price μετά το Round. ↓$: πιθανή πτώση.",
-  turn: "T1 / T2: σε ποιο Turn παίζει η ομάδα του. Ανάμεσα στα Turns κάνεις subs στο Starting five με όσους δεν έχουν παίξει.",
+  turn: "T1 / T2 / T3: σε ποιο Turn παίζει η ομάδα του. Ανάμεσα στα Turns κάνεις subs στο Starting five με όσους δεν έχουν παίξει.",
   matchup: "Ματσάρισμα: πόσο περισσότερο (▲) ή λιγότερο (▼) PIR δίνει ο αντίπαλος στη θέση του, σε σχέση με τον μέσο όρο της λίγκας.",
   avail: "Διαθεσιμότητα από το παιχνίδι και τα νέα: εκτός, ή η πιθανότητα να παίξει. Ανανεώνεται και 3 ώρες πριν τον πρώτο αγώνα.",
   back: "Επιστρέφει μετά από απουσία: δεν έπαιξε σε κανένα από τα 3 τελευταία ματς της ομάδας του (τραυματισμός ή εκτός ροτάσιον). Όσοι γυρίζουν έτσι παίζουν συνήθως λιγότερα λεπτά: σε δύο σεζόν έφεραν 25–30% λιγότερα από τη φόρμα τους. Γι' αυτό η πρόβλεψή του είναι ήδη μειωμένη κατά 20%.",
@@ -710,7 +711,7 @@ function chip(p, changed) {
   const cls = ["chip", p.captain ? "cap" : "", changed ? "chg" : ""].join(" ");
   const pid = p.person_id ?? byFid(p.id ?? p.fantasy_id)?.person_id;
   return `<div class="${cls}" title="${esc(nm(p.name))}" data-pid="${esc(pid ?? "")}">
-    <div class="ct"><span>${LET[p.position] || ""}</span>${p.turn ? `<span class="tb t${p.turn > 1 ? 2 : 1}">T${p.turn}</span>` : ""}</div>
+    <div class="ct"><span>${LET[p.position] || ""}</span>${p.turn ? `<span class="tb t${Math.min(p.turn, 3)}">T${p.turn}</span>` : ""}</div>
     <div class="cn">${esc(surname(p.name))}${p.unregistered ? " 📋" : inj(p) ? " 🚑" : ""}${p.price_trend === "up" ? " $" : ""}</div>
     <div class="cp${played ? " done" : ""}">${f1(pts)}</div>
     <div class="cs">${gameOf(p)}${p.price != null ? ` · ${f1(p.price)}` : ""}</div></div>`;
