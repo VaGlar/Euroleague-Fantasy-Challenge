@@ -177,3 +177,21 @@ def test_a_warning_keeps_the_runs_earlier_health_notes(pub):
     health = json.loads((pub / "predictions.json").read_text())["health"]
     assert health[0] == "🔑 token λήγει" and len(health) == 2, "προστίθεται μία φορά, δεν σβήνει τα άλλα"
     assert "🔑" in (pub / "predictions.json").read_text(), "γράφεται όπως είναι (όχι \\u-escapes)"
+
+
+# ------------------------------------------------------------------ found by mutation testing
+
+def test_a_few_odd_players_do_not_stop_the_update(pub):
+    """The limits are «more than 10% without xFPT» and «more than 5% of prices outside 1-40»:
+    one newcomer without a prediction or one odd price is normal, not a broken API."""
+    def one_each(d):
+        d["fantasy_ok"] = True
+        d["players"][0]["x_now"] = None
+        d["players"][1]["price"] = 45.0
+    edit(pub, "predictions.json", one_each)
+    assert problems(pub) == []
+
+
+def test_report_message_without_text_stops(pub):
+    edit(pub, "report.json", lambda d: d["messages"].append({"date": "2026-10-02"}))
+    assert any("χωρίς ημερομηνία ή κείμενο" in p for p in problems(pub))

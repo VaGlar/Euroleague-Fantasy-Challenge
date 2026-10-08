@@ -1,138 +1,145 @@
 # Αναφορά tester — PR 38 (`claude/festive-babbage-gota28`), 2026-10-08
 
-Mode: **analyze**. Εύρος: το diff του PR έναντι `origin/main` (security headers, φίλτρο συνδέσμων feed, tests από mutation testing).
+**Modes:**
+- analyze για το diff του PR 38 και πλήρες baseline του `functions/api/sync`·
+- write-tests για 3 tests του `validate`·
+- ci-maintenance για το gitleaks στο `tests.yml`.
+
+Τα outputs όλων των εντολών βρίσκονται στον φάκελο [`2026-10-08-claude-festive-babbage-gota28-appendix/`](2026-10-08-claude-festive-babbage-gota28-appendix/), αρχεία 00–06.
 
 ## 1. Verdict
 
-**Κανένα BLOCKING.** Το σημαντικότερο κενό: ο έλεγχος `safeUrl` στο `web/index.html` δεν τον εκτελεί κανένα test. Μόνο το φίλτρο της Python (`elf/news.py`) ελέγχεται. Επίσης κανένα test δεν επιβεβαιώνει ότι το `_headers` καταλήγει στους φακέλους που κάνουν deploy.
+**Κανένα BLOCKING.** Το σημαντικότερο κενό είναι εύρημα του baseline του sync και αφορά τους χρήστες: ένας κωδικός συγχρονισμού γραμμένος με **ελληνικό πληκτρολόγιο** απορρίπτεται. Τα Α, Β, Ε, Η, Κ, Μ, Ν, Ρ, Τ, Υ, Χ, Ζ μοιάζουν με λατινικά αλλά πετιούνται.
 
 ## 2. Κενά (κατά προτεραιότητα)
 
-1. **`safeUrl` χωρίς test** (`web/index.html:496`, χρήση στη γραμμή 754). Μέτριο.
-   - Είναι η δεύτερη γραμμή άμυνας: αν ένας σύνδεσμος `javascript:` φτάσει στο `news.json` χωρίς να περάσει από το `collect()`, π.χ. παλιό αρχείο ή χειροκίνητη επεξεργασία, μόνο αυτό τον σταματά.
-   - Πρόταση: UI test με fixture `news.json` που περιέχει `javascript:alert(1)`, `" javascript:x"` και `data:text/html,…`. Αναμενόμενο: `href="#"` σε όλα.
-2. **Κανένα test ότι το `_headers` γίνεται deploy.** Χαμηλό.
-   - Το `update.yml` κάνει `cp -r web/* site/` και το `publish.site()` κάνει `copytree(web)`. Και τα δύο σήμερα αντιγράφουν το `_headers`.
-   - Μια μετονομασία, ή ένα `cp` που αφήνει έξω αρχεία με `_`, θα έσβηνε σιωπηλά όλα τα headers.
-   - Πρόταση: test που καλεί `publish.site(tmp)` και ελέγχει `(tmp / "_headers").read_text() == web/_headers`, συν έλεγχο ότι το βήμα «Build site» αντιγράφει όλο το `web/`.
-3. **Τα headers δεν καλύπτουν τις Pages Functions** (`functions/feed.js`, `functions/api/sync/[[path]].js`). Χαμηλό.
-   - Το `_headers` εφαρμόζεται στα στατικά αρχεία. Οι αποκρίσεις των Functions βγαίνουν χωρίς `X-Content-Type-Options` και τα υπόλοιπα, εκτός αν τα βάλει ο ίδιος ο κώδικας.
-   - Το επιβεβαιώνει ένα `curl -I` στο live `/api/sync/…`, που δεν το έτρεξα: δεν δοκιμάζω σε production.
-4. **`'unsafe-inline'` στο `script-src`.** Χαμηλό, γνωστός συμβιβασμός. Το CSP δεν προστατεύει από XSS μέσω inline script όσο το dashboard έχει inline `<script>`. Η άμυνα σήμερα είναι το `esc()`/`safeUrl()`. Λύση: το script σε ξεχωριστό `.js`, ή nonces/hashes.
-5. **XML feeds με `xml.etree.ElementTree.fromstring`** (`elf/news.py:130`, bandit B314). Χαμηλό.
-   - Τα feeds είναι τρίτων.
-   - Η Python 3.11 με πρόσφατο expat προστατεύει από το «billion laughs». Το `defusedxml` θα έκλεινε το θέμα οριστικά.
-   - Δεν αφορά το diff.
-6. **CI permissions** (S18). Χαμηλό.
-   - Τα `tests.yml`, `lineup.yml` και `deploy-bot.yml` δεν δηλώνουν `permissions:` και παίρνουν το default του repo.
-   - Τα third-party actions είναι pinned σε tag, όχι σε SHA.
-   - Δεν υπάρχει `.github/CODEOWNERS` για το `.github/workflows/`.
-7. **Δεν υπάρχει `TESTING.md`.** Χωρίς αυτό δεν υπάρχει όριο mutation score, ούτε επίσημη λίστα «κρίσιμων αρχείων». Πρόταση: να γραφτεί, με κρίσιμα τα `optimize.py`, `lineup_cmd.py`, `publish.py` και `validate.py`.
+1. **Κωδικός sync με ελληνικά γράμματα** (`web/team.js:146`, `functions/api/sync/[[path]].js` στο `cleanCode`). **Μέτριο, bug χρηστικότητας.**
+   - Το `toUpperCase().replace(/[^A-Z0-9]/g, "")` κρατά μόνο λατινικά.
+   - Το ελληνικό «Α» (U+0391) είναι οπτικά ίδιο με το «A», αλλά αφαιρείται. Ο κωδικός βγαίνει μικρότερος από 12 χαρακτήρες και η σελίδα λέει «μη έγκυρος».
+   - 12 από τα 23 γράμματα του `ALPHABET` έχουν ελληνικό δίδυμο, οπότε σχεδόν κάθε κωδικός γραμμένος με το χέρι αποτυγχάνει.
+   - Τεκμήριο: appendix 04, `cleanCode("ΑΒΓ") → ""`.
+   - Fix (developer): αντιστοίχιση ΑΒΕΗΚΜΝΡΤΥΧΖ → ABEHKMNPTYXZ πριν το φιλτράρισμα, και στον client και στον server. Test: `syncJoin`/`cleanCode` με κωδικό γραμμένο σε ελληνικά.
+2. **Τα headers δεν καλύπτουν τις Pages Functions. Επιβεβαιωμένο.** Χαμηλό–μέτριο.
+   - Η τεκμηρίωση του Cloudflare το λέει ρητά (appendix 02).
+   - Στο live, το `/api/sync` απαντά μόνο με `content-type` και `cache-control`, χωρίς ούτε τα default `nosniff`/`referrer-policy` που το Pages βάζει στα στατικά.
+   - Fix (developer): τα headers μέσα στο `json()` του sync και στο `functions/feed.js`, ή ένα `functions/_middleware.js`.
+   - Μετά το merge να ξανατρέξει το `curl -I`: το PR 38 δεν έχει γίνει deploy ακόμα, οπότε το live δείχνει ακόμα τα defaults.
+3. **Ο server αποθηκεύει οποιοδήποτε `roles`, και ο client το τυπώνει χωρίς `esc()`** (`web/team.js:602`, `617`). **Μέτριο, λανθάνον.**
+   - Ο server δέχεται `roles` με HTML: `201` (appendix 04).
+   - **Το XSS δεν αναπαράχθηκε** (appendix 06): ένας παίκτης με άγνωστο role δεν παίρνει chip, και το sheet ανοίγει μόνο από chip.
+   - Μια μελλοντική λίστα με όλους τους παίκτες θα το έκανε προσβάσιμο, με κοινόχρηστο κωδικό ως φορέα. Το CSP επιτρέπει inline handlers (`'unsafe-inline'`) και `img-src https:`, άρα και διαρροή δεδομένων.
+   - Fix (developer): `esc(role)` στα δύο σημεία, και στο `validTeam` τα `roles` να περιορίζονται σε `5άδα/6ος/πάγκος/coach`.
+4. **`safeUrl` χωρίς test** (`web/index.html:496`). Χαμηλό. Πρόταση: UI test με fixture που έχει `javascript:`/`data:` και αναμένει `href="#"`.
+5. **Κανένα test ότι το `_headers` φτάνει στο deploy** (`update.yml` «Build site», `publish.site`). Χαμηλό.
+6. **Sync: δεν υπάρχει rate limit στο `POST`, ούτε όριο στο πλήθος ή στη διάρκεια ζωής των εγγραφών** (S07/S17). Χαμηλό.
+   - Αυτόματα POST μπορούν να γεμίζουν το D1.
+   - Δεν υπάρχει τρόπος διαγραφής (`DELETE` → 405). Δεν αφορά προσωπικά δεδομένα με την τωρινή μορφή, γιατί το `user_id` μένει κενό. Θα αφορά όταν έρθουν λογαριασμοί.
+7. **Sync: το `MAX_BYTES` μετράει χαρακτήρες UTF-16, όχι bytes.** 150.000 ελληνικοί χαρακτήρες δίνουν 300 KB και γίνονται δεκτοί (appendix 04). Χαμηλό.
+8. **Το `'unsafe-inline'` στο CSP**, το **XML χωρίς `defusedxml`** (`elf/news.py:130`), και στο **CI τα actions pinned σε tag αντί για SHA** και η έλλειψη `CODEOWNERS`. Όλα χαμηλά, αμετάβλητα από την προηγούμενη αναφορά.
+9. **Δεν υπάρχει `TESTING.md`**: λείπει όριο για το mutation score.
+
+Τι **δουλεύει σωστά** στο sync (appendix 04):
+- όλα τα SQL έχουν bound parameters, και ο κωδικός «`' OR 1=1--`» απορρίπτεται με 400·
+- το race μεταξύ δύο συσκευών δίνει 409 με το αποθηκευμένο αντίγραφο·
+- τρεις διαδοχικές συγκρούσεις κωδικών δίνουν 500, το όριο των 15 παικτών είναι σωστό (15 → 201, 16 → 400), και χωρίς D1 η απάντηση είναι 503·
+- η απάντηση δεν περιέχει `user_id` (S13)·
+- ο κωδικός έχει 59,43 bits εντροπίας. Το modulo bias (`x % 31`) κάνει τα A–H περίπου 8% πιο συχνά, χωρίς πρακτική σημασία.
 
 ## 3. Tests που προστέθηκαν
 
-Κανένα σε αυτό το run (analyze). Τα tests του PR, γραμμένα πριν από αυτό το run, αξιολογήθηκαν παρακάτω.
+| Αρχείο | Test | Τι ελέγχει | Πηγή αναμενόμενων τιμών |
+|---|---|---|---|
+| `tests/test_validate.py` | `test_a_few_odd_players_do_not_stop_the_update` | ένας παίκτης χωρίς xFPT και μία τιμή εκτός 1–40 δεν σταματούν το update | docstring του `validate.py` («unusable» vs «smaller oddities») |
+| `tests/test_validate.py` | `test_report_message_without_text_stops` | μήνυμα report χωρίς `text` σταματά το update | ίδιο docstring και το μήνυμα του κώδικα |
+
+Και τα δύο πιάνουν τους mutants 128, 154 και 188, όπως επαληθεύτηκε με το χέρι (appendix 03).
+
+**CI:**
+- νέο job `secrets` στο `tests.yml`: gitleaks 8.27.2 με επαλήθευση sha256, `--redact`. Στα PRs σαρώνει μόνο τα commits του PR. Ένα χειροκίνητο run σαρώνει όλο το ιστορικό.
+- `permissions: contents: read` στο workflow.
+- Τοπική δοκιμή του ίδιου script (appendix 05): σε αυτό το PR δεν βρίσκει leaks. Σε ψεύτικο token αποτυγχάνει με exit 1 και δείχνει την τιμή ως `REDACTED`.
+- Full history baseline: 321 commits, **κανένα leak** (appendix 01).
 
 ## 4. Εύρος tests (F1–F15)
 
-- **F1:** καλύπτεται. Το diff-cover δίνει 100% στις αλλαγμένες γραμμές Python (`elf/news.py`). Τα HTML/`_headers` δεν μετριούνται από το coverage.
-- **F2:** μερικώς.
-  - Υπάρχουν boundary tests για το `PLAN_MIN_X`, το threshold των trades και τα 4 trades.
-  - Λείπουν τα όρια του `validate` (200 παίκτες, 16–22 ομάδες, τιμές 1–40). Είναι αυθαίρετα, χαρακτηρισμένα ως equivalent παρακάτω.
-- **F3:** καλύπτεται. Καλύπτονται το 4xx από το παιχνίδι, το NaN, τα χαλασμένα αρχεία, το stale nonce και ο μη έγκυρος σύνδεσμος feed.
-- **F4:** ναι. Το `test_collect_keeps_only_web_links` αποτυγχάνει στον παλιό κώδικα, και το επιβεβαίωσα.
-- **F7:** το `_expected_shortfall` ελέγχεται απέναντι σε αριθμητική ολοκλήρωση. Αυτή είναι ανεξάρτητη αναφορά, όχι η έξοδος του κώδικα.
-- **F9:** λείπει. Δεν υπάρχουν property-based tests, π.χ. με `hypothesis` για τα `safeUrl`, `esc` και `normalize_player`.
-- **F10:** υπάρχει (Playwright, και οι δύο εκδόσεις). Τα tests τρέχουν πλέον με τα πραγματικά headers του `_headers`.
+- **F1:** τα tests περνούν (342 passed), coverage 91,52%. Το diff-cover δίνει 100% στις αλλαγμένες γραμμές Python.
+- **F2:** ελέγχονται τα όρια του optimizer και τα 15/16 του sync (μόνο ως probe, όχι στη σουίτα).
+- **F3, F4, F5:** καλύπτονται.
+- **F6:** το sync έχει 2 tests· το baseline βρήκε περιπτώσεις χωρίς test: 405 σε DELETE, PUT με χαλασμένο JSON σε υπάρχοντα κωδικό, το race (`UPDATE` χωρίς αλλαγές), 3 συγκρούσεις κωδικών, όριο 15/16 και επικύρωση των `roles`.
+- **F7:** ελέγχεται.
+- **F8:** το race του sync ελέγχθηκε με probe. Λείπει test στη σουίτα.
+- **F9:** λείπει.
+- **F10:** ελέγχεται.
 - **F14:**
-  - mutmut 3.8.0 στα 4 κρίσιμα modules: πριν το PR **1726/2184 (79%)**, μετά **2106/2184 (96%)**.
-  - Από τους 78 που επιζούν όλοι είναι **equivalent ή χωρίς αξία**: κείμενα μηνυμάτων, μορφοποίηση JSON (`indent`, `ensure_ascii`), ±1 σε αυθαίρετα όρια του `validate`, όνομα του LP problem, default `max_trades=4→5`.
-  - Επιβεβαίωσα ότι τα tests περνούν μέσα στο `mutants/` χωρίς mutation, άρα τα «kills» δεν είναι ψεύτικα.
-- **F15:** καμία αστάθεια στα 2 πλήρη runs (340 passed).
-- **F5, F6, F8, F11, F12, F13:** δεν τα αγγίζει το diff. Βλ. πίνακα.
+  - 96% (2106/2184).
+  - Από τους 78 επιζώντες, 10 ελέγχθηκαν με το χέρι: 3 πραγματικά κενά (κλειστά πλέον) και 7 equivalent (appendix 03).
+  - Οι υπόλοιποι 68 ανήκουν στις ίδιες κατηγορίες equivalent.
+- **F15:** καμία αστάθεια.
 
 ## 5. Πίνακας εφαρμοσιμότητας
 
 | ID | Status | Τεκμήριο / λόγος | Αποτέλεσμα |
 |----|--------|------------------|------------|
-| F1 | RUN | diff-cover vs origin/main | 100% στις αλλαγμένες γραμμές Python |
-| F2 | RUN | review | μερικώς (βλ. §4) |
-| F3 | RUN | review | καλύπτεται |
+| F1 | RUN | pytest + diff-cover (appendix 00) | 342 passed, 100% στις αλλαγμένες γραμμές |
+| F2 | RUN | review + sync probe | μερικώς |
+| F3 | RUN | review + sync probe | καλύπτεται |
 | F4 | RUN | bugfix στο `news.py` | regression test υπάρχει |
-| F5 | RUN | fake game / fake feeds στα όρια | καλύπτεται (το FakeGame ελέγχει πλέον τα ids) |
-| F6 | N/A | `HTTP_API` εκτός diff (`functions/api/sync`) | — |
-| F7 | RUN | `CALCULATIONS` (optimizer) | shortfall έναντι ολοκλήρωσης |
-| F8 | N/A | το diff δεν αγγίζει retries/concurrency | — |
-| F9 | RUN | pure functions υπάρχουν | λείπει (κενό, χαμηλό) |
-| F10 | RUN | Playwright | τοπικά πράσινο με headers (από προηγούμενο run) |
-| F11 | N/A | `DB_MIGRATIONS` όχι στο diff (D1 μόνο στο sync) | — |
-| F12 | RUN | `RUN_URL` απών/παρών, `TELEGRAM_BOT_TOKEN` | καλύπτεται |
-| F13 | N/A | το diff δεν αλλάζει βρόχους σε μεγάλα δεδομένα | — |
-| F14 | RUN | mutmut 3.8.0 | 96%, 78 equivalent |
-| F15 | RUN | 2 πλήρη runs | χωρίς flaky |
-| S01 | RUN | regex σάρωση ιστορικού και diff (gitleaks/trufflehog μη διαθέσιμα) | τίποτα. Σημείωση: regex ≠ gitleaks |
-| S02 | RUN | `pip-audit -r requirements.txt` | no known vulnerabilities. Το `npm audit` στο `tests/ui` δεν έτρεξε |
-| S03 | N/A | το diff δεν αγγίζει auth/sync. Το access του personal site το κάνει το Cloudflare Access | — |
-| S04 | RUN | `web/_headers` | headers υπάρχουν. Κενά 3–4 |
-| S05 | N/A | το diff δεν αγγίζει crypto. Το SHA1 (B324) στο `lineup_cmd` είναι αναγνωριστικό πρότασης, όχι ασφάλεια | — |
-| S06 | RUN | XSS στον σύνδεσμο feed | διορθώθηκε στην Python (με test) και στο JS (χωρίς test, κενό 1) |
-| S07 | CANNOT_CHECK | rate limit του `/api/sync` εκτός diff, θέλει live app | γνωστό ανοιχτό θέμα |
-| S08 | N/A | `AUTH` μέσω Cloudflare Access, εκτός repo | — |
-| S09 | RUN | third-party scripts/fonts | Cloudflare beacon και Google Fonts χωρίς SRI (CF Analytics: δεν υποστηρίζει SRI) |
-| S10 | RUN | review | το `validate` στέλνει προβλήματα, όχι προσωπικά δεδομένα. Οκ |
-| S11 | RUN | review | fail closed: το NaN σταματά το publish, το 4xx σταματά το apply |
-| S12 | N/A | `FILE_IO` μόνο σε σταθερά paths του repo | — |
-| S13 | N/A | `HTTP_API` εκτός diff | — |
-| S14 | CANNOT_CHECK | το `functions/feed.js` είναι proxy URL, εκτός diff, χωρίς τοπικό runtime | να ελεγχθεί σε ξεχωριστό run |
-| S15 | RUN | DOM XSS στο `index.html` | ένας sink (`href`) με `safeUrl`. Χωρίς test |
-| S16 | N/A | το LLM (σύνοψη ειδήσεων) εκτός diff | — |
-| S17 | N/A | το diff δεν αγγίζει προσωπικά δεδομένα | — |
-| S18 | RUN | workflows | κενό 6 |
+| F5 | RUN | FakeGame, fake D1 | καλύπτεται |
+| F6 | RUN | `HTTP_API` (sync) | contract σωστό· 6 περιπτώσεις χωρίς test (§4) |
+| F7 | RUN | `CALCULATIONS` | shortfall έναντι ολοκλήρωσης |
+| F8 | RUN | το sync έχει optimistic locking | σωστό στο probe· χωρίς test |
+| F9 | RUN | pure functions | λείπει |
+| F10 | RUN | Playwright | πράσινο (προηγούμενο run)· probe XSS με τα headers του `_headers` |
+| F11 | CANNOT_CHECK | D1 `CREATE TABLE IF NOT EXISTS` χωρίς migrations· χωρίς πρόσβαση στο live D1 | — |
+| F12 | RUN | `RUN_URL`, `TELEGRAM_BOT_TOKEN`, `SYNC_DB` | καλύπτεται (503 χωρίς binding) |
+| F13 | RUN | `MAX_BYTES` | κενό 7 |
+| F14 | RUN | mutmut + χειροκίνητος έλεγχος | 96%· appendix 03 |
+| F15 | RUN | 3 πλήρη runs | χωρίς flaky |
+| S01 | RUN | gitleaks 8.27.2, όλο το ιστορικό | κανένα leak· πλέον στο CI |
+| S02 | RUN | pip-audit | καθαρό· το `npm audit` δεν έτρεξε |
+| S03 | RUN | sync: ο κωδικός είναι το κλειδί, χωρίς λογαριασμούς | εκ σχεδιασμού όποιος έχει τον κωδικό γράφει· 59 bits |
+| S04 | RUN | `curl -I` στο live + docs | κενό 2 (επιβεβαιωμένο) |
+| S05 | RUN | `crypto.getRandomValues` στο sync | σωστό· μικρό modulo bias |
+| S06 | RUN | SQL (sync), XSS (news, roles) | SQL ασφαλές· XSS: κενά 3–4 |
+| S07 | RUN | sync POST | κενό 6 |
+| S08 | N/A | `AUTH` μέσω Cloudflare Access (τεκμήριο: 302 με `www-authenticate: Cloudflare-Access`, appendix 02) | — |
+| S09 | RUN | third-party scripts | CF beacon/Fonts χωρίς SRI |
+| S10 | RUN | review | οκ |
+| S11 | RUN | sync: 400/404/405/409/413/500/503, όλα JSON χωρίς stack | οκ |
+| S12 | N/A | `FILE_IO` μόνο σε σταθερά paths | — |
+| S13 | RUN | απάντηση του sync | χωρίς `user_id` ή εσωτερικά πεδία |
+| S14 | CANNOT_CHECK | `functions/feed.js` (proxy URL) εκτός του εύρους που ζητήθηκε | επόμενο baseline |
+| S15 | RUN | DOM XSS | κενά 3–4 |
+| S16 | N/A | LLM εκτός diff | — |
+| S17 | RUN | διάρκεια ζωής εγγραφών του sync | κενό 6· για ανθρώπινη αξιολόγηση όταν έρθουν λογαριασμοί |
+| S18 | RUN | workflows | `contents: read` στο `tests.yml`· pinned tags· χωρίς CODEOWNERS |
 
 ## 6. Προφίλ project
 
-- **Γλώσσες:**
-  - Python 3.11 (`elf/`),
-  - vanilla JS (`web/`),
-  - Cloudflare Worker και Pages Functions (`worker/`, `functions/`).
-- **Tests και εργαλεία:**
-  - pytest + pytest-cov (`.coveragerc`, `fail_under = 90`),
-  - Playwright (`tests/ui/`),
-  - node runner για τον Worker,
-  - mutmut 3.8.0 μόνο τοπικά.
-- **Flags:**
+Αμετάβλητο από το πρώτο run της ημέρας:
+- Python 3.11 (`elf/`), vanilla JS (`web/`), Cloudflare Worker/Pages Functions με D1·
+- pytest + pytest-cov (`fail_under = 90`), Playwright, node runners, mutmut 3.8.0 (τοπικά)·
+- δεν υπάρχει `TESTING.md`.
 
-  | Flag | Τιμή | Τεκμήριο |
-  |---|---|---|
-  | `WEB_UI` | ναι | `web/index.html` |
-  | `HTTP_API` | ναι | `functions/api/sync` |
-  | `AUTH` | εξωτερικό | Cloudflare Access |
-  | `DB_SQL` | ναι | D1 στο sync |
-  | `EXTERNAL_HTTP` | ναι | `functions/feed.js`, `elf/news.py` |
-  | `SECRETS_USED` | ναι | workflows |
-  | `PERSONAL_DATA` | ελάχιστα | ομάδα του ιδιοκτήτη στο `elf-data` |
-  | `LLM_FEATURES` | ναι | σύνοψη ειδήσεων |
-  | `CLI_OR_SCRIPT` | ναι | |
-  | `DATA_PIPELINE` | ναι | |
-  | `CALCULATIONS` | ναι | `optimize.py` |
-  | `DEPLOYED_PUBLIC` | ναι | Pages |
-  | `DEPENDENCIES` | ναι | |
-  | `CI` | ναι | |
-  | `PAYMENTS` | όχι ακόμα | |
-  | `FILE_UPLOAD` | όχι | |
-  | `BAAS` | όχι | |
-  | `DB_MIGRATIONS` | UNKNOWN | D1 schema στο sync |
+Σημαντικά flags:
 
-- **Spec:** δεν υπάρχει `TESTING.md`, `SPEC.md` ή `CLAUDE.md`. Οι κανόνες για τα δημόσια/ιδιωτικά δεδομένα είναι στο README.
+| Flag | Τιμή | Τεκμήριο |
+|---|---|---|
+| `HTTP_API` | ναι | `/api/sync` |
+| `DB_SQL` | ναι | D1 |
+| `AUTH` | εξωτερικό | Cloudflare Access μόνο στο personal site |
+| `DEPLOYED_PUBLIC` | ναι | `hoopslab-beta.pages.dev` |
 
 ## 7. Παραδοχές και όρια
 
 - Οι αυτόματοι και στατικοί έλεγχοι **δεν αποδεικνύουν ασφάλεια και δεν είναι penetration test**.
+- Στο live έγιναν μόνο αιτήματα `HEAD`, χωρίς επίθεση. Το sync δοκιμάστηκε τοπικά σε fake D1, όχι στο πραγματικό D1.
 - **Δεν ελέγχθηκαν:**
-  - τα live headers και οι Functions σε production (κανόνας: όχι δοκιμές σε production),
-  - `npm audit` στα `tests/ui` και `worker`,
-  - gitleaks/trufflehog (δεν ήταν εγκατεστημένα· έγινε μόνο regex σάρωση).
-- Το UI run με τα headers είναι από προηγούμενο τοπικό run πριν το τελευταίο commit. Το τελευταίο commit αλλάζει μόνο Python tests.
+  - η συμπεριφορά του Cloudflare στο URL-decoding των params (στο appendix 04 η περίπτωση «με κενά» είναι τεχνούργημα του harness)·
+  - `npm audit`·
+  - S14 (`feed.js`)·
+  - τα headers του PR 38 στο live, γιατί δεν έχει γίνει deploy ακόμα.
+- Το gitleaks 8.28.0 έδωσε 502 κατά το download. Χρησιμοποιήθηκε το 8.27.2, με επαληθευμένο checksum.
 - **Εκδόσεις:**
-  - εργαλεία: pytest 9.1.1, mutmut 3.8.0, pip-audit, bandit και diff-cover (τελευταίες από PyPI στις 2026-10-08),
-  - πρότυπα αναφοράς: OWASP Top 10:2025, ASVS 5.0.0, WSTG 4.2. Δεν επαλήθευσα online αν υπάρχουν νεότερες εκδόσεις, και δεν ανέφερα αριθμούς ASVS από μνήμης.
+  - εργαλεία: pytest 9.1.1, mutmut 3.8.0, gitleaks 8.27.2, pip-audit, bandit, diff-cover (PyPI, 2026-10-08), Playwright από `tests/ui/package-lock.json`·
+  - πρότυπα αναφοράς: OWASP Top 10:2025, ASVS 5.0.0, WSTG 4.2. Δεν επαληθεύτηκαν online για νεότερες εκδόσεις.

@@ -1,0 +1,32 @@
+$ python -m pytest -q --cov
+........................................................................ [ 21%]
+........................................................................ [ 42%]
+........................................................................ [ 63%]
+........................................................................ [ 84%]
+......................................................                   [100%]
+================================ tests coverage ================================
+_______________ coverage: platform linux, python 3.11.15-final-0 _______________
+Coverage XML written to file <scratch>/cov.xml
+Required test coverage of 90.0% reached. Total coverage: 91.52%
+342 passed in 96.68s (0:01:36)
+
+$ diff-cover cov.xml --compare-branch=origin/main
+-------------
+Diff Coverage
+Diff: origin/main...HEAD, staged and unstaged changes
+-------------
+elf/news.py (100%)
+-------------
+Total:   1 line
+Missing: 0 lines
+Coverage: 100%
+-------------
+
+
+$ pip-audit -r requirements.txt
+No known vulnerabilities found
+
+$ bandit -q -r elf -ll
+elf/autopilot.py:204 B324 HIGH/HIGH Use of weak SHA1 hash for security. Consider usedforsecurity=False
+elf/lineup_cmd.py:146 B324 HIGH/HIGH Use of weak SHA1 hash for security. Consider usedforsecurity=False
+elf/news.py:130 B314 MEDIUM/HIGH Using xml.etree.ElementTree.fromstring to parse untrusted XML data is known to be vulnerable to XML attacks. Replace xml.etree.ElementTree.fromstring with its defusedxml equivalent function or make sure defusedxml.defuse_stdlib() is called
