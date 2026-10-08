@@ -116,8 +116,8 @@ round,source,stance,person_id,name,team,model_xpts
 3,EuroBallin (Substack),pick,011214,"RIVERO, JASIEL",PAM,7.36
 3,Basketball Sphere – Fantasy,avoid,009035,"BOLOMBOY, JOEL",ASV,6.67
 3,Basketball Sphere – Fantasy,avoid,013667,"FERNANDO, BRUNO",IST,6.56
-4,EuroBallin (Substack),captain,012640,"HIFI, NADIR",PRS,17.0
-4,EuroBallin (Substack),captain,015163,"MILLS, PATTY",ASV,15.85
+4,EuroBallin (Substack),pick,012640,"HIFI, NADIR",PRS,17.0
+4,EuroBallin (Substack),pick,015163,"MILLS, PATTY",ASV,15.85
 4,EuroBallin (Substack),pick,012707,"CARR, MARCUS",VIR,14.01
 4,EuroBallin (Substack),pick,009754,"LOYD, JORDAN",IST,9.91
 4,EuroBallin (Substack),pick,014734,"LAWSON, A.J.",BAS,16.07
@@ -132,14 +132,14 @@ round,source,stance,person_id,name,team,model_xpts
 4,Basketball Sphere – Fantasy,pick,009846,"BRYANT, ELIJAH",HTA,22.06
 4,Basketball Sphere – Fantasy,pick,013370,"WASHINGTON, DUANE",MUN,15.11
 4,Basketball Sphere – Fantasy,pick,006661,"WILBEKIN, SCOTTIE",BES,11.28
-4,Basketball Sphere – Fantasy,pick,011706,"SAINT-SUPERY, MARIO",PAM,2.4
+4,Basketball Sphere – Fantasy,pick,011706,"SAINT-SUPERY, MARIO",PAM,1.92
 4,Basketball Sphere – Fantasy,pick,003469,"VEZENKOV, SASHA",OLY,25.21
 4,Basketball Sphere – Fantasy,pick,014416,"EDWARDS, KESSLER",VIR,7.7
 4,Basketball Sphere – Fantasy,avoid,014207,"OMORUYI, EUGENE",BES,8.24
 4,Basketball Sphere – Fantasy,pick,007464,"PARRA, JOEL",BAR,6.11
 4,Basketball Sphere – Fantasy,pick,007736,"LAKIC, ARIJAN",PAR,2.41
 4,Basketball Sphere – Fantasy,pick,012878,"WRIGHT, MOSES",MIL,15.06
-4,Basketball Sphere – Fantasy,pick,011196,"HALL, DONTA",OLY,6.52
+4,Basketball Sphere – Fantasy,pick,011196,"HALL, DONTA",OLY,8.15
 4,Basketball Sphere – Fantasy,pick,011284,"FARIED, KENNETH",BAS,9.31
 4,EuroLeague Fantasy Tips (official),pick,013506,"BINGHAM, MARCUS",ULK,15.99
 4,EuroLeague Fantasy Tips (official),pick,000898,"VALANCIUNAS, JONAS",ZAL,20.54
@@ -151,4 +151,9 @@ round,source,stance,person_id,name,team,model_xpts
 4,EuroLeague Fantasy Tips (official),pick,007947,"VILDOZA, LUCA",PAR,12.21
 4,EuroLeague Fantasy Tips (official),pick,011205,"HALL, DEVON",MIL,11.49
 4,EuroLeague Fantasy Tips (official),pick,011305,"CARTER, TYSON",RED,5.7
+4,Basketball Sphere – Fantasy,avoid,011157,"MOTLEY, JOHNATHAN",RED,1.07
+4,Basketball Sphere – Fantasy,avoid,001133,"SHENGELIA, TORNIKE",DUB,7.67
+4,Basketball Sphere – Fantasy,avoid,014742,"THOMPSON, ETHAN",PAR,0.0
+4,Basketball Sphere – Fantasy,pick,012080,"LUWAWU-CABARROT, TIMOTHE",MAD,8.18
 4,Basketball Sphere – Fantasy,avoid,014802,"BELLO, RASHEED",VIR,0.93
+4,Basketball Sphere – Fantasy,pick,009733,"JEKIRI, TONYE",PAR,13.16
