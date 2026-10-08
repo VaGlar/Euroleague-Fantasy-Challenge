@@ -61,6 +61,18 @@ def test_lineup_matches_python_on_random_squads():
         assert j["objective"] == pytest.approx(py_obj(p["team"]), abs=1e-6)
 
 
+def test_lineup_matches_python_with_three_turns():
+    rnd = random.Random(13)
+    cases, pys = [], []
+    for _ in range(40):
+        sq = rand_squad(rnd, turns=(1, 2, 3))
+        cases.append({"kind": "lineup", "squad": sq, "inRound": False})
+        pys.append(optimize.lineup(sq))
+    for p, j in zip(pys, js(cases)):
+        assert j["objective"] == pytest.approx(py_obj(p["team"]), abs=1e-6)
+        assert next(q["id"] for q in j["team"] if q["captain"]) == next(q["id"] for q in p["team"] if q["captain"])
+
+
 def test_in_round_lineup_matches_python():
     rnd = random.Random(11)
     cases, pys = [], []
