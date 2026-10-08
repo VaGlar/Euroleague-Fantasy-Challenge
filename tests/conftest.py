@@ -120,16 +120,20 @@ class FakeGame:
     # API surface used by elf.lineup_cmd / elf.run
     def config(self):
         return {"status_id": self.league_status,
-                "current_matchday": {"id": 500, "number": 1}, "current_round": {"number": 1},
+                "current_matchday": {"id": self.MATCHDAY, "number": 1}, "current_round": {"number": 1},
                 "current_players_list_id": 9}
 
-    def my_teams(self, *a, **k):
-        return [{"id": 1, "name": "TEST"}]
+    TEAM, MATCHDAY = 7, 500     # different numbers, so swapped arguments are caught
 
-    def roster(self, *a, **k):
+    def my_teams(self, *a, **k):
+        return [{"id": self.TEAM, "name": "TEST"}]
+
+    def roster(self, tid, md):
+        assert (tid, md) == (self.TEAM, self.MATCHDAY), f"roster({tid}, {md})"
         return copy.deepcopy(self.state)
 
     def formations(self, current_id=None):
+        assert current_id == self.state["formation_id"], "the team's formation id is passed on"
         return dict(FORMS)
 
     def illegal(self, body):
@@ -150,6 +154,7 @@ class FakeGame:
         return False
 
     def save_roster(self, tid, md, body):
+        assert (tid, md) == (self.TEAM, self.MATCHDAY), f"save_roster({tid}, {md})"
         self.saved.append(body)
         if self.status < 400 and self.illegal(body):
             class Bad:

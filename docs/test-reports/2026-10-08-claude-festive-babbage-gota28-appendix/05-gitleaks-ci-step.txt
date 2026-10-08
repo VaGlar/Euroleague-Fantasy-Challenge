@@ -1,0 +1,30 @@
+# The tests.yml «secrets» step run locally: on this PR, then on a scratch repo with a fake token (must fail, value redacted)
+### CI step, PR range origin/main..HEAD
+/tmp/gl.tgz: OK
+12:09PM INF 3 commits scanned.
+12:09PM INF scanned ~33051 bytes (33.05 KB) in 222ms
+12:09PM INF no leaks found
+exit 0
+### same step on a scratch repo with a fake GitHub token
+/tmp/gl.tgz: OK
+12:09PM INF 1 commits scanned.
+12:09PM INF scanned ~51 bytes (51 bytes) in 193ms
+12:09PM WRN leaks found: 1
+exit 1
+### with --verbose (redacted)
+Finding:     TOKEN = "REDACTED
+Secret:      REDACTED
+RuleID:      github-pat
+Entropy:     4.821928
+File:        leak.py
+Line:        1
+Commit:      858bc2ea3cb06cc196112c9db4e25bd45b3b8e0f
+Author:      t
+Email:       t@t
+Date:        2026-10-08T12:09:46Z
+Fingerprint: 858bc2ea3cb06cc196112c9db4e25bd45b3b8e0f:leak.py:github-pat:1
+
+12:09PM INF 1 commits scanned.
+12:09PM INF scanned ~51 bytes (51 bytes) in 192ms
+12:09PM WRN leaks found: 1
+exit 1

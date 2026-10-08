@@ -218,7 +218,8 @@ def collect(names: list[str], hours: int = 96) -> tuple[list[dict], list[str]]:
             continue
         since = now - timedelta(hours=src.get("hours", hours))
         for it in items:
-            if not it["url"] or it["url"] in seen or (it["date"] and it["date"] < since):
+            # only web links: a feed's «javascript:» or «data:» link would run in the dashboard
+            if not re.match(r"https?://", it["url"] or "", re.I) or it["url"] in seen or (it["date"] and it["date"] < since):
                 continue
             if src.get("title_has") and src["title_has"].lower() not in it["title"].lower():
                 continue

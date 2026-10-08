@@ -638,3 +638,13 @@ def test_a_redesigned_page_fails_as_a_source_instead_of_feeding_menus_to_the_sum
                                            "start": "injury_reports", "report": True}])
     out, failed = news.collect([])
     assert out == [] and failed and failed[0].startswith("BN report: ValueError")
+
+
+def test_collect_keeps_only_web_links(tmp_path, monkeypatch):
+    """A feed's «javascript:» or «data:» link would run when clicked in the dashboard: dropped."""
+    write_sources(tmp_path, monkeypatch, [{"name": "Feed", "type": "rss", "url": "https://f/rss"}])
+    feed = rss(("Good", "https://ok/1", NOW, "x"), ("Bad", "javascript:alert(1)", NOW, "x"),
+               ("Data", "data:text/html,<b>x</b>", NOW, "x"), ("Upper", "HTTPS://ok/2", NOW, "x"))
+    monkeypatch.setattr(news.requests, "get", lambda url, **k: Resp(content=feed))
+    out, _ = news.collect([])
+    assert sorted(a["url"] for a in out) == ["HTTPS://ok/2", "https://ok/1"]
