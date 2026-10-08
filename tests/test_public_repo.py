@@ -115,15 +115,21 @@ def test_the_repo_tracks_no_archive_and_no_private_file():
 def test_the_repos_data_is_the_sanitized_copy():
     """Fails if an update ever commits the full files here (e.g. the secret went missing)."""
     pub = REPO / "data" / "public"
+    # booleans only: pytest prints the compared values on failure, and the log is public
     pred = json.loads((pub / "predictions.json").read_text())
-    assert pred.get("my_team") is None and not pred.get("health")
+    has_team, has_health = pred.get("my_team") is not None, bool(pred.get("health"))
+    assert not has_team, "predictions.json: my_team in the public repo"
+    assert not has_health, "predictions.json: health in the public repo"
     news = json.loads((pub / "news.json").read_text())
-    assert all("text" not in a for a in news.get("articles", [])), "articles' text in the public repo"
+    has_text = any("text" in a for a in news.get("articles", []))
+    assert not has_text, "news.json: articles' text in the public repo"
     if (pub / "tracking.json").exists():
-        assert not json.loads((pub / "tracking.json").read_text()).get("lineups")
+        has_lineups = bool(json.loads((pub / "tracking.json").read_text()).get("lineups"))
+        assert not has_lineups, "tracking.json: lineups in the public repo"
     if (pub / "autopilot.json").exists():
         rounds = json.loads((pub / "autopilot.json").read_text()).get("rounds", [])
-        assert not any("my_pts" in r or "my_rank" in r for r in rounds)
+        has_mine = any("my_pts" in r or "my_rank" in r for r in rounds)
+        assert not has_mine, "autopilot.json: the owner's points/rank in the public repo"
 
 
 @pytest.mark.parametrize("name", ["news.json", "report.json"])
