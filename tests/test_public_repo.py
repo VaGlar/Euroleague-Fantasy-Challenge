@@ -5,7 +5,6 @@ only with the secret, and what the repo tracks right now holds nothing private."
 import json
 import re
 import subprocess
-from pathlib import Path
 
 import pytest
 import yaml

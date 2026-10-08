@@ -39,7 +39,7 @@ def problems(pub):
 
 
 def test_real_data_passes(pub):
-    assert problems(pub) == []
+    assert validate.check() == ([], [])
     assert validate.main() == 0
 
 
@@ -54,7 +54,7 @@ def test_missing_or_broken_file_stops(pub, name):
 def test_nan_in_a_file_stops(pub):
     text = (pub / "players.json").read_text()
     (pub / "players.json").write_text(text.replace("{", '{"x": NaN, ', 1))
-    assert any("players.json" in p for p in problems(pub))
+    assert any("players.json" in p and "NaN" in p for p in problems(pub)), "λέει τι βρήκε"
 
 
 def test_stale_predictions_stop(pub):
@@ -120,9 +120,11 @@ def test_nan_or_missing_xfpt_stops(pub):
         for p in d["players"][:100]:
             p["x_now"] = None
     edit(pub, "predictions.json", no_x)
-    assert any("χωρίς xFPT" in p for p in problems(pub))
+    out = problems(pub)
+    assert any("χωρίς xFPT" in p for p in out)
+    assert not any("δεν είναι αριθμός" in p for p in out), "χωρίς xFPT δεν σημαίνει λάθος τύπος"
     edit(pub, "predictions.json", lambda d: d["players"][0].update(x_now="12.3"))
-    assert any("δεν είναι αριθμός" in p for p in problems(pub))
+    assert any(p.startswith("1 παίκτες με xFPT που δεν είναι αριθμός") for p in problems(pub))
 
 
 def test_teams_and_round(pub):
@@ -150,8 +152,12 @@ def test_failure_is_told_on_telegram_escaped(pub, monkeypatch):
     monkeypatch.setattr(notify, "send", lambda text, buttons=None: sent.append(text))
     assert validate.main() == 1
     (text,) = sent
+    assert text.count("\n• ") == 1
     assert "<b>Το update σταμάτησε" in text and "&lt;script&gt;" in text and "<script>" not in text
     assert text.endswith("https://github.com/run/1")
+    monkeypatch.delenv("RUN_URL")
+    validate.main()
+    assert sent[-1].endswith("&lt;script&gt; — άλλαξαν τα δεδομένα του παιχνιδιού;"), "χωρίς link, τίποτα στο τέλος"
 
 
 def test_empty_report_with_a_game_ahead_is_only_a_warning(pub):
@@ -161,3 +167,13 @@ def test_empty_report_with_a_game_ahead_is_only_a_warning(pub):
     assert validate.main() == 0
     health = json.loads((pub / "predictions.json").read_text())["health"]
     assert any("report" in h for h in health), "η προειδοποίηση φτάνει στο health"
+
+
+def test_a_warning_keeps_the_runs_earlier_health_notes(pub):
+    edit(pub, "predictions.json", lambda d: d.update(health=["🔑 token λήγει"]))
+    edit(pub, "report.json", lambda d: d.update(messages=[], generated="2026-01-01T00:00:00+00:00"))
+    validate.main()
+    validate.main()
+    health = json.loads((pub / "predictions.json").read_text())["health"]
+    assert health[0] == "🔑 token λήγει" and len(health) == 2, "προστίθεται μία φορά, δεν σβήνει τα άλλα"
+    assert "🔑" in (pub / "predictions.json").read_text(), "γράφεται όπως είναι (όχι \\u-escapes)"
