@@ -40,7 +40,7 @@
     return (t.hist || []).filter((h) => h.round === r && (h.at == null || h.at >= lock)); };
   let inClick = false;                       // true until the current click's handler has finished
   const save = (t, { undoing = false } = {}) => {
-    if (t.game) return;
+    if (t.game) { saveDraft(t); return; }
     try {
       const prev = load();
       const r = histRound();
@@ -207,6 +207,31 @@
     history.replaceState(null, "", location.pathname + location.search);
   }
 
+  // ------------------------------------------------------------ the draft (personal edition)
+  // Trades and ✕ on the game's team are a draft on this device only: the game doesn't change. It is
+  // dropped when the game's team changes (an update read the trades made there) or the trade round moves on.
+  const DRAFT = "tm_draft";
+  const gameSig = (g) => [P.my_team?.trade_round ?? P.round, g.bank, ...g.players.map((x) => x.id).sort((a, b) => a - b)].join(",");
+  function saveDraft(t) {
+    const g = gameTeam();
+    if (!g) return;
+    try { localStorage.setItem(DRAFT, JSON.stringify({ sig: gameSig(g), team: snapOf(t) })); } catch (e) {}
+    t.draft = true;
+  }
+  const dropDraft = () => { try { localStorage.removeItem(DRAFT); } catch (e) {} };
+  // the game's team, with the draft on top of it if there is one
+  function myTeam() {
+    const g = gameTeam();
+    if (!g) return null;
+    let d = null;
+    try { d = JSON.parse(localStorage.getItem(DRAFT) || "null"); } catch (e) {}
+    if (!d || !d.team) return g;
+    if (d.sig !== gameSig(g)) { dropDraft(); return g; }
+    const t = { ...g, draft: true };
+    restore(t, d.team);
+    return t;
+  }
+
   // the personal team, as read from the game at the last update
   function gameTeam() {
     const my = P.my_team;
@@ -293,7 +318,7 @@
   const poolRows = (avoid = []) => P.players.filter((p) => p.fantasy_id != null && p.price != null && !avoid.includes(Number(p.fantasy_id)))
     .map((p) => ({ id: Number(p.fantasy_id), position: p.position, team: p.team, price: p.price, x_h: p.x_h ?? 0, x_now: p.x_now ?? 0 }));
   function tradesFor(t, rows) {
-    if (t.game) {
+    if (t.game && !t.draft) {
       const my = P.my_team || {}, ti = tradeInfo(t), keep = kept(ti), avoid = avoided(ti);
       if (keep.length || avoid.length) {   // re-plan in the browser (same optimizer, checked against Python)
         const prefs = my.prefs || { keep: [], avoid: [] };
@@ -311,12 +336,13 @@
       return { ti, trs: { pairs, gain: my.transfer_gain ?? 0 }, keep, avoid };
     }
     const ti = tradeInfo(t), keep = kept(ti), avoid = avoided(ti);
+    const prefs = (t.game && P.my_team?.prefs) || { keep: [], avoid: [] };     // preferences.yaml (personal edition)
     const left = Math.max(0, ti.max_trades - usedTrades(t, ti));
-    const k = t.players.map((x) => `${x.id}:${x.price}`).join(",") + "|" + t.bank + "|" + left + "|" + keep.join(",") + "|" + avoid.join(",") + "|" + P.generated;
+    const k = (t.game ? "d|" : "") + t.players.map((x) => `${x.id}:${x.price}`).join(",") + "|" + t.bank + "|" + left + "|" + keep.join(",") + "|" + avoid.join(",") + "|" + P.generated;
     if (cache.key !== k && !left) cache = { key: k, trs: { pairs: [], gain: 0 } };
     if (cache.key !== k) {
-      cache = { key: k, trs: ELFOPT.transfers(optRows(rows, t, false), poolRows(avoid), Number(t.bank) || 0,
-        { maxTrades: left, minGain: ti.min_gain, keep }) };
+      cache = { key: k, trs: ELFOPT.transfers(optRows(rows, t, false), poolRows([...prefs.avoid, ...avoid]), Number(t.bank) || 0,
+        { maxTrades: left, minGain: ti.min_gain, keep: [...keep, ...prefs.keep] }) };
       // money-freeing trades first, so the bank never goes negative while making them
       cache.trs.pairs.sort((a, b) => (a.in.price - a.out.price) - (b.in.price - b.out.price));
     }
@@ -332,7 +358,7 @@
   // «μου μένουν N μεταγραφές»: the game counts every change of the round, the app only what it saw
   const tradesLeft = (t, ti) => Math.max(0, (ti.max_trades ?? 4) - usedTrades(t, ti));
   function setTradesLeft(t, left) {
-    const ti = P.trade_info || { round: P.round };
+    const ti = tradeInfo(t);
     const n = Math.max(0, (ti.max_trades ?? 4) - left);
     t.used = { round: ti.round, n, before: roundStart(t, ti) };
   }
@@ -340,7 +366,7 @@
       <select id="${id}">${Array.from({ length: ti.max_trades + 1 }, (_, i) => ti.max_trades - i)
         .map((v) => `<option value="${v}"${v === tradesLeft(t, ti) ? " selected" : ""}>${v}</option>`).join("")}</select></label>`;
   function countTrade(t) {
-    const ti = P.trade_info || { round: P.round };
+    const ti = tradeInfo(t);
     const n = usedTrades(t, ti);
     // before the round's first trade, keep the team as it was, so the trades can be undone
     const before = roundStart(t, ti) || JSON.parse(JSON.stringify({ players: t.players, bank: t.bank,
@@ -543,7 +569,7 @@
         `<b>${who(id)}</b> <button class="linkbtn" data-unavoid="${id}">αναίρεση</button>`).join(" · ")}</p>` : "");
     const list = items.map((i, n) => `<li class="tm-item${i.kind === "🔁" ? " tm-trade" : ""}"${i.cmp ? ` data-cmp="${esc(i.cmp.join(","))}"` : ""}><span class="tm-kind" aria-hidden="true">${i.kind}</span>
         <span class="tm-what">${i.html}${i.why ? `<span class="tm-why">${i.why}</span>` : ""}${i.keep || i.avoid ? `<span class="tm-kbtns">${i.keep ? keepBtn(i.keep) : ""}${i.avoid ? avoidBtn(i.avoid) : ""}</span>` : ""}</span>
-        ${t.game ? "" : doneBtn(`data-i="${n}"`, i)}</li>`).join("");
+        ${t.game && i.kind !== "🔁" ? "" : doneBtn(`data-i="${n}"`, i)}</li>`).join("");
     const turnPlan = pl.turnPlan.map((x) => { const s = pl.aRows.find((r) => r.id === x.start.id), b = pl.aRows.find((r) => r.id === x.bench.id);
       return `<li>🕐 <b>Πριν το T${x.bench.turn}</b>: αν ο ${esc(sur(s.name))} φέρει κάτω από ${Math.round(x.bench.x_now)}, βάλε τον ${esc(sur(b.name))}.</li>`; }).join("");
     // while the round is under way only swaps and the armband: next round's trades wait for it to end
@@ -551,20 +577,21 @@
         <small class="muted">(${pl.ti.max_trades > 4 ? "απεριόριστα" : `Trades ${usedTrades(t, pl.ti)}/${pl.ti.max_trades}`} · μετά το τρέχον Round)</small></h2>
         <ul class="tm-list">${pl.trs.pairs.map((pr, n) => { const o = rows.find((r) => r.id === pr.out.id), nn = row(pr.in.id);
           return `<li class="tm-item tm-trade" data-cmp="${esc([o.person_id, nn.person_id].join(","))}"><span class="tm-kind">🔁</span><span class="tm-what"><b>${esc(sur(o.name))}</b> vs <b>${esc(sur(nn.name))}</b><span class="tm-kbtns">${keepBtn(o)}${avoidBtn(nn)}</span></span>
-            ${t.game ? "" : doneBtn(`data-n="${n}"`, { short: !affords(t, pr) })}</li>`; }).join("")}</ul>${keptLine}</div>`
+            ${doneBtn(`data-n="${n}"`, { short: !affords(t, pr) })}</li>`; }).join("")}</ul>${keptLine}</div>`
       : !pl.tradesNow && (pl.keep.length || pl.avoid.length) ? `<div class="card"><h2>Trades για το Round ${pl.ti.round}</h2><p>Κανένα Trade δεν αξίζει με αυτές τις επιλογές σου.</p>${keptLine}</div>` : "";
     const done = !items.length && t.confirmed;
     const upd = P.generated ? new Date(P.generated).toLocaleString("el-GR", { weekday: "short", hour: "2-digit", minute: "2-digit" }) : "";
     const hint = t.game
-      ? `Starting five/Captain με <b>/lineup</b> · Trades στο παιχνίδι · ενημ. ${esc(upd)}`
+      ? `Starting five/Captain με <b>/lineup</b> · Trades στο παιχνίδι (εδώ ✓ και ✕ είναι πρόχειρο) · ενημ. ${esc(upd)}`
       : "";
     return `<header class="tm-top"><div><h2 class="tm-h">${t.game ? esc(t.name || "Η ομάδα μου") : "Η ομάδα μου"}</h2>
-        <div class="muted">Credits <b>${f1(t.bank)}/${f1(Number(t.bank) + value)}</b>${gain ? ` <span class="${gain > 0 ? "tm-up" : "tm-down"}">(${gain > 0 ? "+" : "−"}${f1(Math.abs(gain))} gain)</span>` : ""} · ${!t.game && pl.ti.max_trades <= 4 ? `<button class="tm-trades" id="tmTrades" type="button" title="Άλλαξε πόσα Trades σου μένουν">Trades <b>${usedTrades(t, pl.ti)}/${pl.ti.max_trades}</b> ✎</button>`
+        <div class="muted">Credits <b>${f1(t.bank)}/${f1(Number(t.bank) + value)}</b>${gain ? ` <span class="${gain > 0 ? "tm-up" : "tm-down"}">(${gain > 0 ? "+" : "−"}${f1(Math.abs(gain))} gain)</span>` : ""} · ${pl.ti.max_trades <= 4 ? `<button class="tm-trades" id="tmTrades" type="button" title="Άλλαξε πόσα Trades σου μένουν">Trades <b>${usedTrades(t, pl.ti)}/${pl.ti.max_trades}</b> ✎</button>`
           : `Trades <b>${usedTrades(t, pl.ti)}/${pl.ti.max_trades > 4 ? "∞" : pl.ti.max_trades}</b>`}</div>
         <div class="muted">xFPT <b>${f1(total)}</b>${Math.abs(pl.planned - total) >= 0.05
           ? ` → <b class="tm-planned">${f1(pl.planned)}</b>` : ""}</div>
         <div class="tm-dead">${head}</div>${clubWarn(rows, pl.trs)}</div>
-        ${t.game ? "" : `<div class="tm-right">${undoBar(t)}<div class="tm-morewrap"><button class="tm-more" id="tmMore" aria-haspopup="menu">⋯ Επιλογές</button><div id="tmMenu"></div></div></div>`}</header>
+        ${t.game ? (t.draft ? `<div class="tm-right"><div class="tm-toolbar" role="toolbar"><button id="tmDraftX" title="Η ομάδα όπως είναι στο παιχνίδι">↩ Ακύρωση Trades</button></div></div>` : "")
+          : `<div class="tm-right">${undoBar(t)}<div class="tm-morewrap"><button class="tm-more" id="tmMore" aria-haspopup="menu">⋯ Επιλογές</button><div id="tmMenu"></div></div></div>`}</header>
       <div class="tm-cols"><div class="tm-colL">
       <div class="card" id="tmTodo"><h2>To do <small class="muted">${items.length ? `${items.length} ${items.length === 1 ? "βήμα" : "βήματα"}` : ""}</small></h2>
         ${pl.inRound && !t.game ? `<p class="tm-live">⏱ Το Round ${P.round} τρέχει. Αν έκανες Trades στο παιχνίδι, έλεγξε ότι είναι και εδώ
@@ -574,7 +601,7 @@
         ${turnPlan ? `<ul class="plan">${turnPlan}</ul>` : ""}
         ${hint ? `<p class="tm-hint">${hint}</p>` : ""}</div>
       ${nextTrades}</div>
-      <div class="tm-colR">${items.length && !done ? `<button class="tm-steps" id="tmSteps" type="button">📋 <b>${items.length} ${items.length === 1 ? "βήμα" : "βήματα"}</b> για το Round ${pl.ti.round} <span aria-hidden="true">↓</span></button>` : ""}<div class="card tm-courtcard"><h2>${t.game ? (t.fromGame ? "Στο παιχνίδι τώρα" : "Η πρόταση") : "Your Starting five"}${t.game ? ` <small class="muted">${t.fromGame ? "διακεκομμένο = αλλάζει" : "δεν διαβάστηκε το Starting five"}</small>` : ""}</h2>
+      <div class="tm-colR">${items.length && !done ? `<button class="tm-steps" id="tmSteps" type="button">📋 <b>${items.length} ${items.length === 1 ? "βήμα" : "βήματα"}</b> για το Round ${pl.ti.round} <span aria-hidden="true">↓</span></button>` : ""}<div class="card tm-courtcard"><h2>${t.game ? (t.draft ? "Πρόχειρο" : t.fromGame ? "Στο παιχνίδι τώρα" : "Η πρόταση") : "Your Starting five"}${t.game ? ` <small class="muted">${t.draft ? "με τα Trades σου · το παιχνίδι δεν αλλάζει" : t.fromGame ? "διακεκομμένο = αλλάζει" : "δεν διαβάστηκε το Starting five"}</small>` : ""}</h2>
         ${courtHtml(t, rows, t.game ? pl : null)}</div></div></div>
       ${bestCard(best)}`;
   }
@@ -607,7 +634,7 @@
         ${t.game ? "" : r.position !== "Head Coach" ? `<button class="tm-act" id="aCap" ${canCap ? "" : "disabled"}><span>★</span><div>Captain</div></button>
         <button class="tm-act" id="aSwap"><span>⇄</span><div>Substitute</div></button>` : ""}
         <button class="tm-act" id="aRep"><span>🔁</span><div>Trade</div></button>
-        ${t.game ? "" : `<button class="tm-act" id="aOut"><span>✕</span><div>Remove</div></button>`}
+        <button class="tm-act" id="aOut"><span>✕</span><div>Remove</div></button>
         ${t.game ? "" : `<button class="tm-act" id="aPrice"><span>✎</span><div>Correct price</div></button>`}
       </div>`);
     const on = (i, fn) => { const el = document.getElementById(i); if (el) el.onclick = fn; };
@@ -660,21 +687,18 @@
         || `<p class="muted">${k ? `Κανένας ${NAME[r.position]} με αυτό το όνομα μέσα στο υπόλοιπο.` : `Κανένας ${NAME[r.position]} δεν χωράει στο υπόλοιπο.`}</p>`;
       document.querySelectorAll("#tmList [data-n]").forEach((b) => b.onclick = () => {
         const n = row(Number(b.dataset.n));
-        if (t.game) {        // your game's team: trades are made in the game, this is the idea
-          closePlayer(); toast(`Στο παιχνίδι: ${sur(r.name)} ➜ ${sur(n.name)} (${f1(max - n.price)} cr μένουν)`); return;
-        }
         applyTrade(t, r.id, n.fantasy_id, n.price); save(t); closePlayer(); render(); flash(n.fantasy_id);
         toast(`${sur(r.name)} ➜ ${sur(n.name)} · υπόλοιπο ${f1(t.bank)} cr`);
       });
     };
-    sheet(`<div class="sh"><div><h2>${t.game ? "Στη θέση του" : "Αντικατάσταση"}: ${esc(sur(r.name))}</h2><div class="muted">${NAME[r.position]} · ${list.length} χωράνε στα ${f1(max)} cr · το μεγαλύτερο κέρδος σε xFPT3 πρώτα</div></div>
+    sheet(`<div class="sh"><div><h2>Αντικατάσταση: ${esc(sur(r.name))}</h2><div class="muted">${NAME[r.position]} · ${list.length} χωράνε στα ${f1(max)} cr · το μεγαλύτερο κέρδος σε xFPT3 πρώτα</div></div>
         <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
       <input id="tmQ" class="tm-input" placeholder="Αναζήτηση ${NAME[r.position]}…" autocomplete="off"><div id="tmList"></div>`);
     draw(""); $("#tmQ").addEventListener("input", (e) => draw(e.target.value));
   }
 
   // ------------------------------------------------------------ ✕: take players off, then fill the empty places
-  const sellLeft = (t) => { const ti = P.trade_info || { max_trades: 4 }; return ti.max_trades > 4 ? Infinity : tradesLeft(t, ti); };
+  const sellLeft = (t) => { const ti = tradeInfo(t); return ti.max_trades > 4 ? Infinity : tradesLeft(t, ti); };
   function sellOut(t, id) {
     const out = sell ? sell.out : [];
     if (out.includes(id)) return false;
@@ -804,7 +828,7 @@
 
   // «Trades που μένουν»: the game counts every change of the round, the app only what it saw
   function leftSheet(t, best) {
-    const ti = P.trade_info || {};
+    const ti = tradeInfo(t);
     sheet(`<div class="sh"><div><h2>Trades που μένουν</h2><div class="muted">Όσα δείχνει το παιχνίδι για το Round ${ti.round}</div></div>
         <button class="x" onclick="closePlayer()">×</button></div>
       <div class="tm-acts">${Array.from({ length: ti.max_trades + 1 }, (_, i) => ti.max_trades - i).map((v) =>
@@ -984,12 +1008,19 @@
     onRemote = () => render(best);
     if (!pulled && !GAME()) { pulled = true; syncPull(); }
     if (GAME()) {
-      const g = gameTeam();
+      const g = myTeam();
       if (!g) { $("#team").innerHTML = `<div class="card warn"><h2>Η ομάδα δεν είναι διαθέσιμη</h2>
         <p>Χρειάζεται έγκυρο <code>FANTASY_TOKEN</code> στα GitHub Secrets.</p></div>${bestCard(best)}`; return; }
+      if (sell && sell.out.every((id) => g.players.some((x) => x.id === id))) {
+        $("#team").innerHTML = sellView(g); sizeFloors(); bindSell(g, best); return;
+      }
+      sell = null;
       const y = window.scrollY;
       $("#team").innerHTML = mainView(g, best);
       if (Math.abs(window.scrollY - y) > 2) window.scrollTo({ top: y });
+      bindTrades(g, best);
+      const x = document.getElementById("tmDraftX");
+      if (x) x.onclick = () => { dropDraft(); render(best); toast("Η ομάδα γύρισε όπως είναι στο παιχνίδι"); };
       bindKeep(g, best);
       bindSteps();
       document.querySelectorAll("#team .chip[data-fid]").forEach((el) => el.onclick = (e) => {
@@ -1030,6 +1061,18 @@
     const pl = mainView(t, best), y = window.scrollY;
     $("#team").innerHTML = pl;
     if (Math.abs(window.scrollY - y) > 2) window.scrollTo({ top: y });   // a change doesn't throw you to the top
+    bindTrades(t, best);
+    const on = (i, fn) => { const el = document.getElementById(i); if (el) el.onclick = fn; };
+    on("tmConfirm", () => { t.confirmed = true; save(t); render(best); });
+    on("tmMore", (e) => { e.stopPropagation(); menu(t, best); });
+    bindUndo(t, best);
+    on("tmEdit", () => { setup = { players: t.players.map((x) => ({ ...x })) }; mode = "setup"; render(best); });
+    bindKeep(t, best);
+    bindSteps();
+    bindCourt(t);
+  }
+  // «✓ Το έκανα» on the steps and the trades, and the trades left (both editions)
+  function bindTrades(t, best) {
     const p = plan(t);   // cached trades: cheap
     document.querySelectorAll("#team .tm-done[data-i]").forEach((b) => b.onclick = () => {
       const it = p.items[Number(b.dataset.i)]; if (!it) return;
@@ -1039,18 +1082,11 @@
       const pr = p.trs.pairs[Number(b.dataset.n)];
       applyTrade(t, pr.out.id, pr.in.id, pr.in.price); save(t); render(best); toast(`Έγινε · υπόλοιπο ${f1(t.bank)} cr`);
     });
-    const on = (i, fn) => { const el = document.getElementById(i); if (el) el.onclick = fn; };
-    on("tmConfirm", () => { t.confirmed = true; save(t); render(best); });
     const lp = document.getElementById("tmLeft");
     if (lp) lp.onchange = () => { setTradesLeft(t, Number(lp.value)); save(t); render(best);
       toast(`Μένουν ${lp.value} Trades· οι προτάσεις προσαρμόστηκαν`); };
-    on("tmTrades", () => leftSheet(t, best));
-    on("tmMore", (e) => { e.stopPropagation(); menu(t, best); });
-    bindUndo(t, best);
-    on("tmEdit", () => { setup = { players: t.players.map((x) => ({ ...x })) }; mode = "setup"; render(best); });
-    bindKeep(t, best);
-    bindSteps();
-    bindCourt(t);
+    const tr = document.getElementById("tmTrades");
+    if (tr) tr.onclick = () => leftSheet(t, best);
   }
   // PC: the side columns (coach, 6th, bench) start level with the top of the court; they are placed from the
   // row under the court, so they are lifted by the court's height (the centre circle stays where it is)

@@ -473,19 +473,44 @@ test.describe("personal edition", () => {
     await expect(chip).not.toContainText("🚑");
   });
 
-  test("the game's team: tapping a player shows his stats and who fits in his place (an idea, not a trade)", async ({ page }) => {
+  const fids = (page) => page.locator(`${C} .chip[data-fid]`).evaluateAll((els) => els.map((e) => e.dataset.fid).sort());
+
+  test("the game's team: a trade goes into a draft on the court, «Ακύρωση Trades» brings the game's team back", async ({ page }) => {
     await open(page, "personal", { tab: "team" });
+    const before = await fids(page);
     await court(page).first().click();
     await expect(page.locator("#aCap")).toHaveCount(0);            // lineup and CAP go through /lineup
     await expect(page.locator("#tmDetails")).toContainText(/Επόμενος αγώνας|Αγώνας/);
     await page.locator("#aRep").click();
-    await expect(page.locator("#sheet h2")).toContainText("Στη θέση του");
-    const n = await page.locator("#tmList [data-n]").count();
-    expect(n).toBeGreaterThan(0);
-    const before = await page.locator(`${C} .chip[data-fid]`).evaluateAll((els) => els.map((e) => e.dataset.fid));
+    await expect(page.locator("#sheet h2")).toContainText("Αντικατάσταση");
+    expect(await page.locator("#tmList [data-n]").count()).toBeGreaterThan(0);
     await page.locator("#tmList [data-n]").first().click();
-    await expect(page.locator("#tmtoast")).toContainText("Στο παιχνίδι");
-    expect(await page.locator(`${C} .chip[data-fid]`).evaluateAll((els) => els.map((e) => e.dataset.fid))).toEqual(before);
+    expect(await fids(page)).not.toEqual(before);
+    await expect(page.locator("#team .tm-courtcard h2")).toContainText("Πρόχειρο");
+    await expect(header(page)).toContainText("Trades 1/");
+    await page.reload();                                            // the draft stays on this device
+    await expect(page.locator("#team .tm-courtcard h2")).toContainText("Πρόχειρο");
+    await page.locator("#tmDraftX").click();
+    expect(await fids(page)).toEqual(before);
+    await expect(page.locator("#tmDraftX")).toHaveCount(0);
+    await expect(page.locator("#team .tm-courtcard h2")).not.toContainText("Πρόχειρο");
+  });
+
+  test("the game's team: ✕ and the trades left work on the draft", async ({ page }) => {
+    await open(page, "personal", { tab: "team" });
+    const before = await fids(page);
+    await page.locator("#tmTrades").click();
+    await page.locator("#sheet [data-left='1']").click();
+    await expect(header(page)).toContainText(/Trades 3\/4/);
+    await court(page).first().click();
+    await page.locator("#aOut").click();
+    await page.locator("#team [data-fill]").first().click();
+    await page.locator("#tmList [data-n]").first().click();
+    await page.locator("#tmSellOk").click();
+    expect(await fids(page)).not.toEqual(before);
+    await expect(header(page)).toContainText(/Trades 4\/4/);
+    await page.locator("#tmDraftX").click();
+    expect(await fids(page)).toEqual(before);
   });
 
   test("«Όχι τον X» on the game's team re-plans without him", async ({ page }) => {
@@ -510,11 +535,11 @@ test.describe("personal edition", () => {
     await expect(header(page).locator(".tm-planned")).toHaveText(before);
   });
 
-  test("the game's team: 11 on the court, credits from the game, no set-up or ✓ buttons", async ({ page }) => {
+  test("the game's team: 11 on the court, credits from the game, no set-up, ✓ only on trades", async ({ page }) => {
     const errors = await open(page, "personal", { tab: "team" });
     await expect(court(page)).toHaveCount(11);
     await expect(page.locator("#team .tm-setchip")).toHaveCount(0);
-    await expect(page.locator("#team .tm-done[data-i], #team .tm-done[data-n]")).toHaveCount(0);
+    await expect(page.locator("#team li:not(.tm-trade) .tm-done")).toHaveCount(0);   // lineup and CAP go through /lineup
     await expect(header(page)).toContainText(/Credits \d+\.\d\/\d+\.\d/);
     await expect(page.locator(`${C} .chip.cap`)).toHaveCount(1);
     await checkNoOverlap(page, `${C} .chip[data-fid]`, "γήπεδο (προσωπική)");
