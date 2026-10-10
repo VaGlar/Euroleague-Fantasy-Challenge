@@ -1055,7 +1055,7 @@ fantasy_id,person_id,first_name,last_name,team,position,price,matchday,is_injure
 12470,013141,Georgios,Bourneles,OLY,Guard,4.0,3,False,1.0,,1.4
 12471,015159,Iason,Varvaritis,PAN,Guard,4.0,3,False,1.0,,2.1
 12517,012879,Abdu,Kone,BAR,Center,4.0,3,False,1.0,,2.7
-3766,003469,Sasha,Vezenkov,OLY,Forward,18.1,4,False,1.0,,46.7
+3766,003469,Sasha,Vezenkov,OLY,Forward,18.1,4,False,1.0,,46.6
 3903,009846,Elijah,Bryant,HTA,Guard,17.1,4,False,1.0,,11.7
 11549,000898,Jonas,Valanciunas,ZAL,Center,15.9,4,False,1.0,,23.0
 3765,005985,Mike,James,IST,Guard,15.7,4,True,0.0,,0.8
@@ -1063,7 +1063,7 @@ fantasy_id,person_id,first_name,last_name,team,position,price,matchday,is_injure
 3768,003842,Mathias,Lessort,PAN,Center,15.1,4,False,1.0,,15.9
 3770,012201,Chima,Moneke,RED,Forward,15.1,4,False,1.0,,1.9
 3887,007975,Sylvain,Francisco,PAN,Guard,15.0,4,False,1.0,,15.7
-3791,013369,Carlik,Jones,PAR,Guard,14.9,4,False,1.0,,31.9
+3791,013369,Carlik,Jones,PAR,Guard,14.9,4,False,1.0,,32.0
 4233,012796,Mfiondu,Kabengele,DUB,Center,14.8,4,False,1.0,,7.4
 11487,003112,Dario,Saric,IST,Forward,14.8,4,False,1.0,,3.0
 3769,005791,Walter,Tavares,MAD,Center,14.7,4,False,1.0,,3.1
@@ -1086,10 +1086,10 @@ fantasy_id,person_id,first_name,last_name,team,position,price,matchday,is_injure
 4096,012606,Mckinley,Wright,DUB,Guard,13.2,4,False,1.0,,1.3
 4252,010042,Jean,Montero,OLY,Guard,13.2,4,False,1.0,,11.9
 8567,014124,Talen,Horton-Tucker,ULK,Guard,13.1,4,False,1.0,,5.6
-3790,006540,Dzanan,Musa,DUB,Guard,13.0,4,True,0.0,,0.1
+3790,006540,Dzanan,Musa,DUB,Guard,13.0,4,True,0.0,,0.2
 11514,015163,Patty,Mills,ASV,Guard,12.9,4,False,1.0,,4.4
 7218,011217,Kameron,Taylor,PAM,Forward,12.7,4,False,1.0,,3.8
-3793,013363,Jordan,Nwora,RED,Forward,12.6,4,False,1.0,,6.9
+3793,013363,Jordan,Nwora,RED,Forward,12.6,4,False,1.0,,7.0
 3773,000796,Nikola,Mirotic,PAM,Forward,12.5,4,False,1.0,,7.7
 7221,008192,Azuolas,Tubelis,ZAL,Forward,12.5,4,False,1.0,,28.1
 3774,001133,Tornike,Shengelia,DUB,Forward,12.3,4,False,1.0,,0.9
@@ -1129,7 +1129,7 @@ fantasy_id,person_id,first_name,last_name,team,position,price,matchday,is_injure
 4180,013285,Devon,Dotson,BES,Guard,10.4,4,False,1.0,,1.3
 7269,013278,Austin,Wiley,MUN,Center,10.4,4,False,1.0,,0.2
 11494,014728,Patrick,Baldwin Jr,RED,Center,10.3,4,False,1.0,,0.4
-3808,009048,Codi,Miller-Mcintyre,OLY,Guard,10.2,4,False,1.0,,2.2
+3808,009048,Codi,Miller-Mcintyre,OLY,Guard,10.2,4,False,1.0,,2.3
 7197,014127,Oshae,Brissett,TEL,Forward,10.2,4,False,1.0,,0.6
 3993,008099,Matthew,Strazel,IST,Guard,10.1,4,False,1.0,,1.7
 11528,015143,Tyson,Etienne,PRS,Guard,10.1,4,False,1.0,,0.3

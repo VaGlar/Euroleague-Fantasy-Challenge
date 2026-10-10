@@ -164,12 +164,24 @@ round,source,stance,person_id,name,team,model_xpts
 4,EuroLeague Fantasy Tips (official),pick,007947,"VILDOZA, LUCA",PAR,10.05
 4,EuroLeague Fantasy Tips (official),pick,011205,"HALL, DEVON",MIL,10.99
 4,EuroLeague Fantasy Tips (official),pick,011305,"CARTER, TYSON",RED,5.25
-5,EuroLeague Fantasy Tips (official),avoid,002580,"MICIC, VASILIJE",HTA,8.4
+5,EuroLeague Fantasy Tips (official),pick,013506,"BINGHAM, MARCUS",ULK,12.57
+5,EuroLeague Fantasy Tips (official),pick,014108,"DIARRA, ALIOU",VIR,14.92
+5,EuroLeague Fantasy Tips (official),pick,000898,"VALANCIUNAS, JONAS",ZAL,18.97
+5,EuroLeague Fantasy Tips (official),pick,004554,"ZIZIC, ANTE",BES,12.91
+5,EuroLeague Fantasy Tips (official),pick,003958,"THIEMANN, JOHANNES",MUN,15.58
+5,EuroLeague Fantasy Tips (official),pick,008192,"TUBELIS, AZUOLAS",ZAL,14.74
+5,EuroLeague Fantasy Tips (official),captain,015166,"CROWDER, JAE",ASV,12.51
+5,EuroLeague Fantasy Tips (official),pick,007866,"MITOGLOU, KONSTANTINOS",PAN,7.43
+5,EuroLeague Fantasy Tips (official),pick,000796,"MIROTIC, NIKOLA",PAM,15.31
+5,EuroLeague Fantasy Tips (official),pick,012613,"JANTUNEN, MIKAEL",MAD,5.42
+5,EuroLeague Fantasy Tips (official),pick,002328,"GRIGONIS, MARIUS",ZAL,4.84
+5,EuroLeague Fantasy Tips (official),pick,003469,"VEZENKOV, SASHA",OLY,19.73
 5,EuroBallin (Substack),captain,012640,"HIFI, NADIR",PRS,16.39
 5,EuroBallin (Substack),captain,015163,"MILLS, PATTY",ASV,16.2
 5,EuroBallin (Substack),pick,012707,"CARR, MARCUS",VIR,15.88
 5,EuroBallin (Substack),pick,009754,"LOYD, JORDAN",IST,13.33
 5,EuroBallin (Substack),pick,014734,"LAWSON, A.J.",BAS,12.61
+5,EuroBallin (Substack),pick,009862,"PUNTER, KEVIN",BAR,16.48
 5,EuroBallin (Substack),pick,006643,"PUERTO, JOSEP",PAM,6.42
 5,EuroBallin (Substack),pick,000796,"MIROTIC, NIKOLA",PAM,15.31
 5,EuroBallin (Substack),pick,008192,"TUBELIS, AZUOLAS",ZAL,14.74
@@ -197,18 +209,3 @@ round,source,stance,person_id,name,team,model_xpts
 5,Basketball Sphere – Fantasy,pick,011284,"FARIED, KENNETH",BAS,11.96
 5,Basketball Sphere – Fantasy,avoid,014802,"BELLO, RASHEED",VIR,1.35
 5,Basketball Sphere – Fantasy,pick,014108,"DIARRA, ALIOU",VIR,14.92
-5,EuroLeague Fantasy Tips (official),pick,013506,"BINGHAM, MARCUS",ULK,12.57
-5,EuroLeague Fantasy Tips (official),pick,014108,"DIARRA, ALIOU",VIR,14.92
-5,EuroLeague Fantasy Tips (official),pick,000898,"VALANCIUNAS, JONAS",ZAL,18.97
-5,EuroLeague Fantasy Tips (official),pick,004554,"ZIZIC, ANTE",BES,12.91
-5,EuroLeague Fantasy Tips (official),pick,003958,"THIEMANN, JOHANNES",MUN,15.58
-5,EuroLeague Fantasy Tips (official),pick,008192,"TUBELIS, AZUOLAS",ZAL,14.74
-5,EuroLeague Fantasy Tips (official),captain,015166,"CROWDER, JAE",ASV,12.51
-5,EuroLeague Fantasy Tips (official),pick,007866,"MITOGLOU, KONSTANTINOS",PAN,7.43
-5,EuroLeague Fantasy Tips (official),pick,000796,"MIROTIC, NIKOLA",PAM,15.31
-5,EuroLeague Fantasy Tips (official),pick,012613,"JANTUNEN, MIKAEL",MAD,5.42
-5,EuroLeague Fantasy Tips (official),pick,009846,"BRYANT, ELIJAH",HTA,25.85
-5,EuroLeague Fantasy Tips (official),pick,007027,"MALEDON, THEO",MAD,16.42
-5,EuroLeague Fantasy Tips (official),pick,007947,"VILDOZA, LUCA",PAR,10.54
-5,EuroLeague Fantasy Tips (official),pick,011205,"HALL, DEVON",MIL,12.3
-5,EuroLeague Fantasy Tips (official),pick,011305,"CARTER, TYSON",RED,5.54

@@ -614,18 +614,7 @@
      "team": "HTA",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 28.0
-    },
-    {
-     "id": 3850,
-     "price": 11.2,
-     "position": "Guard",
-     "person_id": "007027",
-     "name": "MALEDON, THEO",
-     "team": "MAD",
-     "role": "5άδα",
-     "captain": true,
-     "x_now": 16.9
+     "x_now": 26.8
     },
     {
      "id": 11504,
@@ -637,6 +626,17 @@
      "role": "5άδα",
      "captain": false,
      "x_now": 16.8
+    },
+    {
+     "id": 3850,
+     "price": 11.2,
+     "position": "Guard",
+     "person_id": "007027",
+     "name": "MALEDON, THEO",
+     "team": "MAD",
+     "role": "5άδα",
+     "captain": true,
+     "x_now": 16.1
     },
     {
      "id": 7221,
@@ -727,8 +727,8 @@
      "x_now": 2.7
     }
    ],
-   "x_total": 135.7,
-   "decided_at": "2026-10-09T21:08+00:00"
+   "x_total": 133.2,
+   "decided_at": "2026-10-10T04:07+00:00"
   }
  ],
  "seed_id": "5a453a755a9b",
@@ -739,5 +739,5 @@
   "raw": 407.7,
   "avg_raw": 311.7
  },
- "generated": "2026-10-09T21:08:36.493996+00:00"
+ "generated": "2026-10-10T04:07:54.395965+00:00"
 }
