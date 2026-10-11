@@ -598,16 +598,18 @@
    },
    "pts": 141.9,
    "raw": 112.7,
-   "avg_raw": 96.8
+   "avg_raw": 96.8,
+   "rank": 68182,
+   "teams": 381634
   },
   {
    "round": 5,
    "trades": 4,
-   "bank": 0.2,
+   "bank": 0.1,
    "squad": [
     {
      "id": 3903,
-     "price": 17.1,
+     "price": 17.3,
      "position": "Guard",
      "person_id": "009846",
      "name": "BRYANT, ELIJAH",
@@ -618,7 +620,7 @@
     },
     {
      "id": 11504,
-     "price": 11.4,
+     "price": 11.5,
      "position": "Center",
      "person_id": "003958",
      "name": "THIEMANN, JOHANNES",
@@ -626,6 +628,17 @@
      "role": "5άδα",
      "captain": false,
      "x_now": 16.8
+    },
+    {
+     "id": 11545,
+     "price": 10.7,
+     "position": "Guard",
+     "person_id": "012707",
+     "name": "CARR, MARCUS",
+     "team": "VIR",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 16.3
     },
     {
      "id": 3850,
@@ -636,11 +649,11 @@
      "team": "MAD",
      "role": "5άδα",
      "captain": true,
-     "x_now": 16.1
+     "x_now": 16.2
     },
     {
      "id": 7221,
-     "price": 12.5,
+     "price": 12.4,
      "position": "Forward",
      "person_id": "008192",
      "name": "TUBELIS, AZUOLAS",
@@ -651,7 +664,7 @@
     },
     {
      "id": 7424,
-     "price": 8.2,
+     "price": 8.6,
      "position": "Center",
      "person_id": "014108",
      "name": "DIARRA, ALIOU",
@@ -661,30 +674,8 @@
      "x_now": 15.8
     },
     {
-     "id": 11547,
-     "price": 8.9,
-     "position": "Guard",
-     "person_id": "014737",
-     "name": "MOORE, WENDELL",
-     "team": "VIR",
-     "role": "πάγκος",
-     "captain": false,
-     "x_now": 14.7
-    },
-    {
-     "id": 3948,
-     "price": 8.3,
-     "position": "Forward",
-     "person_id": "012731",
-     "name": "NDIAYE, MBAYE",
-     "team": "OLY",
-     "role": "5άδα",
-     "captain": false,
-     "x_now": 12.4
-    },
-    {
      "id": 4061,
-     "price": 5.5,
+     "price": 5.3,
      "position": "Forward",
      "person_id": "008084",
      "name": "MANTZOUKAS, ELEFTHERIOS",
@@ -694,41 +685,52 @@
      "x_now": 8.2
     },
     {
-     "id": 3938,
-     "price": 6.5,
+     "id": 3933,
+     "price": 5.1,
+     "position": "Forward",
+     "person_id": "013373",
+     "name": "CAVALIERE, LEOPOLD",
+     "team": "PRS",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 6.5
+    },
+    {
+     "id": 4255,
+     "price": 8.2,
      "position": "Head Coach",
-     "person_id": "000019",
-     "name": "NAVARRO, IBON",
-     "team": "RED",
+     "person_id": "009154",
+     "name": "ALBERT, XAVIER",
+     "team": "PAM",
      "role": "coach",
      "captain": false,
-     "x_now": 7.4
+     "x_now": 4.8
     },
     {
      "id": 11521,
-     "price": 4.9,
+     "price": 4.7,
      "position": "Guard",
      "person_id": "015161",
      "name": "FODZO DADA, MARC-OWEN",
      "team": "ASV",
-     "role": "6ος",
+     "role": "5άδα",
      "captain": false,
      "x_now": 3.7
     },
     {
      "id": 4012,
-     "price": 4.3,
+     "price": 4.2,
      "position": "Forward",
      "person_id": "001518",
      "name": "RICCI, GIAMPAOLO",
      "team": "MIL",
-     "role": "πάγκος",
+     "role": "6ος",
      "captain": false,
      "x_now": 2.7
     }
    ],
-   "x_total": 133.2,
-   "decided_at": "2026-10-10T04:07+00:00"
+   "x_total": 123.8,
+   "decided_at": "2026-10-11T04:08+00:00"
   }
  ],
  "seed_id": "5a453a755a9b",
@@ -739,5 +741,5 @@
   "raw": 407.7,
   "avg_raw": 311.7
  },
- "generated": "2026-10-10T04:07:54.395965+00:00"
+ "generated": "2026-10-11T04:08:42.280457+00:00"
 }
