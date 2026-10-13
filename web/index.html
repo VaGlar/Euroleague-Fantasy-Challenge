@@ -891,10 +891,10 @@ function wsince(r, sep) {
   const w = WATCH[r.person_id];
   if (!w) return "";
   const d = (a, b) => (a == null || b == null ? null : Math.round((a - b) * 10) / 10);
-  const sg = (v, unit) => (v == null ? "" : v === 0 ? `σταθερό${unit}` : `${v > 0 ? "+" : "−"}${f1(Math.abs(v))}${unit}`);
-  const dp = d(r.price, w.price), dx = d(xf3(r), w.x3);
+  const sg = (v, unit) => `${v > 0 ? "+" : "−"}${f1(Math.abs(v))}${unit}`;
+  const dp = d(r.price, w.price), dx = d(xf3(r), w.x3);    // only what moved
   const day = w.at ? new Date(w.at).toLocaleDateString("el-GR", { day: "numeric", month: "numeric" }) : "";
-  const bits = [dp != null ? `price ${sg(dp, " cr")}` : "", dx != null ? `xFPT3 ${sg(dx, "")}` : "",
+  const bits = [dp ? `price ${sg(dp, " cr")}` : "", dx ? `xFPT3 ${sg(dx, "")}` : "",
     inj(r) ? "🚑 εκτός/αμφίβολος" : w.inj && !inj(r) ? "✅ διαθέσιμος ξανά" : ""].filter(Boolean);
   return `${sep}<span class="muted wsince">από ${esc(day)}: ${bits.join(" · ") || "χωρίς αλλαγές"}</span>`;
 }
