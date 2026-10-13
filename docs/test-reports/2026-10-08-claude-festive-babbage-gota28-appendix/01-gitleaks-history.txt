@@ -1,0 +1,6 @@
+# gitleaks 8.27.2 (sha256 141c3b2d…5590c verified), full history
+$ gitleaks git . --redact --no-banner --log-opts="--all"
+12:09PM INF 321 commits scanned.
+12:09PM INF scanned ~47837506 bytes (47.84 MB) in 45.8s
+12:09PM INF no leaks found
+exit 0

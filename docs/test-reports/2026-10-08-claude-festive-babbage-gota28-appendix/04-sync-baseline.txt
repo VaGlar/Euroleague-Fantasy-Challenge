@@ -1,0 +1,339 @@
+# Baseline of functions/api/sync/[[path]].js, in node against an in-memory D1 (nothing leaves the machine)
+# NOTE: the «code lower-case with spaces/dashes» case returned 400 because this harness does not URL-decode
+# params (Pages does); not a finding. The dashed form without spaces is covered by tests/test_sync.py.
+$ node sync_baseline.mjs <repo>
+
+## POST new (status, response headers)
+{
+ "status": 201,
+ "headers": {
+  "cache-control": "no-store",
+  "content-type": "application/json"
+ },
+ "body": "{\"code\":\"XF2QZ8KDR5BF\",\"rev\":1,\"updated_at\":\"2026-10-08T12:05:58.584Z\"}"
+}
+
+## GET fields returned (S13)
+{
+ "status": 200,
+ "headers": {
+  "cache-control": "no-store",
+  "content-type": "application/json"
+ },
+ "body": "{\"data\":{\"players\":[{\"id\":1},{\"id\":2},{\"id\":3},{\"id\":4},{\"id\":5},{\"id\":6},{\"id\":7},{\"id\":8},{\"id\":9},{\"id\":10},{\"id\":11}]},\"rev\":1,\"updated_at\":\"2026-10-08T12:0"
+}
+
+## GET path with extra segment
+{
+ "status": 400,
+ "headers": {
+  "cache-control": "no-store",
+  "content-type": "application/json"
+ },
+ "body": "{\"error\":\"bad code\"}"
+}
+
+## SQL-looking code
+{
+ "status": 400,
+ "headers": {
+  "cache-control": "no-store",
+  "content-type": "application/json"
+ },
+ "body": "{\"error\":\"bad code\"}"
+}
+
+## code lower-case with spaces/dashes
+{
+ "status": 400,
+ "headers": {
+  "cache-control": "no-store",
+  "content-type": "application/json"
+ },
+ "body": "{\"error\":\"bad code\"}"
+}
+
+## DELETE on a code
+{
+ "status": 405,
+ "headers": {
+  "cache-control": "no-store",
+  "content-type": "application/json"
+ },
+ "body": "{\"error\":\"method\"}"
+}
+
+## OPTIONS on root
+{
+ "status": 405,
+ "headers": {
+  "cache-control": "no-store",
+  "content-type": "application/json"
+ },
+ "body": "{\"error\":\"method\"}"
+}
+
+## GET on root
+{
+ "status": 405,
+ "headers": {
+  "cache-control": "no-store",
+  "content-type": "application/json"
+ },
+ "body": "{\"error\":\"method\"}"
+}
+
+## PUT bad json on existing code
+{
+ "status": 400,
+ "headers": {
+  "cache-control": "no-store",
+  "content-type": "application/json"
+ },
+ "body": "{\"error\":\"bad json\"}"
+}
+
+## PUT without rev
+{
+ "status": 409,
+ "headers": {
+  "cache-control": "no-store",
+  "content-type": "application/json"
+ },
+ "body": "{\"error\":\"conflict\",\"data\":{\"players\":[{\"id\":1},{\"id\":2},{\"id\":3},{\"id\":4},{\"id\":5},{\"id\":6},{\"id\":7},{\"id\":8},{\"id\":9},{\"id\":10},{\"id\":11}]},\"rev\":1,\"updated_a"
+}
+
+## PUT rev as string '1'
+{
+ "status": 200,
+ "headers": {
+  "cache-control": "no-store",
+  "content-type": "application/json"
+ },
+ "body": "{\"rev\":2,\"updated_at\":\"2026-10-08T12:05:58.603Z\"}"
+}
+
+## POST data is an array
+{
+ "status": 400,
+ "body": "{\"error\":\"bad team\"}"
+}
+
+## POST no data
+{
+ "status": 400,
+ "body": "{\"error\":\"bad team\"}"
+}
+
+## POST players 15
+{
+ "status": 201,
+ "body": "{\"code\":\"BRASZXHZ6PDV\",\"rev\":1,\"updated_at\":\"2026-10-08T12:05:58.605Z\"}"
+}
+
+## POST players 16
+{
+ "status": 400,
+ "body": "{\"error\":\"bad team\"}"
+}
+
+## POST player id 'abc'
+{
+ "status": 400,
+ "body": "{\"error\":\"bad team\"}"
+}
+
+## POST player null
+{
+ "status": 400,
+ "body": "{\"error\":\"bad team\"}"
+}
+
+## POST player id Infinity-ish '1e999'
+{
+ "status": 400,
+ "body": "{\"error\":\"bad team\"}"
+}
+
+## POST roles with HTML (server-side validation of roles)
+{
+ "status": 201,
+ "body": "{\"code\":\"Z5KK35ENUVYN\",\"rev\":1,\"updated_at\":\"2026-10-08T12:05:58.606Z\"}"
+}
+
+## POST extra arbitrary field
+{
+ "status": 201,
+ "body": "{\"code\":\"48EVZHUBC8BJ\",\"rev\":1,\"updated_at\":\"2026-10-08T12:05:58.607Z\"}"
+}
+
+## MAX_BYTES=200000 counts UTF-16 units: 150000 Greek letters (=300000 UTF-8 bytes)
+{
+ "status": 201,
+ "utf8_bytes": 300032
+}
+
+## 3 code clashes in a row
+{
+ "status": 500,
+ "body": "{\"error\":\"try again\"}"
+}
+
+## race: another device writes between SELECT and UPDATE
+{
+ "status": 409,
+ "body": "{\"error\":\"conflict\",\"data\":{\"players\":[],\"other\":\"device\"},\"rev\":2,\"updated_at\":\"2026-10-08T12:05:58.620Z\"}"
+}
+
+## no D1 binding
+{
+ "status": 503
+}
+
+## every SQL statement uses bound parameters (args are values, never in the SQL text)
+[
+ "INSERT OR IGNORE INTO teams (code, data, rev, updated_at) VA",
+ "SELECT data, rev, updated_at FROM teams WHERE code = ?",
+ "SELECT data, rev, updated_at FROM teams WHERE code = ?",
+ "SELECT data, rev, updated_at FROM teams WHERE code = ?",
+ "SELECT data, rev, updated_at FROM teams WHERE code = ?",
+ "SELECT data, rev, updated_at FROM teams WHERE code = ?",
+ "UPDATE teams SET data = ?, rev = rev + 1, updated_at = ? WHE"
+]
+
+## newCode letter frequency vs uniform (ratio)
+{
+ "2": 0.964,
+ "3": 0.97,
+ "4": 0.966,
+ "5": 0.976,
+ "6": 0.985,
+ "7": 0.974,
+ "8": 0.974,
+ "9": 0.966,
+ "A": 1.082,
+ "B": 1.081,
+ "C": 1.091,
+ "D": 1.084,
+ "E": 1.091,
+ "F": 1.086,
+ "G": 1.086,
+ "H": 1.085,
+ "J": 0.978,
+ "K": 0.963,
+ "M": 0.971,
+ "N": 0.965,
+ "P": 0.966,
+ "Q": 0.976,
+ "R": 0.973,
+ "S": 0.966,
+ "T": 0.969,
+ "U": 0.972,
+ "V": 0.97,
+ "W": 0.941,
+ "X": 0.978,
+ "Y": 0.975,
+ "Z": 0.977
+}
+
+## entropy bits per code (with the modulo bias)
+59.43
+
+## cleanCode samples
+[
+ [
+  "abcd-efgh-jkmn",
+  "ABCDEFGHJKMN"
+ ],
+ [
+  " a b c ",
+  "ABC"
+ ],
+ [
+  "ΑΒΓ",
+  ""
+ ],
+ [
+  "😀",
+  ""
+ ],
+ [
+  null,
+  ""
+ ]
+]
+
+
+# ---- source: sync_baseline.mjs
+// Baseline probe of functions/api/sync/[[path]].js against an in-memory D1 (nothing leaves the machine).
+// usage: node sync_baseline.mjs <repo>
+const repo = process.argv[2];
+const mod = await import(repo + "/functions/api/sync/[[path]].js");
+const { onRequest, newCode, cleanCode, ALPHABET, MAX_BYTES } = mod;
+
+function fakeD1({ insertAlwaysIgnored = false, bumpBeforeUpdate = false } = {}) {
+  const rows = new Map();
+  const log = [];
+  return { rows, log, prepare(sql) {
+    const s = sql.replace(/\s+/g, " ").trim();
+    return { args: [], bind(...a) { this.args = a; log.push({ sql: s, args: a.map((x) => typeof x) }); return this; },
+      async run() { const a = this.args;
+        if (s.startsWith("CREATE")) return { meta: { changes: 0 } };
+        if (s.startsWith("INSERT OR IGNORE")) { if (insertAlwaysIgnored || rows.has(a[0])) return { meta: { changes: 0 } };
+          rows.set(a[0], { data: a[1], rev: 1, updated_at: a[2] }); return { meta: { changes: 1 } }; }
+        if (s.startsWith("UPDATE")) { const r = rows.get(a[2]);
+          if (bumpBeforeUpdate) { r.rev += 1; r.data = JSON.stringify({ players: [], other: "device" }); }
+          if (!r || r.rev !== a[3]) return { meta: { changes: 0 } };
+          rows.set(a[2], { data: a[0], rev: r.rev + 1, updated_at: a[1] }); return { meta: { changes: 1 } }; }
+        throw new Error("unexpected SQL " + s); },
+      async first() { const r = rows.get(this.args[0]); return r ? { ...r } : null; } }; } };
+}
+async function call(db, method, path, body) {
+  const parts = path.replace(/^\/api\/sync\/?/, "").split("/").filter(Boolean);
+  const request = new Request("https://local.test" + path, { method,
+    body: body === undefined ? undefined : typeof body === "string" ? body : JSON.stringify(body) });
+  const r = await onRequest({ request, env: { SYNC_DB: db }, params: parts.length ? { path: parts } : {} });
+  const text = await r.text();
+  return { status: r.status, headers: Object.fromEntries(r.headers), body: text.slice(0, 160) };
+}
+const TEAM = { players: Array.from({ length: 11 }, (_, i) => ({ id: i + 1 })) };
+const out = (name, v) => console.log(`## ${name}\n${JSON.stringify(v, null, 1)}\n`);
+
+const db = fakeD1();
+const created = await call(db, "POST", "/api/sync", { data: TEAM });
+const code = JSON.parse(created.body).code;
+out("POST new (status, response headers)", created);
+out("GET fields returned (S13)", await call(db, "GET", `/api/sync/${code}`));
+out("GET path with extra segment", await call(db, "GET", `/api/sync/${code}/x`));
+out("SQL-looking code", await call(db, "GET", `/api/sync/${encodeURIComponent("' OR 1=1--")}`));
+out("code lower-case with spaces/dashes", await call(db, "GET", `/api/sync/${encodeURIComponent(" " + code.toLowerCase().slice(0, 4) + " - " + code.slice(4).toLowerCase())}`));
+out("DELETE on a code", await call(db, "DELETE", `/api/sync/${code}`));
+out("OPTIONS on root", await call(db, "OPTIONS", "/api/sync"));
+out("GET on root", await call(db, "GET", "/api/sync"));
+out("PUT bad json on existing code", await call(db, "PUT", `/api/sync/${code}`, "{nope"));
+out("PUT without rev", await call(db, "PUT", `/api/sync/${code}`, { data: TEAM }));
+out("PUT rev as string '1'", await call(db, "PUT", `/api/sync/${code}`, { data: TEAM, rev: "1" }));
+for (const [name, data] of [["data is an array", []], ["no data", undefined], ["players 15", { players: Array.from({ length: 15 }, (_, i) => ({ id: i })) }],
+  ["players 16", { players: Array.from({ length: 16 }, (_, i) => ({ id: i })) }], ["player id 'abc'", { players: [{ id: "abc" }] }],
+  ["player null", { players: [null] }], ["player id Infinity-ish '1e999'", { players: [{ id: "1e999" }] }],
+  ["roles with HTML (server-side validation of roles)", { players: [{ id: 1 }], roles: { 1: "<img src=x onerror=alert(1)>" } }],
+  ["extra arbitrary field", { players: [], anything: { deep: [1, 2, 3] } }]]) {
+  out(`POST ${name}`, (({ status, body }) => ({ status, body }))(await call(fakeD1(), "POST", "/api/sync", data === undefined ? {} : { data })));
+}
+const greek = "α".repeat(150_000);
+out(`MAX_BYTES=${MAX_BYTES} counts UTF-16 units: 150000 Greek letters (=300000 UTF-8 bytes)`,
+  (({ status }) => ({ status, utf8_bytes: Buffer.byteLength(JSON.stringify({ data: { players: [], pad: greek } })) }))(
+    await call(fakeD1(), "POST", "/api/sync", { data: { players: [], pad: greek } })));
+out("3 code clashes in a row", (({ status, body }) => ({ status, body }))(await call(fakeD1({ insertAlwaysIgnored: true }), "POST", "/api/sync", { data: TEAM })));
+const race = fakeD1({ bumpBeforeUpdate: true });
+const c2 = JSON.parse((await call(race, "POST", "/api/sync", { data: TEAM })).body).code;
+out("race: another device writes between SELECT and UPDATE", (({ status, body }) => ({ status, body }))(await call(race, "PUT", `/api/sync/${c2}`, { data: TEAM, rev: 1 })));
+out("no D1 binding", (({ status }) => ({ status }))(await call(undefined, "GET", "/api/sync/AAAAAAAAAAAA")));
+out("every SQL statement uses bound parameters (args are values, never in the SQL text)", db.log.map((l) => l.sql.slice(0, 60)));
+// code randomness: x % 31 over bytes 0..255 -> the first 256 % 31 = 8 letters are a bit more likely
+const N = 31 * 20000 / 12 | 0, counts = Object.fromEntries([...ALPHABET].map((c) => [c, 0]));
+for (let i = 0; i < N; i++) for (const ch of newCode()) counts[ch]++;
+const total = N * 12, exp = total / 31;
+out("newCode letter frequency vs uniform (ratio)", Object.fromEntries(Object.entries(counts).map(([c, n]) => [c, +(n / exp).toFixed(3)])));
+out("entropy bits per code (with the modulo bias)", +(12 * -[...ALPHABET].reduce((a, c, i) => { const p = (i < 8 ? 9 : 8) / 256; return a + p * Math.log2(p); }, 0)).toFixed(2));
+out("cleanCode samples", ["abcd-efgh-jkmn", " a b c ", "ΑΒΓ", "😀", null].map((s) => [s, cleanCode(s)]));

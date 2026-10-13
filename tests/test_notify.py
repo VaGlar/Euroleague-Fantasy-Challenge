@@ -94,3 +94,22 @@ def test_health_alerts_only_on_change(public, sent):
     assert "Gemini: HTTPError" in msg and "δημόσια" in msg
     assert run(["Gemini: HTTPError"]) is None, "ίδιο πρόβλημα — όχι ξανά μήνυμα"
     assert "Όλα λειτουργούν" in run([])
+
+
+def test_check_with_trades_and_subs_says_both(monkeypatch, public, sent):
+    tr = [{"out": "P4 (X)", "in": "NEW (Y)", "out_id": 4, "in_id": 99}]
+    said = setup_check(monkeypatch, public, BAD, tr)
+    lineup_cmd.check()
+    (text, buttons), = said
+    assert text.index("P4 (X) ➜ NEW (Y)") < text.index("Πρόταση Starting five") < text.index("Subs:")
+    assert "Εκκρεμούν Trades" in text
+    assert buttons[1] == {"text": "❌ Άκυρο", "callback_data": "lu:cancel"}
+
+
+def test_check_without_games_today_does_nothing(monkeypatch, public, sent):
+    said = setup_check(monkeypatch, public, BAD)
+    pred = json.loads((public / "predictions.json").read_text())
+    del pred["turns"]
+    (public / "predictions.json").write_text(json.dumps(pred))
+    lineup_cmd.check()
+    assert said == []

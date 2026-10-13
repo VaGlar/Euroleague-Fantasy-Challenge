@@ -2,6 +2,8 @@
 private data repo, this copy must hold nothing personal and none of the publishers' text."""
 import json
 
+import pytest
+
 from elf import publish
 
 from conftest import seed_public
@@ -66,3 +68,34 @@ def test_the_repos_own_data_passes_through(public):
     publish.sanitize_repo(public)
     for f in public.glob("*.json"):
         json.loads(f.read_text(), parse_constant=lambda c: (_ for _ in ()).throw(ValueError(c)))
+
+
+def test_the_workflow_call_without_arguments_cleans_data_public(public, tmp_path):
+    """update.yml runs `python -m elf.publish --repo`: no folder given, so data/public itself."""
+    full_outputs(public)
+    done = publish.sanitize_repo()
+    assert "predictions.json" in done and "news.json" in done
+    assert {f"-{n}" for n in publish.PRIVATE_ONLY} <= set(done), "λέει τι έσβησε (φαίνεται στο log)"
+    assert json.loads((public / "predictions.json").read_text())["my_team"] is None
+    assert publish.bundle(tmp_path / "site") == publish.bundle(tmp_path / "site", public), \
+        "χωρίς src διαβάζει data/public· και ξανά στον ίδιο φάκελο δεν σκάει"
+
+
+def test_site_reads_the_folder_it_is_given(public, tmp_path):
+    other = tmp_path / "other"
+    other.mkdir()
+    write(other, "players.json", {"from": "other"})
+    out = tmp_path / "site"
+    assert publish.site(out, other) == ["players.json"]
+    assert json.loads((out / "data" / "players.json").read_text()) == {"from": "other"}
+    manifest = json.loads((out / "manifest.json").read_text())
+    assert manifest["short_name"] == publish.PRODUCT, "το όνομα κάτω από το εικονίδιο στο κινητό"
+
+
+def test_nan_never_reaches_the_public_files(public, tmp_path):
+    """A NaN would make the file invalid JSON for the browser: stop instead of writing it."""
+    (public / "predictions.json").write_text('{"players": [{"x_now": NaN}]}')
+    with pytest.raises(ValueError):
+        publish.sanitize_repo(public)
+    with pytest.raises(ValueError):
+        publish.bundle(tmp_path / "site", public)

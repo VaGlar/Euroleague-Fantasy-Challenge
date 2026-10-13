@@ -260,3 +260,142 @@ def test_trade_cap(max_trades):
     tr = optimize.transfers(squad, pl, bank=BUDGET - sum(p["price"] for p in squad),
                             max_trades=max_trades)
     assert len(tr["out"]) <= max_trades
+
+
+# ------------------------------------------------- defer_later_turns on its own (mutation testing)
+
+def placed(pid, pos, x, turn, role, captain=False, played=False):
+    return {**player(pid, pos, x, turn), "role": role, "captain": captain, "played": played}
+
+
+def left_in_the_five(c10_played=False):
+    """An infeasible-lineup leftover: the turn-2 Center C10 starts (with the armband) although an
+    unplayed turn-1 Center waits on the bench."""
+    return [placed(1, "Guard", 20, 1, "5άδα"), placed(2, "Guard", 10, 1, "5άδα"),
+            placed(5, "Forward", 18, 1, "5άδα"), placed(6, "Forward", 12, 1, "5άδα"),
+            placed(10, "Center", 17, 2, "5άδα", captain=True, played=c10_played),
+            placed(7, "Forward", 4, 1, "6ος"),
+            placed(9, "Center", 6, 1, "πάγκος"), placed(13, "Center", 8, 1, "πάγκος", played=True),
+            placed(14, "Center", 2, 1, "πάγκος"), placed(15, "Center", 30, 2, "πάγκος"),
+            placed(8, "Forward", 16, 2, "πάγκος"), placed(4, "Guard", 3, 2, "πάγκος")]
+
+
+def test_safety_net_benches_a_later_starter_for_the_best_unplayed_earlier_one():
+    team, plan = optimize.defer_later_turns(left_in_the_five())
+    assert roles_of(team, 10) == "πάγκος" and roles_of(team, 9) == "5άδα", \
+        "ο C9 (T1, δεν έπαιξε, ο καλύτερος) — όχι ο C13 που έπαιξε, ούτε ο C15 του ίδιου Turn"
+    assert roles_of(team, 13) == roles_of(team, 14) == roles_of(team, 15) == "πάγκος"
+    cap = [p["id"] for p in team if p["captain"]]
+    assert cap == [1], "η μπάνταρα δεν μένει στον πάγκο: πάει στον καλύτερο βασικό"
+    assert {pl["bench"]["id"] for pl in plan} == {15, 10, 8}, "G4 (xFPT 3) κάτω από PLAN_MIN_X"
+
+
+def test_safety_net_never_moves_a_player_who_already_played():
+    team, _ = optimize.defer_later_turns(left_in_the_five(c10_played=True))
+    assert roles_of(team, 10) == "5άδα" and roles_of(team, 9) == "πάγκος"
+    assert [p["id"] for p in team if p["captain"]] == [10], "βασικός με μπάνταρα: μένει όπως είναι"
+
+
+def test_plan_threshold_includes_a_player_at_exactly_plan_min_x():
+    sq = squad_t1_t2()
+    next(p for p in sq if p["id"] == 4)["x_now"] = optimize.PLAN_MIN_X
+    _, plan = optimize.defer_later_turns(optimize.lineup(sq)["team"])
+    assert 4 in {pl["bench"]["id"] for pl in plan}
+
+
+def test_no_swap_plan_once_the_earlier_turn_has_played():
+    """Turn-2 morning: the turn-1 players already played, so «if he scores less than…» is moot:
+    the turn-2 bench Guard is not paired with a turn-1 starter."""
+    team = [placed(1, "Guard", 30, 1, "5άδα", played=True), placed(2, "Guard", 2, 1, "5άδα", played=True),
+            placed(5, "Forward", 25, 1, "5άδα", True, played=True),
+            placed(8, "Forward", 16, 2, "5άδα"), placed(10, "Center", 17, 2, "5άδα"),
+            placed(3, "Guard", 15, 2, "6ος"), placed(6, "Forward", 3, 1, "πάγκος", played=True),
+            placed(9, "Center", 0, 1, "πάγκος", played=True), placed(4, "Guard", 6, 2, "πάγκος")]
+    assert optimize.defer_later_turns(team)[1] == []
+
+
+# ------------------------------------------------- transfers: the per-trade threshold (mutation testing)
+
+def better_copy(sq, pid, new_id, gain_x_h, price=None):
+    """The same player under a new id, with a higher horizon xFPT."""
+    p = next(p for p in sq if p["id"] == pid)
+    return {**p, "id": new_id, "name": f"N{new_id}", "x_h": p["x_h"] + gain_x_h,
+            "price": p["price"] if price is None else price}
+
+
+def trade(sq, pool, bank=1.0):
+    tr = optimize.transfers(sq, pool, bank=bank)
+    return sorted(p["id"] for p in tr["out"]), tr["gain"], tr["bank_after"]
+
+
+def test_a_single_trade_worth_the_threshold_is_proposed():
+    sq = squad_t1_t2()
+    # bench Guard 4: +6 x_h on the bench (x0.5) = +3, above the 2 a trade must bring
+    assert trade(sq, [better_copy(sq, 4, 100, 6)]) == ([4], 3.0, 1.0)
+
+
+def test_bank_after_is_what_is_left_after_the_trades():
+    sq = squad_t1_t2()
+    assert trade(sq, [better_copy(sq, 4, 100, 6, price=6.0)], bank=1.0)[2] == 0.0
+    assert trade(sq, [better_copy(sq, 4, 100, 6, price=3.5)], bank=1.0)[2] == 2.5
+
+
+def test_each_extra_trade_must_bring_its_own_threshold():
+    sq = squad_t1_t2()
+    weak_second = [better_copy(sq, 4, 100, 6), better_copy(sq, 9, 101, 3)]     # +3, then only +1.5
+    assert trade(sq, weak_second)[:2] == ([4], 3.0), "2 trades: 4.5 ≥ 2×2, αλλά το 2ο φέρνει μόνο 1.5"
+    good_second = [better_copy(sq, 4, 100, 6), better_copy(sq, 9, 101, 6)]     # +3 and +3
+    assert trade(sq, good_second)[:2] == ([4, 9], 6.0)
+
+
+def test_up_to_four_trades_when_each_is_worth_it():
+    sq = squad_t1_t2()
+    pool = [better_copy(sq, i, 100 + i, 6) for i in (4, 9, 7, 11)]
+    assert len(trade(sq, pool)[0]) == 4
+
+
+# ------------------------------------------------- lineup: the later-turn option value
+
+def test_expected_shortfall_is_the_normal_integral():
+    """E[max(0, b - X)], X ~ N(s, sd), by brute-force integration."""
+    from math import exp, pi, sqrt
+    sd = optimize.SCORE_SD
+    for b, s in ((10, 10), (15, 8), (4, 14), (20, 3)):
+        h = sd / 200
+        xs = [s - 8 * sd + i * h for i in range(3201)]
+        num = sum(max(0.0, b - x) * exp(-((x - s) / sd) ** 2 / 2) / (sd * sqrt(2 * pi)) * h for x in xs)
+        assert optimize._expected_shortfall(b, s) == pytest.approx(num, rel=1e-3, abs=1e-4)
+
+
+def test_later_turn_bench_players_get_the_option_value(monkeypatch):
+    seen = {}
+    real = optimize._model
+
+    def spy(*a, **k):
+        seen.update(k)
+        return real(*a, **k)
+    monkeypatch.setattr(optimize, "_model", spy)
+    sq = squad_t1_t2()
+    optimize.lineup(sq)
+    court = sorted((p["x_now"] for p in sq if p["position"] != "Head Coach"), reverse=True)
+    typical = sum(court[:6]) / 6                       # the six best on the court
+    want = {p["id"]: (1 - optimize.BENCH_MULTIPLIER) * optimize._expected_shortfall(p["x_now"], typical)
+            for p in sq if p["turn"] == 2}
+    assert seen["bench_bonus"] == pytest.approx(want), "μόνο οι παίκτες του επόμενου Turn, όχι ο coach"
+    for p in sq:
+        p["turn"] = 1
+    optimize.lineup(sq)
+    assert seen["bench_bonus"] == {}, "όλοι στο ίδιο Turn: καμία επιλογή αλλαγής"
+    for p in sq:
+        p["turn"] = 1 if p["position"] == "Head Coach" else 2
+    optimize.lineup(sq)
+    assert seen["bench_bonus"] == {}, "ο coach δεν ορίζει το πρώτο Turn του γηπέδου"
+
+
+def test_the_option_value_counts_only_while_on_the_bench():
+    sq = [dict(p, turn=1) for p in squad_t1_t2()]
+    args = dict(budget=1e9, fixed={p["id"] for p in sq})
+    plain = optimize._model(sq, "x_now", "x_now", **args)
+    assert next(p["role"] for p in plain["team"] if p["id"] == 4) == "πάγκος"
+    bonus = optimize._model(sq, "x_now", "x_now", bench_bonus={4: 2.5}, **args)
+    assert bonus["objective"] - plain["objective"] == pytest.approx(2.5)

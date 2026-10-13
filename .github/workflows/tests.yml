@@ -11,6 +11,9 @@ on:
 
 # Several pushes to a PR in a row: only the newest is tested, the older runs are cancelled (they
 # cost Actions minutes and their result no longer matters).
+permissions:
+  contents: read
+
 concurrency:
   group: tests-${{ github.event.pull_request.number || github.sha }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
@@ -42,6 +45,30 @@ jobs:
           pathlib.Path("/tmp/dashboard.js").write_text(js)
           PY
           node --check /tmp/dashboard.js
+
+  secrets:
+    # gitleaks: the PR's commits (a manual run: the whole history). --redact keeps a found secret
+    # out of the public log; a leak fails the job (rotate the secret first, then clean up).
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: gitleaks
+        env:
+          VERSION: 8.27.2
+          SHA256: 141c3b2dede46d8b3a53b47116da756bd223decc0374797559a6b50ecba5590c
+          EVENT: ${{ github.event_name }}
+          BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          curl -sSfL -o /tmp/gl.tgz \
+            "https://github.com/gitleaks/gitleaks/releases/download/v${VERSION}/gitleaks_${VERSION}_linux_x64.tar.gz"
+          echo "${SHA256}  /tmp/gl.tgz" | sha256sum -c -
+          tar -xzf /tmp/gl.tgz -C /tmp gitleaks
+          range="--all"
+          if [ "$EVENT" = pull_request ]; then range="${BASE}..HEAD"; fi
+          /tmp/gitleaks git . --redact --verbose --no-banner --log-opts="$range"
 
   changes:
     # Does this change reach the dashboard? The UI tests use frozen fixtures, so only web/,

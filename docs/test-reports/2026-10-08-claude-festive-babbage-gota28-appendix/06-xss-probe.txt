@@ -1,0 +1,41 @@
+# XSS probe: does a «roles» value from a synced team run as HTML? (local, Playwright, pc, with web/_headers)
+# The server accepts any roles value (see 04, «roles with HTML» → 201) and web/team.js:602 and :617 print the
+# role without esc(). The probe stores a team with such a role, as takeRemote() would, and tries to open
+# that player's sheet. Result: NOT reproduced. A player with an unknown role gets no chip (count 0), and
+# the sheet opens only from a chip. Latent: a future list of all players would make it reachable.
+# The probe file was deleted after the run (it is not part of the repo).
+
+# ---- source: tests/ui/zz_probe_xss.spec.mjs (temporary)
+import { test, expect } from "@playwright/test";
+import { open, buildTeam, stored } from "./helpers.mjs";
+test("synced roles value is rendered as HTML", async ({ page }) => {
+  await open(page, "public", { tab: "team" });
+  await buildTeam(page);
+  await page.locator("#tmFinish").click();
+  const t = await stored(page);
+  const id = t.players[0].id;
+  t.roles = { ...(t.roles || {}), [id]: '<img id="pwn" src="x" onerror="window.__pwn=1">' };
+  await page.evaluate((t) => localStorage.setItem("myteam_v1", JSON.stringify(t)), t);
+  await page.reload();
+  console.log("PROBE count", await page.locator(`[data-fid="${id}"]`).count());
+  await page.locator(`[data-fid="${id}"]`).first().click();
+  ...
+});
+
+# ---- output
+Running 1 test using 1 worker
+PROBE count 0
+  ✘  1 [pc] › zz_probe_xss.spec.mjs:5:1 › synced roles value is rendered as HTML (20.5s)
+    Test timeout of 20000ms exceeded.
+    Error: locator.click: Test timeout of 20000ms exceeded.
+    Call log:
+      - waiting for locator('[data-fid="4164"]').first()
+      14 |   await page.reload();
+      15 |   console.log("PROBE count", await page.locator(`[data-fid="${id}"]`).count());
+    > 16 |   await page.locator(`[data-fid="${id}"]`).first().click();
+         |                                                    ^
+      17 |   await page.waitForTimeout(500);
+      18 |   const pwn = await page.evaluate(() => [!!document.getElementById("pwn"), window.__pwn === 1]);
+      19 |   console.log("PROBE injected-element, handler-ran:", JSON.stringify(pwn));
+        at tests/ui/zz_probe_xss.spec.mjs:16:52
+  1 failed
