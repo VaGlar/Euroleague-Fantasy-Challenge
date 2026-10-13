@@ -354,7 +354,18 @@
   const roundStart = (t, ti) => (t.used && t.used.round === ti.round && t.used.before ? t.used.before : null);
   const sameTeam = (a, b) => a.players.map((x) => x.id).sort().join() === b.players.map((x) => x.id).sort().join()
     && Number(a.bank) === Number(b.bank);
-  const canUndo = (t, ti) => usedTrades(t, ti) > 0 || (!!roundStart(t, ti) && !sameTeam(t, roundStart(t, ti)));
+  // after «📌 Σημείο επαναφοράς» the team as set there is the start: the counter alone is nothing to undo
+  const atCheckpoint = (t, ti) => !!(t.cp && t.cp.round === ti.round);
+  const canUndo = (t, ti) => (usedTrades(t, ti) > 0 && !atCheckpoint(t, ti)) || (!!roundStart(t, ti) && !sameTeam(t, roundStart(t, ti)));
+  // «📌 Σημείο επαναφοράς»: the team as it is now becomes what «Undo all» brings back (e.g. the previous
+  // round's trades, recorded late, are no longer undone with this round's). The trades count stays as it is.
+  function checkpoint(t) {
+    const ti = tradeInfo(t);
+    t.hist = [];
+    if (t.used && t.used.round === ti.round) t.used = { ...t.used, before: null };
+    t.cp = { round: ti.round, at: Date.now() };
+    save(t, { undoing: true });
+  }
   // «μου μένουν N μεταγραφές»: the game counts every change of the round, the app only what it saw
   const tradesLeft = (t, ti) => Math.max(0, (ti.max_trades ?? 4) - usedTrades(t, ti));
   function setTradesLeft(t, left) {
@@ -876,6 +887,7 @@
       <button id="mBackup">🔗 Αντίγραφο ασφαλείας</button>
       <button id="mEdit">✏️ Αλλαγή ομάδας</button>
       <button id="mBank">💰 Διόρθωση credits</button>
+      <button id="mCp">📌 Σημείο επαναφοράς</button>
       ${WIDE() ? "" : `<button id="mInstall">📱 Βάλ' το στην οθόνη σου</button>`}
       <button id="mMail">✉️ Επικοινωνία</button>
       <button id="mDel" class="tm-danger">🗑 Διαγραφή ομάδας</button></div>`;
@@ -897,6 +909,15 @@
       $("#tmBankOk").onclick = () => { const v = parseFloat(String($("#tmBank").value).replace(",", "."));
         if (isNaN(v) || v < 0) { toast("Γράψε ένα ποσό, π.χ. 3,5"); return; }
         t.bank = v; save(t); closePlayer(); render(best); };
+    };
+    $("#mCp").onclick = () => {
+      close();
+      sheet(`<div class="sh"><div><h2>Σημείο επαναφοράς</h2><div class="muted">Η ομάδα όπως είναι τώρα</div></div>
+          <button class="x" onclick="closePlayer()">×</button></div>
+        <p class="muted">Το «Undo all» θα γυρίζει την ομάδα εδώ, όχι πιο πίσω: π.χ. αν πέρασες τώρα Trades του προηγούμενου Round,
+          δεν θα αναιρούνται μαζί με τα τωρινά. Ο μετρητής «Trades» μένει όπως είναι· αν χρειάζεται, διόρθωσέ τον με το ✎.</p>
+        <button class="tm-primary" id="tmCpOk">📌 Ορισμός</button>`);
+      $("#tmCpOk").onclick = () => { checkpoint(t); closePlayer(); render(best); toast("📌 Το «Undo all» γυρίζει πλέον εδώ"); };
     };
     $("#mMail").onclick = async () => { close();
       toast(await copyText(FEEDBACK_MAIL) ? `Αντιγράφηκε: ${FEEDBACK_MAIL}` : FEEDBACK_MAIL); };

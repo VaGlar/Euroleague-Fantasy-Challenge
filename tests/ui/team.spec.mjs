@@ -335,6 +335,24 @@ test.describe("public edition", () => {
     for (const k of ["players", "bank"]) expect(after[k]).toEqual(before[k]);
   });
 
+  test("«📌 Σημείο επαναφοράς»: «Undo all» goes back there, not to the round's start; the count stays", async ({ page }) => {
+    await savedTeam(page);
+    await page.locator("#tmConfirm").click();
+    await tradeRows(page).first().locator(".tm-done").click();              // e.g. last round's trade, recorded late
+    const mark = await stored(page);
+    await option(page, "mCp");
+    await page.locator("#tmCpOk").click();
+    await expect(header(page)).toContainText("Trades 1/4");
+    await expect(page.locator("#mUsed, #mUndoLast")).toHaveCount(0);        // nothing to undo at the mark
+    await tradeRows(page).first().locator(".tm-done").click();
+    await expect(header(page)).toContainText("Trades 2/4");
+    await page.locator("#mUsed").click();
+    await page.locator("#tmUndoOk").click();
+    const now = await stored(page);
+    for (const k of ["players", "bank", "roles", "captain"]) expect(now[k]).toEqual(mark[k]);
+    await expect(header(page)).toContainText("Trades 1/4");
+  });
+
   test("trades left can be declared (the game counts more than the app saw): the proposals follow", async ({ page }) => {
     await savedTeam(page);
     await expect(page.locator("#tmLeft")).toHaveValue("4");        // at the «same team?» step
