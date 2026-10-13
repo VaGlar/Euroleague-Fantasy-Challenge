@@ -686,18 +686,20 @@
       });
     }
   }
+  // the watchlist (index.html): those players first in the lists of who fits
+  const watched = (p) => (typeof isWatched === "function" && isWatched(p.person_id) ? 1 : 0);
   function replaceSheet(t, r) {
     const max = (Number(t.bank) || 0) + Number(r.price || 0);
     const have = new Set(t.players.map((x) => x.id));
     // only the players the credits allow (sold at today's price), the biggest gain over the next 3 rounds first
     const list = P.players.filter((p) => p.position === r.position && p.fantasy_id != null && p.price != null
         && p.price <= max + 1e-9 && !have.has(p.fantasy_id))
-      .sort((a, b) => (b.x_h ?? 0) - (a.x_h ?? 0));
+      .sort((a, b) => watched(b) - watched(a) || (b.x_h ?? 0) - (a.x_h ?? 0));
     const gain = (p) => (p.x_h ?? 0) - (r.x_h ?? 0);
     const draw = (q) => {
       const k = key(q).trim();
       $("#tmList").innerHTML = list.filter((p) => !k || key(p.name).includes(k)).slice(0, 40).map((p) => `<button class="tm-pick" data-n="${p.fantasy_id}">
-          <span><b>${esc(nm(p.name))}</b>${typeof newb === "function" ? newb(p, false) : ""}</span><span class="tm-pv"><b class="${gain(p) > 0 ? "tm-up" : "tm-down"}">${gain(p) > 0 ? "+" : "−"}${f1(Math.abs(gain(p)))}</b><small>xFPT3</small></span>
+          <span>${watched(p) ? "⭐ " : ""}<b>${esc(nm(p.name))}</b>${typeof newb === "function" ? newb(p, false) : ""}</span><span class="tm-pv"><b class="${gain(p) > 0 ? "tm-up" : "tm-down"}">${gain(p) > 0 ? "+" : "−"}${f1(Math.abs(gain(p)))}</b><small>xFPT3</small></span>
           <span class="muted tm-pm">${esc(tc(p.team))} · ${f1(p.price)} cr · xFPT3 ${f1(xf3(p))} · μένουν ${f1(max - p.price)} cr</span></button>`).join("")
         || `<p class="muted">${k ? `Κανένας ${NAME[r.position]} με αυτό το όνομα μέσα στο υπόλοιπο.` : `Κανένας ${NAME[r.position]} δεν χωράει στο υπόλοιπο.`}</p>`;
       document.querySelectorAll("#tmList [data-n]").forEach((b) => b.onclick = () => {
@@ -706,7 +708,7 @@
         toast(`${sur(r.name)} ➜ ${sur(n.name)} · υπόλοιπο ${f1(t.bank)} cr`);
       });
     };
-    sheet(`<div class="sh"><div><h2>Αντικατάσταση: ${esc(sur(r.name))}</h2><div class="muted">${NAME[r.position]} · ${list.length} χωράνε στα ${f1(max)} cr · το μεγαλύτερο κέρδος σε xFPT3 πρώτα</div></div>
+    sheet(`<div class="sh"><div><h2>Αντικατάσταση: ${esc(sur(r.name))}</h2><div class="muted">${NAME[r.position]} · ${list.length} χωράνε στα ${f1(max)} cr · ⭐ watchlist και το μεγαλύτερο κέρδος σε xFPT3 πρώτα</div></div>
         <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
       <input id="tmQ" class="tm-input" placeholder="Αναζήτηση ${NAME[r.position]}…" autocomplete="off"><div id="tmList"></div>`);
     draw(""); $("#tmQ").addEventListener("input", (e) => draw(e.target.value));
@@ -761,19 +763,19 @@
     const max = sellCredits(t);   // this place is empty, its player's credits are in already
     const list = P.players.filter((p) => p.position === r.position && p.fantasy_id != null && p.price != null
         && p.price <= max + 1e-9 && !taken.has(p.fantasy_id))
-      .sort((a, b) => (b.x_h ?? 0) - (a.x_h ?? 0));
+      .sort((a, b) => watched(b) - watched(a) || (b.x_h ?? 0) - (a.x_h ?? 0));
     const gain = (p) => (p.x_h ?? 0) - (r.x_h ?? 0);
     const draw = (q) => {
       const k = key(q).trim();
       $("#tmList").innerHTML = list.filter((p) => !k || key(p.name).includes(k)).slice(0, 40).map((p) => `<button class="tm-pick" data-n="${p.fantasy_id}">
-          <span><b>${esc(nm(p.name))}</b>${typeof newb === "function" ? newb(p, false) : ""}</span><span class="tm-pv"><b class="${gain(p) > 0 ? "tm-up" : "tm-down"}">${gain(p) > 0 ? "+" : "−"}${f1(Math.abs(gain(p)))}</b><small>xFPT3</small></span>
+          <span>${watched(p) ? "⭐ " : ""}<b>${esc(nm(p.name))}</b>${typeof newb === "function" ? newb(p, false) : ""}</span><span class="tm-pv"><b class="${gain(p) > 0 ? "tm-up" : "tm-down"}">${gain(p) > 0 ? "+" : "−"}${f1(Math.abs(gain(p)))}</b><small>xFPT3</small></span>
           <span class="muted tm-pm">${esc(tc(p.team))} · ${f1(p.price)} cr · xFPT3 ${f1(xf3(p))} · μένουν ${f1(max - p.price)} cr</span></button>`).join("")
         || `<p class="muted">${k ? `Κανένας ${NAME[r.position]} με αυτό το όνομα μέσα στα credits.` : `Κανένας ${NAME[r.position]} δεν χωράει στα credits: πάτα ✕ σε άλλον παίκτη.`}</p>`;
       document.querySelectorAll("#tmList [data-n]").forEach((b) => b.onclick = () => {
         sell.picks[outId] = Number(b.dataset.n); closePlayer(); render(best);
       });
     };
-    sheet(`<div class="sh"><div><h2>Στη θέση του ${esc(sur(r.name))}</h2><div class="muted">${NAME[r.position]} · ${list.length} χωράνε στα ${f1(max)} cr · το μεγαλύτερο κέρδος σε xFPT3 πρώτα</div></div>
+    sheet(`<div class="sh"><div><h2>Στη θέση του ${esc(sur(r.name))}</h2><div class="muted">${NAME[r.position]} · ${list.length} χωράνε στα ${f1(max)} cr · ⭐ watchlist και το μεγαλύτερο κέρδος σε xFPT3 πρώτα</div></div>
         <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
       <input id="tmQ" class="tm-input" placeholder="Αναζήτηση ${NAME[r.position]}…" autocomplete="off"><div id="tmList"></div>`);
     draw(""); $("#tmQ").addEventListener("input", (e) => draw(e.target.value));
