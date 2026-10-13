@@ -938,7 +938,8 @@ async function compareTable(rows, removable = false) {
   const pct0 = (x) => `${Math.round(x)}%`;
   return `<div class="tablewrap"><table class="h2h"><thead><tr><th></th>${rows.map((r) => `<th>
       <div data-pid="${esc(r.person_id)}" style="cursor:pointer">${esc(nm(r.name))}${inj(r)}${dol(r)}</div>
-      <div class="muted" style="font-weight:400;font-size:12px">${esc(tc(r.team))} · ${esc((r.position || "")[0] || "")}</div>
+      <div class="muted" style="font-weight:400;font-size:12px">${esc(tc(r.team))} · ${esc((r.position || "")[0] || "")}${
+        r.turn && (P.turns || []).length > 1 ? ` · <span class="tb t${Math.min(r.turn, 3)}" title="Παίζει στο Turn ${r.turn} του Round">T${r.turn}</span>` : ""}</div>
       ${removable ? `<button class="rm" type="button" title="αφαίρεση" onclick="setCmp(CMP.filter((x) => x !== '${esc(r.person_id)}'))">✕</button>` : ""}</th>`).join("")}</tr></thead><tbody>
     ${sec("Fantasy")}
     ${line("Price (cr)", rows.map((r) => r.price), "lo")}

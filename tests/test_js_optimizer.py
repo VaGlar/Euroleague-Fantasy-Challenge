@@ -99,6 +99,14 @@ def test_in_round_lineup_matches_python():
                     assert not (q["captain"] and not o["cur_captain"])
 
 
+def test_expected_shortfall_matches_python():
+    """The option value of a later-turn bench player (the planned xFPT on the team screen)."""
+    pairs = [(25.6, 5.3), (5.0, 5.0), (0.0, 30.0), (40.0, 0.0), (12.3, 14.1)]
+    out = js([{"kind": "shortfall", "bench": b, "starter": s} for b, s in pairs])
+    for (b, s), j in zip(pairs, out):
+        assert j == pytest.approx(optimize._expected_shortfall(b, s), abs=1e-5)
+
+
 def test_plan_matches_python():
     team = optimize.lineup(squad_t1_t2())["team"]
     py = {(p["bench"]["id"], p["start"]["id"]) for p in optimize.defer_later_turns(team)[1]}
