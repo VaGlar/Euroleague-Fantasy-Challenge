@@ -904,10 +904,40 @@ function setWatch(pid, on) {
   else delete WATCH[pid];
   try { localStorage.setItem("watch", JSON.stringify(WATCH)); } catch (e) {}
   if (typeof watchChanged === "function") watchChanged();      // HoopsLab: goes to the other devices with the team
+  try { localStorage.setItem("watch_at", new Date().toISOString()); } catch (e) {}
+  watchPush();
   document.querySelectorAll(`.wstar[data-watch="${CSS.escape(pid)}"]`).forEach((b) => {
     b.classList.toggle("on", on); b.textContent = on ? "⭐" : "☆"; b.setAttribute("aria-pressed", on ? "true" : "false");
     b.title = on ? "Βγάλ' τον από τη watchlist" : "Βάλ' τον στη watchlist"; });
   if ($("#fwatch").checked) renderPlayers();
+}
+// personal edition: the list also goes to the update (Telegram alerts) through the personal site's
+// /api/watch (functions/api/watch.js); a failed send is retried at the next change or page load
+let watchTimer = 0;
+function watchPush() {
+  if (typeof P === "undefined" || !P || P.edition === "public") return;
+  try { localStorage.setItem("watch_dirty", "1"); } catch (e) {}
+  clearTimeout(watchTimer);
+  watchTimer = setTimeout(async () => {
+    try {
+      const r = await fetch("api/watch", { method: "POST", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ watch: WATCH }), cache: "no-store" });
+      if (r.ok) localStorage.removeItem("watch_dirty");
+    } catch (e) {}
+  }, 1500);
+}
+// personal edition, on load: the list the update has (data/watch.json) when it is newer than this
+// device's last change (another device, or this one after the save went through)
+async function watchFromServer() {
+  if (P.edition === "public") return;
+  let dirty = false, at = "";
+  try { dirty = !!localStorage.getItem("watch_dirty"); at = localStorage.getItem("watch_at") || ""; } catch (e) {}
+  if (dirty) { watchPush(); return; }
+  const w = await get("watch.json");
+  if (!w || !w.players || typeof w.players !== "object" || String(w.updated || "") <= at) return;
+  WATCH = w.players;
+  try { localStorage.setItem("watch", JSON.stringify(WATCH)); localStorage.setItem("watch_at", String(w.updated)); } catch (e) {}
+  watchReload();
 }
 // the other device's list came with the team (sync)
 function watchReload() {
@@ -1692,6 +1722,7 @@ setInterval(() => {
     sortKey = "x_now"; sortDir = -1; renderPlayers();
   };
   renderPlayers();
+  watchFromServer();
   $("#feedback").hidden = p.edition !== "public";   // the product's feedback address
   renderTeam(p.my_team, p.best_team);
   setCmp(CMP.filter((id) => p.players.some((x) => x.person_id === id)));
