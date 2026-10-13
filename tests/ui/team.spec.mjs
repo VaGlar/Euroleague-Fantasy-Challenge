@@ -362,6 +362,8 @@ test.describe("public edition", () => {
     await row.locator(".tm-what > b").first().click();
     await expect(page.locator("#sheet table.h2h")).toBeVisible();
     await expect(page.locator("#sheet h2")).toContainText(`${out} vs ${inn}`);
+    await expect(page.locator("#sheet table.h2h thead .tb")).toHaveCount(2);      // the round has 2 turns: each one's T1/T2
+    await expect(page.locator("#sheet table.h2h thead .tb").first()).toHaveText(/^T[12]$/);
     await page.keyboard.press("Escape");
     // no credits left: a trade that costs more than it frees waits for the others
     await page.evaluate(() => { const t = JSON.parse(localStorage.getItem("myteam_v1")); t.bank = 0; localStorage.setItem("myteam_v1", JSON.stringify(t)); });
