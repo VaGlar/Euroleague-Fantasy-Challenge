@@ -279,6 +279,13 @@ test.describe("public edition", () => {
     await page.evaluate(() => document.dispatchEvent(new Event("visibilitychange")));
     await expect.poll(async () => (await stored(page)).captain).toBe(id);
     await expect(page.locator(`${C} .chip.cap[data-fid="${id}"]`)).toHaveCount(1);
+
+    // the watchlist travels with the team: ⭐ there (the players' tab star) shows up here
+    const pid = await p2.evaluate(() => { const r = P.players.find((x) => x.person_id); setWatch(r.person_id, true); return r.person_id; });
+    await expect.poll(() => store.get("ABCDEFGHJKMN").rev, { timeout: 8000 }).toBe(3);
+    expect(Object.keys(store.get("ABCDEFGHJKMN").data.watch || {})).toEqual([pid]);
+    await page.evaluate(() => document.dispatchEvent(new Event("visibilitychange")));
+    await expect.poll(() => page.evaluate(() => Object.keys(JSON.parse(localStorage.getItem("watch") || "{}")))).toEqual([pid]);
     await ctx2.close();
   });
 

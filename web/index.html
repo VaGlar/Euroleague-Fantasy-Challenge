@@ -903,10 +903,18 @@ function setWatch(pid, on) {
   if (on && r) WATCH[pid] = { at: new Date().toISOString(), price: r.price ?? null, x3: xf3(r) ?? null, inj: !!inj(r) };
   else delete WATCH[pid];
   try { localStorage.setItem("watch", JSON.stringify(WATCH)); } catch (e) {}
+  if (typeof watchChanged === "function") watchChanged();      // HoopsLab: goes to the other devices with the team
   document.querySelectorAll(`.wstar[data-watch="${CSS.escape(pid)}"]`).forEach((b) => {
     b.classList.toggle("on", on); b.textContent = on ? "⭐" : "☆"; b.setAttribute("aria-pressed", on ? "true" : "false");
     b.title = on ? "Βγάλ' τον από τη watchlist" : "Βάλ' τον στη watchlist"; });
   if ($("#fwatch").checked) renderPlayers();
+}
+// the other device's list came with the team (sync)
+function watchReload() {
+  try { WATCH = JSON.parse(localStorage.getItem("watch") || "{}") || {}; } catch (e) { WATCH = {}; }
+  document.querySelectorAll(".wstar[data-watch]").forEach((b) => { const on = !!WATCH[b.dataset.watch];
+    b.classList.toggle("on", on); b.textContent = on ? "⭐" : "☆"; b.setAttribute("aria-pressed", on ? "true" : "false"); });
+  if (typeof P !== "undefined" && P && $("#fwatch").checked) renderPlayers();
 }
 document.addEventListener("click", (e) => {
   const b = e.target.closest(".wstar[data-watch]");

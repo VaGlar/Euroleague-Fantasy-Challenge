@@ -98,9 +98,21 @@
     clearTimeout(syncTimer);
     syncTimer = setTimeout(() => syncPush(), 1500);   // a burst of changes is one write
   }
+  // the watchlist (index.html, «watch» on this device) travels with the team: the newer copy wins, as for the team
+  const watchNow = () => { try { return JSON.parse(localStorage.getItem("watch") || "{}") || {}; } catch (e) { return {}; } };
+  const withWatch = (t) => (t ? { ...t, watch: watchNow() } : t);
+  window.watchChanged = () => {
+    if (GAME() || !syncGet()) return;
+    const t = load();
+    if (t) { t.watch = watchNow(); save(t); }       // a save: newer than the other device's copy, goes up in a moment
+  };
   // the server's copy replaces this device's (the newer one wins; the page says so)
   function takeRemote(res, quiet) {
     try { localStorage.setItem(KEY, JSON.stringify(res.data)); } catch (e) {}
+    if (res.data && res.data.watch && typeof res.data.watch === "object") {
+      try { localStorage.setItem("watch", JSON.stringify(res.data.watch)); } catch (e) {}
+      if (typeof watchReload === "function") watchReload();
+    }
     const s = syncGet();
     if (s) syncSet({ code: s.code, rev: res.rev, dirty: false });
     if (!quiet) toast("Η ομάδα ενημερώθηκε από την άλλη συσκευή");
@@ -108,7 +120,7 @@
   }
   const newer = (a, b) => String((a && a.updated) || "") > String((b && b.updated) || "");
   async function syncPush() {
-    const s = syncGet(), t = load();
+    const s = syncGet(), t = withWatch(load());
     if (!s || !t || syncBusy) return;
     syncBusy = true;
     try {
@@ -135,7 +147,7 @@
   document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") syncPull(); });
   // link this device: with a new code (its team goes up) or an existing one (that team comes down)
   async function syncNew() {
-    const t = load();
+    const t = withWatch(load());
     if (!t) return null;
     const res = await syncApi("POST", "", { data: t });
     if (res.status !== 201) return res.status;
