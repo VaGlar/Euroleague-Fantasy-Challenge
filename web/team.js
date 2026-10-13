@@ -354,10 +354,10 @@
   const roundStart = (t, ti) => (t.used && t.used.round === ti.round && t.used.before ? t.used.before : null);
   const sameTeam = (a, b) => a.players.map((x) => x.id).sort().join() === b.players.map((x) => x.id).sort().join()
     && Number(a.bank) === Number(b.bank);
-  // after «📌 Σημείο επαναφοράς» the team as set there is the start: the counter alone is nothing to undo
+  // after «💾 Save» the team as set there is the start: the counter alone is nothing to undo
   const atCheckpoint = (t, ti) => !!(t.cp && t.cp.round === ti.round);
   const canUndo = (t, ti) => (usedTrades(t, ti) > 0 && !atCheckpoint(t, ti)) || (!!roundStart(t, ti) && !sameTeam(t, roundStart(t, ti)));
-  // «📌 Σημείο επαναφοράς»: the team as it is now becomes what «Undo all» brings back (e.g. the previous
+  // «💾 Save»: the team as it is now becomes what «Undo all» brings back (e.g. the previous
   // round's trades, recorded late, are no longer undone with this round's). The trades count stays as it is.
   function checkpoint(t) {
     const ti = tradeInfo(t);
@@ -887,7 +887,7 @@
       <button id="mBackup">🔗 Αντίγραφο ασφαλείας</button>
       <button id="mEdit">✏️ Αλλαγή ομάδας</button>
       <button id="mBank">💰 Διόρθωση credits</button>
-      <button id="mCp">📌 Σημείο επαναφοράς</button>
+      <button id="mCp">💾 Save</button>
       ${WIDE() ? "" : `<button id="mInstall">📱 Βάλ' το στην οθόνη σου</button>`}
       <button id="mMail">✉️ Επικοινωνία</button>
       <button id="mDel" class="tm-danger">🗑 Διαγραφή ομάδας</button></div>`;
@@ -912,12 +912,12 @@
     };
     $("#mCp").onclick = () => {
       close();
-      sheet(`<div class="sh"><div><h2>Σημείο επαναφοράς</h2><div class="muted">Η ομάδα όπως είναι τώρα</div></div>
+      sheet(`<div class="sh"><div><h2>Save</h2><div class="muted">Η ομάδα όπως είναι τώρα</div></div>
           <button class="x" onclick="closePlayer()">×</button></div>
         <p class="muted">Το «Undo all» θα γυρίζει την ομάδα εδώ, όχι πιο πίσω: π.χ. αν πέρασες τώρα Trades του προηγούμενου Round,
           δεν θα αναιρούνται μαζί με τα τωρινά. Ο μετρητής «Trades» μένει όπως είναι· αν χρειάζεται, διόρθωσέ τον με το ✎.</p>
-        <button class="tm-primary" id="tmCpOk">📌 Ορισμός</button>`);
-      $("#tmCpOk").onclick = () => { checkpoint(t); closePlayer(); render(best); toast("📌 Το «Undo all» γυρίζει πλέον εδώ"); };
+        <button class="tm-primary" id="tmCpOk">💾 Save</button>`);
+      $("#tmCpOk").onclick = () => { checkpoint(t); closePlayer(); render(best); toast("💾 Saved · το «Undo all» γυρίζει πλέον εδώ"); };
     };
     $("#mMail").onclick = async () => { close();
       toast(await copyText(FEEDBACK_MAIL) ? `Αντιγράφηκε: ${FEEDBACK_MAIL}` : FEEDBACK_MAIL); };

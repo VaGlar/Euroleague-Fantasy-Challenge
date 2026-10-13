@@ -335,7 +335,7 @@ test.describe("public edition", () => {
     for (const k of ["players", "bank"]) expect(after[k]).toEqual(before[k]);
   });
 
-  test("«📌 Σημείο επαναφοράς»: «Undo all» goes back there, not to the round's start; the count stays", async ({ page }) => {
+  test("«💾 Save»: «Undo all» goes back there, not to the round's start; the count stays", async ({ page }) => {
     await savedTeam(page);
     await page.locator("#tmConfirm").click();
     await tradeRows(page).first().locator(".tm-done").click();              // e.g. last round's trade, recorded late
