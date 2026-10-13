@@ -224,7 +224,20 @@
   }
 
   const laterTurnIds = (squad) => new Set(laterTurnSteps(squad).keys());
-  const api = { lineup, deferLaterTurns, transfers, squadValue, laterTurnIds, laterTurnSteps, SQUAD, COURT, MAX_PER_CLUB };
+  // E[max(0, muBench - X)], X ~ N(muStarter, SCORE_SD): what a later-turn bench player adds over the
+  // starter he replaces when that one scores less (mirror of optimize._expected_shortfall)
+  const SCORE_SD = 7;
+  function erf(x) {                       // Abramowitz-Stegun 7.1.26 (|error| < 1.5e-7)
+    const s = Math.sign(x), a = Math.abs(x), t = 1 / (1 + 0.3275911 * a);
+    const y = 1 - ((((1.061405429 * t - 1.453152027) * t + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-a * a);
+    return s * y;
+  }
+  function expectedShortfall(muBench, muStarter, sd = SCORE_SD) {
+    const d = (num(muBench) - num(muStarter)) / sd;
+    const pdf = Math.exp(-d * d / 2) / Math.sqrt(2 * Math.PI), cdf = 0.5 * (1 + erf(d / Math.SQRT2));
+    return sd * (pdf + d * cdf);
+  }
+  const api = { lineup, deferLaterTurns, transfers, squadValue, laterTurnIds, laterTurnSteps, expectedShortfall, BENCH, SQUAD, COURT, MAX_PER_CLUB };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else root.ELFOPT = api;
 })(typeof window !== "undefined" ? window : globalThis);

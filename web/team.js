@@ -426,9 +426,13 @@
     const target = Object.fromEntries(team.map((p) => [p.id, p.role]));
     const targetCap = team.find((p) => p.captain)?.id ?? null;
     // expected points of the round if the plan is followed (its trades, five, 6th and CAP)
-    const planned = team.reduce((a, p) => { const r = aRows.find((x) => x.id === p.id); if (!r) return a;
+    const lineupPts = team.reduce((a, p) => { const r = aRows.find((x) => x.id === p.id); if (!r) return a;
       const v = inRound && scored(r) ? r.actual : (r.x_now ?? 0);
       return a + v * (p.role === "πάγκος" ? 0.5 : 1) * (p.captain ? 2 : 1); }, 0);
+    // the swaps before a later turn (🕐 below): the later bench player comes in when the early starter
+    // scores less, so each pair adds (1 − bench share) × E[max(0, later − early)] (optimize.py's option value)
+    const planned = lineupPts + turnPlan.reduce((a, x) => a + (1 - ELFOPT.BENCH)
+      * ELFOPT.expectedShortfall(x.bench.x_now, x.start.x_now), 0);
     const items = [];
     if (tradesNow) for (const pr of pairs) {
       const o = rows.find((r) => r.id === pr.out.id), n = row(pr.in.id);
@@ -588,7 +592,7 @@
         <div class="muted">Credits <b>${f1(t.bank)}/${f1(Number(t.bank) + value)}</b>${gain ? ` <span class="${gain > 0 ? "tm-up" : "tm-down"}">(${gain > 0 ? "+" : "−"}${f1(Math.abs(gain))} gain)</span>` : ""} · ${pl.ti.max_trades <= 4 ? `<button class="tm-trades" id="tmTrades" type="button" title="Άλλαξε πόσα Trades σου μένουν">Trades <b>${usedTrades(t, pl.ti)}/${pl.ti.max_trades}</b> ✎</button>`
           : `Trades <b>${usedTrades(t, pl.ti)}/${pl.ti.max_trades > 4 ? "∞" : pl.ti.max_trades}</b>`}</div>
         <div class="muted">xFPT <b>${f1(total)}</b>${Math.abs(pl.planned - total) >= 0.05
-          ? ` → <b class="tm-planned">${f1(pl.planned)}</b>` : ""}</div>
+          ? ` → <b class="tm-planned"${pl.turnPlan.length ? ' title="Με τις αλλαγές 🕐 πριν το επόμενο Turn"' : ""}>${f1(pl.planned)}</b>` : ""}</div>
         <div class="tm-dead">${head}</div>${clubWarn(rows, pl.trs)}</div>
         ${t.game ? (t.draft ? `<div class="tm-right"><div class="tm-toolbar" role="toolbar"><button id="tmDraftX" title="Η ομάδα όπως είναι στο παιχνίδι">↩ Ακύρωση Trades</button></div></div>` : "")
           : `<div class="tm-right">${undoBar(t)}<div class="tm-morewrap"><button class="tm-more" id="tmMore" aria-haspopup="menu">⋯ Επιλογές</button><div id="tmMenu"></div></div></div>`}</header>
