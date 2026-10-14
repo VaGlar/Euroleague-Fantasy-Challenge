@@ -769,7 +769,8 @@ def build(offline: bool = False) -> dict:
     health += [f"πηγή εκτός: {f}" for f in failed]
     dig, dig_at = None, None
     try:
-        dig = news.digest(arts, [f"{n} ({team_of.get(n)})" for n in names])
+        dig = news.digest(arts, [f"{n} ({team_of.get(n)})" for n in names],
+                          teams=dict(zip(clubs["code"], clubs["name"])) if "name" in clubs else None)
         dig_at = datetime.now(timezone.utc).isoformat() if dig else None
     except Exception as e:  # noqa: BLE001
         dig, dig_at = previous_digest()

@@ -239,6 +239,7 @@ body.noscroll { overflow: hidden; }
 #rtable tbody tr, #dtable tbody tr { cursor: pointer; }
 
 /* ---- compare */
+.plink { color: var(--series-1); cursor: pointer; text-decoration: underline dotted; }
 .wstar { border: 0; background: none; padding: 0 4px 0 0; font-size: 17px; line-height: 1; cursor: pointer; color: var(--text-2, inherit); vertical-align: -1px; }
 .wstar.on { color: #e3a008; }
 .wsince { font-size: 12px; }
@@ -772,6 +773,20 @@ function expertsHtml(list, track) {
       ? `<h3>${head}</h3>${ul(es.slice(0, 6))}${es.length > 6 ? `<details class="td-more"><summary>+${es.length - 6} ακόμα</summary>${ul(es.slice(6))}</details>` : ""}`
       : `<details class="xp-src"><summary>${head}</summary>${ul(es)}</details>`; };
   return `<div class="card"><h2>Ειδικοί ${track.length ? `<small class="muted">πρώτη η στήλη με τις καλύτερες προτάσεις ως τώρα</small>` : ""}</h2>${srcs.map(block).join("")}</div>`;
+}
+// the summary's players («Jean Montero», as the roster in Latin letters) open their card when tapped
+function linkNames(html) {
+  const title = (w) => w.toLowerCase().replace(/(^|[\s'-])\S/g, (c) => c.toUpperCase());
+  const byName = new Map();
+  for (const p of P.players) {
+    const [last, first] = String(p.name || "").split(",").map((x) => x.trim());
+    if (last && first && p.person_id) byName.set(`${title(first)} ${title(last)}`, p.person_id);
+  }
+  const names = [...byName.keys()].sort((a, b) => b.length - a.length)
+    .map((n) => n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+  if (!names.length) return html;
+  return html.replace(new RegExp(`\\b(${names.join("|")})\\b`, "g"),
+    (m) => `<span class="plink" data-pid="${esc(byName.get(m))}" role="button" tabindex="0">${m}</span>`);
 }
 function articlesHtml(arts) {
   const li = (a) => `<li><a href="${safeUrl(a.url)}" target="_blank" rel="noopener noreferrer">${esc(a.title)}</a><br><span class="muted">${esc(a.source)} · ${a.date ? new Date(a.date).toLocaleString("el-GR") : ""}</span></li>`;
@@ -1739,7 +1754,7 @@ setInterval(() => {
   renderTeams();
 
   const d = nw?.digest;
-  $("#news").innerHTML = (d ? `<div class="card"><h2>Σύνοψη (AI)</h2><div class="msg">${esc(d.summary_el)}</div></div>`
+  $("#news").innerHTML = (d ? `<div class="card"><h2>Σύνοψη (AI)</h2><div class="msg">${linkNames(esc(d.summary_el))}</div></div>`
     + (d.expert?.length ? expertsHtml(d.expert, trk?.experts || []) : "") : "")
     + articlesHtml(nw?.articles || []);
   $("#news").querySelectorAll("[data-pid]").forEach((el) => el.onclick = () => openPlayer(el.dataset.pid));

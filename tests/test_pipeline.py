@@ -55,7 +55,7 @@ def _run(monkeypatch, public, digest=None, played=None):
     monkeypatch.setattr(history, "update_season", lambda *a, **k: None)
     monkeypatch.setattr(news, "collect", lambda names, **k: ([], []))
 
-    def fake_digest(arts, roster):  # a Gemini-like answer naming real players
+    def fake_digest(arts, roster, teams=None):  # a Gemini-like answer naming real players
         a, b = roster[0].split(" (")[0], roster[1].split(" (")[0]
         return {"summary_el": "• δοκιμή", "availability": [{"player": a, "status": "out"}],
                 "expert": [{"player": b, "stance": "captain", "source": "Test"}]}
@@ -242,7 +242,7 @@ def test_an_out_from_the_news_applies_whatever_the_name_order(monkeypatch, tmp_p
     public = use_public(monkeypatch, tmp_path / "public")
     seen = {}
 
-    def digest(arts, roster):
+    def digest(arts, roster, teams=None):
         name = next(r.split(" (")[0] for r in roster if ", " in r)
         last, first = name.split(", ", 1)
         seen["name"] = name

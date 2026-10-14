@@ -363,3 +363,16 @@ def test_popup_next_games_on_the_tables_terms():
     r = pd.Series({"avail_game": 0.4, "news_avail": 1.0, "prior_w": np.nan, "prior_est": np.nan})
     out = run.popup_next([{"round": 5, "x": 20.0}, {"round": 6, "x": 20.0}], r, 5)
     assert [g["x"] for g in out] == [8.0, 20.0]
+
+
+def test_the_summary_names_written_in_greek_go_back_to_the_roster():
+    """14/10: the AI summary wrote «Γιαν Μοντέρο» and «Ζοσέ Ρόμπινσον» (the roster's Justin Robinson, his
+    first name wrong); a Greek word that is no roster player stays as it is."""
+    from elf import news
+    roster = ["MONTERO, JEAN", "ROBINSON, JUSTIN", "OJELEYE, SEMI", "VEZENKOV, SASHA"]
+    text = "• Ο Γιαν Μοντέρο έφερε 26. Ο Ζοσέ Ρόμπινσον κέρδισε. Ο Σέμι Οτζέλεε. Ο Ολυμπιακός νίκησε τη Βαλένθια."
+    out = news.latin_names(text, roster)
+    assert "Jean Montero" in out and "Justin Robinson" in out and "Semi Ojeleye" in out
+    assert "Ολυμπιακός" in out and "Βαλένθια" in out
+    d = news.resolve_names({"summary_el": text, "availability": [], "expert": []}, roster)
+    assert "Jean Montero" in d["summary_el"]
