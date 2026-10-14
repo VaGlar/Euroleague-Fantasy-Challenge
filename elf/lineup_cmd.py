@@ -103,28 +103,78 @@ def load_state():
             "coach": coach[0]}
 
 
+def _layout(st: dict):
+    """The game's formations as counts, and for each played starter the formations he can stay in.
+    The five's slots go by position (C -> F -> G here: «Every player must be in the right court
+    position», 422 on 14/10) and a played starter keeps his slot: with a formation whose block for
+    his position doesn't cover his slot he would have to move, which the game refuses."""
+    counts = {name: dict(zip(POS, map(int, name.split("-")))) for name in st["forms"]}
+    order = sorted(POS, key=lambda pos: st["direction"] * POS[pos])
+    five_slots = sorted(st["slots"][:5])
+
+    def covers(name, pos, k):
+        c = counts[name]
+        start = sum(c[q] for q in order[:order.index(pos)])
+        return start <= k < start + c[pos]
+    stay = {p["id"]: {n for n in counts if covers(n, p["position"], five_slots.index(p["court_position"]))}
+            for p in st["squad"] if p["played"] and p["cur_role"] == "5άδα"}
+    return counts, stay, order, five_slots
+
+
 def propose(st: dict) -> dict:
-    res = optimize.lineup_in_round(st["squad"])
+    counts, stay, order, five_slots = _layout(st)
+    res = optimize.lineup_in_round(st["squad"], formations=counts, stay_forms=stay)
     if not res:
         raise Abort("ο βελτιστοποιητής δεν βρήκε έγκυρο Starting five")
-    res["team"], res["plan"] = optimize.defer_later_turns(res["team"])
-    new = {p["id"]: p for p in res["team"]}
-    changes = [p for p in st["squad"] if p["position"] != "Head Coach"
-               and (new[p["id"]]["role"] != p["cur_role"]
-                    or new[p["id"]]["captain"] != p["cur_captain"])]
-    for p in changes:  # a played player may only leave the starting six for the bench
-        n = new[p["id"]]
-        if p["played"] and n["role"] != p["cur_role"] and n["role"] != "πάγκος":
-            raise Abort(f"ο {p['name']} έχει ήδη παίξει: μπορεί μόνο να πάει στο Bench")
-        if p["played"] and n["captain"] and not p["cur_captain"]:
-            raise Abort(f"ο {p['name']} έχει ήδη παίξει και δεν μπορεί να γίνει Captain")
+    team, plan = optimize.defer_later_turns(res["team"])
 
-    # body: played players who keep their role keep their exact slot; the others fill
-    # the free slots of their group (five grouped like the game does; sixth; bench)
+    def name_of(t):
+        five = [p for p in t if p["role"] == "5άδα"]
+        return "-".join(str(sum(p["position"] == pos for p in five)) for pos in POS)
+
+    def rails(t):
+        """What would change, after checking the game's rules for the players who played."""
+        new = {p["id"]: p for p in t}
+        changes = [p for p in st["squad"] if p["position"] != "Head Coach"
+                   and (new[p["id"]]["role"] != p["cur_role"]
+                        or new[p["id"]]["captain"] != p["cur_captain"])]
+        for p in changes:  # a played player may only leave the starting six for the bench
+            n = new[p["id"]]
+            if p["played"] and n["role"] != p["cur_role"] and n["role"] != "πάγκος":
+                raise Abort(f"ο {p['name']} έχει ήδη παίξει: μπορεί μόνο να πάει στο Bench")
+            if p["played"] and n["captain"] and not p["cur_captain"]:
+                raise Abort(f"ο {p['name']} έχει ήδη παίξει και δεν μπορεί να γίνει Captain")
+        return new, changes
+
+    new, changes = rails(team)
+    # the turn plan may change the formation: kept only if the played starters can stay on their slots
+    if name_of(team) not in counts or any(p["role"] == "5άδα" and p["id"] in stay
+                                          and name_of(team) not in stay[p["id"]] for p in team):
+        team, plan = res["team"], []
+        new, changes = rails(team)
+    res["team"], res["plan"] = team, plan
+
+    # body: played players who keep their role keep their exact slot; the others fill the free
+    # slots of their group. The five goes by position blocks (in the game's order), so each
+    # position's block is filled around its played starters; then the sixth; then the bench.
     d = st["direction"]
     cur = {p["id"]: p for p in st["squad"]}
-    groups = (("5άδα", st["slots"][:5]), ("6ος", st["slots"][5:6]), ("πάγκος", st["slots"][6:]))
-    placed = []
+    five = [p for p in res["team"] if p["role"] == "5άδα"]
+    fname = "-".join(str(sum(p["position"] == pos for p in five)) for pos in POS)
+    if fname not in st["forms"]:
+        raise Abort(f"το formation {fname} δεν υπάρχει στο παιχνίδι")
+    placed, k = [], 0
+    for pos in order:
+        block = five_slots[k:k + counts[fname][pos]]
+        k += counts[fname][pos]
+        members = [p for p in five if p["position"] == pos]
+        fixed = [p for p in members if cur[p["id"]]["played"] and cur[p["id"]]["cur_role"] == "5άδα"]
+        if any(cur[p["id"]]["court_position"] not in block for p in fixed):
+            raise Abort("ένας βασικός που έπαιξε θα έπρεπε να αλλάξει θέση στο γήπεδο — δεν αλλάζω τίποτα")
+        free = sorted(set(block) - {cur[p["id"]]["court_position"] for p in fixed})
+        placed += [(p, cur[p["id"]]["court_position"]) for p in fixed]
+        placed += list(zip(sorted((p for p in members if p not in fixed), key=lambda p: p["id"]), free))
+    groups = (("6ος", st["slots"][5:6]), ("πάγκος", st["slots"][6:]))
     for role, slots in groups:
         members = [p for p in res["team"] if p["role"] == role]
         fixed = [p for p in members if cur[p["id"]]["played"] and cur[p["id"]]["cur_role"] == role]
@@ -133,10 +183,6 @@ def propose(st: dict) -> dict:
                          key=lambda p: (d * POS[p["position"]], p["id"]))
         placed += [(p, cur[p["id"]]["court_position"]) for p in fixed]
         placed += list(zip(movable, free))
-    five = [p for p in res["team"] if p["role"] == "5άδα"]
-    fname = "-".join(str(sum(p["position"] == pos for p in five)) for pos in POS)
-    if fname not in st["forms"]:
-        raise Abort(f"το formation {fname} δεν υπάρχει στο παιχνίδι")
     body = {"formation_id": st["forms"][fname], "players": [
         {"id": p["id"], "court_position": slot, "is_captain": bool(p["captain"])}
         for p, slot in sorted(placed, key=lambda x: x[1])] + [

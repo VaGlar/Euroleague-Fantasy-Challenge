@@ -71,6 +71,33 @@ def test_turn2_morning_legal_swaps_are_applied(monkeypatch, public):
     assert after[1] == before[1] and after[5] == before[5], "όσοι μένουν κρατούν τη θέση τους"
 
 
+def test_formation_change_keeps_played_starters_on_their_slots(monkeypatch, public):
+    """14/10: the proposal changed the formation (a second Forward for a Guard) while a Guard who
+    had played kept his slot, which then fell in the Forwards' block -> 422 "Every player must be
+    in the right court position". Only formations that leave played starters on their slots."""
+    pts = {1: 30, 2: 2, 5: 25, 6: 20, 9: 0, 7: 1}     # turn 1 played: G1 F5 F6 stay, G2 and C9 go
+    g = game(monkeypatch, public, GOOD, captain=1, played=pts)
+    before = {p["id"]: p["court_position"] for p in g.state["players"]}
+    pr = lineup_cmd.propose(lineup_cmd.load_state())
+    lineup_cmd.apply(pr["nonce"])                    # the fake game checks the five's slot order too
+    roles, _ = g.lineup()
+    five = {i for i, r in roles.items() if r == "5άδα"}
+    assert {1, 5, 6, 10} <= five and 8 not in five, "1-3-1 would push G1 off his slot: a Guard instead"
+    after = {p["id"]: p["court_position"] for p in g.state["players"]}
+    assert all(after[i] == before[i] for i in (1, 5, 6)), "οι βασικοί που έπαιξαν κρατούν τη θέση τους"
+
+
+def test_the_fake_game_refuses_a_five_out_of_position_order(monkeypatch, public):
+    g = game(monkeypatch, public, GOOD, captain=1)
+    body = {"formation_id": g.state["formation_id"], "players": [
+        {"id": p["id"], "court_position": p["court_position"], "is_captain": p["is_captain"]}
+        for p in g.state["players"]]}
+    c = next(b for b in body["players"] if b["id"] == 9)      # the Center
+    gd = next(b for b in body["players"] if b["id"] == 1)     # a Guard
+    c["court_position"], gd["court_position"] = gd["court_position"], c["court_position"]
+    assert g.save_roster(g.TEAM, g.MATCHDAY, body).status_code == 422
+
+
 def test_mantzoukas_case_sixth_man_who_played_is_not_moved_into_the_five(monkeypatch, public):
     # 22/9 bug: a played sixth man was moved into the five -> 422
     pts = {1: 1, 2: 2, 5: 3, 6: 3, 9: 3, 7: 40}
