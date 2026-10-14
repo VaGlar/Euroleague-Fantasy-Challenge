@@ -1417,7 +1417,7 @@ fantasy_id,person_id,first_name,last_name,team,position,price,matchday,is_injure
 3768,003842,Mathias,Lessort,PAN,Center,15.8,5,False,1.0,,19.5
 3795,012608,TJ,Shorts,PAM,Guard,15.7,5,False,1.0,,14.1
 3765,005985,Mike,James,IST,Guard,15.6,5,True,0.0,,0.6
-3791,013369,Carlik,Jones,PAR,Guard,15.3,5,False,1.0,,31.3
+3791,013369,Carlik,Jones,PAR,Guard,15.3,5,False,1.0,,31.2
 3887,007975,Sylvain,Francisco,PAN,Guard,15.2,5,False,1.0,,15.1
 3769,005791,Walter,Tavares,MAD,Center,14.7,5,False,1.0,,2.8
 3843,012878,Moses,Wright,MIL,Center,14.7,5,False,1.0,,8.0
@@ -1647,7 +1647,7 @@ fantasy_id,person_id,first_name,last_name,team,position,price,matchday,is_injure
 3921,BSS,Pablo,Laso,IST,Head Coach,6.3,5,False,1.0,,7.0
 4084,011927,Dustin,Sleva,ZAL,Forward,6.3,5,False,1.0,,1.0
 7328,013845,Kaodirichi,Akobundu-Ehiogu,ZAL,Center,6.3,5,False,1.0,,0.4
-3942,007032,Maodo,Lo,ZAL,Guard,6.2,5,False,1.0,,1.1
+3942,007032,Maodo,Lo,ZAL,Guard,6.2,5,False,1.0,,1.2
 11506,006896,Ignas,Sargiunas,ULK,Guard,6.2,5,False,1.0,,1.2
 3904,012795,Justin,Anderson,DUB,Forward,6.1,5,True,0.0,,0.5
 3922,008161,Juhann,Begarin,ASV,Forward,6.1,5,False,1.0,,0.0
@@ -1691,7 +1691,7 @@ fantasy_id,person_id,first_name,last_name,team,position,price,matchday,is_injure
 7216,003458,Davis,Bertans,DUB,Forward,4.9,5,False,1.0,,2.4
 3964,BFJ,Alex,Mumbru,VIR,Head Coach,4.8,5,False,1.0,,5.1
 7223,014026,Clement,Frisch,BAS,Forward,4.8,5,False,1.0,,0.5
-3950,004007,Ognjen,Dobric,RED,Forward,4.7,5,False,1.0,,6.9
+3950,004007,Ognjen,Dobric,RED,Forward,4.7,5,False,1.0,,7.0
 11521,015161,Marc-owen,Fodzo Dada,ASV,Guard,4.7,5,False,1.0,,8.8
 3971,004761,Vanja,Marinkovic,PAR,Guard,4.6,5,True,0.0,,0.3
 4698,007929,Onuralp,Bitim,ULK,Forward,4.6,5,False,1.0,,0.4
@@ -1755,7 +1755,7 @@ fantasy_id,person_id,first_name,last_name,team,position,price,matchday,is_injure
 9006,013541,Caspar,Vossenberg,MUN,Guard,4.0,5,False,1.0,,0.2
 9061,013028,Matteo,Baiocchi,VIR,Guard,4.0,5,False,1.0,,0.8
 9062,013579,Kilian,Fischer,MUN,Forward,4.0,5,False,1.0,,3.0
-11496,012806,Andrej,Bjelic,RED,Guard,4.0,5,False,1.0,,1.7
+11496,012806,Andrej,Bjelic,RED,Guard,4.0,5,False,1.0,,1.6
 11497,F11497,Vojin,Medarevic,RED,Center,4.0,5,False,1.0,,4.7
 11524,010091,Nikolaos,Plotas,OLY,Guard,4.0,5,False,1.0,,0.4
 11533,012943,Uros,Mijailovic,PAR,Forward,4.0,5,False,1.0,,5.1
