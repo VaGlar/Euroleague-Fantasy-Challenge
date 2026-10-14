@@ -219,3 +219,36 @@ test("filters: $▲ keeps the players whose price is expected to rise, shown wit
   const rows = page.locator(isPhone(testInfo) ? "#plist .pcard" : "#ptable tbody tr");
   if (n) await expect(rows.first().locator(".tag.t-up")).toHaveText("$▲");
 });
+
+// tester, 14/10: Points/credit against values worked by hand from the fixture (fpt_total / price), not by the
+// page's own formula; and «Καθαρισμός» leaving ★ Watchlist on (it is on the page, as the search)
+test("Points/credit: the best and a from-value, by hand from the fixture", async ({ page }, testInfo) => {
+  await open(page, "public", { tab: "players" });
+  await page.locator("#fsort").selectOption("ppc");
+  const first = page.locator(isPhone(testInfo) ? "#plist .pcard" : "#ptable tbody tr").first();
+  await expect(first).toHaveAttribute("data-pid", "014108");          // DIARRA: 84.8 / 6.6 = 12.85, the most
+  await filters(page);
+  await page.locator("#fminppc").fill("10");                          // MALEDON 10.65, OBRADOVIC 10.68, DIARRA 12.85
+  await done(page);
+  await expect(page.locator("#fcount")).toHaveText("3 παίκτες");
+  await filters(page);
+  await page.locator("#fminppc").fill("10,7");                        // a Greek keyboard's comma: only DIARRA
+  await done(page);
+  await expect(page.locator("#fcount")).toHaveText("1 παίκτης");
+});
+
+test("«Καθαρισμός» clears the panel's filters but leaves ★ Watchlist and the search", async ({ page }) => {
+  await open(page, "public", { tab: "players" });
+  await page.locator("#fsearch").fill("a");
+  await page.locator("#fwatch").check();
+  await filters(page);
+  await page.locator("#fpmin").fill("5");
+  await page.locator("#fxup").check();
+  await page.locator("#fclear").click();
+  await expect(page.locator("#fpmin")).toHaveValue("");
+  await expect(page.locator("#fxup")).not.toBeChecked();
+  await done(page);
+  await expect(page.locator("#fwatch")).toBeChecked();
+  await expect(page.locator("#fsearch")).toHaveValue("a");
+  await expect(page.locator("#fchips")).toBeEmpty();
+});
