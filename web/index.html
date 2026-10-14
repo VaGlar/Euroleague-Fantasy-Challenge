@@ -613,7 +613,7 @@ const INFO = {
   acc_top: "Top-20: από τους 20 που το μοντέλο έβλεπε καλύτερους σε ένα Round, πόσοι βγήκαν πράγματι στους 20 καλύτερους. Στο σύνολο, ο μέσος όρος των Rounds.",
   lu_vs: "Και οι δύο με τα πραγματικά points (Bench 50%, Captain ×2, Coach). Θετικό: οι δικές σου αλλαγές (π.χ. στο T2) κέρδισαν points σε σχέση με την πρόταση πριν το Round.",
   experts: "Μέσα points των παικτών που πρότεινε κάθε στήλη, έναντι του xFPT που τους έδινε το μοντέλο. Σταθερά θετικό: η στήλη βλέπει κάτι που το μοντέλο δεν βλέπει. Με λίγες επιλογές, αγνόησέ το.",
-  bt: "Σαν να έτρεχε το μοντέλο πέρσι: κάθε Round με όσα ήξερε ως τότε, σε σύγκριση με το PIR που έγινε. Σφάλμα: πόσο πέφτει έξω ανά παίκτη/αγώνα. Spearman: η σειρά. Top-20: πόσοι από τους 20 που έβλεπε καλύτερους βγήκαν στο top-20.",
+  bt: "Κάθε Round, η καλύτερη ομάδα με 100 credits κατά την πρόβλεψη και τα πραγματικά της points (δεύτερο μισό της σεζόν, R&D 004). «Τέλεια γνώση»: αν ξέραμε από πριν τα αποτελέσματα.",
   learned: "Οι συντελεστές του μοντέλου, από την περσινή σεζόν. Τα φετινά παιχνίδια μπαίνουν στη φόρμα κάθε παίκτη (μέσος όρος σεζόν, τελευταία 3), όχι εδώ. Π.χ. ματσάρισμα ×0.5: αν μια άμυνα δίνει +20% PIR σε μια θέση, ο παίκτης απέναντί της παίρνει ~+10%.",
   pir: "PIR: η αξιολόγηση της EuroLeague (πόντοι, ριμπάουντ, ασίστ, κλεψίματα, κοψίματα, κερδισμένα φάουλ, μείον άστοχα, λάθη και φάουλ).",
 };
@@ -1441,6 +1441,9 @@ function apMovesHtml(rounds) {
   return `<div class="ap-moves"><h3>Κινήσεις του autopilot</h3>${items.slice(0, SHOWN).join("")}${items.length > SHOWN
     ? `<details class="ap-old"><summary class="muted">Παλαιότερα Rounds (${items.length - SHOWN})</summary>${items.slice(SHOWN).join("")}</details>` : ""}</div>`;
 }
+// squad points per round in past seasons (research/004_metric_choice/result.json: fixed, past data)
+const BT_SQUAD = { seasons: ["2025-26", "2024-25"], rows: [
+  ["Μοντέλο", [149.9, 161.1], true], ["Μέσος όρος σεζόν", [145.4, 157.1]], ["Τέλεια γνώση", [281.9, 276.9]]] };
 function renderModel(mp, trk, ap) {
   const pctd = (a, b) => (a && b ? Math.round((1 - a / b) * 100) : null);
   let html = autopilotCard(ap);
@@ -1488,14 +1491,12 @@ function renderModel(mp, trk, ap) {
   html += `</div>`;
   // 4. last season's backtest
   if (mp) {
-    const row = (k, l, me) => mp[k] ? `<tr${me ? ' style="font-weight:700"' : ""}><td>${l}</td><td class="num">${mp[k].mae}</td><td class="num">${mp[k].spearman}</td><td class="num">${Math.round(mp[k].top20_hit * 100)}%</td></tr>` : "";
     const c = mp.params?.coef || {}, w = mp.params || {};
     const pc = (x, sgn) => `${sgn && x >= 0 ? "+" : ""}${(x * 100).toFixed(1)}%`;
-    html += `<details class="card"><summary><b>Για προχωρημένους</b> <span class="muted">· backtest και συντελεστές του μοντέλου</span></summary>
-      <h3 style="font-size:13px;margin:12px 0 6px">Backtest σεζόν ${mp.season}-${String((mp.season + 1) % 100).padStart(2, "0")} ${ii("bt")}</h3>
-      <div class="tablewrap"><table class="fit"><thead><tr><th>Μέθοδος</th><th class="num">Σφάλμα</th><th class="num">Spearman</th><th class="num">Top-20</th></tr></thead><tbody>
-      ${row("baseline_prev_season", "Μόνο περσινό PIR")}${row("baseline_season_avg", "Μέσος όρος σεζόν")}
-      ${row("form_blend", "Φόρμα (blend)")}${row("fitted_context_insample", "Φόρμα + context (αυτό)", true)}
+    html += `<details class="card"><summary><b>Για προχωρημένους</b></summary>
+      <h3 style="font-size:13px;margin:12px 0 6px">Points ομάδας ανά Round ${ii("bt")}</h3>
+      <div class="tablewrap"><table class="fit"><thead><tr><th></th>${BT_SQUAD.seasons.map((x) => `<th class="num">${x}</th>`).join("")}</tr></thead><tbody>
+      ${BT_SQUAD.rows.map(([l, v, me]) => `<tr${me ? ' style="font-weight:700"' : ""}><td>${l}</td>${v.map((x) => `<td class="num">${f1(x)}</td>`).join("")}</tr>`).join("")}
       </tbody></table></div>
       <h3 style="font-size:13px;margin:12px 0 6px">Τι έμαθε το μοντέλο ${ii("learned")}</h3>
       <ul class="why">

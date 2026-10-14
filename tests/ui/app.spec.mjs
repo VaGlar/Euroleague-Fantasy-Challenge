@@ -219,4 +219,7 @@ test("Μοντέλο: accuracy in boxes with ⓘ, the backtest folded", async ({
   const adv = page.locator("#model details", { hasText: "Για προχωρημένους" });
   await expect(adv).toHaveCount(1);
   await expect(adv).not.toHaveAttribute("open", "");
+  await adv.locator("summary").click();
+  await expect(adv).toContainText("Points ομάδας ανά Round");          // squad points, not error tables
+  await expect(adv.locator("tr", { hasText: "Μοντέλο" })).toContainText("149.9");
 });
