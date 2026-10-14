@@ -57,9 +57,11 @@
   };
   const undoSteps = (t) => liveHist(t).length;
   const restore = (t, snap) => { for (const k of SNAP) { if (snap[k] === null) delete t[k]; else t[k] = JSON.parse(JSON.stringify(snap[k])); } };
+  // a step that leaves the team as it is now (e.g. a sync brought the same team) is skipped: one tap, one visible change
   function undoLast(t) {
-    const hist = liveHist(t);
-    const h = hist.pop();
+    const hist = liveHist(t), now = JSON.stringify(snapOf(t));
+    let h = hist.pop();
+    while (h && JSON.stringify(h.snap) === now) h = hist.pop();
     if (!h) return false;
     restore(t, h.snap);
     t.hist = hist;
@@ -154,8 +156,12 @@
     syncSet({ code: res.body.code, rev: res.body.rev, dirty: false });
     return 201;
   }
+  // the code as typed, a Greek keyboard's look-alike capitals and accents too (cleanCode in functions/api/sync)
+  const GREEK_LATIN = { Α: "A", Β: "B", Ε: "E", Ζ: "Z", Η: "H", Ι: "I", Κ: "K", Μ: "M", Ν: "N", Ο: "O", Ρ: "P", Τ: "T", Υ: "Y", Χ: "X" };
+  const syncCode = (raw) => String(raw || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase()
+    .replace(/[\u0391-\u03a9]/g, (c) => GREEK_LATIN[c] || c).replace(/[^A-Z0-9]/g, "");
   async function syncJoin(raw) {
-    const code = String(raw || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+    const code = syncCode(raw);
     if (code.length !== 12) return 400;
     const res = await syncApi("GET", code);
     if (res.status !== 200) return res.status;
@@ -630,7 +636,7 @@
         <div class="muted"><button class="tm-trades" id="tmBankEdit" type="button" title="Διόρθωσε τα credits σου">Credits <b>${f1(t.bank)}/${f1(Number(t.bank) + value)}</b> ✎</button>${gain ? ` <span class="${gain > 0 ? "tm-up" : "tm-down"}">(${gain > 0 ? "+" : "−"}${f1(Math.abs(gain))} gain)</span>` : ""} · ${pl.ti.max_trades <= 4 ? `<button class="tm-trades" id="tmTrades" type="button" title="Άλλαξε πόσα Trades σου μένουν">Trades <b>${usedTrades(t, pl.ti)}/${pl.ti.max_trades}</b> ✎</button>`
           : `Trades <b>${usedTrades(t, pl.ti)}/${pl.ti.max_trades > 4 ? "∞" : pl.ti.max_trades}</b>`}</div>
         <div class="muted">xFPT <b>${f1(total)}</b>${Math.abs(pl.planned - total) >= 0.05
-          ? ` → <b class="tm-planned"${pl.turnPlan.length ? ' title="Με τις αλλαγές 🕐 πριν το επόμενο Turn"' : ""}>${f1(pl.planned)}</b>` : ""}</div>
+          ? ` → <b class="tm-planned"${pl.turnPlan.length ? ' title="Με τις αλλαγές 🕐 πριν το επόμενο Turn"' : ""}>${f1(pl.planned)}</b>` : ""}${typeof earlyII === "function" ? earlyII() : ""}</div>
         <div class="tm-dead">${head}</div>${clubWarn(rows, pl.trs)}</div>
         ${t.game ? (t.draft ? `<div class="tm-right"><div class="tm-toolbar" role="toolbar"><button id="tmDraftX" title="Η ομάδα όπως είναι στο παιχνίδι">↩ Ακύρωση Trades</button></div></div>` : "")
           : `<div class="tm-right">${undoBar(t)}<div class="tm-morewrap"><button class="tm-more" id="tmMore" aria-haspopup="menu">⋯ Επιλογές</button><div id="tmMenu"></div></div></div>`}</header>
@@ -668,7 +674,7 @@
     const role = r.position === "Head Coach" ? "coach" : (t.roles || {})[id];
     const canCap = role === "5άδα" && t.captain !== id && !(played(r) && t.captain !== id);
     sheet(`<div class="sh"><div><h2>${esc(nm(r.name))}</h2>
-        <div class="muted">${esc(tc(r.team))} · ${NAME[r.position]} · τώρα ${f1(r.price)} cr${r.buy != null ? ` · αγορά ${f1(r.buy)}${dPrice(r) ? ` (${dPrice(r) > 0 ? "+" : "−"}${f1(Math.abs(dPrice(r)))})` : ""}` : ""}${r.popularity != null ? ` · POP ${f1(r.popularity)} %` : ""}${r.turn ? ` · Turn ${r.turn}` : ""}${role && role !== "coach" ? ` · ${ROLE_LABEL[role] || role}` : ""}</div></div>
+        <div class="muted">${esc(tc(r.team))} · ${NAME[r.position]} · τώρα ${f1(r.price)} cr${r.buy != null ? ` · αγορά ${f1(r.buy)}${dPrice(r) ? ` (${dPrice(r) > 0 ? "+" : "−"}${f1(Math.abs(dPrice(r)))})` : ""}` : ""}${r.popularity != null ? ` · POP ${f1(r.popularity)} %` : ""}${r.turn ? ` · Turn ${r.turn}` : ""}${role && role !== "coach" ? ` · ${esc(ROLE_LABEL[role] || role)}` : ""}</div></div>
         <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
       <div class="kpis"><div class="kpi"><b>${f1(scored(r) ? pts(r) : r.x_now)}</b><span>${scored(r) ? (r.actual == null ? "δεν έπαιξε" : "points") : "xFPT"}</span></div>
         <div class="kpi"><b>${f1(xf3(r))}</b><span>xFPT3</span></div><div class="kpi"><b>${r.value == null ? "–" : r.value.toFixed(2)}</b><span>xFPT3/cr</span></div></div>
@@ -683,7 +689,7 @@
     on("aCap", () => { t.captain = id; save(t); closePlayer(); render(); flash(id); toast(`CAP: ${sur(r.name)}`); });
     on("aSwap", () => {
       const others = rows.filter((x) => x.id !== id && x.position !== "Head Coach" && (t.roles || {})[x.id] !== role);
-      sheet(`<div class="sh"><div><h2>${esc(sur(r.name))} ⇄ …</h2><div class="muted">Τώρα: ${ROLE_LABEL[role] || role}</div></div>
+      sheet(`<div class="sh"><div><h2>${esc(sur(r.name))} ⇄ …</h2><div class="muted">Τώρα: ${esc(ROLE_LABEL[role] || role)}</div></div>
           <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
         <div class="tm-acts">${others.map((x) => `<button class="tm-act" data-q="${x.id}"><span>${LETTER[x.position]}</span><div>${esc(nm(x.name))}
           <small>${(t.roles || {})[x.id]} · ${scored(x) ? `έφερε ${f1(pts(x))}` : `xFPT ${f1(x.x_now)}`}</small></div></button>`).join("")}</div>`);
@@ -887,24 +893,16 @@
   // «💾 Save» next to them. On phones: ↶ (the last step) and ▾ with «Undo last» / «Undo all».
   function undoBar(t) {
     const ti = P.trade_info || {}, n = undoSteps(t), all = n > 1 || canUndo(t, ti);
+    // ▾ on phones is a native <select> under a transparent cover: iOS opens its picker on the first tap
     const undo = n || all ? `<span class="tm-undo">${n ? `<button id="mUndoLast" title="Undo last" aria-label="Undo last"><span class="tm-ico" aria-hidden="true">↶</span><span class="tm-lbl">Undo</span></button>` : ""}`
-      + `<button id="mUndoDd" class="tm-dd" aria-haspopup="menu" aria-expanded="false" aria-label="Επιλογές αναίρεσης">▾</button>`
-      + `<span class="tm-undomenu" id="tmUndoMenu">${n ? `<button id="mUndoLast2" class="tm-phone">Undo last</button>` : ""}`
-      + `${all ? `<button id="mUsed" title="Η ομάδα όπως στο τελευταίο κλείδωμα">Undo all</button>` : ""}</span></span>` : "";
+      + `<span class="tm-dd"><span aria-hidden="true">▾</span><select id="mUndoSel" aria-label="Επιλογές αναίρεσης"><option value="" selected disabled>Αναίρεση</option>`
+      + `${n ? `<option value="last">Undo last</option>` : ""}${all ? `<option value="all">Undo all</option>` : ""}</select></span>`
+      + `${all ? `<button id="mUsed" title="Η ομάδα όπως στο τελευταίο κλείδωμα">Undo all</button>` : ""}</span>` : "";
     return `<div class="tm-toolbar" role="toolbar">${undo}<button id="mCp" title="Το «Undo all» θα γυρίζει εδώ">💾 Save</button></div>`;
   }
   function bindUndo(t, best) {
     const last = () => { if (undoLast(t)) { render(best); toast(`Αναιρέθηκε η τελευταία κίνηση${undoSteps(t) ? ` · μένουν ${undoSteps(t)}` : ""}`); } };
-    if ($("#mUndoLast")) $("#mUndoLast").onclick = last;
-    if ($("#mUndoLast2")) $("#mUndoLast2").onclick = last;
-    if ($("#mUndoDd")) $("#mUndoDd").onclick = (e) => {
-      e.stopPropagation();
-      const open = $("#tmUndoMenu").classList.toggle("on");
-      $("#mUndoDd").setAttribute("aria-expanded", String(open));
-    };
-    if ($("#mCp")) $("#mCp").onclick = () => cpSheet(t, best);
-    if ($("#tmBankEdit")) $("#tmBankEdit").onclick = () => bankSheet(t, best);
-    if ($("#mUsed")) $("#mUsed").onclick = () => {
+    const askAll = () => {
       const n = usedTrades(t, P.trade_info || {}), snap = !!(t.used && t.used.before);
       sheet(`<div class="sh"><h2>Αναίρεση ${n === 0 ? "των κινήσεων" : n === 1 ? "του Trade" : `των ${n} Trades`};</h2><button class="x" onclick="closePlayer()">×</button></div>
         <p class="muted">${snap || undoSteps(t) ? "Η ομάδα, το υπόλοιπο, οι θέσεις και ο Captain γυρίζουν όπως ήταν στο τελευταίο κλείδωμα."
@@ -913,6 +911,15 @@
       $("#tmUndoOk").onclick = () => { const ok = undoAll(t) || (undoTrades(t), save(t), !!snap); closePlayer(); render(best);
         toast(ok ? "Η ομάδα γύρισε όπως ήταν" : "Ο μετρητής μηδενίστηκε"); };
     };
+    if ($("#mUndoLast")) $("#mUndoLast").onclick = last;
+    if ($("#mUsed")) $("#mUsed").onclick = askAll;
+    if ($("#mUndoSel")) $("#mUndoSel").onchange = (e) => {
+      const v = e.target.value;
+      e.target.value = "";
+      if (v === "last") last(); else if (v === "all") askAll();
+    };
+    if ($("#mCp")) $("#mCp").onclick = () => cpSheet(t, best);
+    if ($("#tmBankEdit")) $("#tmBankEdit").onclick = () => bankSheet(t, best);
   }
 
   // Credits ✎: the first number under CREDITS in the game
@@ -968,7 +975,6 @@
     };
   }
   document.addEventListener("click", (e) => { if (!e.target.closest("#tmMenu, #tmMore")) { const h = document.getElementById("tmMenu"); if (h) h.innerHTML = ""; } });
-  document.addEventListener("click", (e) => { if (!e.target.closest("#mUndoDd")) { const m = document.getElementById("tmUndoMenu"); if (m) m.classList.remove("on"); } });
 
   // ------------------------------------------------------------ setup on an empty court
   function setupView() {
@@ -1219,6 +1225,7 @@
   .tm-toolbar button { border: 1px solid var(--border); background: var(--surface-1); color: var(--text-primary); border-radius: 999px;
     padding: 7px 13px; font: inherit; font-size: 14px; cursor: pointer; }
   .tm-toolbar button:hover { border-color: var(--series-1); }
+  .tm-toolbar button { touch-action: manipulation; }   /* iPhone: no wait for a double-tap zoom */
   .tm-menu { position: absolute; right: 0; top: 44px; z-index: 5; background: var(--surface-1); border: 1px solid var(--border);
     border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,.15); min-width: 230px; overflow: hidden; }
   .tm-menu button, .tm-menu a { box-sizing: border-box; text-decoration: none; }
@@ -1337,20 +1344,16 @@
   .tm-trades { border: 0; background: none; padding: 0; font: inherit; color: inherit; cursor: pointer; }
   /* undo: words on wide screens; on phones ↶ and ▾ with «Undo last» / «Undo all» */
   .tm-undo { display: contents; }
-  .tm-undomenu { display: contents; }
-  .tm-ico, .tm-dd, .tm-phone { display: none; }
+  .tm-ico, .tm-dd { display: none; }
   @media (max-width: 699px) {
-    .tm-undo { display: inline-flex; position: relative; }
+    .tm-undo { display: inline-flex; }
     .tm-undo > #mUndoLast { border-radius: 999px 0 0 999px; padding: 6px 12px; font-size: 18px; line-height: 1; }
     .tm-ico { display: inline; }
-    .tm-lbl { display: none; }
-    .tm-toolbar .tm-dd { display: inline-block; padding: 7px 10px; }
+    .tm-lbl, .tm-undo > #mUsed { display: none; }
+    .tm-dd { display: inline-grid; place-items: center; position: relative; border: 1px solid var(--border); background: var(--surface-1);
+      color: var(--text-primary); border-radius: 999px; padding: 0 12px; font-size: 14px; }
     .tm-undo > #mUndoLast + .tm-dd { border-radius: 0 999px 999px 0; border-left: 0; }
-    .tm-undomenu { display: none; position: absolute; right: 0; top: 40px; z-index: 6; background: var(--surface-1); border: 1px solid var(--border);
-      border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,.15); min-width: 160px; overflow: hidden; }
-    .tm-undomenu.on { display: block; }
-    .tm-toolbar .tm-undomenu button { display: block; width: 100%; text-align: left; border: 0; border-radius: 0; padding: 12px 14px; }
-    .tm-toolbar .tm-undomenu button + button { border-top: 1px solid var(--border); }
+    .tm-dd select { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; font-size: 16px; cursor: pointer; }
   }
   /* wide screens: the to-do list and the court side by side */
   @media (min-width: 1000px) {

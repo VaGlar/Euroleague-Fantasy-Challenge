@@ -19,20 +19,27 @@ export const LIMITS = { POST: 10, PUT: 300, GET: 600, DELETE: 60 };
 const HOUR = 3600;
 
 const json = (obj, status = 200) => new Response(JSON.stringify(obj), {
-  status, headers: { "content-type": "application/json", "cache-control": "no-store" },
+  status, headers: { "content-type": "application/json", "cache-control": "no-store", "x-content-type-options": "nosniff" },
 });
 
 export function newCode() {
   const b = crypto.getRandomValues(new Uint8Array(CODE_LEN));
   return Array.from(b, (x) => ALPHABET[x % ALPHABET.length]).join("");
 }
-// "abcd-efgh-jkmn" as typed -> "ABCDEFGHJKMN"
-export const cleanCode = (s) => String(s || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+// Greek capitals that look like Latin ones: a code typed on a Greek keyboard (web/team.js has the same map)
+export const GREEK_LATIN = { Α: "A", Β: "B", Ε: "E", Ζ: "Z", Η: "H", Ι: "I", Κ: "K", Μ: "M", Ν: "N", Ο: "O", Ρ: "P", Τ: "T", Υ: "Y", Χ: "X" };
+// "abcd-efgh-jkmn" as typed (Greek look-alikes and accents too) -> "ABCDEFGHJKMN"
+export const cleanCode = (s) => String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase()
+  .replace(/[\u0391-\u03a9]/g, (c) => GREEK_LATIN[c] || c).replace(/[^A-Z0-9]/g, "");
 
-// a team as the page keeps it: an object with up to 15 players (11 + room for the game's rules)
-function validTeam(d) {
-  return d && typeof d === "object" && !Array.isArray(d) && Array.isArray(d.players) && d.players.length <= 15
-    && d.players.every((p) => p && Number.isFinite(Number(p.id)));
+// a team as the page keeps it: an object with up to 15 players (11 + room for the game's rules); roles only
+// the page's own (they are shown on the page)
+export const ROLES = ["5άδα", "6ος", "πάγκος", "coach"];
+export function validTeam(d) {
+  const roles = d && d.roles;
+  return !!d && typeof d === "object" && !Array.isArray(d) && Array.isArray(d.players) && d.players.length <= 15
+    && d.players.every((p) => p && Number.isFinite(Number(p.id)))
+    && (roles == null || (typeof roles === "object" && !Array.isArray(roles) && Object.values(roles).every((r) => ROLES.includes(r))));
 }
 
 let ready = false;

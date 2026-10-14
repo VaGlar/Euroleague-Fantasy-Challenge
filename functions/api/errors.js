@@ -4,10 +4,12 @@
 // day it goes to the owner's Telegram (secrets TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID on the Pages project;
 // without them it is only counted). Nothing personal: the error's text (cut), the file and line, the tab.
 // Limit: ERR_LIMIT reports per IP and hour (the IP only as a salted hash, as in the sync), MAX_ALERTS a day.
+// Kept KEEP_DAYS days: the first new error of a day deletes older ones.
 // Pages Functions don't get web/_headers: this one sets its own.
 export const MAX_BYTES = 2_000;
 export const ERR_LIMIT = 30;
 export const MAX_ALERTS = 20;
+export const KEEP_DAYS = 30;            // the counts are kept this long, then deleted
 const HOUR = 3600;
 
 const done = (status = 204) => new Response(null, { status, headers: { "cache-control": "no-store", "x-content-type-options": "nosniff" } });
@@ -48,6 +50,14 @@ export async function onRequestPost({ request, env }) {
   const k = await sha(`${msg}|${src}`);
   const row = await db.prepare(`INSERT INTO errors (day, k, msg, src, tab, n) VALUES (?, ?, ?, ?, ?, 1)
     ON CONFLICT(day, k) DO UPDATE SET n = n + 1 RETURNING n`).bind(day, k, msg, src, tab).first();
+  // a new error of the day: the old days go (and the hour counters that are over); never fails the report
+  if (row?.n === 1) {
+    const old = new Date(Date.now() - KEEP_DAYS * 86400_000).toISOString().slice(0, 10);
+    try {
+      await db.prepare("DELETE FROM errors WHERE day < ?").bind(old).run();
+      await db.prepare("DELETE FROM hits WHERE until < ?").bind(now).run();
+    } catch (err) { /* the next new error tries again */ }
+  }
   if (row?.n === 1 && env.TELEGRAM_BOT_TOKEN && env.TELEGRAM_CHAT_ID) {
     const today = await db.prepare("SELECT COUNT(*) AS c FROM errors WHERE day = ?").bind(day).first();
     if ((today?.c ?? 0) <= MAX_ALERTS) {

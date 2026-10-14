@@ -202,7 +202,9 @@ to Supabase/Postgres as it is when accounts come). Once:
    Production → `hoopslab-sync`, Preview → `hoopslab-sync-dev`.
 3. A new deploy (the next update) turns it on. Without the database the page says it is «not available yet».
 
-No accounts or personal data: only player ids, prices, credits. Whoever has the code
+No accounts or personal data: only player ids, prices, credits. A code typed on a Greek keyboard works: the
+look-alike Greek capitals (Α Β Ε Η Κ Μ Ν Ρ Τ Υ Χ Ζ) are read as the Latin ones, on the page and on the server.
+The server keeps only the page's roles (5άδα, 6ος, πάγκος, coach). Whoever has the code
 (12 characters, ~10^17 combinations) sees and changes the team. When both devices change it without a
 sync in between, the newer change wins. «Διαγραφή από τον server» deletes the copy (`DELETE`).
 
@@ -211,6 +213,14 @@ Limits per IP and hour (429 above them, `LIMITS` in the function): 10 new codes,
 a Pages secret `SYNC_SALT` (any random text) on `hoopslab-beta`, so the hash can't be recomputed from the
 public code. The «Σχετικά» tab (public edition) says all this to the users.
 
+Capacity on Cloudflare's free plan (an estimate from the code, not a measurement). Only `/api/*` and
+`/feed` run Functions; the pages and `data/*.json` are static and unlimited. A device with sync on makes
+a GET when the app opens or comes back to the front and a PUT 1.5 s after a burst of changes: some
+10–30 requests a day for an active user, each writing one row (the `hits` counter) and a PUT one more.
+The first limit is D1's 100k rows written a day: about **2,000 users a day with sync on**. Users
+without sync cost no Function call (an error report aside). The 100k Function requests a day allow
+about 3,000 sync users.
+
 ### Bugs from the users' browsers
 
 The page sends its JavaScript errors to `POST /api/errors` (`functions/api/errors.js`): the message,
@@ -218,7 +228,8 @@ the file and line, the tab, nothing personal; at most 5 per page load, lost conn
 function counts them per day in the same D1 (table `errors`, 30 reports per IP and hour) and sends the
 first occurrence of each error of the day to Telegram, at most 20 a day. For the messages, set the
 Pages secrets `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` on `hoopslab-beta` (the bot's values);
-without them the errors are only counted. Without the database (the personal site) it does nothing.
+without them the errors are only counted. Without the database (the personal site) it does nothing. The counts
+are kept 30 days: the first new error of a day deletes older ones (and the expired hour counters).
 
 «🐞 Ανάφερε πρόβλημα» (footer and «Σχετικά», public edition) shows the report text (to copy) and opens an email to the feedback address
 with the tab, round, data time, screen, browser and the last error already written.
@@ -242,6 +253,11 @@ data repo → `python -m elf.watch notify` in the update. Once:
    fine-grained token as for `/update` (Actions: Read and write on this repo only).
 2. A new deploy (the next update) turns it on. Without the secret `/api/watch` answers 404 (that is
    how HoopsLab, which has the same Functions, stays closed); without Cloudflare Access in front, 403.
+3. Recommended: two variables on `elf-dashboard` so the Access token itself is checked (signature,
+   audience, issuer, expiry), not only its presence: **`ACCESS_TEAM_DOMAIN`** =
+   `https://<team>.cloudflareaccess.com` (Zero Trust → Settings → Custom pages / team domain) and
+   **`ACCESS_AUD`** = the Access application's *Application Audience (AUD) Tag* (Zero Trust → Access →
+   Applications → the dashboard's app → Overview). A wrong value answers 403 to ⭐: check them if it stops.
 
 ### Fantasy columns (experts)
 The sources with `fantasy: true` in `sources.yaml` (the official Fantasy Tips, Basketball Sphere, EuroBallin)
