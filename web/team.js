@@ -272,8 +272,13 @@
   const started = () => P.players.some((p) => p.actual != null) || (P.turns || []).some((t) => turnStart(t.turn) <= Date.now());
   // scored / played: his points of the round are in. The app doesn't lock a player whose game has started
   // (the game does; here it only records what was done there), the round under way only shows a note
-  const scored = (r) => r.actual != null;
+  // A player whose team's game of this round is over without points for him didn't play: 0, and he is
+  // «played» for the game's rules (no armband, no place in the six). 14/10: Fodzo Dada, a DNP of turn 1,
+  // still looked like turn 1's to play, and the turn-aware armband went to him.
+  const gameOver = (r) => (P.fixtures || []).some((f) => f.round === P.round && f.played && (f.home === r.team || f.away === r.team));
+  const scored = (r) => r.actual != null || gameOver(r);
   const played = scored;
+  const pts = (r) => r.actual ?? 0;
   // price: today's (players are sold at it); buy: what the user paid (public edition), for the change only
   function rowsOf(t) {
     return t.players.map((x) => { const r = row(x.id); return r ? { ...r, id: x.id, price: r.price ?? x.price,
@@ -283,7 +288,7 @@
   const arrow = (d) => (d > 0 ? `<span class="tm-up">▲${f1(d)}</span>` : d < 0 ? `<span class="tm-down">▼${f1(-d)}</span>` : "");
   function optRows(rows, t, inRound) {
     return rows.map((r) => ({ id: r.id, position: r.position, team: r.team, price: Number(r.price) || 0, x_h: r.x_h ?? 0,
-      x_now: inRound && scored(r) ? r.actual : (r.x_now ?? 0), turn: r.turn, played: inRound && played(r),
+      x_now: inRound && scored(r) ? pts(r) : (r.x_now ?? 0), turn: r.turn, played: inRound && played(r),
       cur_role: (t.roles || {})[r.id] || (r.position === "Head Coach" ? "coach" : "πάγκος"), cur_captain: t.captain === r.id }));
   }
   const fiveOk = (roles, rows) => {
@@ -450,7 +455,7 @@
     const targetCap = team.find((p) => p.captain)?.id ?? null;
     // expected points of the round if the plan is followed (its trades, five, 6th and CAP)
     const lineupPts = team.reduce((a, p) => { const r = aRows.find((x) => x.id === p.id); if (!r) return a;
-      const v = inRound && scored(r) ? r.actual : (r.x_now ?? 0);
+      const v = inRound && scored(r) ? pts(r) : (r.x_now ?? 0);
       return a + v * (p.role === "πάγκος" ? 0.5 : 1) * (p.captain ? 2 : 1); }, 0);
     // the swaps before a later turn (🕐 below): the later bench player comes in when the early starter
     // scores less, so each pair adds (1 − bench share) × E[max(0, later − early)] (optimize.py's option value)
@@ -551,7 +556,7 @@
       <div class="ct"><span>${LETTER[r.position] || ""}</span>${r.turn ? `<span class="tb t${Math.min(r.turn, 3)}">T${r.turn}</span>` : ""}</div>
       <div class="cn cnx"><span class="nm">${esc(sur(r.name))}</span>${r.unregistered ? '<span title="εκτός ρόστερ EuroLeague">📋</span>' : inj(r) ? "<span>🚑</span>" : ""}${r.price_trend === "up" ? "<span>$</span>" : ""}${typeof fewGames === "function" && fewGames(r) ? '<span class="few" data-info="few" role="button" tabindex="0" aria-label="Τι σημαίνει νέος">🆕</span>'
         : r.returning ? '<span class="few" data-info="back" role="button" tabindex="0" aria-label="Τι σημαίνει επιστρέφει">↩</span>' : ""}</div>
-      <div class="cp${isPlayed ? " done" : ""}">${f1(isPlayed ? r.actual : r.x_now)}</div>
+      <div class="cp${isPlayed ? " done" : ""}">${f1(isPlayed ? pts(r) : r.x_now)}</div>
       <div class="cs">${gameOf(r)}${r.price != null ? ` · ${f1(r.price)}${arrow(dPrice(r))}` : ""}</div></div>`;
   }
   function courtHtml(t, rows, pl) {
@@ -575,7 +580,7 @@
         <p>Μπορεί να άλλαξαν ομάδα ή να έφυγαν από τη λίστα του παιχνιδιού.</p><button class="linkbtn" id="tmEdit">Διόρθωση ομάδας</button></div>`;
     }
     const items = pl.items;
-    const total = rows.reduce((a, r) => { const role = (t.roles || {})[r.id]; const v = scored(r) ? r.actual : (r.x_now ?? 0);
+    const total = rows.reduce((a, r) => { const role = (t.roles || {})[r.id]; const v = scored(r) ? pts(r) : (r.x_now ?? 0);
       return a + v * (role === "πάγκος" ? 0.5 : 1) * (t.captain === r.id ? 2 : 1); }, 0);
     const value = rows.reduce((a, r) => a + (Number(r.price) || 0), 0);
     // as the game: (credits + today's value of the squad) − the 100 of the start (sold players' gains/losses included)
@@ -655,7 +660,7 @@
     sheet(`<div class="sh"><div><h2>${esc(nm(r.name))}</h2>
         <div class="muted">${esc(tc(r.team))} · ${NAME[r.position]} · τώρα ${f1(r.price)} cr${r.buy != null ? ` · αγορά ${f1(r.buy)}${dPrice(r) ? ` (${dPrice(r) > 0 ? "+" : "−"}${f1(Math.abs(dPrice(r)))})` : ""}` : ""}${r.popularity != null ? ` · POP ${f1(r.popularity)} %` : ""}${r.turn ? ` · Turn ${r.turn}` : ""}${role && role !== "coach" ? ` · ${ROLE_LABEL[role] || role}` : ""}</div></div>
         <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
-      <div class="kpis"><div class="kpi"><b>${f1(scored(r) ? r.actual : r.x_now)}</b><span>${scored(r) ? "points" : "xFPT"}</span></div>
+      <div class="kpis"><div class="kpi"><b>${f1(scored(r) ? pts(r) : r.x_now)}</b><span>${scored(r) ? (r.actual == null ? "δεν έπαιξε" : "points") : "xFPT"}</span></div>
         <div class="kpi"><b>${f1(xf3(r))}</b><span>xFPT3</span></div><div class="kpi"><b>${r.value == null ? "–" : r.value.toFixed(2)}</b><span>xFPT3/cr</span></div></div>
       <div class="tm-acts">
         ${t.game ? "" : r.position !== "Head Coach" ? `<button class="tm-act" id="aCap" ${canCap ? "" : "disabled"}><span>★</span><div>Captain</div></button>
@@ -671,7 +676,7 @@
       sheet(`<div class="sh"><div><h2>${esc(sur(r.name))} ⇄ …</h2><div class="muted">Τώρα: ${ROLE_LABEL[role] || role}</div></div>
           <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
         <div class="tm-acts">${others.map((x) => `<button class="tm-act" data-q="${x.id}"><span>${LETTER[x.position]}</span><div>${esc(nm(x.name))}
-          <small>${(t.roles || {})[x.id]} · ${scored(x) ? `έφερε ${f1(x.actual)}` : `xFPT ${f1(x.x_now)}`}</small></div></button>`).join("")}</div>`);
+          <small>${(t.roles || {})[x.id]} · ${scored(x) ? `έφερε ${f1(pts(x))}` : `xFPT ${f1(x.x_now)}`}</small></div></button>`).join("")}</div>`);
       document.querySelectorAll("#sheet [data-q]").forEach((b) => b.onclick = () => { if (swap(t, id, Number(b.dataset.q))) closePlayer(); });
     });
     on("aRep", () => replaceSheet(t, r));

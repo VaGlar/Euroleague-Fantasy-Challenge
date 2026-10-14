@@ -59,6 +59,11 @@ def load_state():
     pred = json.loads((PUBLIC / "predictions.json").read_text())
     xnow = {p.get("fantasy_id"): p.get("x_now") for p in pred.get("players", [])
             if p.get("fantasy_id") is not None}
+    # a player whose team's game of the round is over has played, points or not (a DNP is 0, and the
+    # game's rules for played players hold for him): 14/10, a DNP of turn 1 was proposed as captain
+    team_of = {p.get("fantasy_id"): p.get("team") for p in pred.get("players", [])}
+    done = {t for f in pred.get("fixtures", []) if f.get("round") == pred.get("round") and f.get("played")
+            for t in (f.get("home"), f.get("away"))}
 
     court = sorted([p for p in players if p["position"]["name"] in POS],
                    key=lambda p: p["court_position"])
@@ -87,7 +92,7 @@ def load_state():
 
     squad = []
     for p in players:
-        played = bool(p.get("match_played"))
+        played = bool(p.get("match_played")) or team_of.get(p["id"]) in done
         pos = p["position"]["name"]
         squad.append({
             "id": p["id"], "position": pos if pos in POS else "Head Coach", "price": 0.0,

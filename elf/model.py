@@ -137,6 +137,35 @@ def position_allowed(cur_players: pd.DataFrame, prev_players: pd.DataFrame,
     return out
 
 
+def total_allowed(cur_players: pd.DataFrame, prev_players: pd.DataFrame, p: dict | None = None) -> dict:
+    """{team: deviation of the total PIR its opponents score (all positions) vs league}, shrunk to half of
+    last season's like position_allowed. Shown on the defences' table only: R&D 024 found it adds nothing
+    to the model (r 0.96-0.97 with the positions' mean)."""
+    p = p or params()
+
+    def table(pl):
+        if pl.empty:
+            return pd.DataFrame(columns=["mean", "size"])
+        per = pl.groupby(["gamecode", "team"])["pir"].sum().reset_index()
+        opp = per.merge(per, on="gamecode", suffixes=("", "_o"))
+        return opp[opp["team"] != opp["team_o"]].groupby("team")["pir_o"].agg(["mean", "size"])
+
+    cur, prev = table(cur_players), table(prev_players)
+    league = pd.concat([cur["mean"], prev["mean"]]).mean()
+    if not league:
+        return {}
+    k = p["pos_shrink_k"]
+    out = {}
+    for t in set(cur.index) | set(prev.index):
+        prior = (prev.loc[t, "mean"] / league - 1) * 0.5 if t in prev.index else 0.0
+        if t in cur.index:
+            n, dev = cur.loc[t, "size"], cur.loc[t, "mean"] / league - 1
+            out[t] = (n * dev + k * prior) / (n + k)
+        else:
+            out[t] = prior
+    return out
+
+
 # -------------------------------------------------------------- players
 
 def absent_last3(cur_players: pd.DataFrame) -> pd.Series:

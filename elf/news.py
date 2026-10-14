@@ -252,6 +252,9 @@ Return ONLY JSON with this schema:
  "round": <EuroLeague round the fantasy tips refer to, integer or null>,
  "summary_el": "<5-8 bullet points in Greek, formal-neutral, most fantasy-relevant first>"
 }
+In summary_el the text is Greek, but every player is written in Latin letters as «Name Surname» from
+ROSTER (e.g. «Jean Montero», not «Γιαν Μοντέρο»), and every club by its name in TEAMS (e.g. «Crvena Zvezda»);
+never translate or transliterate a name.
 Only include players explicitly discussed. Do not guess injuries that are not stated.
 Items marked INJURY REPORT are a table: team | position | player | status | round(s) | comment.
 Map status: Out -> "out", Doubtful -> "doubtful", Questionable / Game-time / Uncertain -> "questionable",
@@ -265,12 +268,15 @@ author recommends (stance "pick"), suggests as captain ("captain"), or advises a
 ROSTER:
 {roster}
 
+TEAMS (code = name):
+{teams}
+
 ARTICLES:
 {articles}
 """
 
 
-def digest(articles: list[dict], roster: list[str]) -> dict | None:
+def digest(articles: list[dict], roster: list[str], teams: dict | None = None) -> dict | None:
     key = os.environ.get("GEMINI_API_KEY")
     if not key or not articles:
         return None
@@ -292,6 +298,7 @@ def digest(articles: list[dict], roster: list[str]) -> dict | None:
         + [f"[NEWS | {a['source']} | {a['date']}] {a['title']}\n{a['text'][:500]}" for a in rest])
     body = {
         "contents": [{"parts": [{"text": PROMPT.replace("{roster}", "\n".join(roster))
+                                 .replace("{teams}", "\n".join(f"{c} = {n}" for c, n in (teams or {}).items()))
                                  .replace("{articles}", arts)}]}],
         "generationConfig": {"responseMimeType": "application/json", "temperature": 0.2},
     }
@@ -381,14 +388,16 @@ _GR1 = dict(zip("αβγδεζηθικλμνξοπρσςτυφχψω",
                  "s", "t", "i", "f", "h", "ps", "o"]))
 _LAT = [("sch", "s"), ("sh", "s"), ("ch", "ts"), ("ph", "f"), ("th", "t"), ("ck", "k"), ("dj", "tz"),
         ("j", "tz"), ("c", "k"), ("q", "k"), ("x", "ks"), ("w", "u"), ("y", "i"), ("oo", "u"), ("ou", "u"),
-        ("ee", "i"), ("ai", "e"), ("ay", "ei"), ("ei", "i")]
+        ("ee", "i"), ("ai", "e"), ("ay", "ei"), ("ei", "i"), ("nd", "nt")]
 
 
-def _skel(s: str) -> str:
+def _skel(s: str, medial_nt: bool = True) -> str:
     s = unicodedata.normalize("NFD", str(s).lower())
     s = "".join(c for c in s if unicodedata.category(c) != "Mn")
     greek = any("α" <= c <= "ω" for c in s)
     if greek:
+        if medial_nt:   # Μοντέρο: Montero; but Μαντάρ: Madar (the other reading); an initial ντ is a d: Ντέιβις
+            s = re.sub(r"(?<=[α-ω])ντ", "nt", s)
         for a, b in _GR2:
             s = s.replace(a, b)
         s = "".join(_GR1.get(c, c) for c in s)
@@ -399,14 +408,13 @@ def _skel(s: str) -> str:
     return re.sub(r"(.)\1+", r"\1", s).strip()
 
 
-def resolve_names(d: dict | None, roster: list[str]) -> dict | None:
-    """Each availability / expert "player" set to the exact roster name; the unmatched are dropped."""
+def _finder(roster: list[str]):
+    """name (roster's «SURNAME, NAME», «Name Surname», Greek or Latin letters) -> the roster name, or None
+    when no name is clearly the closest."""
     import difflib
-    if not d:
-        return d
     exact = {n.upper(): n for n in roster}
     # «SURNAME, NAME» as the roster writes it, or «Name Surname» (Marcus Bingham Jr. vs BINGHAM, MARCUS)
-    words = lambda x: _skel(re.sub(r"\b(jr|sr|ii|iii)\b\.?", " ", str(x), flags=re.I)).replace(",", " ").split()
+    words = lambda x, nt=True: _skel(re.sub(r"\b(jr|sr|ii|iii)\b\.?", " ", str(x), flags=re.I), nt).replace(",", " ").split()
     skel = [(n, " ".join(words(n))) for n in roster]
     cache = {}
 
@@ -415,13 +423,79 @@ def resolve_names(d: dict | None, roster: list[str]) -> dict | None:
         if name.upper() in exact:
             return exact[name.upper()]
         if name not in cache:
-            w = words(name)
-            ks = {" ".join(w)} | ({" ".join(w[-1:] + w[:-1])} if "," not in name else set())
+            ks = set()
+            for w in (words(name), words(name, False)):        # a Greek medial ντ read as nt and as d
+                ks |= {" ".join(w)} | ({" ".join(w[-1:] + w[:-1])} if "," not in name else set())
             sc = sorted(((max(difflib.SequenceMatcher(None, k, s).ratio() for k in ks), n) for n, s in skel), reverse=True)
             ok = sc and sc[0][0] >= 0.75 and (len(sc) < 2 or sc[0][0] - sc[1][0] >= 0.04)
             cache[name] = sc[0][1] if ok else None
         return cache[name]
+    return find
 
+
+# a run of 2-3 capitalised Greek words: a name the LLM wrote in Greek («Γιαν Μοντέρο»)
+_GREEK_NAME = re.compile(r"[Α-ΩΆΈΉΊΌΎΏ][α-ωάέήίόύώϊϋΐΰς]+(?:[ -][Α-ΩΆΈΉΊΌΎΏ][α-ωάέήίόύώϊϋΐΰς]+){1,2}")
+
+
+def _display(roster_name: str) -> str:
+    last, _, first = roster_name.partition(",")
+    return f"{first.strip().title()} {last.strip().title()}".strip()
+
+
+# the clubs as Greek writes them (any case ending): the summary gets the clubs' own names
+CLUBS_GR = {
+    "RED": r"Ερυθρ[όοού]\w* Αστέρ\w*", "OLY": r"Ολυμπιακ(?:ός|ού|ό|έ)\b", "PAN": r"Παναθηναϊκ(?:ός|ού|ό|έ)\b", "PAR": r"Παρτίζαν",
+    "IST": r"(?:Αναντολο[υύ] )?Εφ[εέ]ς", "ULK": r"Φενερμπαχτσ[εέ]\w*", "BES": r"Μπεσ[ιί]κτα[ςσ]",
+    "MIL": r"(?:Αρμάνι |Ολίμπια )*Μιλάνο|Αρμάνι", "DUB": r"Ντουμπ[αά]ι", "BAR": r"Μπαρτσελ[οό]ν\w*",
+    "MUN": r"Μπ[αά]γερν(?: Μονάχου)?", "HTA": r"Χ[αά]ποελ(?: Τελ Αβ[ιί]β)?", "BAS": r"Μπασκ[οό]νι\w*",
+    "ASV": r"Βιλερμπ[αά]ν\w*|Ασβ[εέ]λ", "TEL": r"Μακ[αά]μπι(?: Τελ Αβ[ιί]β)?", "PRS": r"Παρ[ιί](?= |$|[.,;·])",
+    "MAD": r"Ρε[αά]λ(?: Μαδρίτης)?", "PAM": r"Βαλ[εέ]ν[θσ]ι\w*", "VIR": r"Β[ιί]ρτους(?: Μπολ[οό]νια\w*)?",
+    "ZAL": r"Ζ[αά]λγκιρι[ςσ]",
+}
+
+
+def latin_clubs(text: str, teams: dict | None) -> str:
+    """Greek club names (Ολυμπιακού, τη Βαλένθια) -> the clubs' names (teams: code -> name)."""
+    if not text or not teams:
+        return text
+    for code, pat in CLUBS_GR.items():
+        if teams.get(code):
+            text = re.sub(rf"(?<![\w]){pat}", teams[code], text)
+    return text
+
+
+def latin_names(text: str, roster: list[str], teams: dict | None = None) -> str:
+    """Player names written in Greek in the summary, back to the roster's Latin «Name Surname»; clubs too
+    (teams: code -> name)."""
+    text = latin_clubs(text, teams)
+    if not text or not roster:
+        return text
+    import difflib
+    find = _finder(roster)
+    # fallback, the surname alone (the LLM gets first names wrong: «Μακί Μαντάρ» for Yam Madar): only when
+    # exactly one roster player has a surname that close, so a common surname is never guessed
+    sur = [(n, _skel(n.split(",")[0])) for n in roster]
+
+    def by_surname(raw):
+        best = set()
+        for nt in (True, False):
+            k = _skel(raw.split()[-1], nt)
+            best |= {n for n, s in sur if difflib.SequenceMatcher(None, k, s).ratio() >= 0.85}
+        return best.pop() if len(best) == 1 else None
+
+    def sub(m):
+        n = find(m.group(0)) or by_surname(m.group(0))
+        return _display(n) if n else m.group(0)
+    return _GREEK_NAME.sub(sub, text)
+
+
+def resolve_names(d: dict | None, roster: list[str], teams: dict | None = None) -> dict | None:
+    """Each availability / expert "player" set to the exact roster name; the unmatched are dropped;
+    the summary's player names in Latin letters."""
+    if not d:
+        return d
+    find = _finder(roster)
+    d["summary_el"] = latin_names(d.get("summary_el", ""), roster, teams)
     for key in ("availability", "expert"):
         out = []
         for it in d.get(key) or []:

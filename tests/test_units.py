@@ -363,3 +363,31 @@ def test_popup_next_games_on_the_tables_terms():
     r = pd.Series({"avail_game": 0.4, "news_avail": 1.0, "prior_w": np.nan, "prior_est": np.nan})
     out = run.popup_next([{"round": 5, "x": 20.0}, {"round": 6, "x": 20.0}], r, 5)
     assert [g["x"] for g in out] == [8.0, 20.0]
+
+
+def test_the_summary_names_written_in_greek_go_back_to_the_roster():
+    """14/10: the AI summary wrote «Γιαν Μοντέρο» and «Ζοσέ Ρόμπινσον» (the roster's Justin Robinson, his
+    first name wrong); a Greek word that is no roster player stays as it is."""
+    from elf import news
+    roster = ["MONTERO, JEAN", "ROBINSON, JUSTIN", "OJELEYE, SEMI", "VEZENKOV, SASHA"]
+    text = "• Ο Γιαν Μοντέρο έφερε 26. Ο Ζοσέ Ρόμπινσον κέρδισε. Ο Σέμι Οτζέλεε. Ο Ολυμπιακός νίκησε τη Βαλένθια."
+    out = news.latin_names(text, roster)
+    assert "Jean Montero" in out and "Justin Robinson" in out and "Semi Ojeleye" in out
+    assert "Ολυμπιακός" in out and "Βαλένθια" in out
+    d = news.resolve_names({"summary_el": text, "availability": [], "expert": []}, roster)
+    assert "Jean Montero" in d["summary_el"]
+    # a wrong first name, a surname only one roster player has: «Μακί Μαντάρ» is Yam Madar (Μαντάρ: ντ = d)
+    assert news.latin_names("Ο Μακί Μαντάρ συνεχίζει.", roster + ["MADAR, YAM"]) == "Ο Yam Madar συνεχίζει."
+    # a surname several players share is never guessed
+    two = roster + ["JAMES, MIKE", "JAMES, JUSTIN"]
+    assert news.latin_names("Ο Μάκης Τζέιμς σκόραρε.", two) == "Ο Μάκης Τζέιμς σκόραρε."
+
+
+def test_the_summary_clubs_written_in_greek_get_their_names():
+    from elf import news
+    teams = {"OLY": "Olympiacos", "RED": "Crvena Zvezda", "PAM": "Valencia", "MAD": "Real Madrid", "PRS": "Paris"}
+    text = "Ο Ολυμπιακός νίκησε τη Βαλένθια· του Ερυθρού Αστέρα, η Ρεάλ Μαδρίτης, στο Παρί, οι Ολυμπιακοί Αγώνες."
+    out = news.latin_names(text, [], teams)
+    assert out == ("Ο Olympiacos νίκησε τη Valencia· του Crvena Zvezda, η Real Madrid, στο Paris, "
+                   "οι Ολυμπιακοί Αγώνες.")
+    assert news.latin_names(text, [], None) == text           # without the clubs' names: as written

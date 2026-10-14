@@ -144,7 +144,7 @@ def predictions(season: int, extra: pd.DataFrame | None = None):
     ctx.loc[ctx["unregistered"], "xpir"] = 0.0
     coaches = coach_rows(fx, people, ratings)
     return {"round": first, "fixtures": fx, "ctx": ctx, "ratings": ratings, "roster": roster,
-            "pdev": pdev,
+            "pdev": pdev, "tdev": model.total_allowed(cur_p, prev_p, p),
             "params": p, "coaches": coaches}
 
 
@@ -769,7 +769,8 @@ def build(offline: bool = False) -> dict:
     health += [f"πηγή εκτός: {f}" for f in failed]
     dig, dig_at = None, None
     try:
-        dig = news.digest(arts, [f"{n} ({team_of.get(n)})" for n in names])
+        dig = news.digest(arts, [f"{n} ({team_of.get(n)})" for n in names],
+                          teams=dict(zip(clubs["code"], clubs["name"])) if "name" in clubs else None)
         dig_at = datetime.now(timezone.utc).isoformat() if dig else None
     except Exception as e:  # noqa: BLE001
         dig, dig_at = previous_digest()
@@ -778,7 +779,8 @@ def build(offline: bool = False) -> dict:
                        else f"Gemini: {type(e).__name__}") + note)
     # names back to the roster's (the LLM sometimes writes them in Greek: nothing matched)
     coach_names = list(pr["coaches"]["name"].dropna()) if "name" in pr["coaches"] else []
-    dig = news.resolve_names(dig, names + coach_names)
+    short = dict(zip(clubs["code"], clubs["short"])) if "short" in clubs else None
+    dig = news.resolve_names(dig, names + coach_names, short)
     avail = {}
     for a in (dig or {}).get("availability", []):
         f = news.AVAILABILITY_FACTOR.get(a.get("status"), 1.0)
@@ -972,7 +974,7 @@ def build(offline: bool = False) -> dict:
                     my["lineup"] = None
                 # round under way: the proposal must follow the in-round rules (like /lineup)
                 if any(r.get("played") for r in my["actual_lineup"]):
-                    live = optimize.lineup_in_round(in_round_squad(my))
+                    live = optimize.lineup_in_round(in_round_squad(my, done_teams(trn)))
                     if live:
                         rows = {p["id"]: p for p in sq}
                         my["lineup"] = [{**rows.get(p["id"], p), "role": p["role"],
@@ -1052,7 +1054,8 @@ def build(offline: bool = False) -> dict:
                       "utc": f.utc.isoformat(), "played": bool(f.played)}
                      for f in pr["fixtures"].itertuples()],
         "pos_allowed": [{"team": t, **{pos: round(float(pr["pdev"].get((t, pos), 0.0)), 3)
-                                       for pos in ("Guard", "Forward", "Center")}}
+                                       for pos in ("Guard", "Forward", "Center")},
+                         "Total": round(float(pr.get("tdev", {}).get(t, 0.0)), 3)}
                         for t in pr["ratings"].index],
         "team_form": team_form(CURRENT_SEASON),
         "standings": standings(CURRENT_SEASON, list(pr["ratings"].index)),
@@ -1106,9 +1109,15 @@ def _short(r) -> str:
     return _e(f"{str(r['name']).split(',')[0].title()} ({tv(r['team'])})")
 
 
-def in_round_squad(my: dict | None) -> list[dict]:
+def done_teams(trn: list[dict]) -> set:
+    """Teams whose game of the round is over (its turn is done)."""
+    return {t for tu in trn or [] if tu.get("done") for t in tu.get("teams", [])}
+
+
+def in_round_squad(my: dict | None, done: set | frozenset = frozenset()) -> list[dict]:
     """The squad as set in the game, for optimize.lineup_in_round: players who already
-    played carry their real points."""
+    played carry their real points. A player whose team's game is over (`done`) has played,
+    points or not: a DNP is 0 and can't take the armband (14/10, a DNP of turn 1 as captain)."""
     real = {r["fantasy_id"]: r for r in ((my or {}).get("actual_lineup") or []) if r.get("role")}
     sq = []
     for r in (my or {}).get("players", []):
@@ -1116,7 +1125,7 @@ def in_round_squad(my: dict | None) -> list[dict]:
         a = real.get(int(fid)) if fid == fid and fid is not None else None
         if a is None:
             continue
-        played = bool(a["played"])
+        played = bool(a["played"]) or r.get("team") in done
         sq.append({"id": int(fid), "position": r["position"], "price": 0.0, "name": r["name"],
                    "team": r["team"], "turn": a.get("turn"), "played": played,
                    "x_now": float(a["pts"] or 0) if played else float(r.get("x_now") or 0),
@@ -1124,12 +1133,12 @@ def in_round_squad(my: dict | None) -> list[dict]:
     return sq
 
 
-def turn_check(tu: dict, table: pd.DataFrame, my: dict | None) -> list[str]:
+def turn_check(tu: dict, table: pd.DataFrame, my: dict | None, done: set | frozenset = frozenset()) -> list[str]:
     """Before a later turn: the best legal lineup given what already happened, from the
     same optimizer as /lineup (a played starter can only go to the bench, the armband
     only to a player who has not played)."""
     lines = ["⭐ <b>Captain & subs πριν το Turn " f"{tu['turn']}</b>"]
-    sq = in_round_squad(my)
+    sq = in_round_squad(my, done)
     res = optimize.lineup_in_round(sq) if len(sq) == 11 else None
     if not res:
         today = table[table["team"].isin(tu["teams"]) & (table["position"] != "Head Coach")]
@@ -1237,7 +1246,7 @@ def messages(rnd, trn, table, my, dig, health, dash: str | None = None) -> list[
             lines.append("<i>Βάλε Captain στο Turn 1· αν δεν φτάσει το xFPT του plan B, "
                          "μεταφέρεις το x2 σε παίκτη του Turn 2 (όχι σε κάποιον που έπαιξε).</i>")
         else:
-            lines += turn_check(tu, table, my)
+            lines += turn_check(tu, table, my, done_teams(trn))
         if tu["turn"] == 1 and len(coaches):
             c = coaches.sort_values("x_now", ascending=False).iloc[0]
             line = (f"🧑‍💼 <b>Καλύτερος Coach του Round</b>: {c['name'].split(',')[0].title()} ({tv(c['team'])}) "
