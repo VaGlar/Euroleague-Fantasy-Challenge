@@ -312,3 +312,23 @@ def test_main_runs_the_mode_it_is_given(monkeypatch):
     for argv in ([], ["preview"], ["check"], ["apply", "abc"]):
         assert lineup_cmd.main(argv) == 0
     assert ran == [("preview",), ("preview",), ("check",), ("apply", "abc")]
+
+
+def test_a_dnp_whose_game_is_over_is_played_not_a_captain(monkeypatch, public):
+    """14/10: a turn-1 player who didn't play (no points, the game's flag not set) looked like turn 1's
+    still to play, and the turn-aware armband went to him. His team's game is over: he has played (0)."""
+    sq = squad_t1_t2()
+    for p in sq:
+        p["team"] = "T1" if p["turn"] == 1 else "T2"
+    # the captain played badly: the armband should move, to a turn-2 player (not to the DNP)
+    g = FakeGame(sq, GOOD, captain=2, played={1: 30, 2: 2, 5: 25, 6: 3, 7: 1}).install(monkeypatch)
+    (public / "predictions.json").write_text(json.dumps({
+        "round": 1, "fixtures": [{"round": 1, "home": "T1", "away": "X", "played": True}],
+        "players": [{"fantasy_id": p["id"], "x_now": p["x_now"], "team": p["team"]} for p in sq]}))
+    st = lineup_cmd.load_state()
+    dnp = next(p for p in st["squad"] if p["id"] == 9)           # C9: turn 1, no points, not flagged
+    assert dnp["played"] and dnp["x_now"] == 0
+    pr = lineup_cmd.propose(st)
+    cap = next(i for i, p in pr["new"].items() if p["captain"])
+    assert cap != 9 and next(p for p in sq if p["id"] == cap)["turn"] == 2, cap
+    assert g.saved == []
