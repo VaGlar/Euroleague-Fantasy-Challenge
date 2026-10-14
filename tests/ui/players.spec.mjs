@@ -134,11 +134,11 @@ test("club codes as in the game (EFS, BAY, RMB…), not the API's (IST, MUN, MAD
   expect(await list.innerText()).not.toMatch(/\b(BAY|RMB|ZAL|OLY)\b ·/);
 });
 
-test("a player back after 3 missed games is marked «↩ επιστρέφει» and it's explained", async ({ page }, testInfo) => {
+test("a player back after 3 missed games is marked BACK and it's explained", async ({ page }, testInfo) => {
   await open(page, "public", { tab: "players" });
   await page.locator("#fsearch").fill("carlik");
   const row = rows(page, testInfo).first();
-  await expect(row).toContainText("↩ επιστρέφει");
+  await expect(row.locator(".tag.t-back")).toHaveText("BACK");
   await row.locator('[data-info="back"]').click();
   await expect(page.locator("#tip")).toContainText("3 τελευταία ματς");
   await expect(page.locator("#modal")).not.toHaveClass(/\bon\b/);      // the mark explains, it doesn't open the player

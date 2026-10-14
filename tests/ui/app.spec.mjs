@@ -179,8 +179,9 @@ test("install bar: on phones from the first visit (before any team), opens the s
 
 test("players new to the EuroLeague with few games are marked «νέος · N ματς», explained, and flagged in trades", async ({ page }, testInfo) => {
   await open(page, "public", { tab: "players" });
-  const pill = page.locator(isPhone(testInfo) ? "#plist .pill.few" : "#ptable .pill.few").first();
-  await expect(pill).toContainText("νέος · 1 ματς");
+  const pill = page.locator(isPhone(testInfo) ? "#plist .tag.t-new.few" : "#ptable .tag.t-new.few").first();
+  await expect(pill).toHaveText("NEW");                                   // a tag, as PICK; the games in its title
+  await expect(pill).toHaveAttribute("title", "νέος · 1 ματς");
   await pill.click();
   await expect(page.locator("#tip")).toContainText("αβέβαιη");
   await goTab(page, testInfo, "today");
