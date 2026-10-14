@@ -24,7 +24,7 @@ def test_the_first_of_an_error_goes_to_telegram_the_repeats_are_only_counted():
     assert r["status"] == [204, 204, 204]
     assert len(r["sent"]) == 2                                   # two different errors, each once
     text = r["sent"][0]["body"]["text"]
-    assert "TypeError: x is undefined" in text and "team.js:42" in text and "HoopsLab" in text
+    assert "TypeError: x is undefined" in text and "team.js:42" in text and "Coach Dime" in text
     assert "t0ken" not in json.dumps(r["sent"])
 
 

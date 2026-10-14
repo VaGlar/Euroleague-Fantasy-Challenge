@@ -119,7 +119,7 @@ def test_endpoint_dispatches_the_cleaned_list():
 def test_endpoint_refuses_outside_the_personal_site():
     body = json.dumps({"watch": {}})
     hoopslab, no_access, bad, big, github_down = fn(
-        {"env": {}, "headers": ACCESS, "body": body},               # no token: HoopsLab
+        {"env": {}, "headers": ACCESS, "body": body},               # no token: Coach Dime
         {"env": ENV, "body": body},                                  # not through Cloudflare Access
         {"env": ENV, "headers": ACCESS, "body": "{not json"},
         {"env": ENV, "headers": ACCESS, "body": "x" * 30_000},

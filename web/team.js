@@ -1,5 +1,5 @@
 // «Η ομάδα μου» for both editions.
-//   public (HoopsLab): the team is entered by hand and lives on the device
+//   public (Coach Dime): the team is entered by hand and lives on the device
 //   personal: the team as it is in the game (P.my_team); trades come from the pipeline,
 //     lineup and captain are applied with /lineup, so the screen is read-only
 //   • setup on an empty court: tap a slot, pick a player of that position

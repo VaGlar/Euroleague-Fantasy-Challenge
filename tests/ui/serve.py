@@ -1,7 +1,7 @@
 """Static server for the UI tests: both editions built from the frozen fixtures.
 
 /personal/  web/ + tests/ui/fixtures (as the personal dashboard deploys data/public)
-/public/    python -m elf.publish on the same fixtures (the HoopsLab edition)
+/public/    python -m elf.publish on the same fixtures (the Coach Dime edition)
 
 Every response carries the headers of web/_headers (as Cloudflare Pages sends them), so a security
 rule that breaks the page shows up as a console error and fails the tests.

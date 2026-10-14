@@ -45,7 +45,7 @@ export async function onRequestPost({ request, env }) {
   if ((hit?.n ?? 0) > ERR_LIMIT) return done(429);
 
   const msg = clip(e.msg, 200), src = clip(`${e.src || ""}:${e.line || ""}`, 80), tab = clip(e.tab, 20);
-  const edition = e.edition === "public" ? "HoopsLab" : "προσωπική";
+  const edition = e.edition === "public" ? "Coach Dime" : "προσωπική";
   const day = new Date().toISOString().slice(0, 10);
   const k = await sha(`${msg}|${src}`);
   const row = await db.prepare(`INSERT INTO errors (day, k, msg, src, tab, n) VALUES (?, ?, ?, ?, ?, 1)

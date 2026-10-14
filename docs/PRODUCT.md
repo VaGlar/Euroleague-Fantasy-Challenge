@@ -8,7 +8,7 @@ and the public one. Only results are published. The repository itself went publi
 the owner's data and the article archive live in a private data repo (see the README, «Public repo
 and private data»).
 
-> Product name: **HoopsLab** (beta). The name does **not** contain the word «EuroLeague» nor
+> Product name: **Coach Dime** (beta; formerly HoopsLab). The name does **not** contain the word «EuroLeague» nor
 > the competition's logos (see «Legal and tax»). The product speaks Greek: its audience is
 > Greek-speaking managers.
 
@@ -108,7 +108,7 @@ no per-user server is needed and the cost stays at zero up to a few thousand use
   admin is notified on Telegram, only when the state changes.
 
 ### Installing on a phone (done)
-- The name **HoopsLab** (beta) in the public edition, a PNG icon for the Home Screen.
+- The name **Coach Dime** (beta) in the public edition, a PNG icon for the Home Screen.
 - A pop-up «Βάλ' το στην οθόνη σου» (put it on your screen) guide for iPhone/Android on the first visit.
 
 ### Free-tier limits (indicative — to be confirmed before launch)
@@ -139,7 +139,7 @@ no per-user server is needed and the cost stays at zero up to a few thousand use
 
 - [x] Private data in a **private** data repo (`elf-data`); the code repo is public and sanitized,
       with a test that fails on anything personal (`tests/test_public_repo.py`).
-- [ ] Personal dashboard behind **Cloudflare Access** (free up to 50 users; access only with the admin's email). **Before HoopsLab opens to the public:** `elf-dashboard.pages.dev` is open to anyone with the link today (team, suggestions, `predictions.json` with `my_team`). The bot needs a service token first, so the Worker can read the data behind Access.
+- [ ] Personal dashboard behind **Cloudflare Access** (free up to 50 users; access only with the admin's email). **Before Coach Dime opens to the public:** `elf-dashboard.pages.dev` is open to anyone with the link today (team, suggestions, `predictions.json` with `my_team`). The bot needs a service token first, so the Worker can read the data behind Access.
 - [ ] **2FA** on GitHub, Cloudflare, Patreon, Google (Gemini).
 - [ ] Tokens with **least privilege and an expiry** (GitHub fine-grained, Cloudflare
       scoped). Prices are read with the **dedicated account's** token (secret `FANTASY_DATA_TOKEN`); the
@@ -156,7 +156,7 @@ no per-user server is needed and the cost stays at zero up to a few thousand use
 
 ## 6a. Analytics
 
-Every morning at 09:05 the Worker starts `analytics.yml` → `elf/analytics.py`: it sends to Telegram yesterday's visits/views per site, the week vs the previous one, and for HoopsLab the countries, devices and referrers. Needs Cloudflare Web Analytics on the Pages projects and the `CF_ANALYTICS_TOKEN` secret (an API token with *Account Analytics: Read* only).
+Every morning at 09:05 the Worker starts `analytics.yml` → `elf/analytics.py`: it sends to Telegram yesterday's visits/views per site, the week vs the previous one, and for Coach Dime the countries, devices and referrers. Needs Cloudflare Web Analytics on the Pages projects and the `CF_ANALYTICS_TOKEN` secret (an API token with *Account Analytics: Read* only).
 
 ## 7. Legal and tax
 

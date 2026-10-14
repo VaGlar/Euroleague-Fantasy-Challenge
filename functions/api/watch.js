@@ -1,7 +1,7 @@
 // Cloudflare Pages Function: the personal dashboard's ⭐ list -> the update's Telegram alerts.
 //   POST /api/watch   {watch: {person_id: {at, price, x3, inj}}}   -> 202 (the watch workflow saves it)
 // It starts .github/workflows/watch.yml, which keeps the list in the private data repo (elf/watch.py).
-// Personal site only: it needs the GH_DISPATCH_TOKEN secret, set on that Pages project alone (HoopsLab
+// Personal site only: it needs the GH_DISPATCH_TOKEN secret, set on that Pages project alone (Coach Dime
 // answers 404), and a request that came through Cloudflare Access (the Access JWT header; 403 without).
 // With the variables ACCESS_TEAM_DOMAIN (https://<team>.cloudflareaccess.com) and ACCESS_AUD (the Access
 // application's audience tag) the JWT itself is checked: signature (the team's keys), audience, issuer,

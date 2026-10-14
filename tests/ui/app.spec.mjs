@@ -46,10 +46,10 @@ test("the last tab is remembered after a reload", async ({ page }, testInfo) => 
   await expect(page.locator("section#players")).toHaveClass(/\bon\b/);
 });
 
-test("header: round, freshness, favicon, HoopsLab name in the public edition", async ({ page }) => {
+test("header: round, freshness, favicon, Coach Dime name in the public edition", async ({ page }) => {
   await open(page, "public");
-  await expect(page.locator("header h1")).toContainText("HoopsLab");
-  await expect(page).toHaveTitle("HoopsLab");
+  await expect(page.locator("header h1")).toContainText("Coach Dime");
+  await expect(page).toHaveTitle("Coach Dime");
   await expect(page.locator("#updated")).toContainText("Ενημερώθηκε");
   await expect(page.locator('link[rel="icon"]')).not.toHaveCount(0);
   const icon = await page.request.get("/public/favicon-32.png");
@@ -124,7 +124,7 @@ test("installable as an app (Android): manifest with 192/512 icons, standalone, 
   await open(page, "public");
   const href = await page.locator('link[rel="manifest"]').getAttribute("href");
   const m = await (await page.request.get(`/public/${href}`)).json();
-  expect(m.name).toBe("HoopsLab");
+  expect(m.name).toBe("Coach Dime");
   expect(m.display).toBe("standalone");
   expect(m.start_url).toBeTruthy();
   for (const size of ["192x192", "512x512"]) {

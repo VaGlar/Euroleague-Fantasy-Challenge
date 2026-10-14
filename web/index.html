@@ -557,6 +557,7 @@ html body #mCp .ic { width: 1.25em; height: 1.25em; }
   <section id="model"></section>
   <section id="about">
     <div class="card"><h2>Τι είναι</h2>
+      <p><b>Coach Dime</b>: σου δίνει την ασίστ (dime, στη γλώσσα του μπάσκετ) για την fantasy ομάδα σου.</p>
       <p>Ανεξάρτητο, δωρεάν εργαλείο για το EuroLeague Fantasy Challenge. Δεν έχει σχέση με την EuroLeague ούτε με το Dunkest.
         Οι προβλέψεις είναι εκτιμήσεις, όχι εγγυήσεις.</p>
       <p class="muted">Δεδομένα: αγώνες και στατιστικά από την EuroLeague· τιμές, POP και παίκτες από το παιχνίδι· από τα άρθρα
@@ -573,12 +574,12 @@ html body #mCp .ic { width: 1.25em; height: 1.25em; }
         <li><b>Φιλοξενία:</b> Cloudflare.</li>
       </ul></div>
     <div class="card"><h2>Επικοινωνία</h2>
-      <p>Λάθη, ιδέες, ερωτήσεις: <a href="mailto:euroleaguefantasy26@gmail.com?subject=HoopsLab%20beta">euroleaguefantasy26@gmail.com</a></p>
+      <p>Λάθη, ιδέες, ερωτήσεις: <a href="mailto:euroleaguefantasy26@gmail.com?subject=Coach%20Dime%20beta">euroleaguefantasy26@gmail.com</a></p>
       <p><button class="fbcopy" type="button" onclick="reportProblem()"><svg class="ic" aria-hidden="true"><use href="#i-bug"/></svg> Ανάφερε πρόβλημα</button></p></div>
   </section>
 </main>
 <footer id="feedback" class="fb" hidden><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg> Επικοινωνία:
-  <a href="mailto:euroleaguefantasy26@gmail.com?subject=HoopsLab%20beta">euroleaguefantasy26@gmail.com</a>
+  <a href="mailto:euroleaguefantasy26@gmail.com?subject=Coach%20Dime%20beta">euroleaguefantasy26@gmail.com</a>
   <button class="fbcopy" type="button" onclick="copyMail(this)"><svg class="ic" aria-hidden="true"><use href="#i-copy"/></svg> Αντιγραφή</button>
   <button class="fbcopy" type="button" onclick="reportProblem()"><svg class="ic" aria-hidden="true"><use href="#i-bug"/></svg> Ανάφερε πρόβλημα</button></footer>
 <nav class="bnav" id="bnav" aria-label="Κύρια πλοήγηση">
@@ -1107,7 +1108,7 @@ function setWatch(pid, on) {
   if (on && r) WATCH[pid] = { at: new Date().toISOString(), price: r.price ?? null, x3: xf3(r) ?? null, inj: !!inj(r) };
   else delete WATCH[pid];
   try { localStorage.setItem("watch", JSON.stringify(WATCH)); } catch (e) {}
-  if (typeof watchChanged === "function") watchChanged();      // HoopsLab: goes to the other devices with the team
+  if (typeof watchChanged === "function") watchChanged();      // Coach Dime: goes to the other devices with the team
   try { localStorage.setItem("watch_at", new Date().toISOString()); } catch (e) {}
   watchPush();
   document.querySelectorAll(`.wstar[data-watch="${CSS.escape(pid)}"]`).forEach((b) => {
@@ -1529,7 +1530,7 @@ function problemText() {
   return lines.join("\n");
 }
 const problemMail = (text = problemText()) =>
-  `mailto:${FEEDBACK_MAIL}?subject=${encodeURIComponent("HoopsLab beta — πρόβλημα")}&body=${encodeURIComponent(text)}`;
+  `mailto:${FEEDBACK_MAIL}?subject=${encodeURIComponent("Coach Dime beta — πρόβλημα")}&body=${encodeURIComponent(text)}`;
 function reportProblem() {
   const text = problemText();
   $("#sheet").innerHTML = `<div class="sh"><h2>${ico("bug")} Ανάφερε πρόβλημα</h2><button class="x" onclick="closePlayer()">×</button></div>

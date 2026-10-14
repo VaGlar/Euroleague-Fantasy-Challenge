@@ -20,7 +20,7 @@ from pathlib import Path
 
 from .config import PUBLIC, ROOT
 
-PRODUCT = "HoopsLab"
+PRODUCT = "Coach Dime"
 
 # file -> function returning the sanitized content (None = copy unchanged)
 PUBLIC_FILES = {
