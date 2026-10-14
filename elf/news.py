@@ -442,8 +442,32 @@ def _display(roster_name: str) -> str:
     return f"{first.strip().title()} {last.strip().title()}".strip()
 
 
-def latin_names(text: str, roster: list[str]) -> str:
-    """Player names written in Greek in the summary, back to the roster's Latin «Name Surname»."""
+# the clubs as Greek writes them (any case ending): the summary gets the clubs' own names
+CLUBS_GR = {
+    "RED": r"Ερυθρ[όοού]\w* Αστέρ\w*", "OLY": r"Ολυμπιακ(?:ός|ού|ό|έ)\b", "PAN": r"Παναθηναϊκ(?:ός|ού|ό|έ)\b", "PAR": r"Παρτίζαν",
+    "IST": r"(?:Αναντολο[υύ] )?Εφ[εέ]ς", "ULK": r"Φενερμπαχτσ[εέ]\w*", "BES": r"Μπεσ[ιί]κτα[ςσ]",
+    "MIL": r"(?:Αρμάνι |Ολίμπια )*Μιλάνο|Αρμάνι", "DUB": r"Ντουμπ[αά]ι", "BAR": r"Μπαρτσελ[οό]ν\w*",
+    "MUN": r"Μπ[αά]γερν(?: Μονάχου)?", "HTA": r"Χ[αά]ποελ(?: Τελ Αβ[ιί]β)?", "BAS": r"Μπασκ[οό]νι\w*",
+    "ASV": r"Βιλερμπ[αά]ν\w*|Ασβ[εέ]λ", "TEL": r"Μακ[αά]μπι(?: Τελ Αβ[ιί]β)?", "PRS": r"Παρ[ιί](?= |$|[.,;·])",
+    "MAD": r"Ρε[αά]λ(?: Μαδρίτης)?", "PAM": r"Βαλ[εέ]ν[θσ]ι\w*", "VIR": r"Β[ιί]ρτους(?: Μπολ[οό]νια\w*)?",
+    "ZAL": r"Ζ[αά]λγκιρι[ςσ]",
+}
+
+
+def latin_clubs(text: str, teams: dict | None) -> str:
+    """Greek club names (Ολυμπιακού, τη Βαλένθια) -> the clubs' names (teams: code -> name)."""
+    if not text or not teams:
+        return text
+    for code, pat in CLUBS_GR.items():
+        if teams.get(code):
+            text = re.sub(rf"(?<![\w]){pat}", teams[code], text)
+    return text
+
+
+def latin_names(text: str, roster: list[str], teams: dict | None = None) -> str:
+    """Player names written in Greek in the summary, back to the roster's Latin «Name Surname»; clubs too
+    (teams: code -> name)."""
+    text = latin_clubs(text, teams)
     if not text or not roster:
         return text
     import difflib
@@ -465,13 +489,13 @@ def latin_names(text: str, roster: list[str]) -> str:
     return _GREEK_NAME.sub(sub, text)
 
 
-def resolve_names(d: dict | None, roster: list[str]) -> dict | None:
+def resolve_names(d: dict | None, roster: list[str], teams: dict | None = None) -> dict | None:
     """Each availability / expert "player" set to the exact roster name; the unmatched are dropped;
     the summary's player names in Latin letters."""
     if not d:
         return d
     find = _finder(roster)
-    d["summary_el"] = latin_names(d.get("summary_el", ""), roster)
+    d["summary_el"] = latin_names(d.get("summary_el", ""), roster, teams)
     for key in ("availability", "expert"):
         out = []
         for it in d.get(key) or []:

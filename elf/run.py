@@ -779,7 +779,8 @@ def build(offline: bool = False) -> dict:
                        else f"Gemini: {type(e).__name__}") + note)
     # names back to the roster's (the LLM sometimes writes them in Greek: nothing matched)
     coach_names = list(pr["coaches"]["name"].dropna()) if "name" in pr["coaches"] else []
-    dig = news.resolve_names(dig, names + coach_names)
+    short = dict(zip(clubs["code"], clubs["short"])) if "short" in clubs else None
+    dig = news.resolve_names(dig, names + coach_names, short)
     avail = {}
     for a in (dig or {}).get("availability", []):
         f = news.AVAILABILITY_FACTOR.get(a.get("status"), 1.0)

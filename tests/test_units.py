@@ -381,3 +381,13 @@ def test_the_summary_names_written_in_greek_go_back_to_the_roster():
     # a surname several players share is never guessed
     two = roster + ["JAMES, MIKE", "JAMES, JUSTIN"]
     assert news.latin_names("Ο Μάκης Τζέιμς σκόραρε.", two) == "Ο Μάκης Τζέιμς σκόραρε."
+
+
+def test_the_summary_clubs_written_in_greek_get_their_names():
+    from elf import news
+    teams = {"OLY": "Olympiacos", "RED": "Crvena Zvezda", "PAM": "Valencia", "MAD": "Real Madrid", "PRS": "Paris"}
+    text = "Ο Ολυμπιακός νίκησε τη Βαλένθια· του Ερυθρού Αστέρα, η Ρεάλ Μαδρίτης, στο Παρί, οι Ολυμπιακοί Αγώνες."
+    out = news.latin_names(text, [], teams)
+    assert out == ("Ο Olympiacos νίκησε τη Valencia· του Crvena Zvezda, η Real Madrid, στο Paris, "
+                   "οι Ολυμπιακοί Αγώνες.")
+    assert news.latin_names(text, [], None) == text           # without the clubs' names: as written
