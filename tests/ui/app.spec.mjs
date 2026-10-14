@@ -239,3 +239,15 @@ test("Άμυνες: no footnote, ⓘ on the title, a column sorts both ways", as
   await expect(th()).toContainText("↑");
   expect(await first()).not.toEqual(most);
 });
+
+test("«Σχετικά»: what it is, privacy, contact — in the public edition only", async ({ page }, testInfo) => {
+  await open(page, "public", { tab: "today" });
+  await goTab(page, testInfo, "about");
+  const about = page.locator("section#about");
+  await expect(about).toContainText("Δεν έχει σχέση με την EuroLeague ούτε με το Dunkest");
+  await expect(about).toContainText("Απόρρητο");
+  await expect(about.locator('a[href^="mailto:"]')).toHaveCount(1);
+  await checkLayout(page, "about");
+  await open(page, "personal", { tab: "today" });
+  await expect(page.locator('#tabs button[data-t="about"]')).toBeHidden();
+});

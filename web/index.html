@@ -239,6 +239,7 @@ body.noscroll { overflow: hidden; }
 #rtable tbody tr, #dtable tbody tr { cursor: pointer; }
 
 /* ---- compare */
+ul.about { margin: 0; padding-left: 18px; } ul.about li { margin: 6px 0; }
 .plink { color: var(--series-1); cursor: pointer; text-decoration: underline dotted; }
 .wstar { border: 0; background: none; padding: 0 4px 0 0; font-size: 17px; line-height: 1; cursor: pointer; color: var(--text-2, inherit); vertical-align: -1px; }
 .wstar.on { color: #e3a008; }
@@ -425,6 +426,7 @@ body > header nav button.on { color: var(--bar-fg); border-color: var(--bar-line
     <button data-t="compare">Σύγκριση<span class="cnt" id="cmpcnt" hidden></span></button>
     <button data-t="model">Μοντέλο</button>
     <button data-t="report">Report</button>
+    <button data-t="about" class="pubonly">Σχετικά</button>
   </nav>
 </header>
 <main>
@@ -460,6 +462,25 @@ body > header nav button.on { color: var(--bar-fg); border-color: var(--bar-line
   <section id="news"></section>
   <section id="compare"></section>
   <section id="model"></section>
+  <section id="about">
+    <div class="card"><h2>Τι είναι</h2>
+      <p>Ανεξάρτητο, δωρεάν εργαλείο για το EuroLeague Fantasy Challenge. Δεν έχει σχέση με την EuroLeague ούτε με το Dunkest.
+        Οι προβλέψεις είναι εκτιμήσεις, όχι εγγυήσεις.</p>
+      <p class="muted">Δεδομένα: αγώνες και στατιστικά από την EuroLeague· τιμές, POP και παίκτες από το παιχνίδι· από τα άρθρα
+        μόνο ο τίτλος και ο σύνδεσμος στην πηγή. Η «Σύνοψη (AI)» γράφεται αυτόματα και μπορεί να έχει λάθη.</p></div>
+    <div class="card"><h2>Απόρρητο</h2>
+      <ul class="about">
+        <li><b>Χωρίς λογαριασμούς, χωρίς διαφημίσεις, χωρίς cookies παρακολούθησης.</b></li>
+        <li><b>Στη συσκευή σου</b> μένουν η ομάδα, η watchlist και οι ρυθμίσεις. Σβήνουν με «Διαγραφή ομάδας» ή με τον καθαρισμό των δεδομένων του browser.</li>
+        <li><b>Συγχρονισμός</b> (μόνο αν τον ενεργοποιήσεις): η ομάδα και η watchlist κρατιούνται στον server κάτω από τον κωδικό σου,
+          χωρίς τίποτα προσωπικό (παίκτες, credits, θέσεις). Όποιος έχει τον κωδικό τα βλέπει. Τα σβήνεις με «Διαγραφή από τον server».</li>
+        <li><b>Προστασία από κατάχρηση:</b> για μία ώρα κρατάμε ένα κρυπτογραφημένο αποτύπωμα της IP σου (όχι την ίδια) για να μετράμε τα αιτήματα· μετά σβήνεται.</li>
+        <li><b>Επισκεψιμότητα:</b> Cloudflare Web Analytics, χωρίς cookies και χωρίς στοιχεία που σε ταυτοποιούν (επισκέψεις, χώρα, συσκευή).</li>
+        <li><b>Φιλοξενία:</b> Cloudflare.</li>
+      </ul></div>
+    <div class="card"><h2>Επικοινωνία</h2>
+      <p>Λάθη, ιδέες, ερωτήσεις: <a href="mailto:euroleaguefantasy26@gmail.com?subject=HoopsLab%20beta">euroleaguefantasy26@gmail.com</a></p></div>
+  </section>
 </main>
 <footer id="feedback" class="fb" hidden>💬 Επικοινωνία:
   <a href="mailto:euroleaguefantasy26@gmail.com?subject=HoopsLab%20beta">euroleaguefantasy26@gmail.com</a>
@@ -562,7 +583,8 @@ setTheme(document.documentElement.dataset.theme || (matchMedia("(prefers-color-s
 
 // tabs: the top bar (wide screens), the bottom bar (phones) and «Περισσότερα» all go through here
 const MORE_TABS = [["news", "Νέα", "Σύνοψη ειδικών, τραυματίες και άρθρα"], ["compare", "Σύγκριση", "Παίκτες δίπλα-δίπλα"],
-  ["model", "Μοντέλο", "Πόσο πέφτει έξω το μοντέλο, φέτος και πέρσι"], ["report", "Report", "Το report του Round σε κείμενο"]];
+  ["model", "Μοντέλο", "Πόσο πέφτει έξω το μοντέλο, φέτος και πέρσι"], ["report", "Report", "Το report του Round σε κείμενο"],
+  ["about", "Σχετικά", "Τι είναι, απόρρητο, επικοινωνία", true]];
 function showTab(t) {
   if (t === "more") { moreSheet(); return; }
   if (!document.getElementById(t)) t = "today";
@@ -580,7 +602,7 @@ function showTab(t) {
 document.querySelectorAll("nav button[data-t]").forEach((b) => b.onclick = () => showTab(b.dataset.t));
 function moreSheet() {
   $("#sheet").innerHTML = `<div class="sh"><h2>Περισσότερα</h2><button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
-    <div class="more-list">${MORE_TABS.map(([k, l, d]) => `<button data-go="${k}"><div>${l}<small>${d}</small></div>${
+    <div class="more-list">${MORE_TABS.filter((m) => !m[3] || P?.edition === "public").map(([k, l, d]) => `<button data-go="${k}"><div>${l}<small>${d}</small></div>${
       k === "compare" && CMP.length ? `<span class="cnt">${CMP.length}</span>` : ""}</button>`).join("")}</div>`;
   $("#modal").classList.add("on"); document.body.classList.add("noscroll");
   $("#sheet").querySelectorAll("[data-go]").forEach((b) => b.onclick = () => { closePlayer(); showTab(b.dataset.go); });
@@ -1752,6 +1774,7 @@ setInterval(() => {
   renderPlayers();
   watchFromServer();
   $("#feedback").hidden = p.edition !== "public";   // the product's feedback address
+  document.querySelectorAll(".pubonly").forEach((el) => { el.hidden = p.edition !== "public"; });   // «Σχετικά»: the product's
   renderTeam(p.my_team, p.best_team);
   setCmp(CMP.filter((id) => p.players.some((x) => x.person_id === id)));
   let tab = "today";

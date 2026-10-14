@@ -16,6 +16,7 @@ function fakeD1() {
         async run() {
           const a = this.args;
           if (s.startsWith("CREATE TABLE")) return { meta: { changes: 0 } };
+          if (s.startsWith("DELETE FROM teams")) { rows.delete(a[0]); return { meta: { changes: 1 } }; }
           if (s.startsWith("DELETE FROM hits")) { for (const [k, v] of hits) if (v.until < a[0]) hits.delete(k); return { meta: {} }; }
           if (s.startsWith("INSERT OR IGNORE")) {
             if (rows.has(a[0])) return { meta: { changes: 0 } };

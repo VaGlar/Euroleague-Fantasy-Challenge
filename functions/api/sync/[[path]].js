@@ -2,6 +2,7 @@
 // No accounts: a long random code is the key; whoever has it reads and writes that team.
 //   POST /api/sync            {data}            -> {code, rev, updated_at}   a new code for this team
 //   GET  /api/sync/<code>                       -> {data, rev, updated_at}   (404: unknown code)
+//   DELETE /api/sync/<code>                     -> 204                       the copy is gone (404: unknown)
 //   PUT  /api/sync/<code>     {data, rev}       -> {rev, updated_at}         (409 + the stored copy when
 //        rev isn't the stored one: another device wrote in between; the client decides who wins)
 // Storage: D1 (binding SYNC_DB). SQL on purpose: the table moves to Postgres (Supabase) as it is, and
@@ -14,7 +15,7 @@ export const CODE_LEN = 12;                                   // 31^12 ≈ 8·10
 export const MAX_BYTES = 200_000;
 const CODE_RE = new RegExp(`^[${ALPHABET}]{${CODE_LEN}}$`);
 // a person makes a code or two, and a linked device writes a burst of changes as one write (1.5 s)
-export const LIMITS = { POST: 10, PUT: 300, GET: 600 };
+export const LIMITS = { POST: 10, PUT: 300, GET: 600, DELETE: 60 };
 const HOUR = 3600;
 
 const json = (obj, status = 200) => new Response(JSON.stringify(obj), {
@@ -116,6 +117,11 @@ export async function onRequest({ request, env, params }) {
       return json({ error: "conflict", data: JSON.parse(cur.data), rev: cur.rev, updated_at: cur.updated_at }, 409);
     }
     return json({ rev: row.rev + 1, updated_at: now });
+  }
+  if (request.method === "DELETE") {
+    if (!row) return json({ error: "unknown code" }, 404);
+    await db.prepare("DELETE FROM teams WHERE code = ?").bind(code).run();
+    return new Response(null, { status: 204, headers: { "cache-control": "no-store" } });
   }
   return json({ error: "method" }, 405);
 }

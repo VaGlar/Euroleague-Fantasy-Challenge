@@ -62,3 +62,11 @@ def test_too_many_calls_from_one_ip_are_refused_others_go_on():
     assert [r["status"] for r in res[:10]] == [201] * 10
     assert res[10]["status"] == 429 and res[10]["body"] == {"error": "too many requests"}
     assert res[11]["status"] == 201
+
+
+def test_a_code_can_be_deleted_from_the_server():
+    new, gone, get, again = run({"method": "POST", "path": "/api/sync", "body": {"data": TEAM}},
+                                {"method": "DELETE", "path": "/api/sync/{code}"},
+                                {"method": "GET", "path": "/api/sync/{code}"},
+                                {"method": "DELETE", "path": "/api/sync/{code}"})
+    assert new["status"] == 201 and gone["status"] == 204 and get["status"] == 404 and again["status"] == 404

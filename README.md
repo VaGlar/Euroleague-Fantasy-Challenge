@@ -204,7 +204,12 @@ to Supabase/Postgres as it is when accounts come). Once:
 
 No accounts or personal data: only player ids, prices, credits. Whoever has the code
 (12 characters, ~10^17 combinations) sees and changes the team. When both devices change it without a
-sync in between, the newer change wins.
+sync in between, the newer change wins. «Διαγραφή από τον server» deletes the copy (`DELETE`).
+
+Limits per IP and hour (429 above them, `LIMITS` in the function): 10 new codes, 300 writes, 600 reads,
+60 deletes. The IP is counted only as a salted SHA-256 hash in the table `hits`, for that hour. Optional:
+a Pages secret `SYNC_SALT` (any random text) on `hoopslab-beta`, so the hash can't be recomputed from the
+public code. The «Σχετικά» tab (public edition) says all this to the users.
 
 ### Watchlist alerts (personal edition)
 
