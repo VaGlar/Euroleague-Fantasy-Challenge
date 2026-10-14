@@ -57,9 +57,11 @@
   };
   const undoSteps = (t) => liveHist(t).length;
   const restore = (t, snap) => { for (const k of SNAP) { if (snap[k] === null) delete t[k]; else t[k] = JSON.parse(JSON.stringify(snap[k])); } };
+  // a step that leaves the team as it is now (e.g. a sync brought the same team) is skipped: one tap, one visible change
   function undoLast(t) {
-    const hist = liveHist(t);
-    const h = hist.pop();
+    const hist = liveHist(t), now = JSON.stringify(snapOf(t));
+    let h = hist.pop();
+    while (h && JSON.stringify(h.snap) === now) h = hist.pop();
     if (!h) return false;
     restore(t, h.snap);
     t.hist = hist;
@@ -1219,6 +1221,7 @@
   .tm-toolbar button { border: 1px solid var(--border); background: var(--surface-1); color: var(--text-primary); border-radius: 999px;
     padding: 7px 13px; font: inherit; font-size: 14px; cursor: pointer; }
   .tm-toolbar button:hover { border-color: var(--series-1); }
+  .tm-toolbar button { touch-action: manipulation; }   /* iPhone: no wait for a double-tap zoom */
   .tm-menu { position: absolute; right: 0; top: 44px; z-index: 5; background: var(--surface-1); border: 1px solid var(--border);
     border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,.15); min-width: 230px; overflow: hidden; }
   .tm-menu button, .tm-menu a { box-sizing: border-box; text-decoration: none; }
