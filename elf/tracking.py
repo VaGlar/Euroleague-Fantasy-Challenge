@@ -122,6 +122,9 @@ def evaluate(season: int) -> dict:
             out["rounds"].append({"round": int(rnd), **_metrics(g.reset_index(drop=True))})
         if len(d):
             out["total"] = _metrics(d.reset_index(drop=True))
+            # top-20 is a per-round measure: pooled over the season it would be the top 20 of hundreds
+            hits = [r["top20"] for r in out["rounds"] if r["top20"] is not None]
+            out["total"]["top20"] = round(sum(hits) / len(hits), 3) if hits else None
     # fantasy columns: picked players' real points vs what the model expected for them
     ex_path = PUBLIC / "expert_log.csv"
     if ex_path.exists() and not pts.empty:
