@@ -889,24 +889,16 @@
   // «💾 Save» next to them. On phones: ↶ (the last step) and ▾ with «Undo last» / «Undo all».
   function undoBar(t) {
     const ti = P.trade_info || {}, n = undoSteps(t), all = n > 1 || canUndo(t, ti);
+    // ▾ on phones is a native <select> under a transparent cover: iOS opens its picker on the first tap
     const undo = n || all ? `<span class="tm-undo">${n ? `<button id="mUndoLast" title="Undo last" aria-label="Undo last"><span class="tm-ico" aria-hidden="true">↶</span><span class="tm-lbl">Undo</span></button>` : ""}`
-      + `<button id="mUndoDd" class="tm-dd" aria-haspopup="menu" aria-expanded="false" aria-label="Επιλογές αναίρεσης">▾</button>`
-      + `<span class="tm-undomenu" id="tmUndoMenu">${n ? `<button id="mUndoLast2" class="tm-phone">Undo last</button>` : ""}`
-      + `${all ? `<button id="mUsed" title="Η ομάδα όπως στο τελευταίο κλείδωμα">Undo all</button>` : ""}</span></span>` : "";
+      + `<span class="tm-dd"><span aria-hidden="true">▾</span><select id="mUndoSel" aria-label="Επιλογές αναίρεσης"><option value="" selected disabled>Αναίρεση</option>`
+      + `${n ? `<option value="last">Undo last</option>` : ""}${all ? `<option value="all">Undo all</option>` : ""}</select></span>`
+      + `${all ? `<button id="mUsed" title="Η ομάδα όπως στο τελευταίο κλείδωμα">Undo all</button>` : ""}</span>` : "";
     return `<div class="tm-toolbar" role="toolbar">${undo}<button id="mCp" title="Το «Undo all» θα γυρίζει εδώ">💾 Save</button></div>`;
   }
   function bindUndo(t, best) {
     const last = () => { if (undoLast(t)) { render(best); toast(`Αναιρέθηκε η τελευταία κίνηση${undoSteps(t) ? ` · μένουν ${undoSteps(t)}` : ""}`); } };
-    if ($("#mUndoLast")) $("#mUndoLast").onclick = last;
-    if ($("#mUndoLast2")) $("#mUndoLast2").onclick = last;
-    if ($("#mUndoDd")) $("#mUndoDd").onclick = (e) => {
-      e.stopPropagation();
-      const open = $("#tmUndoMenu").classList.toggle("on");
-      $("#mUndoDd").setAttribute("aria-expanded", String(open));
-    };
-    if ($("#mCp")) $("#mCp").onclick = () => cpSheet(t, best);
-    if ($("#tmBankEdit")) $("#tmBankEdit").onclick = () => bankSheet(t, best);
-    if ($("#mUsed")) $("#mUsed").onclick = () => {
+    const askAll = () => {
       const n = usedTrades(t, P.trade_info || {}), snap = !!(t.used && t.used.before);
       sheet(`<div class="sh"><h2>Αναίρεση ${n === 0 ? "των κινήσεων" : n === 1 ? "του Trade" : `των ${n} Trades`};</h2><button class="x" onclick="closePlayer()">×</button></div>
         <p class="muted">${snap || undoSteps(t) ? "Η ομάδα, το υπόλοιπο, οι θέσεις και ο Captain γυρίζουν όπως ήταν στο τελευταίο κλείδωμα."
@@ -915,6 +907,15 @@
       $("#tmUndoOk").onclick = () => { const ok = undoAll(t) || (undoTrades(t), save(t), !!snap); closePlayer(); render(best);
         toast(ok ? "Η ομάδα γύρισε όπως ήταν" : "Ο μετρητής μηδενίστηκε"); };
     };
+    if ($("#mUndoLast")) $("#mUndoLast").onclick = last;
+    if ($("#mUsed")) $("#mUsed").onclick = askAll;
+    if ($("#mUndoSel")) $("#mUndoSel").onchange = (e) => {
+      const v = e.target.value;
+      e.target.value = "";
+      if (v === "last") last(); else if (v === "all") askAll();
+    };
+    if ($("#mCp")) $("#mCp").onclick = () => cpSheet(t, best);
+    if ($("#tmBankEdit")) $("#tmBankEdit").onclick = () => bankSheet(t, best);
   }
 
   // Credits ✎: the first number under CREDITS in the game
@@ -970,7 +971,6 @@
     };
   }
   document.addEventListener("click", (e) => { if (!e.target.closest("#tmMenu, #tmMore")) { const h = document.getElementById("tmMenu"); if (h) h.innerHTML = ""; } });
-  document.addEventListener("click", (e) => { if (!e.target.closest("#mUndoDd")) { const m = document.getElementById("tmUndoMenu"); if (m) m.classList.remove("on"); } });
 
   // ------------------------------------------------------------ setup on an empty court
   function setupView() {
@@ -1340,20 +1340,16 @@
   .tm-trades { border: 0; background: none; padding: 0; font: inherit; color: inherit; cursor: pointer; }
   /* undo: words on wide screens; on phones ↶ and ▾ with «Undo last» / «Undo all» */
   .tm-undo { display: contents; }
-  .tm-undomenu { display: contents; }
-  .tm-ico, .tm-dd, .tm-phone { display: none; }
+  .tm-ico, .tm-dd { display: none; }
   @media (max-width: 699px) {
-    .tm-undo { display: inline-flex; position: relative; }
+    .tm-undo { display: inline-flex; }
     .tm-undo > #mUndoLast { border-radius: 999px 0 0 999px; padding: 6px 12px; font-size: 18px; line-height: 1; }
     .tm-ico { display: inline; }
-    .tm-lbl { display: none; }
-    .tm-toolbar .tm-dd { display: inline-block; padding: 7px 10px; }
+    .tm-lbl, .tm-undo > #mUsed { display: none; }
+    .tm-dd { display: inline-grid; place-items: center; position: relative; border: 1px solid var(--border); background: var(--surface-1);
+      color: var(--text-primary); border-radius: 999px; padding: 0 12px; font-size: 14px; }
     .tm-undo > #mUndoLast + .tm-dd { border-radius: 0 999px 999px 0; border-left: 0; }
-    .tm-undomenu { display: none; position: absolute; right: 0; top: 40px; z-index: 6; background: var(--surface-1); border: 1px solid var(--border);
-      border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,.15); min-width: 160px; overflow: hidden; }
-    .tm-undomenu.on { display: block; }
-    .tm-toolbar .tm-undomenu button { display: block; width: 100%; text-align: left; border: 0; border-radius: 0; padding: 12px 14px; }
-    .tm-toolbar .tm-undomenu button + button { border-top: 1px solid var(--border); }
+    .tm-dd select { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; font-size: 16px; cursor: pointer; }
   }
   /* wide screens: the to-do list and the court side by side */
   @media (min-width: 1000px) {
