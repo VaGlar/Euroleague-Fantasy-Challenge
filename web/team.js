@@ -1001,8 +1001,8 @@
         <button class="tm-primary" id="tmFinish" ${full ? "" : "disabled"}>${full ? "Αποθήκευση ➜" : `Λείπουν ${11 - ps.length}`}</button>
         ${had ? '<button class="linkbtn" id="tmCancel" style="display:block;margin:6px auto 0">Άκυρο</button>' : ""}
         <p class="tm-hint">Γράψε τα prices <b>αγοράς</b> (όσο πλήρωσες τον καθένα)· συμπληρώνονται με τα σημερινά, αν διαφέρουν πάτα τον παίκτη. Έτσι βλέπεις πόσο ανέβηκαν ή έπεσαν· στα Trades μετράει η σημερινό price. Το υπόλοιπο το διορθώνεις από τις «Επιλογές».</p>
-        ${had ? "" : '<button class="linkbtn" id="tmRestore" style="display:block;margin:8px auto 0">${ico("download")} Έχεις σύνδεσμο αντιγράφου; Επικόλλησέ τον</button>'
-          + '<button class="linkbtn" id="tmSyncSetup" style="display:block;margin:4px auto 0">${ico("sync")} Έχεις κωδικό συγχρονισμού από άλλη συσκευή;</button>'}</div>`;
+        ${had ? "" : '<button class="linkbtn" id="tmRestore" style="display:block;margin:8px auto 0">Σύνδεσμος αντιγράφου</button>'
+          + '<button class="linkbtn" id="tmSyncSetup" style="display:block;margin:4px auto 0">Κωδικός συγχρονισμού</button>'}</div>`;
   }
   // setting up: a picked player's price (as in your game) or removing him
   function setupPlayerSheet(id, best) {
