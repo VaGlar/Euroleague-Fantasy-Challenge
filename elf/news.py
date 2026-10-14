@@ -323,7 +323,10 @@ def digest(articles: list[dict], roster: list[str], teams: dict | None = None) -
                 break
         if r.status_code == 200:
             text = r.json()["candidates"][0]["content"]["parts"][0]["text"]
-            out = _normalize(json.loads(text))
+            out = repair(_normalize(json.loads(text)))
+            if garbled(out):    # 14/10: «α%u03bd%u03b1…», «καλόs» — the next model, not the page
+                errors.append(f"200 {model_name}: αλλοιωμένο κείμενο")
+                continue
             out["_model"] = model_name
             return out
         try:
@@ -351,6 +354,45 @@ def _normalize(d) -> dict:
         d[key] = [{k: str(v) for k, v in it.items() if v is not None}
                   for it in items if isinstance(it, dict) and it.get("player")]
     return d
+
+
+# 14/10 the model wrote Greek as «α%u03bd%u03b1μένεται» and words mixed Latin into Greek («καλόs»,
+# «επιστροͯdής»): the escapes are decoded; text still broken after that is not published.
+_PCT_U = re.compile(r"%u([0-9a-fA-F]{4})")
+_MIXED = re.compile(r"[A-Za-z][\u0370-\u03ff\u1f00-\u1fff]|[\u0370-\u03ff\u1f00-\u1fff][A-Za-z]")
+_COMBINING = re.compile(r"[\u0300-\u036f]")
+
+
+def _strings(d: dict):
+    yield d.get("summary_el", "")
+    for key in ("availability", "expert"):
+        for it in d.get(key) or []:
+            yield from (v for v in it.values() if isinstance(v, str))
+
+
+def _bad(word: str) -> bool:
+    return "%" in word or bool(_MIXED.search(word)) or bool(_COMBINING.search(unicodedata.normalize("NFC", word)))
+
+
+def repair(d: dict) -> dict:
+    """%uXXXX escapes in the LLM's strings back to the letters; a column's note that is still broken
+    is dropped (the pick itself stays)."""
+    fix = lambda s: _PCT_U.sub(lambda m: chr(int(m.group(1), 16)), s)
+    d["summary_el"] = fix(d.get("summary_el", ""))
+    for key in ("availability", "expert"):
+        d[key] = [{k: fix(v) if isinstance(v, str) else v for k, v in it.items()} for it in d.get(key) or []]
+        for it in d[key]:
+            if isinstance(it.get("note"), str) and any(_bad(w) for w in it["note"].split()):
+                del it["note"]
+    return d
+
+
+def garbled(d: dict, share: float = 0.02) -> bool:
+    """Words with a «%», Latin and Greek letters mixed, or a stray combining mark: a few are a slip,
+    more than `share` of the words (and at least 3) is a broken answer."""
+    words = [w for s in _strings(d) for w in s.split()]
+    bad = sum(1 for w in words if _bad(w))
+    return bad >= 3 and bad > share * len(words)
 
 
 _UNSTABLE = ("preview", "exp", "omni", "live", "audio", "image", "tts", "thinking", "embedding")
