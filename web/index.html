@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ELF">
-<meta name="theme-color" content="#13233f" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#ef6a2f" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#15171b" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#08090b" media="(prefers-color-scheme: dark)">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@600;700;800&display=swap">
 <script>try { const t = localStorage.getItem("theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
@@ -19,9 +19,9 @@
 :root {
   color-scheme: light;
   --surface-0: #f6f1ea; --surface-1: #fffdf9; --border: #e8dccb;
-  --text-primary: #18202e; --text-secondary: #4b5364; --text-muted: #6b7280;
+  --text-primary: #16181b; --text-secondary: #4a4d55; --text-muted: #6b7280;
   --series-1: #1f5fae; --good: #16813d; --critical: #c8372c; --accent: #e0620f;
-  --bar: #13233f; --bar-fg: #ffffff; --bar-muted: rgba(255,255,255,.72); --bar-line: var(--accent);
+  --bar: #15171b; --bar-fg: #ffffff; --bar-muted: rgba(255,255,255,.72); --bar-line: var(--accent);
   --shadow: 0 1px 2px rgba(60,40,10,.06), 0 4px 14px rgba(60,40,10,.06);
   /* the court: the same parquet in both themes, white lines like a real floor */
   --court: #dcae70; --court-line: rgba(255,255,255,.88); --court-key: rgba(255,255,255,.14); --court-text: #3a2710;
@@ -31,19 +31,19 @@
 @media (prefers-color-scheme: dark) {
   :root:where(:not([data-theme="light"])) {
     color-scheme: dark;
-  --surface-0: #0b1026; --surface-1: #151b3b; --border: #262e58;
-  --text-primary: #f3f5ff; --text-secondary: #b6bddf; --text-muted: #8a93bb;
-  --series-1: #4fb3ff; --good: #38d27f; --critical: #ff6b77; --accent: #ff7a1a;
-  --bar: linear-gradient(100deg, #e8741c, #cf3f1a); --bar-fg: #ffffff; --bar-muted: rgba(255,255,255,.86); --bar-line: #ffffff;
+  --surface-0: #101215; --surface-1: #181b20; --border: #2b3038;
+  --text-primary: #f2f2ee; --text-secondary: #b9bcc4; --text-muted: #8b9099;
+  --series-1: #6cb6ff; --good: #3ccf7e; --critical: #ff6b6b; --accent: #ff7a1a;
+  --bar: #08090b; --bar-fg: #ffffff; --bar-muted: rgba(255,255,255,.72); --bar-line: var(--accent);
   --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 18px rgba(0,0,0,.25);
   }
 }
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --surface-0: #0b1026; --surface-1: #151b3b; --border: #262e58;
-  --text-primary: #f3f5ff; --text-secondary: #b6bddf; --text-muted: #8a93bb;
-  --series-1: #4fb3ff; --good: #38d27f; --critical: #ff6b77; --accent: #ff7a1a;
-  --bar: linear-gradient(100deg, #e8741c, #cf3f1a); --bar-fg: #ffffff; --bar-muted: rgba(255,255,255,.86); --bar-line: #ffffff;
+  --surface-0: #101215; --surface-1: #181b20; --border: #2b3038;
+  --text-primary: #f2f2ee; --text-secondary: #b9bcc4; --text-muted: #8b9099;
+  --series-1: #6cb6ff; --good: #3ccf7e; --critical: #ff6b6b; --accent: #ff7a1a;
+  --bar: #08090b; --bar-fg: #ffffff; --bar-muted: rgba(255,255,255,.72); --bar-line: var(--accent);
   --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 18px rgba(0,0,0,.25);
 }
 * { box-sizing: border-box; }
@@ -379,9 +379,9 @@ body > header nav button.on { color: var(--bar-fg); border-color: var(--bar-line
 .themebtn:hover { background: rgba(255,255,255,.2); }
 @media (max-width: 700px) {
   .bnav { background: var(--surface-1); box-shadow: 0 -2px 14px rgba(0,0,0,.08); }
-  :root[data-theme="dark"] .bnav { background: #0f1433; }
+  :root[data-theme="dark"] .bnav { background: #08090b; }
 }
-@media (prefers-color-scheme: dark) and (max-width: 700px) { :root:where(:not([data-theme="light"])) .bnav { background: #0f1433; } }
+@media (prefers-color-scheme: dark) and (max-width: 700px) { :root:where(:not([data-theme="light"])) .bnav { background: #08090b; } }
 
 /* ---- the court: parquet planks, white FIBA lines drawn by courtLines() */
 .court, .tm-floor { background-color: var(--court);
@@ -411,11 +411,98 @@ body > header nav button.on { color: var(--bar-fg); border-color: var(--bar-line
 .a2hs button, .a2hs-now { border: 0; border-radius: 10px; padding: 8px 12px; background: var(--accent); color: #fff; font: inherit; font-weight: 700;
   white-space: nowrap; cursor: pointer; }
 .a2hs-now { display: block; width: 100%; margin-top: 12px; padding: 12px; font-size: 15px; }
+
+/* ===================== box score: rules instead of boxes, numbers as the heroes, no emoji =====================
+   Sections are separated by a heavy rule and a small caps label (as a newspaper's box score), rows by hairlines;
+   the numbers use the condensed face, tabular. Loaded last: wins over the base rules above (and team.js's,
+   which uses the same selectors with html body in front). */
+.ic { width: 1.05em; height: 1.05em; vertical-align: -0.17em; fill: none; stroke: currentColor; stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round; flex: none; }
+h1 .logo { width: 1.05em; height: 1.05em; vertical-align: -0.16em; fill: none; stroke: var(--accent); stroke-width: 2.2; }
+.tag { display: inline-block; font: 800 10px/1 var(--num-font); letter-spacing: .06em; padding: 3px 4px 2px; border-radius: 2px;
+  background: var(--accent); color: #fff; vertical-align: 2px; }
+html body h1 { font-family: var(--num-font); font-weight: 800; letter-spacing: .01em; text-transform: uppercase; }
+html body header { border-bottom: 3px solid var(--accent); }
+html body .card, html body .kpi { background: none; border: 0; border-top: 2px solid var(--text-primary); border-radius: 0;
+  box-shadow: none; padding: 8px 0 14px; }
+html body .card h2 { font: 700 13px/1.3 var(--num-font); text-transform: uppercase; letter-spacing: .07em; color: var(--text-secondary);
+  margin: 0 0 8px; }
+html body .card.warn { border-top-color: var(--critical); }
+html body .a2hs { border-radius: 0; border: 0; border-left: 3px solid var(--accent); }
+html body .a2hs button, html body .fbcopy, html body .tm-more, html body .tm-toolbar button, html body .tm-dd,
+html body .tm-primary, html body .linkbtn.btn { border-radius: 4px; }
+/* players: one row each, a hairline under it, the club's colour as a thin bar */
+html body .pcard { background: none; border: 0; border-bottom: 1px solid var(--border); border-left: 3px solid var(--tc, var(--border));
+  border-radius: 0; box-shadow: none; padding: 9px 4px 9px 10px; margin: 0; }
+html body .plist { gap: 0; }
+html body .pcard .px b { font: 800 26px/1 var(--num-font); }
+html body .pcard .px small { font: 600 11px/1.4 var(--num-font); text-transform: uppercase; letter-spacing: .05em; }
+html body .pill { border-radius: 3px; font-size: 11px; padding: 0 5px; }
+/* numbers */
+html body .kpi b, html body .td-hero .big, html body .gv b, html body td.num b, html body .num b {
+  font-family: var(--num-font); font-variant-numeric: tabular-nums; }
+html body .kpi b { font-size: 28px; font-weight: 800; }
+html body .td-hero .big { font-size: 34px; font-weight: 800; letter-spacing: -.01em; }
+html body table th { font: 700 11px/1.3 var(--num-font); text-transform: uppercase; letter-spacing: .06em; color: var(--text-secondary);
+  border-bottom: 2px solid var(--text-primary); }
+html body table td { border-bottom: 1px solid var(--border); }
+/* «Η ομάδα μου» */
+html body .tm-item { border: 0; border-bottom: 1px solid var(--border); border-radius: 0; background: none; padding: 10px 0; }
+html body .tm-list { gap: 0; }
+html body .tm-kind { border: 0; border-radius: 0; background: none; color: var(--accent); }
+html body .tm-done, html body .tm-keep, html body button.chk { border-radius: 4px; }
+html body .tm-kind .ic { width: 20px; height: 20px; }
+html body .tm-top .muted b, html body .tm-planned { font-family: var(--num-font); font-weight: 800; font-size: 1.15em; font-variant-numeric: tabular-nums; }
+html body .tm-dead { border-radius: 3px; }
+html body .tm-steps { border-radius: 0; }
+html body .tm-menu { border-radius: 4px; }
+html body .card h2 small { font: 400 12px/1.3 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; text-transform: none;
+  letter-spacing: 0; color: var(--text-muted); }
+/* segmented tabs (Βαθμολογία…): an underline, as the top tabs */
+html body .seg { border: 0; border-bottom: 1px solid var(--border); border-radius: 0; gap: 2px; }
+html body .seg button { border-bottom: 3px solid transparent; border-radius: 0; font: 700 14px/1.2 var(--num-font); text-transform: uppercase;
+  letter-spacing: .05em; padding: 8px 10px 6px; }
+html body .seg button.on { background: none; color: var(--text-primary); border-bottom-color: var(--accent); }
+html body button.seg { border: 1px solid var(--border); border-radius: 4px; }
+html body .td-btn { border-radius: 4px; text-transform: uppercase; font-family: var(--num-font); letter-spacing: .04em; }
+html body .dots b { border-radius: 2px; font-family: var(--num-font); }
+html body .steps li::before { border-radius: 3px; }
+html body .td-list li, html body .exp { border-radius: 0; }
+html body #mCp .ic { width: 1.25em; height: 1.25em; }
 </style>
 </head>
 <body>
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+  <!-- one icon set for the whole UI (no emoji): 24×24, stroke = currentColor; i-court is the app's ball (icon.svg), in its own colours -->
+  <symbol id="i-court" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5" fill="#ef6a1f" stroke="none"/><g fill="none" stroke="#15171b" stroke-width="1.2" stroke-linecap="round"><path d="M12 1.5v21M1.5 12h21M5.2 4.6a12 12 0 0 1 0 14.8M18.8 4.6a12 12 0 0 0 0 14.8"/></g></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><rect x="6.5" y="2.5" width="11" height="19" rx="2"/><path d="M10.5 18.5h3"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></symbol>
+  <symbol id="i-bug" viewBox="0 0 24 24"><rect x="7" y="7" width="10" height="13" rx="5"/><path d="M12 11v9M7 12H3M21 12h-4M7 17l-3 2M17 17l3 2M8 8 5.5 5.5M16 8l2.5-2.5M9.5 7a2.5 2.5 0 0 1 5 0"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="1.5"/><path d="M16 8V4H4v12h4"/></symbol>
+  <symbol id="i-roster" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="1.5"/><path d="M9 4V2.5h6V4M8.5 10h7M8.5 14h7M8.5 18h4"/></symbol>
+  <symbol id="i-medic" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="M12 8v8M8 12h8"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12.5 2.7 2.7L16.5 9"/></symbol>
+  <symbol id="i-warn" viewBox="0 0 24 24"><path d="M12 3.5 2.5 20h19z"/><path d="M12 10v4.5M12 17.2v.3"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11M7 10.5l5 5 5-5M4.5 19.5h15"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5.5" width="18" height="13" rx="1.5"/><path d="m3.5 6.5 8.5 7 8.5-7"/></symbol>
+  <symbol id="i-save" viewBox="0 0 24 24"><path d="M5 3.5h11l3.5 3.5v13.5H5z"/><path d="M8 3.5v5h7v-5M8 20.5v-6h8v6"/></symbol>
+  <symbol id="i-trade" viewBox="0 0 24 24"><path d="M4 8h14M14 4l4 4-4 4M20 16H6M10 12l-4 4 4 4"/></symbol>
+  <symbol id="i-swap" viewBox="0 0 24 24"><path d="M7 4v16M3.5 7.5 7 4l3.5 3.5M17 20V4M13.5 16.5 17 20l3.5-3.5"/></symbol>
+  <symbol id="i-sync" viewBox="0 0 24 24"><path d="M20 12a8 8 0 0 1-13.7 5.7M4 12a8 8 0 0 1 13.7-5.7"/><path d="M18 3v4h-4M6 21v-4h4"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="1.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.8"/></symbol>
+  <symbol id="i-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="m6 6 12 12"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6.5 7l1 13h9l1-13M10 11v6M14 11v6"/></symbol>
+  <symbol id="i-cap" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M15 9.2a4 4 0 1 0 0 5.6"/></symbol>
+</svg>
 <header>
-  <h1>🏀 EuroLeague Fantasy — <span id="round">…</span></h1>
+  <h1><svg class="logo" aria-hidden="true"><use href="#i-court"/></svg> EuroLeague Fantasy — <span id="round">…</span></h1>
   <button id="themeBtn" class="themebtn" type="button" aria-label="Θέμα" title="Θέμα"></button>
   <div class="sub" id="updated">Φόρτωση…</div>
   <nav id="tabs">
@@ -431,7 +518,7 @@ body > header nav button.on { color: var(--bar-fg); border-color: var(--bar-line
   </nav>
 </header>
 <main>
-  <div id="a2hsBar" class="a2hs" hidden><span>📱 <b>Βάλ' το στην οθόνη σου</b> — ανοίγει σαν εφαρμογή και κρατά την ομάδα σου.
+  <div id="a2hsBar" class="a2hs" hidden><span><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg> <b>Βάλ' το στην οθόνη σου</b> — ανοίγει σαν εφαρμογή και κρατά την ομάδα σου.
     Κάν' το <b>πριν</b> στήσεις την ομάδα.</span><button type="button" id="a2hsGo">Πώς;</button></div>
   <section id="today" class="on"></section>
   <section id="report"></section>
@@ -450,7 +537,7 @@ body > header nav button.on { color: var(--bar-fg); border-color: var(--bar-line
         <input id="fmintot" type="text" inputmode="decimal" autocomplete="off" placeholder="Σύνολο">
         <input id="fminval" type="text" inputmode="decimal" autocomplete="off" placeholder="Value"></span>
       <label class="chk"><input id="fhealthy" type="checkbox"> Χωρίς τραυματίες</label>
-      <label class="chk"><input id="fwatch" type="checkbox"> ⭐ Watchlist</label>
+      <label class="chk"><input id="fwatch" type="checkbox"> ★ Watchlist</label>
     </div></details>
     <div class="filters" id="fsortwrap"><label class="chk">Ταξινόμηση <select id="fsort">
       <option value="x_now">xFPT</option><option value="actual">Points (Round)</option><option value="x3">xFPT3</option><option value="fpt_total">Points σεζόν</option><option value="value">Value</option>
@@ -470,6 +557,7 @@ body > header nav button.on { color: var(--bar-fg); border-color: var(--bar-line
   <section id="model"></section>
   <section id="about">
     <div class="card"><h2>Τι είναι</h2>
+      <p><b>Coach Dime</b>: σου δίνει την ασίστ (dime, στη γλώσσα του μπάσκετ) για την fantasy ομάδα σου.</p>
       <p>Ανεξάρτητο, δωρεάν εργαλείο για το EuroLeague Fantasy Challenge. Δεν έχει σχέση με την EuroLeague ούτε με το Dunkest.
         Οι προβλέψεις είναι εκτιμήσεις, όχι εγγυήσεις.</p>
       <p class="muted">Δεδομένα: αγώνες και στατιστικά από την EuroLeague· τιμές, POP και παίκτες από το παιχνίδι· από τα άρθρα
@@ -486,14 +574,14 @@ body > header nav button.on { color: var(--bar-fg); border-color: var(--bar-line
         <li><b>Φιλοξενία:</b> Cloudflare.</li>
       </ul></div>
     <div class="card"><h2>Επικοινωνία</h2>
-      <p>Λάθη, ιδέες, ερωτήσεις: <a href="mailto:euroleaguefantasy26@gmail.com?subject=HoopsLab%20beta">euroleaguefantasy26@gmail.com</a></p>
-      <p><button class="fbcopy" type="button" onclick="reportProblem()">🐞 Ανάφερε πρόβλημα</button></p></div>
+      <p>Λάθη, ιδέες, ερωτήσεις: <a href="mailto:euroleaguefantasy26@gmail.com?subject=Coach%20Dime%20beta">euroleaguefantasy26@gmail.com</a></p>
+      <p><button class="fbcopy" type="button" onclick="reportProblem()"><svg class="ic" aria-hidden="true"><use href="#i-bug"/></svg> Ανάφερε πρόβλημα</button></p></div>
   </section>
 </main>
-<footer id="feedback" class="fb" hidden>💬 Επικοινωνία:
-  <a href="mailto:euroleaguefantasy26@gmail.com?subject=HoopsLab%20beta">euroleaguefantasy26@gmail.com</a>
-  <button class="fbcopy" type="button" onclick="copyMail(this)">📋 Αντιγραφή</button>
-  <button class="fbcopy" type="button" onclick="reportProblem()">🐞 Ανάφερε πρόβλημα</button></footer>
+<footer id="feedback" class="fb" hidden><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg> Επικοινωνία:
+  <a href="mailto:euroleaguefantasy26@gmail.com?subject=Coach%20Dime%20beta">euroleaguefantasy26@gmail.com</a>
+  <button class="fbcopy" type="button" onclick="copyMail(this)"><svg class="ic" aria-hidden="true"><use href="#i-copy"/></svg> Αντιγραφή</button>
+  <button class="fbcopy" type="button" onclick="reportProblem()"><svg class="ic" aria-hidden="true"><use href="#i-bug"/></svg> Ανάφερε πρόβλημα</button></footer>
 <nav class="bnav" id="bnav" aria-label="Κύρια πλοήγηση">
   <button data-t="today" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/></svg><span>Σήμερα</span></button>
   <button data-t="team"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 12h18"/><circle cx="12" cy="12" r="3"/></svg><span>Η ομάδα μου</span></button>
@@ -555,26 +643,28 @@ let LAST_ERR = "";
 
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+// an icon of the sprite (top of <body>): the UI has no emoji
+const ico = (n, cls = "") => `<svg class="ic${cls ? " " + cls : ""}" aria-hidden="true"><use href="#i-${n}"/></svg>`;
 // a link from a feed goes into href only if it is a web address (not «javascript:», «data:», …)
 const safeUrl = (u) => (/^https?:\/\//i.test(String(u ?? "").trim()) ? esc(String(u).trim()) : "#");
 const nm = (n) => { const [s, f] = String(n || "").split(","); return (f ? f.trim()[0] + ". " : "") + (s || "").toLowerCase().replace(/(^|[\s-])\S/g, (m) => m.toUpperCase()); };
 const f1 = (x) => (x == null ? "–" : Number(x).toFixed(1));
 // the game to show next to a player: this round's, or his next one once this round's is played
 const gameOf = (r) => (r.actual != null && r.next_opp
-  ? `R${r.next_round} ${r.next_home ? "🏠" : "✈️"} ${esc(tc(r.next_opp))}`
-  : r.opp ? `${r.home ? "🏠" : "✈️"} ${esc(tc(r.opp))}` : "");
+  ? `R${r.next_round} ${r.next_home ? "vs" : "@"} ${esc(tc(r.next_opp))}`
+  : r.opp ? `${r.home ? "vs" : "@"} ${esc(tc(r.opp))}` : "");
 const inj = (r) => r.unregistered
-  ? ' <span class="pill" title="στη λίστα του fantasy, αλλά όχι δηλωμένος στο ρόστερ της EuroLeague: δεν μπορεί να αγωνιστεί">📋 εκτός ρόστερ</span>'
+  ? ' <span class="pill" title="στη λίστα του fantasy, αλλά όχι δηλωμένος στο ρόστερ της EuroLeague: δεν μπορεί να αγωνιστεί">${ico("roster")} εκτός ρόστερ</span>'
   : (r.avail_game != null && r.avail_game < 1
-  ? ` <span class="pill">🚑 ${r.avail_game === 0 ? "εκτός" : Math.round(r.avail_game * 100) + "%"}</span>` : "");
+  ? ` <span class="pill">${ico("medic")} ${r.avail_game === 0 ? "εκτός" : Math.round(r.avail_game * 100) + "%"}</span>` : "");
 // new to the EuroLeague (no last season) with few games: the prediction rests on 1-4 games (R&D 015)
 const fewGames = (r) => r.position !== "Head Coach" && r.prev_pir == null && r.games >= 1 && r.games <= 4;
 // info = false inside pick lists: the whole row picks the player, the mark is only a mark
 const newb = (r, info = true) => (r.no_data && !r.prior ? ' <span class="pill">νέος</span>'
   : fewGames(r) ? ` <span class="pill few"${info ? ' data-info="few"' : ""}>νέος · ${r.games} ματς</span>`
   : r.returning ? ` <span class="pill few"${info ? ' data-info="back"' : ""}>↩ επιστρέφει</span>` : "");
-const exb = (r) => (r.expert_pick > 0 ? ` <span class="pill" title="στήλες fantasy που τον προτείνουν">👍${r.expert_pick}${r.expert_cap ? "★" : ""}</span>` : "")
-  + (r.expert_avoid > 0 ? ` <span class="pill" title="στήλη που προτείνει να τον αποφύγεις">👎</span>` : "")
+const exb = (r) => (r.expert_pick > 0 ? ` <span class="pill" title="στήλες fantasy που τον προτείνουν">${ico("up")}${r.expert_pick}${r.expert_cap ? "★" : ""}</span>` : "")
+  + (r.expert_avoid > 0 ? ` <span class="pill" title="στήλη που προτείνει να τον αποφύγεις">${ico("down")}</span>` : "")
   + (r.prior === "τιμή" ? ` <span class="pill" title="χωρίς ιστορικό: εκτίμηση από το price">≈price</span>` : "");
 const dol = (r) => (r.price_trend === "up"
   ? ` <span class="pill up" data-info="dollar" title="πιθανή άνοδος price μετά το Round${r.price_delta != null ? ` (~+${r.price_delta.toFixed(1)} cr)` : ""}">$</span>`
@@ -813,7 +903,7 @@ function chip(p, changed) {
   const pid = p.person_id ?? byFid(p.id ?? p.fantasy_id)?.person_id;
   return `<div class="${cls}" title="${esc(nm(p.name))}" data-pid="${esc(pid ?? "")}">
     <div class="ct"><span>${LET[p.position] || ""}</span>${p.turn ? `<span class="tb t${Math.min(p.turn, 3)}">T${p.turn}</span>` : ""}</div>
-    <div class="cn">${esc(surname(p.name))}${p.unregistered ? " 📋" : inj(p) ? " 🚑" : ""}${p.price_trend === "up" ? " $" : ""}</div>
+    <div class="cn">${esc(surname(p.name))}${p.unregistered ? " " + ico("roster") : inj(p) ? " " + ico("medic") : ""}${p.price_trend === "up" ? " $" : ""}</div>
     <div class="cp${played ? " done" : ""}">${f1(pts)}</div>
     <div class="cs">${gameOf(p)}${p.price != null ? ` · ${f1(p.price)}` : ""}</div></div>`;
 }
@@ -831,7 +921,7 @@ function courtView(list, ref) {
 }
 // «Νέα»: the columns' picks grouped by column, the one whose picks did best (tab «Μοντέλο») first and open,
 // the others folded; per player 👍 / ★ / 👎, the note on a second line
-const STANCE_ICON = { pick: "👍", captain: "★", avoid: "👎" };
+const STANCE_ICON = { pick: ico("up"), captain: "★", avoid: ico("down") };
 function expertsHtml(list, track) {
   const score = Object.fromEntries(track.map((e) => [e.source, e.diff]));
   const by = new Map();
@@ -939,7 +1029,7 @@ function renderTeams() {
       <table class="tk"><thead><tr><th></th>${rounds.map((r) => `<th>R${r}</th>`).join("")}</tr></thead><tbody>
       ${rows.map((r) => `<tr><td class="tn" data-team="${esc(r.team)}">${esc(tc(r.team))}<small>${r.score >= 0 ? "+" : ""}${f1(r.score)}</small></td>${rounds.map((rd) => {
         const g = r.u.find((x) => x.round === rd);
-        return g ? `<td class="fx" style="${tint(g.m)}">${g.home ? "🏠" : "✈️"}${esc(tc(g.opp))}<small>${winp(g.m)}%</small></td>` : `<td class="none">–</td>`; }).join("")}</tr>`).join("")}
+        return g ? `<td class="fx" style="${tint(g.m)}">${g.home ? "vs" : "@"} ${esc(tc(g.opp))}<small>${winp(g.m)}%</small></td>` : `<td class="none">–</td>`; }).join("")}</tr>`).join("")}
       </tbody></table>
       <div class="legend">δύσκολο <i style="${tint(-12)}"></i><i style="${tint(-5)}"></i><i style="${tint(0)}"></i><i style="${tint(5)}"></i><i style="${tint(12)}"></i> εύκολο
         · ο αριθμός κάτω από την ομάδα = σταθμισμένη αναμενόμενη διαφορά σκορ</div></div>`;
@@ -980,9 +1070,9 @@ function openTeam(team) {
       <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
     <div class="kpis"><div class="kpi"><b class="${t.net >= 0 ? "up" : "down"}">${t.net >= 0 ? "+" : ""}${f1(t.net)}</b><span>Net /100</span></div>
       <div class="kpi"><b>${f1(t.pace)}</b><span>Pace</span></div><div class="kpi"><b>+${f1(t.hca)}</b><span>Έδρα</span></div></div>
-    <h3>Φόρμα φέτος</h3>${form.length ? `<div class="games">${form.map((g) => `<div class="game"><div>R${g.round} · ${g.home ? "🏠" : "✈️"} <b>${esc(tc(g.opp))}</b> <span class="${g.won ? "W" : "L"}">${g.won ? "Ν" : "Η"}</span> ${esc(g.score)}</div></div>`).join("")}</div>` : `<p class="muted">Κανένας αγώνας ακόμα.</p>`}
+    <h3>Φόρμα φέτος</h3>${form.length ? `<div class="games">${form.map((g) => `<div class="game"><div>R${g.round} · ${g.home ? "vs" : "@"} <b>${esc(tc(g.opp))}</b> <span class="${g.won ? "W" : "L"}">${g.won ? "Ν" : "Η"}</span> ${esc(g.score)}</div></div>`).join("")}</div>` : `<p class="muted">Κανένας αγώνας ακόμα.</p>`}
     <h3>Επόμενοι αγώνες</h3><div class="games">${upcoming(team).map((g) => `<div class="game" style="${tint(g.m)}">
-      <div>R${g.round} · ${g.home ? "🏠" : "✈️"} <b>${esc(tc(g.opp))}</b></div><div class="gv"><b>${winp(g.m)}%</b><small>νίκη</small></div>
+      <div>R${g.round} · ${g.home ? "vs" : "@"} <b>${esc(tc(g.opp))}</b></div><div class="gv"><b>${winp(g.m)}%</b><small>νίκη</small></div>
       <div class="gs">${new Date(g.utc).toLocaleString("el-GR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Europe/Athens" })} · διαφορά ${g.m >= 0 ? "+" : ""}${f1(g.m)}</div></div>`).join("") || '<p class="muted">–</p>'}</div>
     <h3>Άμυνα: PIR που δίνει ανά θέση</h3><ul class="why">${["Guard", "Forward", "Center"].map((pos) =>
       `<li><span>${pos}</span><span>${matchup(pa[pos]) || "≈ 0%"}</span></li>`).join("")}</ul>
@@ -1000,7 +1090,7 @@ function openTeam(team) {
 let WATCH = {};
 try { WATCH = JSON.parse(localStorage.getItem("watch") || "{}") || {}; } catch (e) {}
 const wstar = (r) => r.person_id ? `<button type="button" class="wstar${WATCH[r.person_id] ? " on" : ""}" data-watch="${esc(r.person_id)}"
-  aria-pressed="${WATCH[r.person_id] ? "true" : "false"}" aria-label="watchlist" title="${WATCH[r.person_id] ? "Βγάλ' τον από τη watchlist" : "Βάλ' τον στη watchlist"}">${WATCH[r.person_id] ? "⭐" : "☆"}</button>` : "";
+  aria-pressed="${WATCH[r.person_id] ? "true" : "false"}" aria-label="watchlist" title="${WATCH[r.person_id] ? "Βγάλ' τον από τη watchlist" : "Βάλ' τον στη watchlist"}">${WATCH[r.person_id] ? "★" : "☆"}</button>` : "";
 const isWatched = (pid) => !!WATCH[pid];
 function wsince(r, sep) {
   const w = WATCH[r.person_id];
@@ -1010,7 +1100,7 @@ function wsince(r, sep) {
   const dp = d(r.price, w.price), dx = d(xf3(r), w.x3);    // only what moved
   const day = w.at ? new Date(w.at).toLocaleDateString("el-GR", { day: "numeric", month: "numeric" }) : "";
   const bits = [dp ? `price ${sg(dp, " cr")}` : "", dx ? `xFPT3 ${sg(dx, "")}` : "",
-    inj(r) ? "🚑 εκτός/αμφίβολος" : w.inj && !inj(r) ? "✅ διαθέσιμος ξανά" : ""].filter(Boolean);
+    inj(r) ? ico("medic") + " εκτός/αμφίβολος" : w.inj && !inj(r) ? ico("check") + " διαθέσιμος ξανά" : ""].filter(Boolean);
   return `${sep}<span class="muted wsince">από ${esc(day)}: ${bits.join(" · ") || "χωρίς αλλαγές"}</span>`;
 }
 function setWatch(pid, on) {
@@ -1018,11 +1108,11 @@ function setWatch(pid, on) {
   if (on && r) WATCH[pid] = { at: new Date().toISOString(), price: r.price ?? null, x3: xf3(r) ?? null, inj: !!inj(r) };
   else delete WATCH[pid];
   try { localStorage.setItem("watch", JSON.stringify(WATCH)); } catch (e) {}
-  if (typeof watchChanged === "function") watchChanged();      // HoopsLab: goes to the other devices with the team
+  if (typeof watchChanged === "function") watchChanged();      // Coach Dime: goes to the other devices with the team
   try { localStorage.setItem("watch_at", new Date().toISOString()); } catch (e) {}
   watchPush();
   document.querySelectorAll(`.wstar[data-watch="${CSS.escape(pid)}"]`).forEach((b) => {
-    b.classList.toggle("on", on); b.textContent = on ? "⭐" : "☆"; b.setAttribute("aria-pressed", on ? "true" : "false");
+    b.classList.toggle("on", on); b.textContent = on ? "★" : "☆"; b.setAttribute("aria-pressed", on ? "true" : "false");
     b.title = on ? "Βγάλ' τον από τη watchlist" : "Βάλ' τον στη watchlist"; });
   if ($("#fwatch").checked) renderPlayers();
 }
@@ -1058,7 +1148,7 @@ async function watchFromServer() {
 function watchReload() {
   try { WATCH = JSON.parse(localStorage.getItem("watch") || "{}") || {}; } catch (e) { WATCH = {}; }
   document.querySelectorAll(".wstar[data-watch]").forEach((b) => { const on = !!WATCH[b.dataset.watch];
-    b.classList.toggle("on", on); b.textContent = on ? "⭐" : "☆"; b.setAttribute("aria-pressed", on ? "true" : "false"); });
+    b.classList.toggle("on", on); b.textContent = on ? "★" : "☆"; b.setAttribute("aria-pressed", on ? "true" : "false"); });
   if (typeof P !== "undefined" && P && $("#fwatch").checked) renderPlayers();
 }
 document.addEventListener("click", (e) => {
@@ -1145,7 +1235,7 @@ async function compareTable(rows, removable = false) {
     ${line("Τάση price", rows.map((r) => (r.price_trend === "up" ? "$ άνοδος" : r.price_trend === "down" ? "↓$ πτώση" : "σταθερή")), null, (v) => v)}
     ${sec("Επόμενα 3 παιχνίδια")}
     ${line("Άθροισμα xFPT", nextSum, "hi")}
-    <tr><td>Αγώνες</td>${det.map((d) => `<td class="ng">${d.next.map((g) => `R${g.round} ${g.home ? "🏠" : "✈️"}${esc(tc(g.opp))} <b>${f1(g.x)}</b>`).join("<br>") || "–"}</td>`).join("")}</tr>
+    <tr><td>Αγώνες</td>${det.map((d) => `<td class="ng">${d.next.map((g) => `R${g.round} ${g.home ? "vs" : "@"} ${esc(tc(g.opp))} <b>${f1(g.x)}</b>`).join("<br>") || "–"}</td>`).join("")}</tr>
     ${line("Ματσάρισμα (επόμενος)", det.map((d) => d.next[0]?.pos_dev), "hi", (v) => `${v >= 0 ? "+" : ""}${Math.round(v * 100)}%`)}
     ${line("Πιθ. νίκης (επόμενος)", det.map((d) => d.next[0]?.win), "hi", pct0)}
     ${sec("Φόρμα (PIR)")}
@@ -1226,20 +1316,20 @@ function installGuide(force) {
              : `Πάτα το κουμπί <b>Κοινοποίηση</b> ${SHARE_ICON} του browser (αν δεν το βρίσκεις, άνοιξε τη σελίδα στο <b>Safari</b>).`,
       `Κύλησε προς τα κάτω και πάτα <b>«Προσθήκη στην οθόνη Αφετηρίας»</b>.`,
       `Πάτα <b>«Προσθήκη»</b> πάνω δεξιά.`,
-      `Άνοιγε την εφαρμογή από το εικονίδιο 🏀 στην οθόνη σου.`]
+      `Άνοιγε την εφαρμογή από το εικονίδιο της εφαρμογής στην οθόνη σου.`]
     : [`Πάτα το μενού <b>⋮</b> πάνω δεξιά στον browser.`,
       `Πάτα <b>«Εγκατάσταση εφαρμογής»</b> ή <b>«Προσθήκη στην αρχική οθόνη»</b>.`,
       `Επιβεβαίωσε με <b>«Εγκατάσταση»</b> / <b>«Προσθήκη»</b>.`,
-      `Άνοιγε την εφαρμογή από το εικονίδιο 🏀 στην οθόνη σου.`];
-  $("#sheet").innerHTML = `<div class="sh"><div><h2>📱 Βάλ' το στην οθόνη σου</h2>
+      `Άνοιγε την εφαρμογή από το εικονίδιο της εφαρμογής στην οθόνη σου.`];
+  $("#sheet").innerHTML = `<div class="sh"><div><h2>${ico("phone")} Βάλ' το στην οθόνη σου</h2>
       <div class="muted">Ανοίγει σαν εφαρμογή, σε πλήρη οθόνη — και η ομάδα σου δεν χάνεται.</div></div>
       <button class="x" aria-label="Κλείσιμο" onclick="dismissGuide(false)">×</button></div>
     <ol class="steps">${steps.map((x) => `<li><span>${x}</span></li>`).join("")}</ol>
-    ${P && P.edition === "public" ? `<p class="note">⚠️ <b>Στήσε την ομάδα σου μέσα από την εφαρμογή</b>, αφού την ανοίξεις από το εικονίδιο. Η εφαρμογή κρατά τα δικά της δεδομένα,
+    ${P && P.edition === "public" ? `<p class="note">${ico("warn")} <b>Στήσε την ομάδα σου μέσα από την εφαρμογή</b>, αφού την ανοίξεις από το εικονίδιο. Η εφαρμογή κρατά τα δικά της δεδομένα,
       χωριστά από τον browser· αν έχεις ήδη στήσει ομάδα εδώ, πάρε πρώτα <b>Επιλογές → Αντίγραφο ασφαλείας</b> και επικόλλησέ το στην εφαρμογή
-      («📥 Έχεις σύνδεσμο αντιγράφου;»).</p>` : ""}
+      («Έχεις σύνδεσμο αντιγράφου;»).</p>` : ""}
     ${ios ? `<p class="muted">Γιατί; Στο iPhone, αν η σελίδα δεν είναι στην οθόνη Αφετηρίας, το Safari σβήνει την αποθηκευμένη ομάδα σου μετά από 7 μέρες χωρίς χρήση.</p>` : ""}
-    ${INSTALL_PROMPT ? `<button class="a2hs-now" type="button" onclick="closePlayer(); installNow()">📲 Εγκατάσταση τώρα</button>` : ""}
+    ${INSTALL_PROMPT ? `<button class="a2hs-now" type="button" onclick="closePlayer(); installNow()">${ico("download")} Εγκατάσταση τώρα</button>` : ""}
     <div class="filters" style="margin-top:12px"><button class="seg" style="padding:8px 14px" onclick="dismissGuide(false)">Κατάλαβα</button>
       <button class="linkbtn" onclick="dismissGuide(true)">Να μην ξαναεμφανιστεί</button></div>`;
   $("#modal").classList.add("on");
@@ -1293,10 +1383,10 @@ async function playerParts(r) {
   const done = nx ? nx.round !== P.round : r.actual != null;
   const g = done && nx
     ? { opp: nx.opp, home: nx.home, pos_dev: nx.pos_dev, margin: nx.margin, win: nx.win, x: nx.x,
-        label: `επόμενου αγώνα · R${nx.round} ${nx.home ? "🏠" : "✈️"} vs ${esc(tc(nx.opp))} (${esc((nx.date || "").slice(0, 5))})` }
+        label: `επόμενου αγώνα · R${nx.round} ${nx.home ? "vs" : "@"} ${esc(tc(nx.opp))} (${esc((nx.date || "").slice(0, 5))})` }
     : { opp: r.opp, home: r.home, pos_dev: r.pos_dev, margin: r.margin, x: r.x_now,
         win: r.margin != null ? Math.round(100 / (1 + Math.exp(-r.margin / 6.45))) : null,
-        label: r.opp ? `${r.home ? "🏠" : "✈️"} vs ${esc(tc(r.opp))}` : "" };
+        label: r.opp ? `${r.home ? "vs" : "@"} ${esc(tc(r.opp))}` : "" };
   const wp = g.win;
   const turn = P.turns.find((t) => t.teams.includes(r.team));
   const marg = g.margin != null ? `${g.margin >= 0 ? "+" : ""}${f1(g.margin)} (${wp}% νίκη)` : "–";
@@ -1308,10 +1398,10 @@ async function playerParts(r) {
       ["Φόρμα: τελευταία 3 / σεζόν / πέρσι (PIR)", `${f1(f.last3_pir)} / ${f1(f.season_pir)} / ${f1(f.prev_pir)}`],
       ["Βάση μοντέλου (blend)", `<b>${f1(f.base ?? r.base)}</b> PIR`],
       ["Ματσάρισμα θέσης vs " + esc(tc(g.opp)), matchup(g.pos_dev) || "–"],
-      ["Έδρα", g.home ? "🏠 εντός" : "✈️ εκτός"],
+      ["Έδρα", g.home ? "εντός" : "εκτός"],
       ["Αναμενόμενη διαφορά σκορ", g.margin != null ? `${marg.replace(")", " → +10%)")}` : "–"],
       ["Διαθεσιμότητα (παιχνίδι / νέα)", `${r.avail_game == null ? "–" : Math.round(r.avail_game * 100) + "%"} / ${d.news_avail == null ? "–" : Math.round(d.news_avail * 100) + "%"}`],
-      ...(done ? [] : [["Στήλες fantasy", r.expert_pick || r.expert_avoid ? `👍${r.expert_pick || 0}${r.expert_cap ? " ★" : ""}${r.expert_avoid ? " 👎" : ""}` : "–"]]),
+      ...(done ? [] : [["Στήλες fantasy", r.expert_pick || r.expert_avoid ? `${ico("up")}${r.expert_pick || 0}${r.expert_cap ? " ★" : ""}${r.expert_avoid ? " " + ico("down") : ""}` : "–"]]),
       ["xFPT", `<b>${f1(g.x)}</b>`],
       ["Price", r.price_trend === "up" ? "$ πιθανή άνοδος" : r.price_trend === "down" ? "↓$ πιθανή πτώση" : "σταθερή"]];
   const stats = d.stats.length ? `<div class="tablewrap"><table><thead><tr><th>Σεζόν</th><th class="num">Αγ</th><th class="num">Λεπ</th><th class="num">PIR</th>
@@ -1323,12 +1413,12 @@ async function playerParts(r) {
         <td class="num">${pct(s.fg2)}</td><td class="num">${pct(s.fg3)}</td><td class="num">${pct(s.ft)}</td></tr>`).join("")}
       </tbody></table></div>` : `<p class="muted">Χωρίς αγώνες EuroLeague στα δεδομένα${r.prior ? " — εκτίμηση από το price του" : ""}.</p>`;
   const last = d.last.length ? `<div class="games">${d.last.map((g) => `<div class="game">
-      <div>${g.home ? "🏠" : "✈️"} <b>${esc(tc(g.opp))}</b> <span class="${g.won ? "W" : "L"}">${g.won ? "Ν" : "Η"}</span> ${esc(g.score)}</div>
+      <div>${g.home ? "vs" : "@"} <b>${esc(tc(g.opp))}</b> <span class="${g.won ? "W" : "L"}">${g.won ? "Ν" : "Η"}</span> ${esc(g.score)}</div>
       <div class="gv"><b>${f1(g.fp)}</b><small>points</small></div>
       <div class="gs">R${g.round} · ${esc(g.date || "")} · ${g.min}' · ${g.pts}π ${g.reb}ρ ${g.ast}α · PIR ${g.pir}</div></div>`).join("")}</div>`
     : `<p class="muted">Κανένας αγώνας φέτος ακόμα.</p>`;
   const next = d.next.length ? `<div class="games">${d.next.map((g) => `<div class="game">
-      <div>R${g.round} · ${g.home ? "🏠" : "✈️"} <b>${esc(tc(g.opp))}</b></div>
+      <div>R${g.round} · ${g.home ? "vs" : "@"} <b>${esc(tc(g.opp))}</b></div>
       <div class="gv"><b>${f1(g.x)}</b><small>xFPT</small></div>
       <div class="gs">${esc(g.date || "")} · ${g.win}% πιθανότητα νίκης</div></div>`).join("")}</div>`
     : `<p class="muted">${missing ? "Δεν φορτώθηκαν τα στοιχεία — έλεγξε τη σύνδεση και άνοιξε ξανά τον παίκτη." : "Δεν υπάρχουν προγραμματισμένοι αγώνες στα δεδομένα."}</p>`;
@@ -1339,7 +1429,7 @@ async function playerParts(r) {
       <div class="kpi"><b>${f1(xf3(r))}</b><span>xFPT3</span></div>
       <div class="kpi"><b>${r.fpt_total == null ? "–" : f1(r.fpt_total)}</b><span>points σεζόν</span></div>
       <div class="kpi"><b>${r.value == null ? "–" : r.value.toFixed(2)}</b><span>xFPT3 / cr</span></div></div>
-    ${WATCH[pid] ? `<p class="muted wsince">⭐ ${wsince(r, "")}</p>` : ""}`;
+    ${WATCH[pid] ? `<p class="muted wsince">★ ${wsince(r, "")}</p>` : ""}`;
   const body = `<h3>${done ? "Αγώνας" : "Επόμενος αγώνας"}${g.label ? ` ${done ? "" : "· "}${g.label}` : ""}</h3>
     <ul class="why">${why.map(([k, v]) => `<li><span>${k}</span><span>${v}</span></li>`).join("")}</ul>
     ${coach ? "" : `<h3>Στατιστικά (μ.ό. ανά αγώνα)</h3>${stats}`}
@@ -1440,14 +1530,14 @@ function problemText() {
   return lines.join("\n");
 }
 const problemMail = (text = problemText()) =>
-  `mailto:${FEEDBACK_MAIL}?subject=${encodeURIComponent("HoopsLab beta — πρόβλημα")}&body=${encodeURIComponent(text)}`;
+  `mailto:${FEEDBACK_MAIL}?subject=${encodeURIComponent("Coach Dime beta — πρόβλημα")}&body=${encodeURIComponent(text)}`;
 function reportProblem() {
   const text = problemText();
-  $("#sheet").innerHTML = `<div class="sh"><h2>🐞 Ανάφερε πρόβλημα</h2><button class="x" onclick="closePlayer()">×</button></div>
+  $("#sheet").innerHTML = `<div class="sh"><h2>${ico("bug")} Ανάφερε πρόβλημα</h2><button class="x" onclick="closePlayer()">×</button></div>
     <p class="muted">Αν το email ανοίξει άδειο, αντίγραψε αυτό το κείμενο και κόλλησέ το εκεί.</p>
     <textarea class="tm-input" id="pbText" rows="8" readonly>${esc(text)}</textarea>
-    <p><a class="fbcopy" id="pbMail" href="${esc(problemMail(text))}">✉️ Άνοιγμα email</a>
-      <button class="fbcopy" type="button" id="pbCopy">📋 Αντιγραφή</button></p>`;
+    <p><a class="fbcopy" id="pbMail" href="${esc(problemMail(text))}">${ico("mail")} Άνοιγμα email</a>
+      <button class="fbcopy" type="button" id="pbCopy">${ico("copy")} Αντιγραφή</button></p>`;
   $("#pbCopy").onclick = async () => { $("#pbCopy").textContent = (await copyText(text)) ? "✓ Αντιγράφηκε" : "Πάτα παρατεταμένα το κείμενο"; };
   $("#modal").classList.add("on"); document.body.classList.add("noscroll");
 }
@@ -1718,7 +1808,7 @@ function renderToday() {
   const fewN = P.players.filter(fewGames).length;
   let earlyOff = false;
   try { earlyOff = localStorage.getItem("earlyOff") === "1"; } catch (e) {}
-  const early = P.round <= 5 && fewN && !earlyOff ? `<div class="card wide note-early"><span>🆕 <b>Αρχή σεζόν:</b> ${fewN} νέοι παίκτες με 1–${
+  const early = P.round <= 5 && fewN && !earlyOff ? `<div class="card wide note-early"><span><span class="tag">NEW</span> <b>Αρχή σεζόν:</b> ${fewN} νέοι παίκτες με 1–${
     Math.max(...P.players.filter(fewGames).map((r) => r.games))} ματς ${ii("few")}</span>
     <button class="x" id="earlyOff" type="button" aria-label="Κλείσιμο">×</button></div>` : "";
 
@@ -1728,7 +1818,7 @@ function renderToday() {
     ? `<div class="td-team"><div><b>Δεν έχεις στήσει ομάδα ακόμα</b><div class="muted">Βάλε τους 11 σου για προτάσεις σε Trades, Starting five και Captain.</div></div>
         <button class="td-btn" data-tab="team">Φτιάξ' την</button></div>`
     : !sm ? `<div class="muted">Η ομάδα δεν διαβάστηκε από το παιχνίδι.</div>`
-    : `<div class="td-team"><div><b>${sm.steps == null ? "Έλεγξε την ομάδα σου" : sm.steps ? `${sm.steps} ${sm.steps === 1 ? "βήμα εκκρεμεί" : "βήματα εκκρεμούν"}` : "✅ Έτοιμος για το Round"}</b>
+    : `<div class="td-team"><div><b>${sm.steps == null ? "Έλεγξε την ομάδα σου" : sm.steps ? `${sm.steps} ${sm.steps === 1 ? "βήμα εκκρεμεί" : "βήματα εκκρεμούν"}` : ico("check") + " Έτοιμος για το Round"}</b>
         <div class="muted">${sm.trades ? `${sm.trades} ${sm.trades === 1 ? "trade" : "trades"} · ` : ""}${sm.captain ? `CAP: ${esc(sm.captain)} · ` : ""}Credits ${f1(sm.bank)}</div></div>
         <button class="td-btn" data-tab="team">Άνοιγμα</button></div>`;
 
@@ -1771,7 +1861,7 @@ function renderToday() {
       <div class="td-games">${(t.games || []).slice().sort((a, b) => String(a).split(" ").pop().localeCompare(String(b).split(" ").pop()))
         .map((g) => `<span>${esc(String(g).replace(/^(\w+)-(\w+)/, (m, h, a) => `${tc(h)} – ${tc(a)}`))}</span>`).join("")}</div></div>`).join("");
 
-  const health = (P.health || []).length ? `<div class="card warn wide"><h2>⚠️ Κατάσταση</h2>${P.health.map(esc).join("<br>")}</div>` : "";
+  const health = (P.health || []).length ? `<div class="card warn wide"><h2>${ico("warn")} Κατάσταση</h2>${P.health.map(esc).join("<br>")}</div>` : "";
   $("#today").innerHTML = `<div class="td-grid">${health}
     <div class="card">${heroHtml()}</div>
     <div class="card"><h2>${P.edition === "public" ? "Η ομάδα μου" : esc(P.my_team?.name || "Η ομάδα μου")}</h2>${team}</div>${early}
@@ -1830,7 +1920,7 @@ setInterval(() => {
   $("#round").textContent = `Round ${p.round}`;
   freshness();
 
-  const health = (p.health || []).length ? `<div class="card warn"><h2>⚠️ Κατάσταση</h2>${p.health.map(esc).join("<br>")}</div>` : "";
+  const health = (p.health || []).length ? `<div class="card warn"><h2>${ico("warn")} Κατάσταση</h2>${p.health.map(esc).join("<br>")}</div>` : "";
   $("#report").innerHTML = health + (rep?.messages || []).map((m) =>
     `<div class="card"><div class="msg">${m.text.replace(/\n/g, "<br>")}</div></div>`).join("");
 

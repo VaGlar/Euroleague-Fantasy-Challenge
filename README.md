@@ -4,7 +4,8 @@ A personal tool for the [EuroLeague Fantasy Challenge](https://euroleaguefantasy
 a data-driven player ranking built from stats, news and expert opinion, trade and captain suggestions,
 and a Telegram report at 10:05 on every game day. Running cost: €0.
 
-> **Public edition:** the product plan (two editions from one engine, subscriptions, security) is in [`docs/PRODUCT.md`](docs/PRODUCT.md).
+> **Public edition: Coach Dime** («σου δίνει την ασίστ»). Its Cloudflare Pages project is still `hoopslab-beta`
+> (the address); the name the users see is `PRODUCT` in `elf/publish.py`. The product plan (two editions from one engine, subscriptions, security) is in [`docs/PRODUCT.md`](docs/PRODUCT.md).
 >
 > **R&D:** experiments to improve the model, including the ones that failed, and the ideas on hold are in [`research/`](research/README.md).
 >
@@ -62,7 +63,7 @@ flowchart LR
 |---|---|---|
 | `elf/` (Python) | GitHub Actions (started by the bot, 3–4×/day) | EuroLeague stats, fantasy prices, news, xPIR, report |
 | `web/` | Cloudflare Pages | dashboard (a PWA: «Add to Home Screen» on an iPhone) |
-| `functions/` | Cloudflare Pages Functions | `/feed` (news proxy), `/api/sync` (HoopsLab devices in step, D1) |
+| `functions/` | Cloudflare Pages Functions | `/feed` (news proxy), `/api/sync` (Coach Dime devices in step, D1) |
 | `worker/` | Cloudflare Workers | hourly cron (update 07:05, report 10:05, update 3 hours and check 2 hours before the first game, update after the games) + bot commands; deploys itself on every change to `worker/` on `main` |
 | `sources.yaml` | — | news sources: RSS feeds, the EuroLeague CMS and pages updated in place (e.g. BasketNews' injury report) |
 
@@ -173,7 +174,7 @@ Proposes the five, sixth man and captain from your **real** team and, if you pre
 ### Cloudflare Access (locking the personal site)
 `elf-dashboard.pages.dev` shows your team and the report. With Access it opens only for you (email + one-time code).
 Two «machines» read it without a login, with a **service token**: the bot (all its data) and the pipeline (the `/feed` proxy).
-The public site (HoopsLab) is not affected.
+The public site (Coach Dime) is not affected.
 
 **The order matters**, otherwise the bot stops:
 1. Cloudflare → **Zero Trust** (free up to 50 users; the first time it asks for a team name and the Free plan).
@@ -190,9 +191,9 @@ The public site (HoopsLab) is not affected.
    If the bot writes «Cloudflare Access 302», the token is missing or wrong: steps 3–4.
 7. On the iPhone: open the site once from the icon and log in; it then holds for the session duration.
 
-### Devices in step (HoopsLab, D1)
+### Devices in step (Coach Dime, D1)
 
-A HoopsLab team lives on the device; with a code (⋯ Επιλογές → Συγχρονισμός συσκευών) a PC and a phone
+A Coach Dime team lives on the device; with a code (⋯ Επιλογές → Συγχρονισμός συσκευών) a PC and a phone
 keep the same team. `functions/api/sync/[[path]].js` keeps it in a **Cloudflare D1** database
 (table `teams`: code, data, rev, updated_at, user_id — created on the first call; SQL so that it moves
 to Supabase/Postgres as it is when accounts come). Once:
@@ -241,7 +242,7 @@ rule is a health warning on Telegram, not a failed update.
 ### Watchlist alerts (personal edition)
 
 ☆/⭐ on a player keeps him in the watchlist (Players → «⭐ Watchlist» shows what changed since he was
-added). On HoopsLab the list stays on the device and travels with the team's sync. On the personal
+added). On Coach Dime the list stays on the device and travels with the team's sync. On the personal
 site it also reaches the update, which tells you on Telegram when a watched player is expected to
 rise in price, is out or doubtful, is available again, or his xFPT3 rose by 3+ since you added him
 (each piece of news once). The path: the page → `functions/api/watch.js` (personal site only, behind
@@ -252,7 +253,7 @@ data repo → `python -m elf.watch notify` in the update. Once:
    Settings → Variables and Secrets → Add → type **Secret**, name **`GH_DISPATCH_TOKEN`**, the same
    fine-grained token as for `/update` (Actions: Read and write on this repo only).
 2. A new deploy (the next update) turns it on. Without the secret `/api/watch` answers 404 (that is
-   how HoopsLab, which has the same Functions, stays closed); without Cloudflare Access in front, 403.
+   how Coach Dime, which has the same Functions, stays closed); without Cloudflare Access in front, 403.
 3. Recommended: two variables on `elf-dashboard` so the Access token itself is checked (signature,
    audience, issuer, expiry), not only its presence: **`ACCESS_TEAM_DOMAIN`** =
    `https://<team>.cloudflareaccess.com` (Zero Trust → Settings → Custom pages / team domain) and
@@ -290,7 +291,7 @@ back to the roster's even when Gemini writes them in Greek (`news.resolve_names`
 - the update's data check (`elf/validate.py`: stops before the commit if the day's data are broken)
 - the public repo (`tests/test_public_repo.py`): nothing personal or article text in its files, the order
   of the `update.yml` steps, the same list of private files in `publish.py` / `update.yml` / `.gitignore`
-- the HoopsLab sync function (`tests/test_sync.py`, in node against an in-memory D1)
+- the Coach Dime sync function (`tests/test_sync.py`, in node against an in-memory D1)
 
 In CI the coverage of `elf/` must not drop below the floor in `.coveragerc` (`python -m pytest --cov`
 shows it locally, with the lines lacking a test): new code comes with its tests.

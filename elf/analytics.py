@@ -89,7 +89,7 @@ def message(data: dict, day: date) -> str:
         return "\n".join(lines)
     for h in sorted(per, key=lambda h: (h != host, -per[h]["w"][0])):
         s = per[h]
-        name = "HoopsLab" if h == host else h.split(".")[0]
+        name = "Coach Dime" if h == host else h.split(".")[0]
         lines.append(f"\n<b>{escape(name)}</b> <i>{escape(h)}</i>\n"
                      f"χθες: <b>{s['y'][0]}</b> επισκέψεις · {s['y'][1]} προβολές\n"
                      f"σήμερα ως τώρα: <b>{s['t'][0]}</b> επισκέψεις · {s['t'][1]} προβολές\n"
@@ -98,7 +98,7 @@ def message(data: dict, day: date) -> str:
         def top(key: str, dim: str, blank: str) -> str:
             rows = [(g["dimensions"][dim] or blank, g["sum"]["visits"]) for g in data.get(key) or []]
             return " · ".join(f"{escape(str(k))} {v}" for k, v in rows if v) or "–"
-        lines.append(f"\n<b>HoopsLab χθες</b>\nΧώρες: {top('countries', 'countryName', '?')}\n"
+        lines.append(f"\n<b>Coach Dime χθες</b>\nΧώρες: {top('countries', 'countryName', '?')}\n"
                      f"Συσκευές: {top('devices', 'deviceType', '?')}\n"
                      f"Από: {top('referers', 'refererHost', 'απευθείας')}")
     return "\n".join(lines)

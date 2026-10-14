@@ -143,14 +143,14 @@ test("a player back after 3 missed games is marked «↩ επιστρέφει» 
   await checkLayout(page, "returning");
 });
 
-test("watchlist: ☆ adds a player, «⭐ Watchlist» shows only them with what changed since, kept after a reload", async ({ page }, testInfo) => {
+test("watchlist: ☆ adds a player, «★ Watchlist» shows only them with what changed since, kept after a reload", async ({ page }, testInfo) => {
   await open(page, "public", { tab: "players" });
   if (isPhone(testInfo)) await page.locator("#fsum").click();
   await page.locator("#fsearch").fill("vezenkov");
   const star = rows(page, testInfo).first().locator(".wstar");
   await expect(star).toHaveText("☆");
   await star.click();
-  await expect(star).toHaveText("⭐");
+  await expect(star).toHaveText("★");                       // the page has no emoji: ★ / ☆
   await expect(page.locator("#modal")).not.toHaveClass(/\bon\b/);   // the star doesn't open the player
   await page.locator("#fsearch").fill("");
   await page.locator("#fwatch").check();

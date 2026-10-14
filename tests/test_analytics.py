@@ -29,7 +29,7 @@ DATA = {
 
 def test_message_per_site_week_trend_and_sources():
     text = analytics.message(DATA, DAY)
-    assert text.index("HoopsLab") < text.index("elf-dashboard")          # the product first
+    assert text.index("Coach Dime") < text.index("elf-dashboard")          # the product first
     assert "χθες: <b>120</b> επισκέψεις · 300 προβολές" in text
     assert "σήμερα ως τώρα: <b>4</b> επισκέψεις" in text
     assert "7 μέρες: <b>200</b> επισκέψεις (▲100%)" in text               # 200 vs 100 the week before
