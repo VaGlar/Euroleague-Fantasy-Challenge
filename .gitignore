@@ -15,4 +15,6 @@ data/public/report.json
 data/public/lineup_log.json
 data/public/roster_shape.json
 data/public/health_last.json
+data/public/watch.json
+data/public/watch_state.json
 private/

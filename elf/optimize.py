@@ -25,6 +25,9 @@ LATER_PENALTY = 1000.0   # per later-turn starter, per turn he plays after the c
 # LATER_PENALTY, so it never pulls one more later player into the five; more than any xFPT gap. An
 # earlier captain always dominates: if he flops, the armband moves to the later player before his game.
 CAP_LATER_PENALTY = 100.0
+# five vs sixth man score the same, so which of two players starts is a tie: the stronger one does
+# (a tiny bonus per xFPT in the five, far below any real difference; left out of the objective reported)
+FIVE_TIE = 1e-5
 PLAN_MIN_X = 5.0  # a later-turn bench player below this is not worth a swap plan
 
 
@@ -57,12 +60,15 @@ def _model(players: list[dict], value: str, now: str, budget: float,
            fixed: set | None = None, keep: set | None = None,
            bench_bonus: dict | None = None, bench_only: set | None = None,
            no_captain: set | None = None, later: dict | None = None,
-           stay_or_bench: dict | None = None):
+           stay_or_bench: dict | None = None, formations: dict | None = None,
+           stay_forms: dict | None = None):
     """Build and solve. players: dicts with id, position, price, <value>, <now>.
     `later`: {id: turns after the current one} (`later_turn_steps`); they start (five / sixth
     man) only if the lineup is impossible otherwise (big penalty per such starter and turn),
     and take the armband only if no earlier starter can.
-    `stay_or_bench`: {id: role} played starters: keep that role or go to the bench."""
+    `stay_or_bench`: {id: role} played starters: keep that role or go to the bench.
+    `formations`: {name: {position: count}} the five must be one of these (the game's list);
+    `stay_forms`: {id: names} a player may stay in the five only with one of those formations."""
     m = pulp.LpProblem("elf", pulp.LpMaximize)
     ids = range(len(players))
     pick = {i: pulp.LpVariable(f"p{i}", cat="Binary") for i in ids}
@@ -80,7 +86,7 @@ def _model(players: list[dict], value: str, now: str, budget: float,
         full = five[i] + six[i]
         bb = (bench_bonus or {}).get(p["id"], 0.0)  # option value of a later-turn bench player
         obj += [v * full, (BENCH_MULTIPLIER * v + bb) * (pick[i] - full),
-                float(p.get(now) or 0) * cap[i]]
+                float(p.get(now) or 0) * cap[i], FIVE_TIE * v * five[i]]
         m += full <= pick[i]
         m += cap[i] <= five[i]
         if bench_only and p["id"] in bench_only:   # already played from the bench: locked
@@ -100,6 +106,15 @@ def _model(players: list[dict], value: str, now: str, budget: float,
     m += pulp.lpSum(cap.values()) == 1
     for pos in COURT:
         m += pulp.lpSum(five[i] for i in ids if players[i]["position"] == pos) >= 1
+    if formations:
+        form = {f: pulp.LpVariable(f"form{k}", cat="Binary") for k, f in enumerate(formations)}
+        m += pulp.lpSum(form.values()) == 1
+        for pos in COURT:
+            m += pulp.lpSum(five[i] for i in ids if players[i]["position"] == pos) \
+                == pulp.lpSum(formations[f].get(pos, 0) * v for f, v in form.items())
+        for i, p in enumerate(players):
+            if stay_forms and p["id"] in stay_forms:
+                m += five[i] <= pulp.lpSum(form[f] for f in stay_forms[p["id"]] if f in form)
     if fixed is None:      # squad choice: the game's per-club limit (never below what is already owned)
         clubs = {}
         for i, p in enumerate(players):
@@ -123,6 +138,8 @@ def _model(players: list[dict], value: str, now: str, budget: float,
     pen = sum(later[p["id"]] * (LATER_PENALTY * (five[i].value() + six[i].value())
                                 + CAP_LATER_PENALTY * cap[i].value())
               for i, p in enumerate(players) if p["id"] in later)
+    pen -= sum(FIVE_TIE * float(p.get(value) or 0) * five[i].value()
+               for i, p in enumerate(players) if p["position"] != "Head Coach")
 
     def role(i):
         if players[i]["position"] == "Head Coach":
@@ -203,11 +220,15 @@ def transfers(squad: list[dict], pool: list[dict], bank: float, max_trades: int 
             if base else None, "result": best, "bank_after": round(budget - best["cost"], 1)}
 
 
-def lineup_in_round(squad: list[dict], now="x_now"):
+def lineup_in_round(squad: list[dict], now="x_now", formations: dict | None = None,
+                    stay_forms: dict | None = None):
     """Lineup during a round (game rules, confirmed by its 422 "Illegal moves"):
       * a player who already played can only leave the starting six for the bench:
         he cannot move five <-> sixth man, and a played bench player cannot enter;
-      * the armband can move, but only to a player who has not played yet.
+      * the armband can move, but only to a player who has not played yet;
+      * (/lineup, `formations` + `stay_forms`) a played starter keeps his court slot, and the five's
+        slots go by position (422 "Every player must be in the right court position"): he can stay
+        only with a formation that puts his position on his slot.
     Players who played carry their real points in `now`."""
     played = {p["id"]: p for p in squad if p.get("played") and p["position"] != "Head Coach"}
     stay_or_bench = {i: p.get("cur_role") for i, p in played.items()
@@ -216,7 +237,7 @@ def lineup_in_round(squad: list[dict], now="x_now"):
     no_cap = {i for i, p in played.items() if not p.get("cur_captain")}
     return _model(squad, now, now, budget=1e9, fixed={p["id"] for p in squad},
                   bench_only=bench_only, no_captain=no_cap, stay_or_bench=stay_or_bench,
-                  later=later_turn_steps(squad))
+                  later=later_turn_steps(squad), formations=formations, stay_forms=stay_forms)
 
 
 def defer_later_turns(team: list[dict]) -> tuple[list[dict], list[dict]]:

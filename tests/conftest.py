@@ -153,9 +153,24 @@ class FakeGame:
                 return True
         return False
 
+    def misplaced(self, body):
+        """The five's slots go by position, C -> F -> G (422 "Every player must be in the right
+        court position", seen on 14/10)."""
+        pos = {p["id"]: p["position"]["name"] for p in self.state["players"]}
+        court = sorted((b for b in body["players"] if pos[b["id"]] in POS), key=lambda b: b["court_position"])
+        order = {"Center": 0, "Forward": 1, "Guard": 2}
+        seq = [order[pos[b["id"]]] for b in court[:5]]
+        return seq != sorted(seq)
+
     def save_roster(self, tid, md, body):
         assert (tid, md) == (self.TEAM, self.MATCHDAY), f"save_roster({tid}, {md})"
         self.saved.append(body)
+        if self.status < 400 and self.misplaced(body):
+            class Misplaced:
+                status_code = 422
+                text = ('{"code":"VALIDATION_ERROR","message":"Every player must be in the right '
+                        'court position."}')
+            return Misplaced()
         if self.status < 400 and self.illegal(body):
             class Bad:
                 status_code = 422

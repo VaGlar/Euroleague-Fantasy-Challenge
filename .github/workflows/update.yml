@@ -101,6 +101,15 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python -m elf.notify health
 
+      # the owner's ⭐ list (saved by watch.yml in the private data): what happened to those players
+      - name: Watchlist alerts (Telegram)
+        if: ${{ env.LIVE == 'true' && env.HAS_DATA_REPO == 'true' }}
+        continue-on-error: true
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python -m elf.watch notify
+
       - name: Send today's report
         if: ${{ inputs.report && env.LIVE == 'true' }}
         env:
@@ -114,6 +123,9 @@ jobs:
           rm -rf private/public private/archive
           cp -r data/public private/public
           mkdir -p data/archive && cp -r data/archive private/archive
+          # the watchlist is written by watch.yml only: keep the data repo's copy (one saved while this
+          # run was going is newer than the run's), so the rebase below keeps the newer list
+          git -C private checkout HEAD -- public/watch.json 2>/dev/null || true
           cd private
           git config user.name "elf-bot"
           git config user.email "elf-bot@users.noreply.github.com"
@@ -133,7 +145,8 @@ jobs:
         run: |
           python -m elf.publish --repo
           git rm -r -q --cached --ignore-unmatch data/archive data/public/report.json \
-            data/public/lineup_log.json data/public/roster_shape.json data/public/health_last.json
+            data/public/lineup_log.json data/public/roster_shape.json data/public/health_last.json \
+            data/public/watch.json data/public/watch_state.json
 
       - name: Commit data
         if: ${{ env.LIVE == 'true' }}

@@ -279,6 +279,13 @@ test.describe("public edition", () => {
     await page.evaluate(() => document.dispatchEvent(new Event("visibilitychange")));
     await expect.poll(async () => (await stored(page)).captain).toBe(id);
     await expect(page.locator(`${C} .chip.cap[data-fid="${id}"]`)).toHaveCount(1);
+
+    // the watchlist travels with the team: ⭐ there (the players' tab star) shows up here
+    const pid = await p2.evaluate(() => { const r = P.players.find((x) => x.person_id); setWatch(r.person_id, true); return r.person_id; });
+    await expect.poll(() => store.get("ABCDEFGHJKMN").rev, { timeout: 8000 }).toBe(3);
+    expect(Object.keys(store.get("ABCDEFGHJKMN").data.watch || {})).toEqual([pid]);
+    await page.evaluate(() => document.dispatchEvent(new Event("visibilitychange")));
+    await expect.poll(() => page.evaluate(() => Object.keys(JSON.parse(localStorage.getItem("watch") || "{}")))).toEqual([pid]);
     await ctx2.close();
   });
 
@@ -333,6 +340,24 @@ test.describe("public edition", () => {
     await page.locator("#tmUndoOk").click();
     const after = await stored(page);
     for (const k of ["players", "bank"]) expect(after[k]).toEqual(before[k]);
+  });
+
+  test("«💾 Save»: «Undo all» goes back there, not to the round's start; the count stays", async ({ page }) => {
+    await savedTeam(page);
+    await page.locator("#tmConfirm").click();
+    await tradeRows(page).first().locator(".tm-done").click();              // e.g. last round's trade, recorded late
+    const mark = await stored(page);
+    await option(page, "mCp");
+    await page.locator("#tmCpOk").click();
+    await expect(header(page)).toContainText("Trades 1/4");
+    await expect(page.locator("#mUsed, #mUndoLast")).toHaveCount(0);        // nothing to undo at the mark
+    await tradeRows(page).first().locator(".tm-done").click();
+    await expect(header(page)).toContainText("Trades 2/4");
+    await page.locator("#mUsed").click();
+    await page.locator("#tmUndoOk").click();
+    const now = await stored(page);
+    for (const k of ["players", "bank", "roles", "captain"]) expect(now[k]).toEqual(mark[k]);
+    await expect(header(page)).toContainText("Trades 1/4");
   });
 
   test("trades left can be declared (the game counts more than the app saw): the proposals follow", async ({ page }) => {

@@ -98,9 +98,21 @@
     clearTimeout(syncTimer);
     syncTimer = setTimeout(() => syncPush(), 1500);   // a burst of changes is one write
   }
+  // the watchlist (index.html, «watch» on this device) travels with the team: the newer copy wins, as for the team
+  const watchNow = () => { try { return JSON.parse(localStorage.getItem("watch") || "{}") || {}; } catch (e) { return {}; } };
+  const withWatch = (t) => (t ? { ...t, watch: watchNow() } : t);
+  window.watchChanged = () => {
+    if (GAME() || !syncGet()) return;
+    const t = load();
+    if (t) { t.watch = watchNow(); save(t); }       // a save: newer than the other device's copy, goes up in a moment
+  };
   // the server's copy replaces this device's (the newer one wins; the page says so)
   function takeRemote(res, quiet) {
     try { localStorage.setItem(KEY, JSON.stringify(res.data)); } catch (e) {}
+    if (res.data && res.data.watch && typeof res.data.watch === "object") {
+      try { localStorage.setItem("watch", JSON.stringify(res.data.watch)); } catch (e) {}
+      if (typeof watchReload === "function") watchReload();
+    }
     const s = syncGet();
     if (s) syncSet({ code: s.code, rev: res.rev, dirty: false });
     if (!quiet) toast("Η ομάδα ενημερώθηκε από την άλλη συσκευή");
@@ -108,7 +120,7 @@
   }
   const newer = (a, b) => String((a && a.updated) || "") > String((b && b.updated) || "");
   async function syncPush() {
-    const s = syncGet(), t = load();
+    const s = syncGet(), t = withWatch(load());
     if (!s || !t || syncBusy) return;
     syncBusy = true;
     try {
@@ -135,7 +147,7 @@
   document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") syncPull(); });
   // link this device: with a new code (its team goes up) or an existing one (that team comes down)
   async function syncNew() {
-    const t = load();
+    const t = withWatch(load());
     if (!t) return null;
     const res = await syncApi("POST", "", { data: t });
     if (res.status !== 201) return res.status;
@@ -354,7 +366,18 @@
   const roundStart = (t, ti) => (t.used && t.used.round === ti.round && t.used.before ? t.used.before : null);
   const sameTeam = (a, b) => a.players.map((x) => x.id).sort().join() === b.players.map((x) => x.id).sort().join()
     && Number(a.bank) === Number(b.bank);
-  const canUndo = (t, ti) => usedTrades(t, ti) > 0 || (!!roundStart(t, ti) && !sameTeam(t, roundStart(t, ti)));
+  // after «💾 Save» the team as set there is the start: the counter alone is nothing to undo
+  const atCheckpoint = (t, ti) => !!(t.cp && t.cp.round === ti.round);
+  const canUndo = (t, ti) => (usedTrades(t, ti) > 0 && !atCheckpoint(t, ti)) || (!!roundStart(t, ti) && !sameTeam(t, roundStart(t, ti)));
+  // «💾 Save»: the team as it is now becomes what «Undo all» brings back (e.g. the previous
+  // round's trades, recorded late, are no longer undone with this round's). The trades count stays as it is.
+  function checkpoint(t) {
+    const ti = tradeInfo(t);
+    t.hist = [];
+    if (t.used && t.used.round === ti.round) t.used = { ...t.used, before: null };
+    t.cp = { round: ti.round, at: Date.now() };
+    save(t, { undoing: true });
+  }
   // «μου μένουν N μεταγραφές»: the game counts every change of the round, the app only what it saw
   const tradesLeft = (t, ti) => Math.max(0, (ti.max_trades ?? 4) - usedTrades(t, ti));
   function setTradesLeft(t, left) {
@@ -675,18 +698,20 @@
       });
     }
   }
+  // the watchlist (index.html): those players first in the lists of who fits
+  const watched = (p) => (typeof isWatched === "function" && isWatched(p.person_id) ? 1 : 0);
   function replaceSheet(t, r) {
     const max = (Number(t.bank) || 0) + Number(r.price || 0);
     const have = new Set(t.players.map((x) => x.id));
     // only the players the credits allow (sold at today's price), the biggest gain over the next 3 rounds first
     const list = P.players.filter((p) => p.position === r.position && p.fantasy_id != null && p.price != null
         && p.price <= max + 1e-9 && !have.has(p.fantasy_id))
-      .sort((a, b) => (b.x_h ?? 0) - (a.x_h ?? 0));
+      .sort((a, b) => watched(b) - watched(a) || (b.x_h ?? 0) - (a.x_h ?? 0));
     const gain = (p) => (p.x_h ?? 0) - (r.x_h ?? 0);
     const draw = (q) => {
       const k = key(q).trim();
       $("#tmList").innerHTML = list.filter((p) => !k || key(p.name).includes(k)).slice(0, 40).map((p) => `<button class="tm-pick" data-n="${p.fantasy_id}">
-          <span><b>${esc(nm(p.name))}</b>${typeof newb === "function" ? newb(p, false) : ""}</span><span class="tm-pv"><b class="${gain(p) > 0 ? "tm-up" : "tm-down"}">${gain(p) > 0 ? "+" : "−"}${f1(Math.abs(gain(p)))}</b><small>xFPT3</small></span>
+          <span>${watched(p) ? "⭐ " : ""}<b>${esc(nm(p.name))}</b>${typeof newb === "function" ? newb(p, false) : ""}</span><span class="tm-pv"><b class="${gain(p) > 0 ? "tm-up" : "tm-down"}">${gain(p) > 0 ? "+" : "−"}${f1(Math.abs(gain(p)))}</b><small>xFPT3</small></span>
           <span class="muted tm-pm">${esc(tc(p.team))} · ${f1(p.price)} cr · xFPT3 ${f1(xf3(p))} · μένουν ${f1(max - p.price)} cr</span></button>`).join("")
         || `<p class="muted">${k ? `Κανένας ${NAME[r.position]} με αυτό το όνομα μέσα στο υπόλοιπο.` : `Κανένας ${NAME[r.position]} δεν χωράει στο υπόλοιπο.`}</p>`;
       document.querySelectorAll("#tmList [data-n]").forEach((b) => b.onclick = () => {
@@ -695,7 +720,7 @@
         toast(`${sur(r.name)} ➜ ${sur(n.name)} · υπόλοιπο ${f1(t.bank)} cr`);
       });
     };
-    sheet(`<div class="sh"><div><h2>Αντικατάσταση: ${esc(sur(r.name))}</h2><div class="muted">${NAME[r.position]} · ${list.length} χωράνε στα ${f1(max)} cr · το μεγαλύτερο κέρδος σε xFPT3 πρώτα</div></div>
+    sheet(`<div class="sh"><div><h2>Αντικατάσταση: ${esc(sur(r.name))}</h2><div class="muted">${NAME[r.position]} · ${list.length} χωράνε στα ${f1(max)} cr · ⭐ watchlist και το μεγαλύτερο κέρδος σε xFPT3 πρώτα</div></div>
         <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
       <input id="tmQ" class="tm-input" placeholder="Αναζήτηση ${NAME[r.position]}…" autocomplete="off"><div id="tmList"></div>`);
     draw(""); $("#tmQ").addEventListener("input", (e) => draw(e.target.value));
@@ -750,19 +775,19 @@
     const max = sellCredits(t);   // this place is empty, its player's credits are in already
     const list = P.players.filter((p) => p.position === r.position && p.fantasy_id != null && p.price != null
         && p.price <= max + 1e-9 && !taken.has(p.fantasy_id))
-      .sort((a, b) => (b.x_h ?? 0) - (a.x_h ?? 0));
+      .sort((a, b) => watched(b) - watched(a) || (b.x_h ?? 0) - (a.x_h ?? 0));
     const gain = (p) => (p.x_h ?? 0) - (r.x_h ?? 0);
     const draw = (q) => {
       const k = key(q).trim();
       $("#tmList").innerHTML = list.filter((p) => !k || key(p.name).includes(k)).slice(0, 40).map((p) => `<button class="tm-pick" data-n="${p.fantasy_id}">
-          <span><b>${esc(nm(p.name))}</b>${typeof newb === "function" ? newb(p, false) : ""}</span><span class="tm-pv"><b class="${gain(p) > 0 ? "tm-up" : "tm-down"}">${gain(p) > 0 ? "+" : "−"}${f1(Math.abs(gain(p)))}</b><small>xFPT3</small></span>
+          <span>${watched(p) ? "⭐ " : ""}<b>${esc(nm(p.name))}</b>${typeof newb === "function" ? newb(p, false) : ""}</span><span class="tm-pv"><b class="${gain(p) > 0 ? "tm-up" : "tm-down"}">${gain(p) > 0 ? "+" : "−"}${f1(Math.abs(gain(p)))}</b><small>xFPT3</small></span>
           <span class="muted tm-pm">${esc(tc(p.team))} · ${f1(p.price)} cr · xFPT3 ${f1(xf3(p))} · μένουν ${f1(max - p.price)} cr</span></button>`).join("")
         || `<p class="muted">${k ? `Κανένας ${NAME[r.position]} με αυτό το όνομα μέσα στα credits.` : `Κανένας ${NAME[r.position]} δεν χωράει στα credits: πάτα ✕ σε άλλον παίκτη.`}</p>`;
       document.querySelectorAll("#tmList [data-n]").forEach((b) => b.onclick = () => {
         sell.picks[outId] = Number(b.dataset.n); closePlayer(); render(best);
       });
     };
-    sheet(`<div class="sh"><div><h2>Στη θέση του ${esc(sur(r.name))}</h2><div class="muted">${NAME[r.position]} · ${list.length} χωράνε στα ${f1(max)} cr · το μεγαλύτερο κέρδος σε xFPT3 πρώτα</div></div>
+    sheet(`<div class="sh"><div><h2>Στη θέση του ${esc(sur(r.name))}</h2><div class="muted">${NAME[r.position]} · ${list.length} χωράνε στα ${f1(max)} cr · ⭐ watchlist και το μεγαλύτερο κέρδος σε xFPT3 πρώτα</div></div>
         <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
       <input id="tmQ" class="tm-input" placeholder="Αναζήτηση ${NAME[r.position]}…" autocomplete="off"><div id="tmList"></div>`);
     draw(""); $("#tmQ").addEventListener("input", (e) => draw(e.target.value));
@@ -876,6 +901,7 @@
       <button id="mBackup">🔗 Αντίγραφο ασφαλείας</button>
       <button id="mEdit">✏️ Αλλαγή ομάδας</button>
       <button id="mBank">💰 Διόρθωση credits</button>
+      <button id="mCp">💾 Save</button>
       ${WIDE() ? "" : `<button id="mInstall">📱 Βάλ' το στην οθόνη σου</button>`}
       <button id="mMail">✉️ Επικοινωνία</button>
       <button id="mDel" class="tm-danger">🗑 Διαγραφή ομάδας</button></div>`;
@@ -897,6 +923,15 @@
       $("#tmBankOk").onclick = () => { const v = parseFloat(String($("#tmBank").value).replace(",", "."));
         if (isNaN(v) || v < 0) { toast("Γράψε ένα ποσό, π.χ. 3,5"); return; }
         t.bank = v; save(t); closePlayer(); render(best); };
+    };
+    $("#mCp").onclick = () => {
+      close();
+      sheet(`<div class="sh"><div><h2>Save</h2><div class="muted">Η ομάδα όπως είναι τώρα</div></div>
+          <button class="x" onclick="closePlayer()">×</button></div>
+        <p class="muted">Το «Undo all» θα γυρίζει την ομάδα εδώ, όχι πιο πίσω: π.χ. αν πέρασες τώρα Trades του προηγούμενου Round,
+          δεν θα αναιρούνται μαζί με τα τωρινά. Ο μετρητής «Trades» μένει όπως είναι· αν χρειάζεται, διόρθωσέ τον με το ✎.</p>
+        <button class="tm-primary" id="tmCpOk">💾 Save</button>`);
+      $("#tmCpOk").onclick = () => { checkpoint(t); closePlayer(); render(best); toast("💾 Saved · το «Undo all» γυρίζει πλέον εδώ"); };
     };
     $("#mMail").onclick = async () => { close();
       toast(await copyText(FEEDBACK_MAIL) ? `Αντιγράφηκε: ${FEEDBACK_MAIL}` : FEEDBACK_MAIL); };

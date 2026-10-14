@@ -142,3 +142,26 @@ test("a player back after 3 missed games is marked «↩ επιστρέφει» 
   await expect(page.locator("#modal")).not.toHaveClass(/\bon\b/);      // the mark explains, it doesn't open the player
   await checkLayout(page, "returning");
 });
+
+test("watchlist: ☆ adds a player, «⭐ Watchlist» shows only them with what changed since, kept after a reload", async ({ page }, testInfo) => {
+  await open(page, "public", { tab: "players" });
+  if (isPhone(testInfo)) await page.locator("#fsum").click();
+  await page.locator("#fsearch").fill("vezenkov");
+  const star = rows(page, testInfo).first().locator(".wstar");
+  await expect(star).toHaveText("☆");
+  await star.click();
+  await expect(star).toHaveText("⭐");
+  await expect(page.locator("#modal")).not.toHaveClass(/\bon\b/);   // the star doesn't open the player
+  await page.locator("#fsearch").fill("");
+  await page.locator("#fwatch").check();
+  await expect(rows(page, testInfo)).toHaveCount(1);
+  await expect(rows(page, testInfo).first()).toContainText("Vezenkov");
+  await expect(rows(page, testInfo).first().locator(".wsince")).toContainText("χωρίς αλλαγές");   // just added
+  await page.reload();
+  if (isPhone(testInfo)) await page.locator("#fsum").click();
+  await expect(page.locator("#fwatch")).toBeChecked();
+  await expect(rows(page, testInfo)).toHaveCount(1);
+  await rows(page, testInfo).first().locator(".wstar").click();       // out of the list
+  await expect(rows(page, testInfo)).toHaveCount(0);
+  await expect(page.locator("#fcount")).toContainText("άδεια");
+});

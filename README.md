@@ -206,6 +206,22 @@ No accounts or personal data: only player ids, prices, credits. Whoever has the 
 (12 characters, ~10^17 combinations) sees and changes the team. When both devices change it without a
 sync in between, the newer change wins.
 
+### Watchlist alerts (personal edition)
+
+☆/⭐ on a player keeps him in the watchlist (Players → «⭐ Watchlist» shows what changed since he was
+added). On HoopsLab the list stays on the device and travels with the team's sync. On the personal
+site it also reaches the update, which tells you on Telegram when a watched player is expected to
+rise in price, is out or doubtful, is available again, or his xFPT3 rose by 3+ since you added him
+(each piece of news once). The path: the page → `functions/api/watch.js` (personal site only, behind
+Cloudflare Access) → the **Watchlist** workflow (`watch.yml`) → `public/watch.json` in the private
+data repo → `python -m elf.watch notify` in the update. Once:
+
+1. Cloudflare → Workers & Pages → **`elf-dashboard`** (the personal site, *not* `hoopslab-beta`) →
+   Settings → Variables and Secrets → Add → type **Secret**, name **`GH_DISPATCH_TOKEN`**, the same
+   fine-grained token as for `/update` (Actions: Read and write on this repo only).
+2. A new deploy (the next update) turns it on. Without the secret `/api/watch` answers 404 (that is
+   how HoopsLab, which has the same Functions, stays closed); without Cloudflare Access in front, 403.
+
 ### Fantasy columns (experts)
 The sources with `fantasy: true` in `sources.yaml` (the official Fantasy Tips, Basketball Sphere, EuroBallin)
 are read in full. Gemini records whom each column recommends (pick / captain / avoid); the names are mapped

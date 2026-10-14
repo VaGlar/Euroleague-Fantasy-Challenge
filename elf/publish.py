@@ -44,7 +44,8 @@ RENAME = {"report_public.json": "report.json"}
 # In the public repo these exist only in the private data repo: the owner's report and lineups,
 # debugging shapes and alert state. Files kept but sanitized are the PUBLIC_FILES above; the
 # rest of data/public (prices, prediction logs, expert log) has nothing personal in it.
-PRIVATE_ONLY = ("report.json", "lineup_log.json", "roster_shape.json", "health_last.json")
+PRIVATE_ONLY = ("report.json", "lineup_log.json", "roster_shape.json", "health_last.json",
+                "watch.json", "watch_state.json")   # the owner's watchlist and its alert state (elf/watch.py)
 
 
 def sanitize_repo(src: Path | None = None) -> list[str]:
