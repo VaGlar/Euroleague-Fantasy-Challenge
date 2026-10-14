@@ -223,3 +223,19 @@ test("Μοντέλο: accuracy in boxes with ⓘ, the backtest folded", async ({
   await expect(adv).toContainText("Points ομάδας ανά Round");          // squad points, not error tables
   await expect(adv.locator("tr", { hasText: "Μοντέλο" })).toContainText("149.9");
 });
+
+test("Άμυνες: no footnote, ⓘ on the title, a column sorts both ways", async ({ page }) => {
+  await open(page, "public", { tab: "teams" });
+  await page.locator('#teams .seg button[data-tv="defense"]').click();
+  const card = page.locator("#teams .card", { hasText: "PIR που δίνει η άμυνα" });
+  await expect(card.locator("p.muted")).toHaveCount(0);
+  await expect(card.locator('h2 [data-info="defense"]')).toHaveCount(1);
+  const first = () => page.locator("#dtable tbody tr").first().getAttribute("data-team");
+  const th = () => page.locator('#dtable th[data-dk="Guard"]');
+  await th().click();
+  await expect(th()).toContainText("↓");
+  const most = await first();
+  await th().click();
+  await expect(th()).toContainText("↑");
+  expect(await first()).not.toEqual(most);
+});

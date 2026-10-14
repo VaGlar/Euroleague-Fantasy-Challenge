@@ -527,6 +527,7 @@ const TEAMC = { OLY: "#c8102e", PAN: "#00843d", MAD: "#5b2d8e", BAR: "#a50044", 
   BAS: "#1d4f91", PAM: "#f07c00", HTA: "#e4002b", BES: "#222" };
 // the club codes the game shows (EFS, BAY, RMB, VBC…): the EuroLeague "TV codes" from clubs.json; the data keep the API codes (IST, MUN, MAD, PAM…)
 let TV = {};
+let CLUB_BY_NAME = {};   // a club's name (short or full, clubs.json) -> its code: the AI summary's clubs open their card
 const tc = (c) => TV[c] || c || "";
 const tcol = (t) => TEAMC[t] ? `--tc:${TEAMC[t]}` : "";
 const avb = (r) => (r.avail_game == null || r.avail_game >= 1 ? ""
@@ -616,6 +617,7 @@ const INFO = {
   experts: "Μέσα points των παικτών που πρότεινε κάθε στήλη, έναντι του xFPT που τους έδινε το μοντέλο. Σταθερά θετικό: η στήλη βλέπει κάτι που το μοντέλο δεν βλέπει. Με λίγες επιλογές, αγνόησέ το.",
   bt: "Κάθε Round, η καλύτερη ομάδα με 100 credits κατά την πρόβλεψη και τα πραγματικά της points (δεύτερο μισό της σεζόν, R&D 004). «Τέλεια γνώση»: αν ξέραμε από πριν τα αποτελέσματα.",
   learned: "Οι συντελεστές του μοντέλου, από την περσινή σεζόν. Τα φετινά παιχνίδια μπαίνουν στη φόρμα κάθε παίκτη (μέσος όρος σεζόν, τελευταία 3), όχι εδώ. Π.χ. ματσάρισμα ×0.5: αν μια άμυνα δίνει +20% PIR σε μια θέση, ο παίκτης απέναντί της παίρνει ~+10%.",
+  defense: "Πόσο PIR δίνει η ομάδα στους αντιπάλους της, σε σχέση με τον μέσο όρο της λίγκας. Πράσινο: δίνει περισσότερο, καλό ματς για τους παίκτες απέναντί της. Κόκκινο: δίνει λιγότερο.",
   deftot: "Σύνολο: πόσο περισσότερο ή λιγότερο PIR από τον μέσο όρο δίνει η ομάδα σε όλους μαζί τους αντιπάλους της. Δεν μπαίνει στο μοντέλο: εκεί μετράει η θέση του παίκτη, και το σύνολο δεν προσθέτει κάτι (R&D 024).",
   pir: "PIR: η αξιολόγηση της EuroLeague (πόντοι, ριμπάουντ, ασίστ, κλεψίματα, κοψίματα, κερδισμένα φάουλ, μείον άστοχα, λάθη και φάουλ).",
 };
@@ -774,19 +776,25 @@ function expertsHtml(list, track) {
       : `<details class="xp-src"><summary>${head}</summary>${ul(es)}</details>`; };
   return `<div class="card"><h2>Ειδικοί ${track.length ? `<small class="muted">πρώτη η στήλη με τις καλύτερες προτάσεις ως τώρα</small>` : ""}</h2>${srcs.map(block).join("")}</div>`;
 }
-// the summary's players («Jean Montero», as the roster in Latin letters) open their card when tapped
+// the summary's players (Jean Montero, as the roster in Latin letters) and clubs open their card when tapped;
+// no quotation marks around them
 function linkNames(html) {
   const title = (w) => w.toLowerCase().replace(/(^|[\s'-])\S/g, (c) => c.toUpperCase());
-  const byName = new Map();
+  const link = new Map();
   for (const p of P.players) {
     const [last, first] = String(p.name || "").split(",").map((x) => x.trim());
-    if (last && first && p.person_id) byName.set(`${title(first)} ${title(last)}`, p.person_id);
+    if (last && first && p.person_id) link.set(`${title(first)} ${title(last)}`, `data-pid="${esc(p.person_id)}"`);
   }
-  const names = [...byName.keys()].sort((a, b) => b.length - a.length)
-    .map((n) => n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+  for (const [n, code] of Object.entries(CLUB_BY_NAME)) if (!link.has(n)) link.set(n, `data-team="${esc(code)}"`);
+  const names = [...link.keys()].sort((a, b) => b.length - a.length)
+    .map((n) => esc(n).replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
   if (!names.length) return html;
-  return html.replace(new RegExp(`\\b(${names.join("|")})\\b`, "g"),
-    (m) => `<span class="plink" data-pid="${esc(byName.get(m))}" role="button" tabindex="0">${m}</span>`);
+  const raw = new Map([...link.keys()].map((n) => [esc(n), n]));
+  const alt = names.join("|");
+  return html.replace(new RegExp(`[«"“](${alt})[»"”]|&quot;(${alt})&quot;|\\b(${alt})\\b`, "g"), (m, a, b, c) => {
+    const n = a || b || c;
+    return `<span class="plink" ${link.get(raw.get(n))} role="button" tabindex="0">${n}</span>`;
+  });
 }
 function articlesHtml(arts) {
   const li = (a) => `<li><a href="${safeUrl(a.url)}" target="_blank" rel="noopener noreferrer">${esc(a.title)}</a><br><span class="muted">${esc(a.source)} · ${a.date ? new Date(a.date).toLocaleString("el-GR") : ""}</span></li>`;
@@ -864,12 +872,10 @@ function renderTeams() {
         · ο αριθμός κάτω από την ομάδα = σταθμισμένη αναμενόμενη διαφορά σκορ</div></div>`;
   } else {
     const pa = P.pos_allowed || [];
-    body = `<div class="card tablewrap"><h2>PIR που δίνει κάθε άμυνα ανά θέση</h2>
-      <p class="muted" style="margin-top:0">Πόσο περισσότερο (πράσινο) ή λιγότερο (κόκκινο) PIR από τον μέσο όρο δίνει η ομάδα στους αντιπάλους της σε κάθε θέση.
-      Πράσινο = καλό ματς για τους παίκτες σου απέναντί της. Πάτα μια στήλη για ταξινόμηση.</p>
+    body = `<div class="card tablewrap"><h2>PIR που δίνει η άμυνα ${ii("defense")}</h2>
       <table id="dtable"><thead><tr><th>Ομάδα</th>${DEF_COLS.map(([k, l]) =>
-        `<th class="num" data-dk="${k}">${l}${k === "Total" ? ii("deftot") : ""}${defSort === k ? " ↓" : ""}</th>`).join("")}</tr></thead><tbody>
-      ${[...pa].sort((a, b) => (b[defSort] ?? 0) - (a[defSort] ?? 0)).map((t) => `<tr data-team="${esc(t.team)}"><td><b>${esc(tc(t.team))}</b></td>${
+        `<th class="num" data-dk="${k}">${l}${k === "Total" ? ii("deftot") : ""}${defSort === k ? (defDir < 0 ? " ↓" : " ↑") : ""}</th>`).join("")}</tr></thead><tbody>
+      ${[...pa].sort((a, b) => defDir * ((a[defSort] ?? 0) - (b[defSort] ?? 0))).map((t) => `<tr data-team="${esc(t.team)}"><td><b>${esc(tc(t.team))}</b></td>${
         DEF_COLS.map(([k]) => `<td class="num" style="${tint((t[k] ?? 0) * 60)}">${(t[k] ?? 0) >= 0 ? "+" : ""}${Math.round((t[k] ?? 0) * 100)}%</td>`).join("")}</tr>`).join("")}
       </tbody></table></div>`;
   }
@@ -879,9 +885,12 @@ function renderTeams() {
     try { localStorage.setItem("teamsView2", teamsView); } catch (e) {}
     renderTeams();
   });
-  $("#teams").querySelectorAll("th[data-dk]").forEach((th) => th.onclick = () => { defSort = th.dataset.dk; renderTeams(); });
+  // a column: the most given first; the same column again: the other way round
+  $("#teams").querySelectorAll("th[data-dk]").forEach((th) => th.onclick = (e) => {
+    if (e.target.closest("[data-info]")) return;
+    defDir = defSort === th.dataset.dk ? -defDir : -1; defSort = th.dataset.dk; renderTeams(); });
 }
-let defSort = "Center";
+let defSort = "Center", defDir = -1;
 const DEF_COLS = [["Guard", "Guard"], ["Forward", "Forward"], ["Center", "Center"], ["Total", "Σύνολο"]];
 function openTeam(team) {
   const t = TR()[team];
@@ -1711,6 +1720,7 @@ setInterval(() => {
   const [p, rep, nw, mp, trk, cl, ap] = await Promise.all([get("predictions.json"), get("report.json"), get("news.json"),
     get("model_params.json"), get("tracking.json"), get("clubs.json"), get("autopilot.json")]);
   if (Array.isArray(cl)) TV = Object.fromEntries(cl.filter((c) => c.tv).map((c) => [c.code, c.tv]));
+  if (Array.isArray(cl)) CLUB_BY_NAME = Object.fromEntries(cl.flatMap((c) => [[c.short, c.code], [c.name, c.code]]).filter(([n]) => n));
   if (!p) { $("#updated").textContent = "Δεν υπάρχουν δεδομένα ακόμα."; return; }
   P = p; NW = nw;
   $("#round").textContent = `Round ${p.round}`;

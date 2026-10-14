@@ -252,9 +252,9 @@ Return ONLY JSON with this schema:
  "round": <EuroLeague round the fantasy tips refer to, integer or null>,
  "summary_el": "<5-8 bullet points in Greek, formal-neutral, most fantasy-relevant first>"
 }
-In summary_el the text is Greek, but every player is written in Latin letters as «Name Surname» from
-ROSTER (e.g. «Jean Montero», not «Γιαν Μοντέρο»), and every club by its name in TEAMS (e.g. «Crvena Zvezda»);
-never translate or transliterate a name.
+In summary_el the text is Greek, but every player is written in Latin letters as Name Surname from
+ROSTER (e.g. Jean Montero, not Γιαν Μοντέρο), and every club by its name in TEAMS (e.g. Crvena Zvezda);
+never translate or transliterate a name, and no quotation marks around names.
 Only include players explicitly discussed. Do not guess injuries that are not stated.
 Items marked INJURY REPORT are a table: team | position | player | status | round(s) | comment.
 Map status: Out -> "out", Doubtful -> "doubtful", Questionable / Game-time / Uncertain -> "questionable",
@@ -469,7 +469,7 @@ def latin_names(text: str, roster: list[str], teams: dict | None = None) -> str:
     (teams: code -> name)."""
     text = latin_clubs(text, teams)
     if not text or not roster:
-        return text
+        return unquote(text, list((teams or {}).values()))
     import difflib
     find = _finder(roster)
     # fallback, the surname alone (the LLM gets first names wrong: «Μακί Μαντάρ» for Yam Madar): only when
@@ -486,7 +486,16 @@ def latin_names(text: str, roster: list[str], teams: dict | None = None) -> str:
     def sub(m):
         n = find(m.group(0)) or by_surname(m.group(0))
         return _display(n) if n else m.group(0)
-    return _GREEK_NAME.sub(sub, text)
+    return unquote(_GREEK_NAME.sub(sub, text), [_display(n) for n in roster] + list((teams or {}).values()))
+
+
+def unquote(text: str, names: list[str]) -> str:
+    """«Jean Montero» -> Jean Montero: no quotation marks around a player's or a club's name."""
+    names = sorted({n for n in names if n}, key=len, reverse=True)
+    if not text or not names:
+        return text
+    alt = "|".join(re.escape(n) for n in names)
+    return re.sub(rf"[«\"“]({alt})[»\"”]", r"\1", text)
 
 
 def resolve_names(d: dict | None, roster: list[str], teams: dict | None = None) -> dict | None:

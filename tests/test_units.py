@@ -391,3 +391,10 @@ def test_the_summary_clubs_written_in_greek_get_their_names():
     assert out == ("Ο Olympiacos νίκησε τη Valencia· του Crvena Zvezda, η Real Madrid, στο Paris, "
                    "οι Ολυμπιακοί Αγώνες.")
     assert news.latin_names(text, [], None) == text           # without the clubs' names: as written
+
+
+def test_no_quotation_marks_around_names_in_the_summary():
+    from elf import news
+    out = news.latin_names('Ο «Jean Montero» του «Olympiacos» και ο "Yam Madar", «άλλο».',
+                           ["MONTERO, JEAN", "MADAR, YAM"], {"OLY": "Olympiacos"})
+    assert out == "Ο Jean Montero του Olympiacos και ο Yam Madar, «άλλο»."
