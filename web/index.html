@@ -437,6 +437,8 @@ body > header nav button.on { color: var(--bar-fg); border-color: var(--bar-line
 h1 .logo { width: 1.05em; height: 1.05em; vertical-align: -0.16em; fill: none; stroke: var(--accent); stroke-width: 2.2; }
 .tag { display: inline-block; font: 800 10px/1 var(--num-font); letter-spacing: .06em; padding: 3px 4px 2px; border-radius: 2px;
   background: var(--accent); color: #fff; vertical-align: 2px; }
+.tag.t-pick, .tag.t-up { background: var(--good); } .tag.t-down { background: var(--critical); }
+.tag[data-info] { cursor: help; }
 .tag.t-pick { background: var(--good); } .tag.t-avoid { background: var(--critical); } .tag.t-cap { background: var(--accent); }
 html body h1 { font-family: var(--num-font); font-weight: 800; letter-spacing: .01em; text-transform: uppercase; }
 html body header { border-bottom: 3px solid var(--accent); }
@@ -623,10 +625,12 @@ html body #mCp .ic { width: 1.25em; height: 1.25em; }
             <label><input type="checkbox" value="Center"> Center</label><label><input type="checkbox" value="Head Coach"> Head Coach</label></div></div>
           <div class="fsec fpair"><div><h3>Ομάδα</h3><select id="fteam"><option value="">Όλες</option></select></div>
             <div><h3>Turn</h3><select id="fturn"><option value="">Όλα</option></select></div></div>
-          <div class="fsec"><h3>Ειδικοί</h3><div class="fchoice" role="group" aria-label="Ειδικοί">
+          <div class="fsec"><h3>Ειδικοί · Τιμή</h3><div class="fchoice" role="group" aria-label="Ειδικοί και τιμή">
             <label><input id="fxpick" type="checkbox"> <span class="tag t-pick">PICK</span></label>
             <label><input id="fxcap" type="checkbox"> <span class="tag t-cap">CAP</span></label>
-            <label><input id="fxavoid" type="checkbox"> <span class="tag t-avoid">AVOID</span></label></div></div>
+            <label><input id="fxavoid" type="checkbox"> <span class="tag t-avoid">AVOID</span></label>
+            <label><input id="fxup" type="checkbox"> <span class="tag t-up">$▲</span></label>
+            <label><input id="fxdown" type="checkbox"> <span class="tag t-down">$▼</span></label></div></div>
           <div class="fsec"><h3>Εύρος</h3><div class="franges">
         <div class="frange"><span>Price</span><input id="fpmin" type="text" inputmode="decimal" autocomplete="off" placeholder="από" aria-label="Price από"><i>–</i><input id="fpmax" type="text" inputmode="decimal" autocomplete="off" placeholder="έως" aria-label="Price έως"></div>
         <div class="frange"><span>Total points</span><input id="fmintot" type="text" inputmode="decimal" autocomplete="off" placeholder="από" aria-label="Total points από"><i>–</i><input id="fmaxtot" type="text" inputmode="decimal" autocomplete="off" placeholder="έως" aria-label="Total points έως"></div>
@@ -646,7 +650,7 @@ html body #mCp .ic { width: 1.25em; height: 1.25em; }
     <div class="plist" id="plist"></div>
     <p class="muted">xFPT: αναμενόμενα points του Round (PIR +10% αν κερδίσει η ομάδα· coach: βαθμολογία από τη διαφορά σκορ). xFPT3: άθροισμα xFPT των επόμενων 3 αγώνων του. Σύνολο: τα points του φέτος.
       Ματσάρισμα: πόσο περισσότερο/λιγότερο PIR δίνει ο αντίπαλος στη θέση (▲ ευνοϊκό).
-      <b>$</b>: πιθανή άνοδος price μετά το Round (↓$ πτώση).</p>
+      <b>$▲</b>: πιθανή άνοδος price μετά το Round ($▼ πτώση).</p>
   </section>
   <section id="team"></section>
   <section id="teams"></section>
@@ -766,8 +770,8 @@ const exb = (r) => (r.expert_pick > 0 ? " " + xtag("pick", r.expert_pick, "στ�
   + (r.expert_avoid > 0 ? " " + xtag("avoid", r.expert_avoid, "στήλες που προτείνουν να τον αποφύγεις") : "")
   + (r.prior === "τιμή" ? ` <span class="pill" title="χωρίς ιστορικό: εκτίμηση από το price">≈price</span>` : "");
 const dol = (r) => (r.price_trend === "up"
-  ? ` <span class="pill up" data-info="dollar" title="πιθανή άνοδος price μετά το Round${r.price_delta != null ? ` (~+${r.price_delta.toFixed(1)} cr)` : ""}">$</span>`
-  : r.price_trend === "down" ? ` <span class="pill down" data-info="dollar" title="πιθανή πτώση price">↓$</span>` : "");
+  ? ` <span class="tag t-up" data-info="dollar" title="πιθανή άνοδος price μετά το Round${r.price_delta != null ? ` (~+${r.price_delta.toFixed(1)} cr)` : ""}">$▲</span>`
+  : r.price_trend === "down" ? ` <span class="tag t-down" data-info="dollar" title="πιθανή πτώση price">$▼</span>` : "");
 // club colours (a thin stripe on the player cards)
 const TEAMC = { OLY: "#c8102e", PAN: "#00843d", MAD: "#5b2d8e", BAR: "#a50044", IST: "#0b2d6b", ULK: "#f2c200",
   ZAL: "#00843d", MUN: "#dc052d", MIL: "#e2001a", TEL: "#f5c800", PAR: "#222", RED: "#d6001c", VIR: "#222",
@@ -847,7 +851,7 @@ const INFO = {
   xpts3: "xFPT3: αναμενόμενα points των επόμενων 3 αγώνων του, άθροισμα (όπως στα «Επόμενα 3 παιχνίδια»).",
   ptot: "Σύνολο: τα fantasy points του φέτος μέχρι τώρα (PIR, +10% στη νίκη· coach από τη διαφορά σκορ).",
   value: "Value: xFPT3 ανά credit, πόσα points δίνει κάθε credit του price του.",
-  dollar: "$: πιθανή άνοδος price μετά το Round. ↓$: πιθανή πτώση.",
+  dollar: "$▲: πιθανή άνοδος price μετά το Round. $▼: πιθανή πτώση.",
   turn: "T1 / T2 / T3: σε ποιο Turn παίζει η ομάδα του. Ανάμεσα στα Turns κάνεις subs στο Starting five με όσους δεν έχουν παίξει.",
   matchup: "Ματσάρισμα: πόσο περισσότερο (▲) ή λιγότερο (▼) PIR δίνει ο αντίπαλος στη θέση του, σε σχέση με τον μέσο όρο της λίγκας.",
   avail: "Διαθεσιμότητα από το παιχνίδι και τα νέα: εκτός, ή η πιθανότητα να παίξει. Ανανεώνεται και 3 ώρες πριν τον πρώτο αγώνα.",
@@ -924,7 +928,10 @@ const RANGES = [["Price", "fpmin", "fpmax", (p) => p.price], ["Total points", "f
   ["xFPT", "fminx", "fmaxx", (p) => p.x_now], ["xFPT3", "fminx3", "fmaxx3", (p) => xf3(p)]];
 // «Ειδικοί»: the ticked ones, any of them (PICK or CAP or AVOID); none ticked = everyone
 const XFIL = [["fxpick", "PICK", (p) => p.expert_pick > 0], ["fxcap", "CAP", (p) => !!p.expert_cap], ["fxavoid", "AVOID", (p) => p.expert_avoid > 0]];
-const FILTERS = ["fpos", "fteam", "fturn", "fsearch", ...RANGES.flatMap(([, a, b]) => [a, b]), ...XFIL.map(([id]) => id), "fhealthy", "fwatch"];
+// the price's expected move after the round ($▲ / $▼): any of the ticked; with the columns' word, both must hold
+const PFIL = [["fxup", "$▲", (p) => p.price_trend === "up"], ["fxdown", "$▼", (p) => p.price_trend === "down"]];
+const FILTERS = ["fpos", "fteam", "fturn", "fsearch", ...RANGES.flatMap(([, a, b]) => [a, b]), ...XFIL.map(([id]) => id),
+  ...PFIL.map(([id]) => id), "fhealthy", "fwatch"];
 const ON_PAGE = ["fsearch", "fwatch"];   // on the page, not in the panel: «Καθαρισμός» leaves them
 // positions: none ticked = all of them
 const POS_N = 4;
@@ -961,7 +968,7 @@ function filterChips(n) {
     const lo = $("#" + a).value.trim(), hi = $("#" + b).value.trim();
     if (lo || hi) chips.push([lo && hi ? `${label} ${lo}–${hi}` : lo ? `${label} ≥ ${lo}` : `${label} ≤ ${hi}`, [a, b]]);
   }
-  for (const [id, label] of XFIL) if ($("#" + id).checked) chips.push([label, [id]]);
+  for (const [id, label] of [...XFIL, ...PFIL]) if ($("#" + id).checked) chips.push([label, [id]]);
   if ($("#fhealthy").checked) chips.push(["Χωρίς τραυματίες", ["fhealthy"]]);
   $("#fchips").innerHTML = chips.map(([l, ids]) => `<button type="button" class="fchip" data-clear="${ids.join(",")}">${esc(l)} <span aria-hidden="true">✕</span></button>`).join("");
   $("#fn").textContent = chips.length ? ` (${chips.length})` : "";
@@ -984,12 +991,13 @@ function renderPlayers() {
   const turnTeams = turn ? P.turns.find((t) => String(t.turn) === turn).teams : null;
   const ranges = RANGES.map(([, a, b, f]) => [num($("#" + a).value), num($("#" + b).value), f]).filter(([lo, hi]) => !isNaN(lo) || !isNaN(hi));
   const xs = XFIL.filter(([id]) => $("#" + id).checked).map(([, , f]) => f);
+  const ps = PFIL.filter(([id]) => $("#" + id).checked).map(([, , f]) => f);
   let rows = P.players.filter((p) => p.x_now != null
     && (!pos.length || pos.includes(p.position)) && (!team || p.team === team)
     && (!turnTeams || turnTeams.includes(p.team)) && (!q || String(p.name).toLowerCase().includes(q))
     && (!healthy || p.avail_game == null || p.avail_game >= 1) && (!watch || WATCH[p.person_id])
     && ranges.every(([lo, hi, f]) => { const v = f(p); return v != null && (isNaN(lo) || v >= lo) && (isNaN(hi) || v <= hi); })
-    && (!xs.length || xs.some((f) => f(p))));
+    && (!xs.length || xs.some((f) => f(p))) && (!ps.length || ps.some((f) => f(p))));
   saveFilters();
   filterChips(rows.length);
   $("#fcount").textContent = watch && !rows.length ? "Η watchlist είναι άδεια: πάτα ☆ δίπλα σε έναν παίκτη"
@@ -1364,7 +1372,7 @@ async function compareTable(rows, removable = false) {
     ${line("xFPT3", rows.map(xf3), "hi")}
     ${line("Points σεζόν", rows.map((r) => r.fpt_total), "hi")}
     ${line("Value (xFPT3/cr)", rows.map((r) => r.value), "hi", (v) => v.toFixed(2))}
-    ${line("Τάση price", rows.map((r) => (r.price_trend === "up" ? "$ άνοδος" : r.price_trend === "down" ? "↓$ πτώση" : "σταθερή")), null, (v) => v)}
+    ${line("Τάση price", rows.map((r) => (r.price_trend === "up" ? "$▲ άνοδος" : r.price_trend === "down" ? "$▼ πτώση" : "σταθερή")), null, (v) => v)}
     ${sec("Επόμενα 3 παιχνίδια")}
     ${line("Άθροισμα xFPT", nextSum, "hi")}
     <tr><td>Αγώνες</td>${det.map((d) => `<td class="ng">${d.next.map((g) => `R${g.round} ${g.home ? "vs" : "@"} ${esc(tc(g.opp))} <b>${f1(g.x)}</b>`).join("<br>") || "–"}</td>`).join("")}</tr>
@@ -1535,7 +1543,7 @@ async function playerParts(r) {
       ["Διαθεσιμότητα (παιχνίδι / νέα)", `${r.avail_game == null ? "–" : Math.round(r.avail_game * 100) + "%"} / ${d.news_avail == null ? "–" : Math.round(d.news_avail * 100) + "%"}`],
       ...(done ? [] : [["Στήλες fantasy", r.expert_pick || r.expert_avoid ? exb(r).trim() : "–"]]),
       ["xFPT", `<b>${f1(g.x)}</b>`],
-      ["Price", r.price_trend === "up" ? "$ πιθανή άνοδος" : r.price_trend === "down" ? "↓$ πιθανή πτώση" : "σταθερή"]];
+      ["Price", r.price_trend === "up" ? "$▲ πιθανή άνοδος" : r.price_trend === "down" ? "$▼ πιθανή πτώση" : "σταθερή"]];
   const stats = d.stats.length ? `<div class="tablewrap"><table><thead><tr><th>Σεζόν</th><th class="num">Αγ</th><th class="num">Λεπ</th><th class="num">PIR</th>
       <th class="num">Πόν</th><th class="num">Ριμ</th><th class="num">Ασ</th><th class="num">Κλ</th><th class="num">Κοψ</th>
       <th class="num">Λαθ</th><th class="num">2Π%</th><th class="num">3Π%</th><th class="num">ΒΛ%</th></tr></thead><tbody>

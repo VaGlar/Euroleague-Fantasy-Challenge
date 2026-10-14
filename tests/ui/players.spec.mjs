@@ -207,3 +207,15 @@ test("sort by Points/credit: the best season's points per credit first", async (
   const ppc = await page.evaluate((id) => P.players.find((p) => p.person_id === id).ppc, pid);
   expect(ppc).toBeCloseTo(best, 6);                 // ties may come in any order: the value, not the player
 });
+
+test("filters: $▲ keeps the players whose price is expected to rise, shown with the same tag", async ({ page }, testInfo) => {
+  await open(page, "public", { tab: "players" });
+  await filters(page);
+  await page.locator("#fxup").check();
+  await done(page);
+  const n = await page.evaluate(() => P.players.filter((p) => p.x_now != null && p.price_trend === "up").length);
+  await expect(page.locator("#fcount")).toHaveText(`${n} ${n === 1 ? "παίκτης" : "παίκτες"}`);
+  await expect(page.locator("#fchips")).toContainText("$▲");
+  const rows = page.locator(isPhone(testInfo) ? "#plist .pcard" : "#ptable tbody tr");
+  if (n) await expect(rows.first().locator(".tag.t-up")).toHaveText("$▲");
+});
