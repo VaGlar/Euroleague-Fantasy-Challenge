@@ -614,11 +614,11 @@ html body #mCp .ic { width: 1.25em; height: 1.25em; }
             <label><input id="fxavoid" type="checkbox"> <span class="tag t-avoid">AVOID</span></label></div></div>
           <div class="fsec"><h3>Εύρος</h3><div class="franges">
         <div class="frange"><span>Price</span><input id="fpmin" type="text" inputmode="decimal" autocomplete="off" placeholder="από" aria-label="Price από"><i>–</i><input id="fpmax" type="text" inputmode="decimal" autocomplete="off" placeholder="έως" aria-label="Price έως"></div>
+        <div class="frange"><span>Total points</span><input id="fmintot" type="text" inputmode="decimal" autocomplete="off" placeholder="από" aria-label="Total points από"><i>–</i><input id="fmaxtot" type="text" inputmode="decimal" autocomplete="off" placeholder="έως" aria-label="Total points έως"></div>
+        <div class="frange"><span>Value <small class="muted">xFPT3/cr</small></span><input id="fminval" type="text" inputmode="decimal" autocomplete="off" placeholder="από" aria-label="Value από"><i>–</i><input id="fmaxval" type="text" inputmode="decimal" autocomplete="off" placeholder="έως" aria-label="Value έως"></div>
+        <div class="frange"><span>POP %</span><input id="fminpop" type="text" inputmode="decimal" autocomplete="off" placeholder="από" aria-label="POP % από"><i>–</i><input id="fmaxpop" type="text" inputmode="decimal" autocomplete="off" placeholder="έως" aria-label="POP % έως"></div>
         <div class="frange"><span>xFPT</span><input id="fminx" type="text" inputmode="decimal" autocomplete="off" placeholder="από" aria-label="xFPT από"><i>–</i><input id="fmaxx" type="text" inputmode="decimal" autocomplete="off" placeholder="έως" aria-label="xFPT έως"></div>
         <div class="frange"><span>xFPT3</span><input id="fminx3" type="text" inputmode="decimal" autocomplete="off" placeholder="από" aria-label="xFPT3 από"><i>–</i><input id="fmaxx3" type="text" inputmode="decimal" autocomplete="off" placeholder="έως" aria-label="xFPT3 έως"></div>
-        <div class="frange"><span>Points σεζόν</span><input id="fmintot" type="text" inputmode="decimal" autocomplete="off" placeholder="από" aria-label="Points σεζόν από"><i>–</i><input id="fmaxtot" type="text" inputmode="decimal" autocomplete="off" placeholder="έως" aria-label="Points σεζόν έως"></div>
-        <div class="frange"><span>Value</span><input id="fminval" type="text" inputmode="decimal" autocomplete="off" placeholder="από" aria-label="Value από"><i>–</i><input id="fmaxval" type="text" inputmode="decimal" autocomplete="off" placeholder="έως" aria-label="Value έως"></div>
-        <div class="frange"><span>POP %</span><input id="fminpop" type="text" inputmode="decimal" autocomplete="off" placeholder="από" aria-label="POP % από"><i>–</i><input id="fmaxpop" type="text" inputmode="decimal" autocomplete="off" placeholder="έως" aria-label="POP % έως"></div>
           </div></div>
           <div class="fsec"><h3>Διαθεσιμότητα</h3><div class="fchoice">
             <label><input id="fhealthy" type="checkbox"> Χωρίς τραυματίες</label></div></div>
@@ -901,9 +901,9 @@ function findPlayer(name) {
 // price boxes: accept "6,5" (Greek keyboard) as well as "6.5"
 const num = (v) => parseFloat(String(v).trim().replace(",", "."));
 // the filters (all in the «Φίλτρα» panel but the search): ranges from–to, the columns' word, positions
-const RANGES = [["Price", "fpmin", "fpmax", (p) => p.price], ["xFPT", "fminx", "fmaxx", (p) => p.x_now],
-  ["xFPT3", "fminx3", "fmaxx3", (p) => xf3(p)], ["Points", "fmintot", "fmaxtot", (p) => p.fpt_total],
-  ["Value", "fminval", "fmaxval", (p) => p.value], ["POP", "fminpop", "fmaxpop", (p) => p.popularity]];
+const RANGES = [["Price", "fpmin", "fpmax", (p) => p.price], ["Total points", "fmintot", "fmaxtot", (p) => p.fpt_total],
+  ["Value", "fminval", "fmaxval", (p) => p.value], ["POP", "fminpop", "fmaxpop", (p) => p.popularity],
+  ["xFPT", "fminx", "fmaxx", (p) => p.x_now], ["xFPT3", "fminx3", "fmaxx3", (p) => xf3(p)]];
 // «Ειδικοί»: the ticked ones, any of them (PICK or CAP or AVOID); none ticked = everyone
 const XFIL = [["fxpick", "PICK", (p) => p.expert_pick > 0], ["fxcap", "CAP", (p) => !!p.expert_cap], ["fxavoid", "AVOID", (p) => p.expert_avoid > 0]];
 const FILTERS = ["fpos", "fteam", "fturn", "fsearch", ...RANGES.flatMap(([, a, b]) => [a, b]), ...XFIL.map(([id]) => id), "fhealthy", "fwatch"];
