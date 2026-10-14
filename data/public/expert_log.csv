@@ -167,9 +167,6 @@ round,source,stance,person_id,name,team,model_xpts
 5,EuroLeague Fantasy Tips (official),pick,011982,"OJELEYE, SEMI",RED,12.5
 5,EuroLeague Fantasy Tips (official),pick,010042,"MONTERO, JEAN",OLY,19.2
 5,EuroLeague Fantasy Tips (official),pick,011052,"MADAR, YAM",TEL,9.97
-5,EuroLeague Fantasy Tips (official),avoid,008192,"TUBELIS, AZUOLAS",ZAL,11.94
-5,EuroLeague Fantasy Tips (official),avoid,013369,"JONES, CARLIK",PAR,16.52
-5,EuroLeague Fantasy Tips (official),avoid,001133,"SHENGELIA, TORNIKE",DUB,7.9
 5,Basketball Sphere – Fantasy,pick,009846,"BRYANT, ELIJAH",HTA,25.86
 5,Basketball Sphere – Fantasy,pick,007027,"MALEDON, THEO",MAD,17.85
 5,Basketball Sphere – Fantasy,pick,012707,"CARR, MARCUS",VIR,15.89
@@ -183,7 +180,6 @@ round,source,stance,person_id,name,team,model_xpts
 5,Basketball Sphere – Fantasy,pick,014107,"JOKSIMOVIC, STEFAN",BAS,0.33
 5,Basketball Sphere – Fantasy,pick,012796,"KABENGELE, MFIONDU",DUB,16.7
 5,Basketball Sphere – Fantasy,pick,012788,"OTURU, DAN",HTA,14.25
-5,Basketball Sphere – Fantasy,pick,003958,"THIEMANN, JOHANNES",MUN,15.55
 5,EuroBallin (Substack),pick,014735,"DUARTE, CHRIS",BAS,17.06
 5,EuroBallin (Substack),pick,009754,"LOYD, JORDAN",IST,13.34
 5,EuroBallin (Substack),pick,006661,"WILBEKIN, SCOTTIE",BES,11.08
@@ -193,6 +189,7 @@ round,source,stance,person_id,name,team,model_xpts
 5,EuroBallin (Substack),pick,003842,"LESSORT, MATHIAS",PAN,17.39
 5,EuroBallin (Substack),pick,000898,"VALANCIUNAS, JONAS",ZAL,17.07
 5,EuroBallin (Substack),pick,011199,"NEBO, JOSH",BAR,9.6
+5,EuroBallin (Substack),pick,003958,"THIEMANN, JOHANNES",MUN,15.55
 5,EuroBallin (Substack),pick,014108,"DIARRA, ALIOU",VIR,14.88
 5,EuroLeague Fantasy Tips (official),pick,014010,"DOKOSSI, ALLAN",PRS,9.64
 5,EuroLeague Fantasy Tips (official),pick,011284,"FARIED, KENNETH",BAS,10.63
@@ -206,5 +203,6 @@ round,source,stance,person_id,name,team,model_xpts
 5,EuroLeague Fantasy Tips (official),pick,006643,"PUERTO, JOSEP",PAM,6.29
 5,Basketball Sphere – Fantasy,pick,014029,"IZUNDU, EBUKA",RED,5.87
 5,Basketball Sphere – Fantasy,pick,013667,"FERNANDO, BRUNO",IST,7.3
-5,Basketball Sphere – Fantasy,avoid,008084,"MANTZOUKAS, ELEFTHERIOS",PAN,6.11
+5,Basketball Sphere – Fantasy,avoid,008192,"TUBELIS, AZUOLAS",ZAL,11.94
 5,Basketball Sphere – Fantasy,avoid,012878,"WRIGHT, MOSES",MIL,17.96
+5,Basketball Sphere – Fantasy,avoid,008084,"MANTZOUKAS, ELEFTHERIOS",PAN,6.11
