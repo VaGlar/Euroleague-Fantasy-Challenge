@@ -615,6 +615,7 @@ const INFO = {
   experts: "Μέσα points των παικτών που πρότεινε κάθε στήλη, έναντι του xFPT που τους έδινε το μοντέλο. Σταθερά θετικό: η στήλη βλέπει κάτι που το μοντέλο δεν βλέπει. Με λίγες επιλογές, αγνόησέ το.",
   bt: "Κάθε Round, η καλύτερη ομάδα με 100 credits κατά την πρόβλεψη και τα πραγματικά της points (δεύτερο μισό της σεζόν, R&D 004). «Τέλεια γνώση»: αν ξέραμε από πριν τα αποτελέσματα.",
   learned: "Οι συντελεστές του μοντέλου, από την περσινή σεζόν. Τα φετινά παιχνίδια μπαίνουν στη φόρμα κάθε παίκτη (μέσος όρος σεζόν, τελευταία 3), όχι εδώ. Π.χ. ματσάρισμα ×0.5: αν μια άμυνα δίνει +20% PIR σε μια θέση, ο παίκτης απέναντί της παίρνει ~+10%.",
+  deftot: "Σύνολο: πόσο περισσότερο ή λιγότερο PIR από τον μέσο όρο δίνει η ομάδα σε όλους μαζί τους αντιπάλους της. Δεν μπαίνει στο μοντέλο: εκεί μετράει η θέση του παίκτη, και το σύνολο δεν προσθέτει κάτι (R&D 024).",
   pir: "PIR: η αξιολόγηση της EuroLeague (πόντοι, ριμπάουντ, ασίστ, κλεψίματα, κοψίματα, κερδισμένα φάουλ, μείον άστοχα, λάθη και φάουλ).",
 };
 const pop = (r) => (r.popularity == null ? "" : `${f1(r.popularity)} %`);
@@ -851,10 +852,10 @@ function renderTeams() {
     body = `<div class="card tablewrap"><h2>PIR που δίνει κάθε άμυνα ανά θέση</h2>
       <p class="muted" style="margin-top:0">Πόσο περισσότερο (πράσινο) ή λιγότερο (κόκκινο) PIR από τον μέσο όρο δίνει η ομάδα στους αντιπάλους της σε κάθε θέση.
       Πράσινο = καλό ματς για τους παίκτες σου απέναντί της. Πάτα μια στήλη για ταξινόμηση.</p>
-      <table id="dtable"><thead><tr><th>Ομάδα</th>${["Guard", "Forward", "Center"].map((pos) =>
-        `<th class="num" data-dk="${pos}">${pos}${defSort === pos ? " ↓" : ""}</th>`).join("")}</tr></thead><tbody>
+      <table id="dtable"><thead><tr><th>Ομάδα</th>${DEF_COLS.map(([k, l]) =>
+        `<th class="num" data-dk="${k}">${l}${k === "Total" ? ii("deftot") : ""}${defSort === k ? " ↓" : ""}</th>`).join("")}</tr></thead><tbody>
       ${[...pa].sort((a, b) => (b[defSort] ?? 0) - (a[defSort] ?? 0)).map((t) => `<tr data-team="${esc(t.team)}"><td><b>${esc(tc(t.team))}</b></td>${
-        ["Guard", "Forward", "Center"].map((pos) => `<td class="num" style="${tint((t[pos] ?? 0) * 60)}">${t[pos] >= 0 ? "+" : ""}${Math.round((t[pos] ?? 0) * 100)}%</td>`).join("")}</tr>`).join("")}
+        DEF_COLS.map(([k]) => `<td class="num" style="${tint((t[k] ?? 0) * 60)}">${(t[k] ?? 0) >= 0 ? "+" : ""}${Math.round((t[k] ?? 0) * 100)}%</td>`).join("")}</tr>`).join("")}
       </tbody></table></div>`;
   }
   $("#teams").innerHTML = seg + body;
@@ -866,6 +867,7 @@ function renderTeams() {
   $("#teams").querySelectorAll("th[data-dk]").forEach((th) => th.onclick = () => { defSort = th.dataset.dk; renderTeams(); });
 }
 let defSort = "Center";
+const DEF_COLS = [["Guard", "Guard"], ["Forward", "Forward"], ["Center", "Center"], ["Total", "Σύνολο"]];
 function openTeam(team) {
   const t = TR()[team];
   if (!t) return;

@@ -144,7 +144,7 @@ def predictions(season: int, extra: pd.DataFrame | None = None):
     ctx.loc[ctx["unregistered"], "xpir"] = 0.0
     coaches = coach_rows(fx, people, ratings)
     return {"round": first, "fixtures": fx, "ctx": ctx, "ratings": ratings, "roster": roster,
-            "pdev": pdev,
+            "pdev": pdev, "tdev": model.total_allowed(cur_p, prev_p, p),
             "params": p, "coaches": coaches}
 
 
@@ -1052,7 +1052,8 @@ def build(offline: bool = False) -> dict:
                       "utc": f.utc.isoformat(), "played": bool(f.played)}
                      for f in pr["fixtures"].itertuples()],
         "pos_allowed": [{"team": t, **{pos: round(float(pr["pdev"].get((t, pos), 0.0)), 3)
-                                       for pos in ("Guard", "Forward", "Center")}}
+                                       for pos in ("Guard", "Forward", "Center")},
+                         "Total": round(float(pr.get("tdev", {}).get(t, 0.0)), 3)}
                         for t in pr["ratings"].index],
         "team_form": team_form(CURRENT_SEASON),
         "standings": standings(CURRENT_SEASON, list(pr["ratings"].index)),

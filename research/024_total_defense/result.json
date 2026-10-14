@@ -1,0 +1,42 @@
+[
+ {
+  "season": 2024,
+  "n_test": 3399,
+  "corr_tot_vs_mean_pos_dev": 0.958,
+  "corr_tot_vs_pace": 0.382,
+  "current_6_terms": {
+   "mae": 5.159,
+   "spearman": 0.563,
+   "top20_hit": 0.366,
+   "n": 3399
+  },
+  "with_total_7_terms": {
+   "mae": 5.162,
+   "spearman": 0.563,
+   "top20_hit": 0.369,
+   "n": 3399,
+   "coef_total": 1.326,
+   "coef_pos": -0.508
+  }
+ },
+ {
+  "season": 2025,
+  "n_test": 4243,
+  "corr_tot_vs_mean_pos_dev": 0.972,
+  "corr_tot_vs_pace": 0.27,
+  "current_6_terms": {
+   "mae": 5.262,
+   "spearman": 0.543,
+   "top20_hit": 0.308,
+   "n": 4243
+  },
+  "with_total_7_terms": {
+   "mae": 5.256,
+   "spearman": 0.544,
+   "top20_hit": 0.308,
+   "n": 4243,
+   "coef_total": 0.699,
+   "coef_pos": 0.189
+  }
+ }
+]

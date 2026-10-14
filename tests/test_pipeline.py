@@ -159,7 +159,7 @@ def test_teams_tab_data(pipeline):
     pred = pipeline["pred"]
     teams = {t["team"] for t in pred["team_ratings"]}
     assert {t["team"] for t in pred["pos_allowed"]} == teams
-    assert all(-1 < t[pos] < 1 for t in pred["pos_allowed"] for pos in ("Guard", "Forward", "Center"))
+    assert all(-1 < t[pos] < 1 for t in pred["pos_allowed"] for pos in ("Guard", "Forward", "Center", "Total"))
     assert set(pred["clubs"]) >= teams
     assert all(len(v) <= 5 for v in pred["team_form"].values())
     assert all("played" in f for f in pred["fixtures"])
