@@ -1,0 +1,33 @@
+# Before PR 48 (main 60440fc, after PRs 46-47)
+$ python -m pytest -q --cov   (main 60440fc, after PRs 46-47)
+Required test coverage of 90.0% reached. Total coverage: 91.97%
+389 passed in 72.49s (0:01:12)
+
+$ diff-cover vs PR 45 merge
+elf/analytics.py (100%)
+elf/lineup_cmd.py (100%)
+elf/publish.py (100%)
+elf/run.py (100%)
+-------------
+Total:   9 lines
+Missing: 0 lines
+Coverage: 100%
+-------------
+
+
+$ python -m pytest -q --cov   (main ba7c5ce + this branch's tests)
+Required test coverage of 90.0% reached. Total coverage: 92.04%
+396 passed, 2 xfailed in 70.28s (0:01:10)
+
+$ diff-cover vs PR 45 merge
+elf/analytics.py (100%)
+elf/lineup_cmd.py (100%)
+elf/news.py (100%)
+elf/publish.py (100%)
+elf/run.py (100%)
+-------------
+Total:   36 lines
+Missing: 0 lines
+Coverage: 100%
+-------------
+

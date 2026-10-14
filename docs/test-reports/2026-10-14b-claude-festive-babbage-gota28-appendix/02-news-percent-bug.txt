@@ -1,0 +1,10 @@
+# The «%» probe on PR 48's code (head 83eac73), python3 on elf/news.py
+words: 46 | flagged: ['48%', '41%', '35%', '4%.', '70%', '45%']
+garbled(answer) = True
+note kept after repair = False
+
+# After the merge: the bug pinned as strict xfail; the suggested fix applied by hand flips both (XPASS strict = fail), the other 7 tests still pass
+=========================== short test summary info ============================
+XFAIL tests/test_news_repair.py::test_percentages_in_a_normal_summary_are_not_garbled - news._bad: every «%» counts as broken (tester report 14/10)
+XFAIL tests/test_news_repair.py::test_a_note_with_a_percentage_is_kept - news._bad: every «%» counts as broken (tester report 14/10)
+7 passed, 2 xfailed in 0.31s

@@ -1,0 +1,47 @@
+# Files changed by PRs 46-48 (data/ left out)
+=== PR 46: Tester's findings of 14/10; iPhone undo ▾; ⓘ early season; player minimums; lighter data check
+m +18 -2 README.md
+m +2 -3 elf/lineup_cmd.py
+m +6 -8 elf/run.py
+m +10 -0 functions/api/errors.js
+m +14 -7 functions/api/sync/[[path]].js
+m +36 -1 functions/api/watch.js
+a +66 -0 tests/review_fixes_runner.mjs
+a +116 -0 tests/test_review_fixes.py
+m +8 -10 tests/ui/team.spec.mjs
+m +35 -6 web/index.html
+m +33 -30 web/team.js
+=== PR 47: Coach Dime: new name, box-score design, icons instead of emoji, charcoal dark mode, ball app icon
+m +9 -8 README.md
+m +4 -4 docs/PRODUCT.md
+m +2 -2 elf/analytics.py
+m +3 -2 elf/publish.py
+m +1 -1 functions/api/errors.js
+m +1 -1 functions/api/watch.js
+m +1 -1 tests/test_analytics.py
+m +1 -1 tests/test_errors_fn.py
+m +2 -2 tests/test_pipeline.py
+m +1 -1 tests/test_watch.py
+m +4 -4 tests/ui/app.spec.mjs
+m +2 -2 tests/ui/players.spec.mjs
+m +1 -1 tests/ui/serve.py
+m +5 -5 tests/ui/team.spec.mjs
+m +0 -0 web/favicon-32.png
+m +0 -0 web/icon-180.png
+m +0 -0 web/icon-192.png
+m +0 -0 web/icon-512.png
+m +1 -1 web/icon.svg
+m +151 -61 web/index.html
+m +36 -34 web/team.js
+=== PR 48: News repair; experts as PICK/CAP/AVOID tags and filter; min PTS/VALUE; mail tap copies; no zoom in the Home Screen app
+m +43 -1 elf/news.py
+a +50 -0 tests/test_news_repair.py
+m +16 -0 tests/ui/players.spec.mjs
+m +49 -28 web/index.html
+m +5 -4 web/team.js
+
+# PR 48 checks on head 83eac73
+ui: success
+secrets: success
+tests: success
+changes: success
