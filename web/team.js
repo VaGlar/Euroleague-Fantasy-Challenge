@@ -900,7 +900,7 @@
       + `<span class="tm-dd"><span aria-hidden="true">▾</span><select id="mUndoSel" aria-label="Επιλογές αναίρεσης"><option value="" selected disabled>Αναίρεση</option>`
       + `${n ? `<option value="last">Undo last</option>` : ""}${all ? `<option value="all">Undo all</option>` : ""}</select></span>`
       + `${all ? `<button id="mUsed" title="Η ομάδα όπως στο τελευταίο κλείδωμα">Undo all</button>` : ""}</span>` : "";
-    return `<div class="tm-toolbar" role="toolbar">${undo}<button id="mCp" title="Το «Undo all» θα γυρίζει εδώ">${ico("save")} Save</button></div>`;
+    return `<div class="tm-toolbar" role="toolbar">${undo}<button id="mCp" title="Save: το «Undo all» θα γυρίζει εδώ" aria-label="Save">${ico("save")}</button></div>`;
   }
   function bindUndo(t, best) {
     const last = () => { if (undoLast(t)) { render(best); toast(`Αναιρέθηκε η τελευταία κίνηση${undoSteps(t) ? ` · μένουν ${undoSteps(t)}` : ""}`); } };

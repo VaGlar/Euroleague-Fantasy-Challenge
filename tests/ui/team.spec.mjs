@@ -348,7 +348,7 @@ test.describe("public edition", () => {
     for (const k of ["players", "bank"]) expect(after[k]).toEqual(before[k]);
   });
 
-  test("«💾 Save»: «Undo all» goes back there, not to the round's start; the count stays", async ({ page }) => {
+  test("«Save»: «Undo all» goes back there, not to the round's start; the count stays", async ({ page }) => {
     await savedTeam(page);
     await page.locator("#tmConfirm").click();
     await tradeRows(page).first().locator(".tm-done").click();              // e.g. last round's trade, recorded late
@@ -488,7 +488,7 @@ test.describe("player sheet on the team screen", () => {
     expect(after.bank).toBeGreaterThanOrEqual(0);
   });
 
-  test("tapping 🆕 on a chip explains it instead of opening the player", async ({ page }) => {
+  test("tapping NEW on a chip explains it instead of opening the player", async ({ page }) => {
     await savedTeam(page);
     const few = page.locator(`${C} .chip .few`).first();
     test.skip(!(await few.count()), "no newcomer in this team");
@@ -499,11 +499,11 @@ test.describe("player sheet on the team screen", () => {
 });
 
 test.describe("personal edition", () => {
-  test("a player not registered with his club is marked 📋 (not 🚑) on the court", async ({ page }) => {
+  test("a player not registered with his club is marked with the roster icon (not the injury one) on the court", async ({ page }) => {
     await open(page, "personal", { tab: "team" });
     const chip = page.locator(`${C} .chip[data-fid="4061"]`);        // Mantzoukas: unregistered in the fixture
-    await expect(chip).toContainText("📋");
-    await expect(chip).not.toContainText("🚑");
+    await expect(chip.locator('use[href="#i-roster"]')).toHaveCount(1);
+    await expect(chip.locator('use[href="#i-medic"]')).toHaveCount(0);
   });
 
   const fids = (page) => page.locator(`${C} .chip[data-fid]`).evaluateAll((els) => els.map((e) => e.dataset.fid).sort());
