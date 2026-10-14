@@ -114,6 +114,13 @@ def check() -> tuple[list[str], list[str]]:
                 break
         if not msgs and not off_season:
             warnings.append("έλεγχος δεδομένων: το report δεν έχει μηνύματα")
+    # the proposals against the game's rules (elf/checks.py): a broken one is a warning, not a stop
+    try:
+        from . import checks
+        ap = json.loads((PUBLIC / "autopilot.json").read_text()) if (PUBLIC / "autopilot.json").exists() else None
+        warnings += checks.run(pred, ap)
+    except Exception as e:  # noqa: BLE001 - a check that breaks must not stop the update
+        warnings.append(f"έλεγχος προτάσεων: {type(e).__name__}")
     return problems, warnings
 
 
