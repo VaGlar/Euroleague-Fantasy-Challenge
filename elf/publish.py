@@ -93,7 +93,8 @@ def site(out: Path, src: Path | None = None) -> list[str]:
     for old, new in (('<meta name="apple-mobile-web-app-title" content="ELF">',
                       f'<meta name="apple-mobile-web-app-title" content="{PRODUCT}">'),
                      ("<title>ELF Dashboard</title>", f"<title>{PRODUCT}</title>"),
-                     ("<h1>🏀 EuroLeague Fantasy — ", f'<h1>🏀 {PRODUCT} <small class="muted">beta</small> — ')):
+                     ('<h1><svg class="logo" aria-hidden="true"><use href="#i-court"/></svg> EuroLeague Fantasy — ',
+                      f'<h1><svg class="logo" aria-hidden="true"><use href="#i-court"/></svg> {PRODUCT} <small class="muted">beta</small> — ')):
         if old not in html:
             raise RuntimeError(f"publish: δεν βρέθηκε στο index.html: {old}")
         html = html.replace(old, new)
