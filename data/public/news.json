@@ -82,6 +82,15 @@
    "report": false
   },
   {
+   "title": "EuroLeague: MVP της 5ης αγωνιστικής ο Γιαν Μοντέρο",
+   "url": "https://www.gazzetta.gr/basketball/euroleague/2577464/euroleague-mvp-tis-5is-agonistikis-o-gian-montero",
+   "date": "2026-10-15T00:20:18+02:00",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
    "title": "Μάντσεστερ Σίτι - Παρί Σεν Ζερμέν 2-4: Πάρτι υπό το βλέμμα του Πεπ!",
    "url": "https://www.gazzetta.gr/football/champions-league/2577463/mantsester-siti-pari-sen-zermen-2-4-parti-ypo-blemma-toy-pep",
    "date": "2026-10-15T00:04:22+02:00",
@@ -136,6 +145,24 @@
    "report": false
   },
   {
+   "title": "Virtus survives Paris thriller to extend winning streak",
+   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/virtus-survives-paris-thriller-to-extend-winning-streak/",
+   "date": "2026-10-14T21:31:09.627000+00:00",
+   "source": "EuroLeague (official)",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "EuroCup: Απόλυτος και στην κορυφή ο Άρης, με συγκάτοικο τη Χάποελ Ιερουσαλήμ",
+   "url": "https://www.eurohoops.net/el/eurocup-el/2020938/eurocup-apolitos-ke-stin-korifi-o-aris-me-sigkatiko-ti-chapoel-ierousalim/",
+   "date": "2026-10-14T21:19:18+00:00",
+   "source": "Eurohoops (GR)",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
    "title": "Παναθηναϊκός - Απόλλων Σμύρνης 14-15: Θρίαμβος για την «ελαφρά ταξιαρχία» στο πρώτο μεγάλο παιχνίδι της Waterpolo League",
    "url": "https://www.gazzetta.gr/polo/a1-andron/2577454/panathinaikos-apollon-smyrnis-14-15-thriambos-gia-tin-elafra-taxiarhia-sto",
    "date": "2026-10-14T23:15:27+02:00",
@@ -154,8 +181,8 @@
    "report": false
   },
   {
-   "title": "Παρί-Βίρτους Μπολόνια 94-96: «Απόδραση» σε ματσάρα",
-   "url": "https://www.novasports.gr/sport/mpasket/event/euroleague/article/15169978/pari-virtous-mpolonia-94-96-apodrasi-se-matsara/",
+   "title": "Παρί-Βίρτους Μπολόνια 94-96: «Απόδραση» σε ματσάρα (highlights)",
+   "url": "https://www.novasports.gr/sport/mpasket/event/euroleague/article/15169978/pari-virtous-mpolonia-94-96-apodrasi-se-matsara-highlights/",
    "date": "2026-10-14T21:02:02+00:00",
    "source": "Novasports",
    "weight": 1,
@@ -163,7 +190,7 @@
    "report": false
   },
   {
-   "title": "Ευρωλίγκα αποτελέσματα & βαθμολογία: Πίσω στο ΟΑΚΑ ο αήττητος Παναθηναϊκός, στη Βαρκελώνη ο Ολυμπιακός",
+   "title": "Ευρωλίγκα αποτελέσματα & βαθμολογία: Πίσω στο ΟΑΚΑ ο αήττητος Παναθηναϊκός, Βαρκελώνη ο Ολυμπιακός",
    "url": "https://www.eurohoops.net/el/euroleague-el-2/2021001/evroligka-apotelesmata-vathmologia-piso-sto-oaka-o-aittitos-panathinaikos-sti-varkeloni-o-olimpiakos/",
    "date": "2026-10-14T21:01:03+00:00",
    "source": "Eurohoops (GR)",
@@ -172,8 +199,8 @@
    "report": false
   },
   {
-   "title": "Ρόμα – Ρεάλ Μαδρίτης 3-4: Απίθανη ανατροπή και αποθέωση Μουρίνιο στο «Ολίμπικο»",
-   "url": "https://www.novasports.gr/sport/podosfairo/event/uefa-champions-league/article/15169955/roma-real-madritis-3-4-apithani-anatropi-kai-apotheosi-mourinio-sto-olimpiko/",
+   "title": "Ρόμα – Ρεάλ Μαδρίτης 3-4: Απίθανη ανατροπή και αποθέωση Μουρίνιο στο «Ολίμπικο» (highlights)",
+   "url": "https://www.novasports.gr/sport/podosfairo/event/uefa-champions-league/article/15169955/roma-real-madritis-3-4-apithani-anatropi-kai-apotheosi-mourinio-sto-olimpiko-highlights/",
    "date": "2026-10-14T20:57:46+00:00",
    "source": "Novasports",
    "weight": 1,
@@ -181,8 +208,8 @@
    "report": false
   },
   {
-   "title": "Μάντσεστερ Σίτι – ΠΣΖ 2-4: Την καταδίκασε σε ήττα",
-   "url": "https://www.novasports.gr/sport/podosfairo/event/uefa-champions-league/article/15169806/mantsester-siti-psz-2-4-tin-katadikase-se-itta/",
+   "title": "Μάντσεστερ Σίτι – ΠΣΖ 2-4: Την καταδίκασε σε ήττα (highlights)",
+   "url": "https://www.novasports.gr/sport/podosfairo/event/uefa-champions-league/article/15169806/mantsester-siti-psz-2-4-tin-katadikase-se-itta-highlights/",
    "date": "2026-10-14T20:56:32+00:00",
    "source": "Novasports",
    "weight": 1,
@@ -199,7 +226,7 @@
    "report": false
   },
   {
-   "title": "Ασταμάτητη Βίρτους μετά τον Ολυμπιακό: Πέρασε κι απο το Παρίσι για την 3η σερί νίκη",
+   "title": "Ασταμάτητη Βίρτους μετά τον Ολυμπιακό: Πέρασε κι από το Παρίσι για την 3η σερί νίκη",
    "url": "https://www.eurohoops.net/el/euroleague-el-2/2021016/astamatiti-virtous-meta-ton-olimpiako-perase-ki-apo-to-parisi-gia-tin-3i-seri-niki/",
    "date": "2026-10-14T20:50:26+00:00",
    "source": "Eurohoops (GR)",
@@ -352,37 +379,10 @@
    "report": false
   },
   {
-   "title": "Παναθηναϊκός - Μπόρατς: Ο τεχνικός της Μπάνια Λούκα εκθείασε το τριφύλλι",
-   "url": "https://www.gazzetta.gr/football/europa-conference-league/2577416/panathinaikos-mporats-o-tehnikos-tis-mpania-loyka",
-   "date": "2026-10-14T21:12:04+02:00",
-   "source": "Gazzetta",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Ολυμπιακός: Τα τελευταία δεδομένα για τον κόσμο του μετά τη σύσκεψη ασφαλείας",
-   "url": "https://www.gazzetta.gr/football/europa-league/2577415/olympiakos-ta-teleytaia-dedomena-gia-ton-kosmo-toy-meta-ti-syskepsi",
-   "date": "2026-10-14T21:11:43+02:00",
-   "source": "Gazzetta",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
    "title": "Τρίτη νίκη με 100άρα για τη Χαποέλ! (highlights)",
    "url": "https://www.novasports.gr/sport/mpasket/event/euroleague/article/15169624/triti-niki-me-100ara-gia-ti-xapoel-highlights/",
    "date": "2026-10-14T19:11:12+00:00",
    "source": "Novasports",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Χάποελ Τελ Αβίβ-Μπεσίκτας 100-82: Με πλουραλισμό και εκρηκτικό τρίτο 10λεπτο",
-   "url": "https://www.gazzetta.gr/basketball/euroleague/2577414/hapoel-tel-abib-mpesiktas-100-82-me-ployralismo-kai-ekriktiko-trito",
-   "date": "2026-10-14T21:10:24+02:00",
-   "source": "Gazzetta",
    "weight": 1,
    "fantasy": false,
    "report": false
@@ -676,15 +676,6 @@
    "report": false
   },
   {
-   "title": "Αϊβαζόγλου για NBA & Ευρωλίγκα: “Στις επόμενες εβδομάδες θα προωθήσουμε από κοινού κάτι πολύ σημαντικό”",
-   "url": "https://www.eurohoops.net/el/euroleague-el-2/2020744/aivazoglou-gia-nba-evroligka-stis-epomenes-evdomades-tha-proothisoume-apo-kinou-kati-poli-simantiko/",
-   "date": "2026-10-14T12:54:44+00:00",
-   "source": "Eurohoops (GR)",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
    "title": "Manuchar Markoishvili to replace Gianmarco Pozzecco at Galatasaray",
    "url": "https://www.eurohoops.net/en/fiba-champions-league/2020723/manuchar-markoishvili-to-replace-gianmarco-pozzecco-at-galatasaray/",
    "date": "2026-10-14T12:07:09+00:00",
@@ -861,123 +852,255 @@
    {
     "player": "DORSEY, TYLER",
     "status": "out",
-    "note": "Τέθηκε εκτός ομάδας για την αναμέτρηση με τη Μπαρτσελόνα",
-    "source": "Novasports"
-   },
-   {
-    "player": "HOWARD, MARKUS",
-    "status": "out",
-    "note": "Αποχώρησε από την ομάδα και υπέγραψε στη Ζενίτ",
-    "source": "Eurohoops (GR)"
+    "note": "Εκτός αποστολής για τον Ολυμπιακό λόγω διαμαρτυρίας.",
+    "source": "Gazzetta"
    }
   ],
   "expert": [
    {
     "player": "OJELEYE, SEMI",
     "stance": "pick",
-    "note": "Εξαιρετική επιλογή αξίας με αυξημένο ρόλο στο 5",
+    "note": "Εξαιρετική επιλογή λόγω λεπτών και τιμής.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "MONTERO, JEAN",
     "stance": "pick",
-    "note": "Υποτιμημένος μετά την εντυπωσιακή εμφάνιση",
+    "note": "Σουπερ μοντέλο με χαμηλή τιμή.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "MADAR, YAM",
     "stance": "pick",
-    "note": "Στην κορυφή της λίστας ενόψει 6ης αγωνιστικής",
+    "note": "Συνεχίζει τις υπερβατικές εμφανίσεις.",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "TUBELIS, AZUOLAS",
+    "stance": "avoid",
+    "note": "Αναμένεται δύσκολο ματς.",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "JONES, CARLIK",
+    "stance": "avoid",
+    "note": "Δυσκολέτηκε πολύ απέναντι στον Παναθηναϊκό.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "SHENGELIA, TORNIKE",
     "stance": "avoid",
-    "note": "Υπάρχουν ασφαλέστερες επιλογές μέχρι να βρει σταθερότητα",
+    "note": "Χαμηλή απόδοση στο τελευταίο παιχνίδι.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
-    "player": "DIARRA, ALIOU",
+    "player": "BRYANT, ELIJAH",
     "stance": "pick",
-    "note": "Σταθερή και οικονομική λύση που κερδίζει credits",
-    "source": "EuroLeague Fantasy Tips (official)"
+    "note": "Σούπερ επιλογή και για captain.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "MALEDON, THEO",
+    "stance": "pick",
+    "note": "Εκπληκτική αρχή με μεγάλη απόδοση.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "CARR, MARCUS",
+    "stance": "pick",
+    "note": "Ενούβεται με καλό πρόγραμμα.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "MOORE, WENDELL",
+    "stance": "pick",
+    "note": "Πολύ καλή εμφάνιση και πρόγραμμα.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "CARTER, TYSON",
+    "stance": "pick",
+    "note": "Σταθερότητα με καλό χρόνο.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "HACKETT, DANIEL",
+    "stance": "pick",
+    "note": "Οικονομική λύση με ασφάλεια.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "VEZENKOV, SASHA",
+    "stance": "pick",
+    "note": "Αξίζει να κρατηθεί λόγω αξίας.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "HOARD, JAYLEN",
+    "stance": "pick",
+    "note": "Ανέκαμψε με 22 φαντασί πόντους.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "BACON, DWAYNE",
+    "stance": "pick",
+    "note": "Αυξημένος ρόλος λόγω απουσιών.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "PARRA, JOEL",
+    "stance": "pick",
+    "note": "Ευκαιρία για ανάκαμψη κόντρα στον ΑΣ Μακάμι.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "JOKSIMOVIC, STEFAN",
+    "stance": "pick",
+    "note": "Φτηνή λύση για συμπλήρωση.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "KABENGELE, MFIONDU",
+    "stance": "pick",
+    "note": "Ιδανικός αντίπαλος για καλή απόδοση.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "OTURU, DAN",
+    "stance": "pick",
+    "note": "Ευκαιρία για ανάκαμψη με τη Μμεσίκτας.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "DUARTE, CHRIS",
+    "stance": "pick",
+    "note": "Σε καλή κατάσταση με 3 συνεχόμενα PIR > 20.",
+    "source": "EuroBallin (Substack)"
+   },
+   {
+    "player": "LOYD, JORDAN",
+    "stance": "pick",
+    "note": "Κρατάει τα ηνία στην επίθεση.",
+    "source": "EuroBallin (Substack)"
+   },
+   {
+    "player": "WILBEKIN, SCOTTIE",
+    "stance": "pick",
+    "note": "Υψηλό usage και καλή εφικέτα.",
+    "source": "EuroBallin (Substack)"
+   },
+   {
+    "player": "SARIC, DARIO",
+    "stance": "pick",
+    "note": "Πτώση τιμής, ευκαιρία για ανάκαμψη.",
+    "source": "EuroBallin (Substack)"
+   },
+   {
+    "player": "EVBUOMWAN, TOSAN",
+    "stance": "pick",
+    "note": "Καλή αναλογία πόντων-ριμπάουντ.",
+    "source": "EuroBallin (Substack)"
+   },
+   {
+    "player": "DA SILVA, OSCAR",
+    "stance": "pick",
+    "note": "Συνεχόμενες καλές εμφανίσεις με χαμηλή τιμή.",
+    "source": "EuroBallin (Substack)"
+   },
+   {
+    "player": "DAVIDOVAC, DEJAN",
+    "stance": "pick",
+    "note": "Οι τραυματισμοί τον καθιστούν εκλεκτό.",
+    "source": "EuroBallin (Substack)"
+   },
+   {
+    "player": "LESSORT, MATHIAS",
+    "stance": "pick",
+    "note": "Κόντρα στην πρώην ομάδα του.",
+    "source": "EuroBallin (Substack)"
    },
    {
     "player": "VALANCIUNAS, JONAS",
     "stance": "pick",
-    "note": "Αξιόπιστη και βασική επιλογή στους σέντερ",
-    "source": "EuroLeague Fantasy Tips (official)"
+    "note": "Μακροπρόθεσμα απαραίτητος πριν ανεβεί η τιμή.",
+    "source": "EuroBallin (Substack)"
+   },
+   {
+    "player": "NEBO, JOSH",
+    "stance": "pick",
+    "note": "Επέστρεψε από τραυματισμό.",
+    "source": "EuroBallin (Substack)"
+   },
+   {
+    "player": "THIEMANN, JOHANNES",
+    "stance": "pick",
+    "note": "Αναμένεται να ανεβεί σε κοστολόγιο.",
+    "source": "EuroBallin (Substack)"
+   },
+   {
+    "player": "DIARRA, ALIOU",
+    "stance": "pick",
+    "note": "Από τους πλέον αποδοτικούς σε χαμηλή τιμή.",
+    "source": "EuroBallin (Substack)"
    },
    {
     "player": "DOKOSSI, ALLAN",
     "stance": "pick",
-    "note": "Αξιόλογη εναλλακτική με καλό PIR και ριμπάουντ",
+    "note": "Εναλλακτική λύση στη θέση του σέντερ.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "FARIED, KENNETH",
     "stance": "pick",
-    "note": "Αξιόπιστη επιλογή σε καλή κατάσταση",
-    "source": "EuroLeague Fantasy Tips (official)"
-   },
-   {
-    "player": "OTURU, DAN",
-    "stance": "pick",
-    "note": "Ευκαιρία ανάκαμψης απέναντι στην Μπεσίκτας στο Turn 2",
+    "note": "Ανέκαμψε με double-double και καλό χρόνο.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "BEAUCHAMP, MARJON",
     "stance": "pick",
-    "note": "Προέρχεται από εξαιρετική εμφάνιση και έχει καλό πρόγραμμα",
+    "note": "Πολύ καλή εμφάνιση και εκδρομή στην Τουρκία.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "KEY, BRAXTON",
     "stance": "pick",
-    "note": "Συνεχίζει να προσφέρει εξαιρετική αξία για την τιμή του",
+    "note": "Σταθερά υψηλή απόδοση στον Φενέρ.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "LAKIC, ARIJAN",
     "stance": "pick",
-    "note": "Πολύ φθηνή επιλογή για τα λεπτά συμμετοχής του",
+    "note": "Οικονομικός με σταθερό χρόνο.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "NDIAYE, MBAYE",
     "stance": "pick",
-    "note": "Σταθερό PIR σε εξαιρετικά προσιτή τιμή",
+    "note": "Αξιόπιστη λύση με καλή τιμή.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "GRIGONIS, MARIUS",
     "stance": "pick",
-    "note": "Οικονομική λύση που βρίσκει σταδιακά ρυθμό",
-    "source": "EuroLeague Fantasy Tips (official)"
-   },
-   {
-    "player": "MOORE, WENDELL",
-    "stance": "pick",
-    "note": "Συνεχόμενα διψήφια PIR και ευνοϊκό πρόγραμμα",
+    "note": "Υγιής και ανεβασμένος στη Ζάλγιρις.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "OKOBO, ELIE",
     "stance": "pick",
-    "note": "Ευνοϊκό ματσάρισμα απέναντι στην άμυνα της Μπασκόνια",
+    "note": "Μεγάλος χρόνος συμμετοχής κοντρα στην Μπασκόνια.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "PAYNE, CAMERON",
     "stance": "pick",
-    "note": "Προσιτή τιμή και σταδιακά αυξανόμενος ρόλος",
+    "note": "Αμέσως αποδτικός στην Εφές.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "PUERTO, JOSEP",
     "stance": "pick",
-    "note": "Φθηνή επιλογή ρίσκου για τον πάγκο",
+    "note": "Καλός στοματικός παίκτης με τιμή-bargin.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
@@ -1079,31 +1202,25 @@
    {
     "player": "IZUNDU, EBUKA",
     "stance": "pick",
-    "note": "Αυξημένος ρόλος ως μοναδικός καθαρός σέντερ",
+    "note": "Ευκαιρία για ανάδειξη λόγω απουσιών.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "FERNANDO, BRUNO",
     "stance": "pick",
-    "note": "Ευνοϊκό ματσάρισμα απέναντι στη ρακέτα της Μπάγερν",
-    "source": "Basketball Sphere – Fantasy"
-   },
-   {
-    "player": "TUBELIS, AZUOLAS",
-    "stance": "avoid",
-    "note": "Δύσκολο ματσάρισμα απέναντι στη σκληρή άμυνα της Φενέρμπαχτσε",
+    "note": "Ευνοϊκό ματς με την Μπάγερν.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "WRIGHT, MOSES",
     "stance": "avoid",
-    "note": "Πολύ απαιτητικό πρόγραμμα απέναντι σε Ρεάλ και Ντουμπάι",
+    "note": "Δύσκολο πρόγραμμα κοντρα σε Ταβάρες.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "MANTZOUKAS, ELEFTHERIOS",
     "stance": "avoid",
-    "note": "Αναμενόμενη μείωση χρόνου συμμετοχής μετά από επιστροφές",
+    "note": "Μείωση χρόνου λόγω επιστροφής Hayes-Davis.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
@@ -1186,9 +1303,9 @@
    }
   ],
   "round": 5,
-  "summary_el": "• Οι Semi Ojeleye και Ebuka Izundu συγκεντρώνουν έντονο ενδιαφέρον στο παιχνίδι λόγω των απουσιών στους σέντερ της Crvena Zvezda Meridianbet Belgrade, προσφέροντας μεγάλη αξία και αυξημένο χρόνο συμμετοχής.\n• Ο Jean Montero αναδείχθηκε πολυτιμότερος παίκτης της 5ης αγωνιστικής για τον Olympiacos Piraeus και προτείνεται ευρέως ως υποτιμημένη ευκαιρία αγοράς πριν από την αύξηση της τιμής του.\n• Σταθερές και οικονομικές λύσεις για τη γραμμή των ψηλών παραμένουν οι Aliou Diarra της Virtus Bologna και Johannes Thiemann της FC Bayern Munich, προσφέροντας συνέπεια και άνοδο στα διαθέσιμα credits.\n• Ο Tyler Dorsey τέθηκε εκτός ομάδας από τον Olympiacos Piraeus για την επερχόμενη αναμέτρηση απέναντι στην FC Barcelona λόγω πειθαρχικού παραπτώματος.\n• Στην Kosner Baskonia Vitoria-Gasteiz ολοκληρώθηκε η θητεία του Markus Howard, ενώ λύθηκε και η συνεργασία με την τεχνική ηγεσία της ομάδας.\n• Για τις θέσεις των γκαρντ ξεχωρίζουν οι Theo Maledon της Real Madrid, Jordan Loyd της Anadolu Efes Istanbul και Wendell Moore της Virtus Bologna χάρη στο ευνοϊκό πρόγραμμα και τον ηγετικό τους ρόλο.\n• Αντίθετα, οι ειδικοί συστήνουν την πώληση ή αποφυγή των Azuolas Tubelis της Zalgiris Kaunas, Moses Wright της Armani Olimpia Milan και Tornike Shengelia της Dubai Basketball λόγω απαιτητικών ματσαρισμάτων ή χαμηλής απόδοσης.",
-  "_model": "gemini-3.8-flash"
+  "summary_el": "Ο Jean Montero αναδείχθηκε MVP της 5ης αγωνιστικής στη EuroLeague μετά την εξαιρετική του εμφάνιση με τον Olympiacos κόντρα στη Valencia Basket.\nΟ Panathinaikos παραμένει μόνος πρώτος και αήττητος στην κορυφή της βαθμολογίας μετά την ολοκλήρωση της 5ης αγωνιστικής.\nΗ Virtus Bologna πέτυχε σημαντική εκτός έδρας νίκη απέναντι στην Paris Basketball με 96-94.\nΗ Bayern Munich επικράτησε εκτός έδρας της Anadolu Efes Istanbul με 101-93 χάρη στις εξαιρετικές εμφανίσεις των Johannes Thiemann και Duane Washington.\nΗ Hapoel Tel Aviv νίκησε άνετα τη Besiktas Istanbul με 100-82 σε αγώνα που διεξήχθη στη Σόφια.\nΗ Baskonia Vitoria-Gasteiz προχώρησε σε αλλαγή προπονητή, απομακρύνοντας τον Paolo Galbiati και ανακοινώνοντας την επιστροφή του Velimir Perasovic.\nΟ Tyler Dorsey τέθηκε εκτός αποστολής από τον Olympiacos για τον αγώνα με την FC Barcelona μετά από δημόσια διαμαρτυρία του στα social media.",
+  "_model": "gemini-3.5-flash-lite"
  },
- "digest_at": "2026-10-14T21:16:01.074612+00:00",
+ "digest_at": "2026-10-14T21:42:01.357269+00:00",
  "failed": []
 }
