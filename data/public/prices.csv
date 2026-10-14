@@ -1417,8 +1417,8 @@ fantasy_id,person_id,first_name,last_name,team,position,price,matchday,is_injure
 3768,003842,Mathias,Lessort,PAN,Center,15.8,5,False,1.0,,19.5
 3795,012608,TJ,Shorts,PAM,Guard,15.7,5,False,1.0,,14.1
 3765,005985,Mike,James,IST,Guard,15.6,5,True,0.0,,0.6
-3791,013369,Carlik,Jones,PAR,Guard,15.3,5,False,1.0,,31.2
-3887,007975,Sylvain,Francisco,PAN,Guard,15.2,5,False,1.0,,15.1
+3791,013369,Carlik,Jones,PAR,Guard,15.3,5,False,1.0,,31.1
+3887,007975,Sylvain,Francisco,PAN,Guard,15.2,5,False,1.0,,15.0
 3769,005791,Walter,Tavares,MAD,Center,14.7,5,False,1.0,,2.8
 3843,012878,Moses,Wright,MIL,Center,14.7,5,False,1.0,,8.0
 3770,012201,Chima,Moneke,RED,Forward,14.6,5,False,1.0,,2.1
@@ -1441,7 +1441,7 @@ fantasy_id,person_id,first_name,last_name,team,position,price,matchday,is_injure
 7218,011217,Kameron,Taylor,PAM,Forward,13.0,5,False,1.0,,4.4
 11514,015163,Patty,Mills,ASV,Guard,13.0,5,False,1.0,,3.4
 3790,006540,Dzanan,Musa,DUB,Guard,12.9,5,True,0.0,,0.1
-3793,013363,Jordan,Nwora,RED,Forward,12.9,5,False,1.0,,10.4
+3793,013363,Jordan,Nwora,RED,Forward,12.9,5,False,1.0,,10.5
 3874,009849,Tyler,Dorsey,OLY,Guard,12.9,5,False,1.0,,4.3
 3799,008987,Zach,Leday,HTA,Forward,12.8,5,False,1.0,,3.0
 8567,014124,Talen,Horton-Tucker,ULK,Guard,12.8,5,False,1.0,,5.0
@@ -1466,10 +1466,10 @@ fantasy_id,person_id,first_name,last_name,team,position,price,matchday,is_injure
 3864,012080,Timothé,Luwawu-Cabarrot,MAD,Forward,11.3,5,False,1.0,,3.5
 3868,WBC,Zeljko,Obradovic,PAN,Head Coach,11.3,5,False,1.0,,11.4
 3825,012712,Juancho,Hernangomez,PAN,Forward,11.2,5,False,1.0,,0.7
-3850,007027,Theo,Maledon,MAD,Guard,11.2,5,False,1.0,,25.7
+3850,007027,Theo,Maledon,MAD,Guard,11.2,5,False,1.0,,25.8
 11503,014732,Marjon,Beauchamp,MUN,Forward,11.2,5,False,1.0,,0.6
 3870,011981,Tyrique,Jones,OLY,Center,11.0,5,False,1.0,,1.5
-7193,002580,Vasilije,Micic,HTA,Guard,11.0,5,False,1.0,,1.8
+7193,002580,Vasilije,Micic,HTA,Guard,11.0,5,False,1.0,,1.9
 11527,015168,Tj,Warren,PRS,Forward,11.0,5,False,1.0,,1.2
 3810,009783,Bonzie,Colson,TEL,Forward,10.9,5,False,1.0,,1.0
 4180,013285,Devon,Dotson,BES,Guard,10.8,5,False,1.0,,1.8
