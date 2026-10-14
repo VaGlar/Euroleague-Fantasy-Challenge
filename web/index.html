@@ -585,7 +585,13 @@ const tcol = (t) => TEAMC[t] ? `--tc:${TEAMC[t]}` : "";
 const avb = (r) => (r.avail_game == null || r.avail_game >= 1 ? ""
   : r.avail_game === 0 ? ` <span class="av out" data-info="avail">Εκτός</span>`
   : ` <span class="av q" data-info="avail">${Math.round(r.avail_game * 100)}%</span>`);
-const get = (f) => fetch(`data/${f}?t=${Date.now()}`).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+// the data's version as the server tags it (ETag / Last-Modified): coming back to the app asks only for that
+let PRED_TAG = null;
+const tagOf = (r) => r.headers.get("etag") || r.headers.get("last-modified");
+const get = (f) => fetch(`data/${f}?t=${Date.now()}`).then((r) => {
+  if (f === "predictions.json" && r.ok) PRED_TAG = tagOf(r);
+  return r.ok ? r.json() : null;
+}).catch(() => null);
 
 // ---------- the court's lines (FIBA half court, basket at the top): drawn into every .court as it appears.
 // Units of 10 cm, 15 m wide; scaled to the width so the circles stay round (slice). No basket: just the lines.
@@ -1780,13 +1786,22 @@ function movesHtml(court) {
     <div><h3>Ανέβηκαν</h3><ul class="td-list">${up.map(row).join("") || '<li class="muted">—</li>'}</ul></div>
     <div><h3>Έπεσαν</h3><ul class="td-list">${dn.map(row).join("") || '<li class="muted">—</li>'}</ul></div></div></div>`;
 }
-// back to the app after a while (tab, phone): if newer data is out, reload so no device shows old numbers
+// back to the app after a while (tab, phone): if newer data is out, reload so no device shows old numbers.
+// A HEAD and its tag first (no body: predictions.json is ~450 KB); the whole file only when the tag changed.
 document.addEventListener("visibilitychange", async () => {
   if (document.visibilityState !== "visible" || typeof P === "undefined" || !P || !P.generated) return;
   try {
+    let tag = null;
+    if (PRED_TAG) {
+      const h = await fetch("data/predictions.json", { method: "HEAD", cache: "no-store" });
+      tag = h.ok ? tagOf(h) : null;
+      if (tag === PRED_TAG) return;              // same data: nothing more to fetch
+    }
+    // the tag changed (or there is none): the file itself says whether the data is newer
     const r = await fetch("data/predictions.json", { method: "GET", cache: "no-store" });
     const g = r.ok ? (await r.json()).generated : null;
-    if (g && g !== P.generated && !document.querySelector("#modal.on")) location.reload();
+    if (g && g !== P.generated) { if (!document.querySelector("#modal.on")) location.reload(); return; }
+    PRED_TAG = tag;                              // same data under another tag form: learn it
   } catch (e) {}
 });
 setInterval(() => {
