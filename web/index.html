@@ -641,6 +641,7 @@ function moreSheet() {
 
 // ---------- ⓘ: one-line explanations of the fantasy terms
 const INFO = {
+  early: "Αρχή σεζόν: στα πρώτα ~8 Rounds οι προβλέψεις για τους κορυφαίους παίκτες βγαίνουν ~15% ψηλά: όποιος ξεκίνησε δυνατά συνήθως πέφτει λίγο (έτσι και τις προηγούμενες σεζόν). Μια διόρθωση δεν έβγαζε καλύτερες επιλογές, γι' αυτό δεν γίνεται.",
   xpts: "xFPT: αναμενόμενα points στο Round (PIR, +10% αν κερδίσει η ομάδα· για τον coach, από τη διαφορά σκορ).",
   xpts3: "xFPT3: αναμενόμενα points των επόμενων 3 αγώνων του, άθροισμα (όπως στα «Επόμενα 3 παιχνίδια»).",
   ptot: "Σύνολο: τα fantasy points του φέτος μέχρι τώρα (PIR, +10% στη νίκη· coach από τη διαφορά σκορ).",
@@ -676,6 +677,9 @@ const INFO = {
 };
 const pop = (r) => (r.popularity == null ? "" : `${f1(r.popularity)} %`);
 const ii = (k) => `<button type="button" class="ii" data-info="${k}" aria-label="Τι σημαίνει">ⓘ</button>`;
+// early in a season the top predictions run high (research/023): an ⓘ next to a team's xFPT until round 8
+const EARLY_ROUNDS = 8;
+const earlyII = () => (P && P.round <= EARLY_ROUNDS ? ii("early") : "");
 document.addEventListener("click", (e) => {
   const old = document.getElementById("tip");
   const el = e.target.closest("[data-info]");
@@ -1509,7 +1513,7 @@ function autopilotCard(ap) {
     const playedN = list.filter((p) => p.actual != null).length;
     const soFar = list.reduce((a, p) => a + (p.actual ?? 0), 0);
     h += `<p><b>Για το Round ${cur.round}</b>: ${cur.trades ? `${cur.trades} ${cur.trades === 1 ? "Trade" : "Trades"}` : "κανένα Trade"}
-      · υπόλοιπο ${f1(cur.bank)} cr · xFPT ${f1(cur.x_total)}${cur.pts != null ? ` · <b>points ${f1(cur.pts)}</b>`
+      · υπόλοιπο ${f1(cur.bank)} cr · xFPT ${f1(cur.x_total)}${earlyII()}${cur.pts != null ? ` · <b>points ${f1(cur.pts)}</b>`
         : playedN ? ` · <b>μέχρι τώρα ${f1(soFar)}</b> <span class="muted">(${playedN} από ${list.length} έπαιξαν)</span>` : ""}</p>
       <div class="ap-split"><div class="tm-sideline">${courtView(list, null)}</div>${apMovesHtml(rounds)}</div>`;
   }

@@ -211,6 +211,14 @@ Limits per IP and hour (429 above them, `LIMITS` in the function): 10 new codes,
 a Pages secret `SYNC_SALT` (any random text) on `hoopslab-beta`, so the hash can't be recomputed from the
 public code. The «Σχετικά» tab (public edition) says all this to the users.
 
+Capacity on Cloudflare's free plan (an estimate from the code, not a measurement). Only `/api/*` and
+`/feed` run Functions; the pages and `data/*.json` are static and unlimited. A device with sync on makes
+a GET when the app opens or comes back to the front and a PUT 1.5 s after a burst of changes: some
+10–30 requests a day for an active user, each writing one row (the `hits` counter) and a PUT one more.
+The first limit is D1's 100k rows written a day: about **2,000 users a day with sync on**. Users
+without sync cost no Function call (an error report aside). The 100k Function requests a day allow
+about 3,000 sync users.
+
 ### Bugs from the users' browsers
 
 The page sends its JavaScript errors to `POST /api/errors` (`functions/api/errors.js`): the message,
