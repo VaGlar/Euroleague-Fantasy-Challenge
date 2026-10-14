@@ -165,3 +165,19 @@ test("watchlist: ☆ adds a player, «★ Watchlist» shows only them with what 
   await expect(rows(page, testInfo)).toHaveCount(0);
   await expect(page.locator("#fcount")).toContainText("άδεια");
 });
+
+test("filters: «Ειδικοί» PICK / CAP / AVOID and the minimums for points and Value", async ({ page }, testInfo) => {
+  await open(page, "public", { tab: "players" });
+  if (isPhone(testInfo)) await page.locator("#fsum").click();
+  const rows = isPhone(testInfo) ? page.locator("#plist .pcard") : page.locator("#ptable tbody tr");
+  await expect(page.locator("#fminx, #fminx3")).toHaveCount(0);              // no xFPT minimums
+  await page.locator("#fxpick").check();
+  const n = await rows.count();
+  expect(n).toBeGreaterThan(0);
+  for (let i = 0; i < Math.min(n, 10); i++) await expect(rows.nth(i).locator(".t-pick")).toHaveCount(1);
+  await page.locator("#fxpick").uncheck();
+  await page.locator("#fminval").fill("2,5");
+  const vals = await page.evaluate(() => P.players.filter((p) => p.x_now != null && p.value != null && p.value >= 2.5).length);
+  await expect(page.locator("#fcount")).toHaveText(`${vals} ${vals === 1 ? "παίκτης" : "παίκτες"}`);
+  await checkLayout(page, "players filters");
+});

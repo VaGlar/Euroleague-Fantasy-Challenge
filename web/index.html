@@ -9,6 +9,18 @@
 <meta name="theme-color" content="#08090b" media="(prefers-color-scheme: dark)">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@600;700;800&display=swap">
+<script>
+// opened from the Home Screen (iPhone/Android app): the page is the screen's width and stays so — no pinch,
+// no double-tap zoom, no zoom into a field. In the browser zoom stays free (people may need it).
+(() => {
+  const app = navigator.standalone || matchMedia("(display-mode: standalone)").matches;
+  if (!app) return;
+  document.documentElement.classList.add("app");
+  document.querySelector('meta[name="viewport"]').content =
+    "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover";
+  ["gesturestart", "gesturechange"].forEach((e) => document.addEventListener(e, (ev) => ev.preventDefault(), { passive: false }));
+})();
+</script>
 <script>try { const t = localStorage.getItem("theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <link rel="manifest" href="manifest.json" crossorigin="use-credentials">   <!-- behind Cloudflare Access the manifest needs the login cookie -->
 <link rel="icon" href="icon.svg" type="image/svg+xml">
@@ -47,6 +59,9 @@
   --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 18px rgba(0,0,0,.25);
 }
 * { box-sizing: border-box; }
+/* the app (Home Screen): no zoom gestures; fields at 16px, or iOS zooms into them when tapped */
+html.app { touch-action: pan-x pan-y; }
+html.app input, html.app select, html.app textarea { font-size: max(16px, 1em); }
 body { margin: 0; background: var(--surface-0); color: var(--text-primary);
   font: 15px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
 header { position: sticky; top: 0; z-index: 2; background: var(--surface-1);
@@ -77,7 +92,9 @@ section { display: none; } section.on { display: block; }
 select, input { font: inherit; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--border);
   background: var(--surface-1); color: var(--text-primary); }
 .range input { width: 72px; }
-.range.mins input { width: 64px; }
+.range.mins input { width: 92px; }
+a[data-copied]::after { content: " · αντιγράφηκε"; color: var(--good); font-weight: 600; }
+.xfil { display: inline-flex; gap: 8px; align-items: center; flex-wrap: wrap; } .xfil label { display: inline-flex; gap: 3px; align-items: center; cursor: pointer; }
 .chk { display: inline-flex; align-items: center; gap: 6px; color: var(--text-secondary); }
 .posdd { position: relative; display: inline-block; }
 .posdd summary { list-style: none; cursor: pointer; border: 1px solid var(--border); border-radius: 8px; padding: 6px 26px 6px 8px;
@@ -532,11 +549,13 @@ html body #mCp .ic { width: 1.25em; height: 1.25em; }
       <input id="fsearch" placeholder="Αναζήτηση" size="12">
       <span class="range">Price <input id="fpmin" type="text" inputmode="decimal" autocomplete="off" placeholder="από">
         – <input id="fpmax" type="text" inputmode="decimal" autocomplete="off" placeholder="έως"></span>
-      <span class="range mins" title="Μόνο όσοι φτάνουν κάθε όριο που γράφεις">Από
-        <input id="fminx" type="text" inputmode="decimal" autocomplete="off" placeholder="xFPT">
-        <input id="fminx3" type="text" inputmode="decimal" autocomplete="off" placeholder="xFPT3">
-        <input id="fmintot" type="text" inputmode="decimal" autocomplete="off" placeholder="Σύνολο">
-        <input id="fminval" type="text" inputmode="decimal" autocomplete="off" placeholder="Value"></span>
+      <span class="range mins" title="Μόνο όσοι φτάνουν κάθε όριο που γράφεις">
+        <input id="fmintot" type="text" inputmode="decimal" autocomplete="off" placeholder="min PTS" aria-label="Ελάχιστα points σεζόν">
+        <input id="fminval" type="text" inputmode="decimal" autocomplete="off" placeholder="min VALUE" aria-label="Ελάχιστο Value"></span>
+      <span class="chk xfil" role="group" aria-label="Ειδικοί">Ειδικοί
+        <label><input id="fxpick" type="checkbox"> <span class="tag t-pick">PICK</span></label>
+        <label><input id="fxcap" type="checkbox"> <span class="tag t-cap">CAP</span></label>
+        <label><input id="fxavoid" type="checkbox"> <span class="tag t-avoid">AVOID</span></label></span>
       <label class="chk"><input id="fhealthy" type="checkbox"> Χωρίς τραυματίες</label>
       <label class="chk"><input id="fwatch" type="checkbox"> ★ Watchlist</label>
     </div></details>
@@ -574,13 +593,12 @@ html body #mCp .ic { width: 1.25em; height: 1.25em; }
         <li><b>Φιλοξενία:</b> Cloudflare.</li>
       </ul></div>
     <div class="card"><h2>Επικοινωνία</h2>
-      <p>Λάθη, ιδέες, ερωτήσεις: <a href="mailto:euroleaguefantasy26@gmail.com?subject=Coach%20Dime%20beta">euroleaguefantasy26@gmail.com</a></p>
+      <p>Λάθη, ιδέες, ερωτήσεις: <a href="mailto:euroleaguefantasy26@gmail.com?subject=Coach%20Dime%20beta" onclick="mailTap(this)">euroleaguefantasy26@gmail.com</a></p>
       <p><button class="fbcopy" type="button" onclick="reportProblem()"><svg class="ic" aria-hidden="true"><use href="#i-bug"/></svg> Ανάφερε πρόβλημα</button></p></div>
   </section>
 </main>
 <footer id="feedback" class="fb" hidden><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg> Επικοινωνία:
-  <a href="mailto:euroleaguefantasy26@gmail.com?subject=Coach%20Dime%20beta">euroleaguefantasy26@gmail.com</a>
-  <button class="fbcopy" type="button" onclick="copyMail(this)"><svg class="ic" aria-hidden="true"><use href="#i-copy"/></svg> Αντιγραφή</button>
+  <a href="mailto:euroleaguefantasy26@gmail.com?subject=Coach%20Dime%20beta" onclick="mailTap(this)">euroleaguefantasy26@gmail.com</a>
   <button class="fbcopy" type="button" onclick="reportProblem()"><svg class="ic" aria-hidden="true"><use href="#i-bug"/></svg> Ανάφερε πρόβλημα</button></footer>
 <nav class="bnav" id="bnav" aria-label="Κύρια πλοήγηση">
   <button data-t="today" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/></svg><span>Σήμερα</span></button>
@@ -820,9 +838,11 @@ function findPlayer(name) {
 }
 // price boxes: accept "6,5" (Greek keyboard) as well as "6.5"
 const num = (v) => parseFloat(String(v).trim().replace(",", "."));
-const FILTERS = ["fpos", "fteam", "fturn", "fsearch", "fpmin", "fpmax", "fminx", "fminx3", "fmintot", "fminval", "fhealthy", "fwatch"];
+const FILTERS = ["fpos", "fteam", "fturn", "fsearch", "fpmin", "fpmax", "fmintot", "fminval", "fxpick", "fxcap", "fxavoid", "fhealthy", "fwatch"];
 // minimums, all at once (e.g. Value ≥ 2 and Σύνολο ≥ 60): a player without the number doesn't pass
-const MINS = [["fminx", (p) => p.x_now], ["fminx3", (p) => xf3(p)], ["fmintot", (p) => p.fpt_total], ["fminval", (p) => p.value]];
+const MINS = [["fmintot", (p) => p.fpt_total], ["fminval", (p) => p.value]];
+// «Ειδικοί»: the ticked ones, any of them (PICK or CAP or AVOID); none ticked = everyone
+const XFIL = [["fxpick", (p) => p.expert_pick > 0], ["fxcap", (p) => !!p.expert_cap], ["fxavoid", (p) => p.expert_avoid > 0]];
 // positions: checkboxes, all ticked by default; «Όλες» ticks/unticks them together
 const POS_N = 4;
 const posBoxes = () => [...document.querySelectorAll("#fpos input[value]")];
@@ -851,13 +871,14 @@ function renderPlayers() {
   const pmin = num($("#fpmin").value), pmax = num($("#fpmax").value), healthy = $("#fhealthy").checked, watch = $("#fwatch").checked;
   const turnTeams = turn ? P.turns.find((t) => String(t.turn) === turn).teams : null;
   const mins = MINS.map(([id, f]) => [num($("#" + id).value), f]).filter(([v]) => !isNaN(v));
+  const xs = XFIL.filter(([id]) => $("#" + id).checked).map(([, f]) => f);
   let rows = P.players.filter((p) => p.x_now != null
     && (pos.length === POS_N || pos.includes(p.position)) && (!team || p.team === team)
     && (!turnTeams || turnTeams.includes(p.team)) && (!q || String(p.name).toLowerCase().includes(q))
     && (isNaN(pmin) || (p.price != null && p.price >= pmin))
     && (isNaN(pmax) || (p.price != null && p.price <= pmax))
     && (!healthy || p.avail_game == null || p.avail_game >= 1) && (!watch || WATCH[p.person_id])
-    && mins.every(([v, f]) => f(p) != null && f(p) >= v));
+    && mins.every(([v, f]) => f(p) != null && f(p) >= v) && (!xs.length || xs.some((f) => f(p))));
   saveFilters();
   $("#fposall").checked = pos.length === POS_N;
   $("#fpossum").textContent = pos.length === POS_N ? "Όλες οι θέσεις" : pos.length ? pos.join(", ") : "Καμία θέση";
@@ -1505,7 +1526,7 @@ function searchToTop(el) {
   };
   setTimeout(go, 300);        // after the keyboard has opened
 }
-// the feedback address: copy it (mailto does nothing on phones without a mail app)
+// the feedback address (mailto does nothing on phones without a mail app: it is copied too)
 const FEEDBACK_MAIL = "euroleaguefantasy26@gmail.com";
 async function copyText(text) {
   try { await navigator.clipboard.writeText(text); return true; } catch (e) {}
@@ -1515,12 +1536,9 @@ async function copyText(text) {
   let ok = false; try { ok = document.execCommand("copy"); } catch (e) {}
   ta.remove(); return ok;
 }
-async function copyMail(btn) {
-  const ok = await copyText(FEEDBACK_MAIL);
-  const old = btn.textContent;
-  btn.textContent = ok ? "✓ Αντιγράφηκε" : "Πάτα παρατεταμένα το email";
-  setTimeout(() => (btn.textContent = old), 2000);
-  return ok;
+// one tap on the address copies it (phones without a mail app have it to paste) and opens the mail
+function mailTap(a) {
+  copyText(FEEDBACK_MAIL).then((ok) => { if (!ok) return; a.dataset.copied = "1"; setTimeout(() => delete a.dataset.copied, 2500); });
 }
 // «Ανάφερε πρόβλημα»: an email with what helps find the bug already written (no personal data: the user sees it all)
 // iPhone mail apps may open the email without its body: the same text is also shown in a sheet to copy

@@ -965,8 +965,9 @@
         <textarea class="tm-input" rows="4" readonly onclick="this.select()">${esc(link)}</textarea>`); }
     };
     $("#mEdit").onclick = () => { close(); setup = { players: t.players.map((x) => ({ ...x })) }; mode = "setup"; render(best); };
-    $("#mMail").onclick = async () => { close();
-      toast(await copyText(FEEDBACK_MAIL) ? `Αντιγράφηκε: ${FEEDBACK_MAIL}` : FEEDBACK_MAIL); };
+    $("#mMail").onclick = () => { close();             // copied (no mail app on the phone?) and the mail opens
+      copyText(FEEDBACK_MAIL).then((ok) => toast(ok ? `Αντιγράφηκε: ${FEEDBACK_MAIL}` : FEEDBACK_MAIL));
+      location.href = `mailto:${FEEDBACK_MAIL}?subject=${encodeURIComponent("Coach Dime beta")}`; };
     if ($("#mInstall")) $("#mInstall").onclick = () => { close(); installGuide(true); };
     $("#mDel").onclick = () => {
       close();
