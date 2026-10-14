@@ -195,3 +195,15 @@ def test_a_few_odd_players_do_not_stop_the_update(pub):
 def test_report_message_without_text_stops(pub):
     edit(pub, "report.json", lambda d: d["messages"].append({"date": "2026-10-02"}))
     assert any("χωρίς ημερομηνία ή κείμενο" in p for p in problems(pub))
+
+
+def test_a_broken_proposal_check_is_a_warning_not_a_stop(pub, monkeypatch):
+    """elf/checks.py runs inside the data check: if it crashes, the update still goes on."""
+    from elf import checks
+
+    def boom(*a):
+        raise RuntimeError("bug in a check")
+    monkeypatch.setattr(checks, "run", boom)
+    probs, warns = validate.check()
+    assert probs == [] and "έλεγχος προτάσεων: RuntimeError" in warns
+    assert validate.main() == 0

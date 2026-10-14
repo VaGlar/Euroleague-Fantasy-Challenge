@@ -332,3 +332,72 @@ def test_a_dnp_whose_game_is_over_is_played_not_a_captain(monkeypatch, public):
     cap = next(i for i, p in pr["new"].items() if p["captain"])
     assert cap != 9 and next(p for p in sq if p["id"] == cap)["turn"] == 2, cap
     assert g.saved == []
+
+
+# ------------------------------------------------------------------ PRs 40/42 (mutation testing, 14/10)
+
+def write_round(public, sq, fixtures):
+    (public / "predictions.json").write_text(json.dumps({
+        "round": 1, "fixtures": fixtures,
+        "players": [{"fantasy_id": p["id"], "x_now": p["x_now"], "team": p["team"]} for p in sq]}))
+
+
+def test_played_means_this_rounds_game_is_over_home_or_away(monkeypatch, public):
+    """The DNP rule (14/10) counts a team's game of *this* round, whether it plays at home or away."""
+    sq = squad_t1_t2()
+    for p in sq:
+        p["team"] = "T1" if p["turn"] == 1 else "T2"
+    FakeGame(sq, GOOD, captain=1).install(monkeypatch)
+    write_round(public, sq, [{"round": 1, "home": "X", "away": "T1", "played": True},     # T1 away: over
+                             {"round": 0, "home": "T2", "away": "Y", "played": True}])    # last round's: not this one
+    played = {p["id"]: p["played"] for p in lineup_cmd.load_state()["squad"]}
+    assert all(played[p["id"]] for p in sq if p["team"] == "T1")
+    assert not any(played[p["id"]] for p in sq if p["team"] == "T2")
+
+
+def test_layout_which_formations_keep_each_played_starter_on_his_slot(monkeypatch, public):
+    """The five's slots in the game's order C -> F -> G (GOOD: C9 | F5 F6 | G1 G2 on slots 0..4). A played
+    starter can stay only in formations whose block for his position covers his slot. Worked by hand
+    from that rule: F6 (slot 2) is outside the Forwards' block of 3-1-1 (slot 1 only); G1 (slot 3)
+    is outside the Guards' block of 1-2-2 and 1-3-1 (slot 4 only)."""
+    game(monkeypatch, public, GOOD, captain=1, played={9: 10, 6: 10, 1: 10})
+    _, stay, order, _ = lineup_cmd._layout(lineup_cmd.load_state())
+    assert order == ["Center", "Forward", "Guard"]
+    assert stay[9] == {"2-2-1", "2-1-2", "1-2-2", "1-3-1", "3-1-1"}
+    assert stay[6] == {"2-2-1", "2-1-2", "1-2-2", "1-3-1"}
+    assert stay[1] == {"2-2-1", "2-1-2", "3-1-1"}
+
+
+def test_a_turn_plan_that_would_move_a_played_starter_is_dropped(monkeypatch, public):
+    """If the turn plan (defer_later_turns) ends on a formation a played starter can't stay in, the
+    lineup goes back to the optimizer's and the plan is dropped: no 422 from the game."""
+    g = game(monkeypatch, public, GOOD, captain=1, played={1: 30})        # G1 played, on slot 3
+    seen = {}
+    real_lineup, real_defer = lineup_cmd.optimize.lineup_in_round, lineup_cmd.optimize.defer_later_turns
+
+    def spy(*a, **k):
+        seen["res"] = real_lineup(*a, **k)
+        return seen["res"]
+
+    def to_1_2_2(team):                     # a Guard out of the five, a Center in: 1-2-2 moves G1
+        team, _ = real_defer(team)
+        team = [dict(p) for p in team]
+        out = next(p for p in team if p["role"] == "5άδα" and p["position"] == "Guard" and p["id"] != 1)
+        inn = next(p for p in team if p["role"] != "5άδα" and p["position"] == "Center")
+        out["role"], inn["role"] = inn["role"], "5άδα"
+        return team, [{"start": out, "bench": inn}]
+    monkeypatch.setattr(lineup_cmd.optimize, "lineup_in_round", spy)
+    monkeypatch.setattr(lineup_cmd.optimize, "defer_later_turns", to_1_2_2)
+    pr = lineup_cmd.propose(lineup_cmd.load_state())
+    assert pr["res"]["plan"] == [] and pr["formation"] != "1-2-2"
+    assert {p["id"]: p["role"] for p in pr["res"]["team"]} == {p["id"]: p["role"] for p in seen["res"]["team"]}
+    if pr["changes"]:
+        lineup_cmd.apply(pr["nonce"])                                     # the fake game checks the slots
+        assert g.lineup()[0][1] == "5άδα"
+
+
+def test_the_body_has_one_captain_and_never_the_coach(monkeypatch, public):
+    game(monkeypatch, public, BAD, captain=10)
+    body = lineup_cmd.propose(lineup_cmd.load_state())["body"]
+    caps = [b["id"] for b in body["players"] if b["is_captain"]]
+    assert len(caps) == 1 and caps[0] != 11, "11 = the Head Coach"
