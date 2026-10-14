@@ -371,7 +371,8 @@ def _strings(d: dict):
 
 
 def _bad(word: str) -> bool:
-    return "%" in word or bool(_MIXED.search(word)) or bool(_COMBINING.search(unicodedata.normalize("NFC", word)))
+    # a «%» next to a letter is broken («Χαμηλ%», «απ%δοσης»); after a number it is a percentage («48%»)
+    return bool(re.search(r"[^\W\d_]%|%[^\W\d_]", word)) or bool(_MIXED.search(word)) or bool(_COMBINING.search(unicodedata.normalize("NFC", word)))
 
 
 def repair(d: dict) -> dict:
