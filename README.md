@@ -204,7 +204,28 @@ to Supabase/Postgres as it is when accounts come). Once:
 
 No accounts or personal data: only player ids, prices, credits. Whoever has the code
 (12 characters, ~10^17 combinations) sees and changes the team. When both devices change it without a
-sync in between, the newer change wins.
+sync in between, the newer change wins. «Διαγραφή από τον server» deletes the copy (`DELETE`).
+
+Limits per IP and hour (429 above them, `LIMITS` in the function): 10 new codes, 300 writes, 600 reads,
+60 deletes. The IP is counted only as a salted SHA-256 hash in the table `hits`, for that hour. Optional:
+a Pages secret `SYNC_SALT` (any random text) on `hoopslab-beta`, so the hash can't be recomputed from the
+public code. The «Σχετικά» tab (public edition) says all this to the users.
+
+### Bugs from the users' browsers
+
+The page sends its JavaScript errors to `POST /api/errors` (`functions/api/errors.js`): the message,
+the file and line, the tab, nothing personal; at most 5 per page load, lost connections skipped. The
+function counts them per day in the same D1 (table `errors`, 30 reports per IP and hour) and sends the
+first occurrence of each error of the day to Telegram, at most 20 a day. For the messages, set the
+Pages secrets `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` on `hoopslab-beta` (the bot's values);
+without them the errors are only counted. Without the database (the personal site) it does nothing.
+
+«🐞 Ανέφερε πρόβλημα» (footer and «Σχετικά», public edition) opens an email to the feedback address
+with the tab, round, data time, screen, browser and the last error already written.
+
+Every update also checks its own proposals against the game's rules (`elf/checks.py`: squad 4G 4F 2C 1H,
+≤ 6 per club, budget, a legal five and sixth man, a Captain in the five whose game isn't over). A broken
+rule is a health warning on Telegram, not a failed update.
 
 ### Watchlist alerts (personal edition)
 

@@ -14,7 +14,7 @@ def write(pub, name, obj):
 
 
 def full_outputs(pub):
-    write(pub, "predictions.json", {"players": [{"name": "A"}], "my_team": {"name": "Nunn like Osman"},
+    write(pub, "predictions.json", {"players": [{"name": "A"}], "my_team": {"name": "Test Team Name"},
                                     "health": ["🔑 token"], "price_model": {"a": 1}, "round": 3})
     write(pub, "news.json", {"articles": [{"title": "T", "url": "https://x", "source": "S",
                                            "text": "the whole article " * 50}], "digest": {"summary_el": "σ"}})
@@ -41,7 +41,7 @@ def test_sanitize_repo_leaves_nothing_personal_or_copyrighted(public):
         assert not (public / name).exists(), name
     assert (public / "report_public.json").exists() and (public / "prices.csv").exists()
     text = "".join(f.read_text() for f in public.iterdir())
-    assert "Nunn like Osman" not in text and "the whole article" not in text
+    assert "Test Team Name" not in text and "the whole article" not in text
 
 
 def test_sanitize_repo_is_idempotent_and_tolerates_missing_files(public):

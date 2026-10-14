@@ -164,6 +164,7 @@
     return 200;
   }
   const syncErr = (st) => st === 503 ? "Ο συγχρονισμός δεν είναι ακόμα διαθέσιμος" : st === 404 ? "Αυτός ο κωδικός δεν υπάρχει"
+    : st === 429 ? "Πολλές προσπάθειες από αυτή τη σύνδεση· δοκίμασε ξανά σε μία ώρα"
     : st === 400 ? "Ο κωδικός έχει 12 γράμματα/αριθμούς, π.χ. ABCD-EFGH-JKMN" : "Δεν έγινε σύνδεση· δοκίμασε ξανά";
   function syncSheet(done) {
     const s = syncGet(), has = !!load();
@@ -177,7 +178,8 @@
           <button class="tm-primary" id="tmSyncCopy">Αντιγραφή κωδικού</button>
           <p class="tm-hint">Στην άλλη συσκευή: «Η ομάδα μου» → ⋯ Επιλογές → Συγχρονισμός συσκευών → γράψε τον κωδικό.
             Κράτα τον όπως έναν κωδικό: όποιος τον έχει βλέπει και αλλάζει την ομάδα.</p>
-          <button class="linkbtn" id="tmSyncOff" style="display:block;margin:8px auto 0">Αποσύνδεση αυτής της συσκευής</button>`
+          <button class="linkbtn" id="tmSyncOff" style="display:block;margin:8px auto 0">Αποσύνδεση αυτής της συσκευής</button>
+          <button class="linkbtn tm-danger" id="tmSyncDel" style="display:block;margin:8px auto 0">Διαγραφή από τον server</button>`
         : `${has ? '<button class="tm-primary" id="tmSyncNew">Νέος κωδικός για αυτή την ομάδα</button><hr class="tm-sep">' : ""}${joinBox}`}`);
     const on = (i, fn) => { const el = document.getElementById(i); if (el) el.onclick = fn; };
     on("tmSyncNew", async () => { const st = await syncNew(); if (st === 201) syncSheet(done); else toast(syncErr(st)); });
@@ -188,6 +190,14 @@
     });
     on("tmSyncCopy", async () => toast(await copyText(fmtCode(s.code)) ? "Ο κωδικός αντιγράφηκε" : fmtCode(s.code)));
     on("tmSyncOff", () => { syncSet(null); closePlayer(); toast("Η συσκευή αποσυνδέθηκε· η ομάδα μένει εδώ"); });
+    // the server's copy deleted (the team stays on this device); the other devices unlink at their next sync
+    on("tmSyncDel", async () => {
+      if (!confirm("Να διαγραφεί η ομάδα από τον server; Σε αυτή τη συσκευή μένει.")) return;
+      let st = 0;
+      try { st = (await syncApi("DELETE", s.code)).status; } catch (e) {}
+      if (st === 204 || st === 404) { syncSet(null); closePlayer(); toast("Διαγράφηκε από τον server· η ομάδα μένει εδώ"); }
+      else toast(syncErr(st));
+    });
   }
 
   function encode(t) {

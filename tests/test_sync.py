@@ -52,3 +52,21 @@ def test_bad_input_and_no_database():
               {"method": "PUT", "path": "/api/sync/AAAAAAAAAAAA", "body": {"data": TEAM, "rev": 1}})
     assert [r["status"] for r in res] == [400, 400, 400, 400, 405, 413, 404]
     assert run({"method": "GET", "path": "/api/sync/AAAAAAAAAAAA"}, db=False)[0]["status"] == 503
+
+
+def test_too_many_calls_from_one_ip_are_refused_others_go_on():
+    """Limits per IP and hour (LIMITS in the function): the 11th new code from one IP is refused (429),
+    another IP still gets one; the IP is kept only as a salted hash."""
+    posts = [{"method": "POST", "path": "/api/sync", "body": {"data": TEAM}} for _ in range(11)]
+    res = run(*posts, {"method": "POST", "path": "/api/sync", "body": {"data": TEAM}, "ip": "198.51.100.7"})
+    assert [r["status"] for r in res[:10]] == [201] * 10
+    assert res[10]["status"] == 429 and res[10]["body"] == {"error": "too many requests"}
+    assert res[11]["status"] == 201
+
+
+def test_a_code_can_be_deleted_from_the_server():
+    new, gone, get, again = run({"method": "POST", "path": "/api/sync", "body": {"data": TEAM}},
+                                {"method": "DELETE", "path": "/api/sync/{code}"},
+                                {"method": "GET", "path": "/api/sync/{code}"},
+                                {"method": "DELETE", "path": "/api/sync/{code}"})
+    assert new["status"] == 201 and gone["status"] == 204 and get["status"] == 404 and again["status"] == 404

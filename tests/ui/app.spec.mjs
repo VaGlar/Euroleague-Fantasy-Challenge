@@ -25,9 +25,14 @@ test("navigation bars: top tabs on PC, bottom bar on phones", async ({ page }, t
     await expect(page.locator("#bnav")).toBeVisible();
     await expect(page.locator("#tabs")).toBeHidden();
     await page.locator('#bnav button[data-t="more"]').click();
-    await expect(page.locator("#sheet [data-go]")).toHaveCount(4);
+    await expect(page.locator("#sheet [data-go]")).toHaveCount(5);          // news, compare, model, report, «Σχετικά»
+    await expect(page.locator('#sheet [data-go="about"]')).toHaveCount(1);
     await page.keyboard.press("Escape");
     await expect(page.locator("#modal")).not.toHaveClass(/\bon\b/);
+    await open(page, "personal");                                         // no «Σχετικά» in the personal edition
+    await page.locator('#bnav button[data-t="more"]').click();
+    await expect(page.locator("#sheet [data-go]")).toHaveCount(4);
+    await expect(page.locator('#sheet [data-go="about"]')).toHaveCount(0);
   } else {
     await expect(page.locator("#tabs")).toBeVisible();
     await expect(page.locator("#bnav")).toBeHidden();
@@ -222,4 +227,50 @@ test("Μοντέλο: accuracy in boxes with ⓘ, the backtest folded", async ({
   await adv.locator("summary").click();
   await expect(adv).toContainText("Points ομάδας ανά Round");          // squad points, not error tables
   await expect(adv.locator("tr", { hasText: "Μοντέλο" })).toContainText("149.9");
+});
+
+test("Άμυνες: no footnote, ⓘ on the title, a column sorts both ways", async ({ page }) => {
+  await open(page, "public", { tab: "teams" });
+  await page.locator('#teams .seg button[data-tv="defense"]').click();
+  const card = page.locator("#teams .card", { hasText: "PIR που δίνει η άμυνα" });
+  await expect(card.locator("p.muted")).toHaveCount(0);
+  await expect(card.locator('h2 [data-info="defense"]')).toHaveCount(1);
+  const first = () => page.locator("#dtable tbody tr").first().getAttribute("data-team");
+  const th = () => page.locator('#dtable th[data-dk="Guard"]');
+  await th().click();
+  await expect(th()).toContainText("↓");
+  const most = await first();
+  await th().click();
+  await expect(th()).toContainText("↑");
+  expect(await first()).not.toEqual(most);
+});
+
+test("«Σχετικά»: what it is, privacy, contact — in the public edition only", async ({ page }, testInfo) => {
+  await open(page, "public", { tab: "today" });
+  await goTab(page, testInfo, "about");
+  const about = page.locator("section#about");
+  await expect(about).toContainText("Δεν έχει σχέση με την EuroLeague ούτε με το Dunkest");
+  await expect(about).toContainText("Απόρρητο");
+  await expect(about.locator('a[href^="mailto:"]')).toHaveCount(1);
+  await checkLayout(page, "about");
+  await open(page, "personal", { tab: "today" });
+  await expect(page.locator('#tabs button[data-t="about"]')).toBeHidden();
+});
+
+test("«Ανέφερε πρόβλημα»: an email with the tab, round and data time written; the page's errors are reported", async ({ page }, testInfo) => {
+  const sent = [];
+  await page.route("**/api/errors", async (route) => { sent.push(route.request().postDataJSON()); await route.fulfill({ status: 204 }); });
+  await open(page, "public", { tab: "today" });
+  await expect(page.locator('#feedback button:has-text("Ανέφερε πρόβλημα")')).toBeVisible();
+  await page.evaluate(() => window.dispatchEvent(new ErrorEvent("error", { message: "Uncaught Error: ui-test boom", filename: location.origin + "/public/team.js?v=1", lineno: 42 })));
+  await expect.poll(() => sent.length).toBe(1);
+  expect(sent[0]).toMatchObject({ msg: expect.stringContaining("ui-test boom"), src: "team.js", line: 42, tab: "today", edition: "public" });
+  const mail = decodeURIComponent(await page.evaluate(() => problemMail()));
+  expect(mail).toContain("mailto:");
+  expect(mail).toContain("Tab: today");
+  expect(mail).toMatch(/Round: \d+/);
+  expect(mail).toContain("ui-test boom");
+  await page.evaluate(() => window.dispatchEvent(new ErrorEvent("error", { message: "Uncaught Error: ui-test boom", filename: location.origin + "/public/team.js?v=1", lineno: 42 })));   // the same error: sent once
+  await page.waitForTimeout(300);
+  expect(sent.length).toBe(1);
 });
