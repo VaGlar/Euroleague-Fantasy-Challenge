@@ -436,8 +436,12 @@ body > header nav button.on { color: var(--bar-fg); border-color: var(--bar-line
   stroke-linecap: round; stroke-linejoin: round; flex: none; }
 h1 .logo { width: 1.05em; height: 1.05em; vertical-align: -0.16em; fill: none; stroke: var(--accent); stroke-width: 2.2; }
 .tag { display: inline-block; font: 800 10px/1 var(--num-font); letter-spacing: .06em; padding: 3px 4px 2px; border-radius: 2px;
-  background: var(--accent); color: #fff; vertical-align: 2px; }
-.tag.t-pick, .tag.t-up { background: var(--good); } .tag.t-down { background: var(--critical); }
+  background: var(--accent); color: #fff; vertical-align: middle; }
+/* the marks next to a name (NEW, PICK, $▲, «εκτός», «νέος») share one middle line */
+html body .pill { vertical-align: middle; line-height: 1.35; }
+html body .pill .ic { vertical-align: -0.12em; }
+.tag.t-pick, .tag.t-up { background: var(--good); } .tag.t-down, .tag.t-out { background: var(--critical); }
+.tag.t-new { background: #2f6fd0; } .tag.t-back { background: #5b6472; } .tag.t-q { background: #e2a516; color: #1a1400; }
 .tag[data-info] { cursor: help; }
 .tag.t-pick { background: var(--good); } .tag.t-avoid { background: var(--critical); } .tag.t-cap { background: var(--accent); }
 html body h1 { font-family: var(--num-font); font-weight: 800; letter-spacing: .01em; text-transform: uppercase; }
@@ -757,22 +761,25 @@ const f1 = (x) => (x == null ? "–" : Number(x).toFixed(1));
 const gameOf = (r) => (r.actual != null && r.next_opp
   ? `R${r.next_round} ${r.next_home ? "vs" : "@"} ${esc(tc(r.next_opp))}`
   : r.opp ? `${r.home ? "vs" : "@"} ${esc(tc(r.opp))}` : "");
+// availability as a tag, as PICK / AVOID: OUT (red: out, or not on the EuroLeague roster), 50% (amber: doubtful)
 const inj = (r) => r.unregistered
-  ? ` <span class="pill" title="στη λίστα του fantasy, αλλά όχι δηλωμένος στο ρόστερ της EuroLeague: δεν μπορεί να αγωνιστεί">${ico("roster")} εκτός ρόστερ</span>`
+  ? ' <span class="tag t-out" title="στη λίστα του fantasy, αλλά όχι δηλωμένος στο ρόστερ της EuroLeague: δεν μπορεί να αγωνιστεί">OUT</span>'
   : (r.avail_game != null && r.avail_game < 1
-  ? ` <span class="pill">${ico("medic")} ${r.avail_game === 0 ? "εκτός" : Math.round(r.avail_game * 100) + "%"}</span>` : "");
+  ? (r.avail_game === 0 ? ' <span class="tag t-out" title="εκτός αγώνα">OUT</span>'
+    : ` <span class="tag t-q" title="αμφίβολος">${Math.round(r.avail_game * 100)}%</span>`) : "");
 // new to the EuroLeague (no last season) with few games: the prediction rests on 1-4 games (R&D 015)
 const fewGames = (r) => r.position !== "Head Coach" && r.prev_pir == null && r.games >= 1 && r.games <= 4;
 // info = false inside pick lists: the whole row picks the player, the mark is only a mark
-const newb = (r, info = true) => (r.no_data && !r.prior ? ' <span class="pill">νέος</span>'
-  : fewGames(r) ? ` <span class="pill few"${info ? ' data-info="few"' : ""}>νέος · ${r.games} ματς</span>`
-  : r.returning ? ` <span class="pill few"${info ? ' data-info="back"' : ""}>↩ επιστρέφει</span>` : "");
+// NEW (blue: new to the EuroLeague, the prediction rests on 1–4 games) · BACK (back after missed games)
+const newb = (r, info = true) => (r.no_data && !r.prior ? ' <span class="tag t-new" title="νέος, χωρίς ματς ακόμα">NEW</span>'
+  : fewGames(r) ? ` <span class="tag t-new few"${info ? ' data-info="few"' : ""} title="νέος · ${r.games} ματς">NEW</span>`
+  : r.returning ? ` <span class="tag t-back few"${info ? ' data-info="back"' : ""} title="επιστρέφει μετά από απουσίες">BACK</span>` : "");
 // the fantasy columns' word on a player, as tags (not arrows: those are the price's): PICK n · CAP · AVOID n
 const xtag = (kind, n = 1, title = "") => `<span class="tag t-${kind}"${title ? ` title="${title}"` : ""}>${kind.toUpperCase()}${n > 1 ? " " + n : ""}</span>`;
 const exb = (r) => (r.expert_pick > 0 ? " " + xtag("pick", r.expert_pick, "στήλες fantasy που τον προτείνουν") : "")
   + (r.expert_cap ? " " + xtag("cap", 1, "στήλη που τον προτείνει για Captain") : "")
   + (r.expert_avoid > 0 ? " " + xtag("avoid", r.expert_avoid, "στήλες που προτείνουν να τον αποφύγεις") : "")
-  + (r.prior === "τιμή" ? ` <span class="pill" title="χωρίς ιστορικό: εκτίμηση από το price">≈price</span>` : "");
+  + (r.prior === "τιμή" ? ` <span class="tag t-back" title="χωρίς ιστορικό: εκτίμηση από το price">≈PRICE</span>` : "");
 const dol = (r) => (r.price_trend === "up"
   ? ` <span class="tag t-up" data-info="dollar" title="πιθανή άνοδος price μετά το Round${r.price_delta != null ? ` (~+${r.price_delta.toFixed(1)} cr)` : ""}">$▲</span>`
   : r.price_trend === "down" ? ` <span class="tag t-down" data-info="dollar" title="πιθανή πτώση price">$▼</span>` : "");
@@ -786,8 +793,8 @@ let CLUB_BY_NAME = {};   // a club's name (short or full, clubs.json) -> its cod
 const tc = (c) => TV[c] || c || "";
 const tcol = (t) => TEAMC[t] ? `--tc:${TEAMC[t]}` : "";
 const avb = (r) => (r.avail_game == null || r.avail_game >= 1 ? ""
-  : r.avail_game === 0 ? ` <span class="av out" data-info="avail">Εκτός</span>`
-  : ` <span class="av q" data-info="avail">${Math.round(r.avail_game * 100)}%</span>`);
+  : r.avail_game === 0 ? ` <span class="tag t-out" data-info="avail">OUT</span>`
+  : ` <span class="tag t-q" data-info="avail">${Math.round(r.avail_game * 100)}%</span>`);
 // the data's version as the server tags it (ETag / Last-Modified): coming back to the app asks only for that
 let PRED_TAG = null;
 const tagOf = (r) => r.headers.get("etag") || r.headers.get("last-modified");
@@ -1949,7 +1956,7 @@ function renderToday() {
   const fewN = P.players.filter(fewGames).length;
   let earlyOff = false;
   try { earlyOff = localStorage.getItem("earlyOff") === "1"; } catch (e) {}
-  const early = P.round <= 5 && fewN && !earlyOff ? `<div class="card wide note-early"><span><span class="tag">NEW</span> <b>Αρχή σεζόν:</b> ${fewN} νέοι παίκτες με 1–${
+  const early = P.round <= 5 && fewN && !earlyOff ? `<div class="card wide note-early"><span><span class="tag t-new">NEW</span> <b>Αρχή σεζόν:</b> ${fewN} νέοι παίκτες με 1–${
     Math.max(...P.players.filter(fewGames).map((r) => r.games))} ματς ${ii("few")}</span>
     <button class="x" id="earlyOff" type="button" aria-label="Κλείσιμο">×</button></div>` : "";
 
@@ -1982,7 +1989,7 @@ function renderToday() {
     return `${sure ? "χάνει" : "αμφίβολος"} R${rnd}`;
   };
   const availLi = (e) => `<li data-pid="${esc(e.r.person_id)}">
-      <span class="n">${esc(nm(e.r.name))}${avb(e.r) || (e.status ? ` <span class="av ${e.status === "out" ? "out" : "q"}" data-info="avail">${SL[e.status] || e.status}</span>` : "")}</span>
+      <span class="n">${esc(nm(e.r.name))}${avb(e.r) || (e.status ? ` <span class="tag ${e.status === "out" ? "t-out" : "t-q"}" data-info="avail" title="${esc(SL[e.status] || e.status)}">${e.status === "out" ? "OUT" : "?"}</span>` : "")}</span>
       <span class="v"><small>${misses(e)}</small></span>
       <span class="m">${esc(tc(e.r.team))} · ${esc((e.r.position || "")[0] || "")}${e.note ? ` · ${esc(e.note)}` : ""}</span></li>`;
   const availHtml = avail.length ? `<ul class="td-list">${avail.slice(0, 3).map(availLi).join("")}</ul>${avail.length > 3
