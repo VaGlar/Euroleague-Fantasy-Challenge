@@ -52,6 +52,27 @@ def test_evaluate_grades_against_box_scores(pub, monkeypatch):
     assert res["total"]["n"] == 3
 
 
+def test_season_top20_is_the_mean_of_the_rounds(pub, monkeypatch):
+    """Top-20 is per round: pooled over the season it would rank hundreds of predictions together."""
+    rows = []
+    for rnd, gc in ((1, 1), (2, 2)):
+        for i in range(25):
+            rows.append({"round": rnd, "gamecode": gc, "person_id": f"{rnd}-{i}", "name": "x", "team": "H",
+                         "x_pred": 30.0 - i if rnd == 1 else 6.0 + i, "naive": 10.0, "logged_at": "x"})
+    pd.DataFrame(rows).to_csv(pub / "pred_log.csv", index=False)
+    games = pd.DataFrame({"gamecode": [1, 2], "round": [1, 2], "played": [True, True], "home": ["H", "H"],
+                          "away": ["V", "V"], "home_score": [80, 80], "away_score": [90, 90], "utc": ["x", "x"]})
+    # round 1: the actual order is the predicted one (top-20 100%); round 2: the reverse (25 players: 15/20)
+    box = pd.DataFrame({"gamecode": [r["gamecode"] for r in rows], "team": "H",
+                        "person_id": [r["person_id"] for r in rows],
+                        "pir": [r["x_pred"] if r["round"] == 1 else 40 - r["x_pred"] for r in rows]})
+    monkeypatch.setattr(history, "load", lambda kind, season: games if kind == "games" else box)
+    res = tracking.evaluate(2026)
+    per = [r["top20"] for r in res["rounds"]]
+    assert per == [1.0, 0.75]
+    assert res["total"]["top20"] == pytest.approx(0.875)
+
+
 def test_lineup_scores_use_real_points(pub, monkeypatch):
     games = pd.DataFrame({"gamecode": [11], "round": [2], "played": [True], "home": ["H"], "away": ["V"],
                           "home_score": [90], "away_score": [75], "utc": ["2026-10-01T18:00:00Z"]})

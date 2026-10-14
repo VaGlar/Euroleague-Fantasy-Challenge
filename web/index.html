@@ -599,6 +599,22 @@ const INFO = {
   pts: "Points: τα πραγματικά points του στο τρέχον Round (πράσινα αν ξεπέρασε το xFPT). «–»: δεν έχει παίξει ακόμα.",
   pop: "POP: τι ποσοστό των managers του παιχνιδιού τον έχει στην ομάδα του.",
   pchg: "Δ price: πόσο έχει αλλάξει το price του από το πρώτο Round της σεζόν.",
+  ap: "Autopilot: μια ομάδα που ξεκίνησε με 100 credits και κάνει μόνο ό,τι προτείνει η εφαρμογή (Trades, Starting five, Captain, η τελευταία πρόταση πριν το τζάμπολ), με τους κανόνες του παιχνιδιού. Δείχνει τι αξίζουν οι προτάσεις, χωρίς τις δικές σου επιλογές. Ένα Round δεν λέει τίποτα· κρίνεται σε 5–10.",
+  ap_x: "xFPT: τι περίμενε το μοντέλο από την ομάδα εκείνου του Round (Bench 50%, Captain ×2). Τα Points είναι πράσινα όταν το ξεπέρασαν.",
+  ap_pts: "Points: όπως τα μετράει το παιχνίδι (Bench 50%, Captain ×2, Coach).",
+  ap_raw: "11 παίκτες: τα points όλης της ομάδας χωρίς Bench 50% και Captain, για να συγκρίνεται με τον μέσο manager.",
+  ap_avg: "Μέσος manager: εκτίμηση από το POP (πόσοι έχουν κάθε παίκτη). Ακριβής για το ποιους έχουν οι managers, όχι για το ποιον βάζουν Captain, γι' αυτό η σύγκριση γίνεται στους 11 παίκτες.",
+  ap_rank: "Θέση: όπου θα ήταν με το σύνολο των points του στο General League του παιχνιδιού, μετά από εκείνο το Round.",
+  acc_n: "Προβλέψεις: παίκτες με πρόβλεψη 5+ xFPT σε αγώνες που έχουν παιχτεί. Κάθε update καταγράφει πρόβλεψη μόνο για αγώνες που δεν έχουν αρχίσει, οπότε για κάθε αγώνα μετράει η τελευταία πριν το τζάμπολ· τίποτα δεν γράφεται αφού ξεκινήσει.",
+  acc_mae: "Μέσο σφάλμα: πόσα points πέφτει έξω κατά μέσο όρο η πρόβλεψη για έναν παίκτη σε έναν αγώνα (όποιος δεν έπαιξε μετράει 0).",
+  acc_naive: "Χωρίς μοντέλο: το ίδιο σφάλμα, αν προβλέπαμε απλώς τον μέσο όρο PIR του παίκτη (φέτος, αλλιώς πέρσι). Αν το μοντέλο δεν το κερδίζει σταθερά, κάτι πάει στραβά.",
+  acc_gain: "Βελτίωση: πόσο μικρότερο είναι το σφάλμα του μοντέλου από το «χωρίς μοντέλο».",
+  acc_sp: "Spearman: πόσο σωστά βάζει τους παίκτες σε σειρά, από 0 (τυχαία) έως 1 (τέλεια). Στο fantasy μετράει περισσότερο από το σφάλμα: διαλέγεις τους καλύτερους, όχι το ακριβές νούμερο.",
+  acc_top: "Top-20: από τους 20 που το μοντέλο έβλεπε καλύτερους σε ένα Round, πόσοι βγήκαν πράγματι στους 20 καλύτερους. Στο σύνολο, ο μέσος όρος των Rounds.",
+  lu_vs: "Και οι δύο με τα πραγματικά points (Bench 50%, Captain ×2, Coach). Θετικό: οι δικές σου αλλαγές (π.χ. στο T2) κέρδισαν points σε σχέση με την πρόταση πριν το Round.",
+  experts: "Μέσα points των παικτών που πρότεινε κάθε στήλη, έναντι του xFPT που τους έδινε το μοντέλο. Σταθερά θετικό: η στήλη βλέπει κάτι που το μοντέλο δεν βλέπει. Με λίγες επιλογές, αγνόησέ το.",
+  bt: "Σαν να έτρεχε το μοντέλο πέρσι: κάθε Round με όσα ήξερε ως τότε, σε σύγκριση με το PIR που έγινε. Σφάλμα: πόσο πέφτει έξω ανά παίκτη/αγώνα. Spearman: η σειρά. Top-20: πόσοι από τους 20 που έβλεπε καλύτερους βγήκαν στο top-20.",
+  learned: "Οι συντελεστές του μοντέλου, από την περσινή σεζόν. Τα φετινά παιχνίδια μπαίνουν στη φόρμα κάθε παίκτη (μέσος όρος σεζόν, τελευταία 3), όχι εδώ. Π.χ. ματσάρισμα ×0.5: αν μια άμυνα δίνει +20% PIR σε μια θέση, ο παίκτης απέναντί της παίρνει ~+10%.",
   pir: "PIR: η αξιολόγηση της EuroLeague (πόντοι, ριμπάουντ, ασίστ, κλεψίματα, κοψίματα, κερδισμένα φάουλ, μείον άστοχα, λάθη και φάουλ).",
 };
 const pop = (r) => (r.popularity == null ? "" : `${f1(r.popularity)} %`);
@@ -1357,27 +1373,21 @@ function autopilotCard(ap) {
     return ` <span class="${up ? "up" : "down"}" title="${up ? "άνοδος" : "πτώση"} ${num(Math.abs(prev.rank - r.rank))} θέσεων">${up ? "▲" : "▼"}</span>`;
   };
   const ranks = done.some((r) => r.rank != null);
-  let h = `<div class="card"><h2>Autopilot: μια ομάδα που κάνει μόνο ό,τι προτείνουμε</h2>
-    <p class="muted" style="margin-top:0">Ξεκίνησε στο Round ${ap.start_round} με 100 credits. Κάθε Round κάνει τα Trades, το Starting five και τον Captain
-    που προτείνει η εφαρμογή (η τελευταία πρόταση πριν το τζάμπολ), με τους κανόνες του παιχνιδιού.</p>`;
+  let h = `<div class="card"><h2>Autopilot: μια ομάδα που κάνει μόνο ό,τι προτείνουμε ${ii("ap")}</h2>`;
   if (done.length) {
     h += `<div class="kpis"><div class="kpi"><b>${f1(ap.total.pts)}</b><span>points σε ${done.length} ${done.length === 1 ? "Round" : "Rounds"}</span></div>
-      ${ranked ? `<div class="kpi"><b>#${num(ranked.rank)}</b><span>θέση στη γενική κατάταξη (top ${top(ranked.rank, ranked.teams)}% από ${num(ranked.teams)})${mine && ranked.my_rank ? ` · εσύ #${num(ranked.my_rank)}` : ""}</span></div>` : ""}
+      ${ranked ? `<div class="kpi"><b>#${num(ranked.rank)}</b><span>θέση μετά το R${ranked.round} (top ${top(ranked.rank, ranked.teams)}% από ${num(ranked.teams)})${mine && ranked.my_rank ? ` · εσύ #${num(ranked.my_rank)}` : ""} ${ii("ap_rank")}</span></div>` : ""}
       ${vs.length ? `<div class="kpi"><b class="${diff >= 0 ? "up" : "down"}">${sgn(diff / vs.length)}</b><span>ανά Round vs μέσο manager</span></div>` : ""}
       ${mine ? `<div class="kpi"><b>${f1(done.reduce((a, r) => a + (r.my_pts ?? 0), 0))}</b><span>η ομάδα σου</span></div>` : ""}</div>
-      <div class="tablewrap"><table class="fit"><thead><tr><th>Αγων.</th><th class="num">xFPT</th><th class="num">Points</th><th class="num">11 παίκτες</th>
-        <th class="num">Μέσος manager</th><th class="num">Διαφορά</th>${ranks ? '<th class="num">Θέση</th>' : ""}${mine ? '<th class="num">Εσύ</th>' : ""}</tr></thead><tbody>
+      <div class="tablewrap"><table class="fit"><thead><tr><th>Αγων.</th><th class="num">xFPT${ii("ap_x")}</th><th class="num">Points${ii("ap_pts")}</th><th class="num">11 παίκτες${ii("ap_raw")}</th>
+        <th class="num">Μέσος manager${ii("ap_avg")}</th><th class="num">Διαφορά</th>${ranks ? `<th class="num">Θέση${ii("ap_rank")}</th>` : ""}${mine ? '<th class="num">Εσύ</th>' : ""}</tr></thead><tbody>
       ${done.map((r, i) => `<tr><td>R${r.round}</td><td class="num">${r.x_total != null ? f1(r.x_total) : "–"}</td>
         <td class="num"><b class="${r.x_total == null ? "" : r.pts >= r.x_total ? "up" : "down"}">${f1(r.pts)}</b></td><td class="num">${f1(r.raw)}</td>
         <td class="num">${r.avg_raw != null ? f1(r.avg_raw) : "–"}</td>
         <td class="num ${r.avg_raw == null ? "" : r.raw >= r.avg_raw ? "up" : "down"}">${r.avg_raw != null ? sgn(r.raw - r.avg_raw) : "–"}</td>
         ${ranks ? `<td class="num">${r.rank != null ? `#${num(r.rank)}${rankMove(r, done.slice(0, i))}` : "–"}</td>` : ""}
         ${mine ? `<td class="num">${r.my_pts != null ? f1(r.my_pts) : "–"}</td>` : ""}</tr>`).join("")}</tbody></table></div>
-      <p class="muted">«xFPT»: τι περίμενε το μοντέλο από την ομάδα εκείνου του Round (Bench 50%, Captain ×2)· τα «Points» πράσινα όταν το ξεπέρασαν.
-      «Points»: με τους κανόνες του παιχνιδιού (Bench 50%, Captain ×2, Coach). «11 παίκτες»: τα points όλης της ομάδας χωρίς Bench/Captain,
-      για να συγκρίνεται με τον <b>μέσο manager</b>, που είναι εκτίμηση από το POP (πόσοι έχουν κάθε παίκτη): ακριβής για το ποιους έχουν, όχι για το ποιον βάζουν Captain.
-      «Θέση»: όπου θα ήταν με το σύνολο των points του στο General League του παιχνιδιού μετά από εκείνο το Round.
-      Ένα Round δεν λέει τίποτα· κρίνεται σε 5–10.</p>`;
+      `;
   } else {
     h += `<p class="muted">Το πρώτο του Round βαθμολογείται μόλις ολοκληρωθεί.</p>`;
   }
@@ -1397,20 +1407,17 @@ function autopilotCard(ap) {
     });
     const playedN = list.filter((p) => p.actual != null).length;
     const soFar = list.reduce((a, p) => a + (p.actual ?? 0), 0);
-    const moves = Object.entries(cur.moves || {});
-    const moved = new Set(moves.flatMap(([, m]) => [...m.in, ...m.out]));
-    const ref = Object.fromEntries(list.map((p) => [p.id, moved.has(p.id) ? "" : p.role]));
-    const name = (id) => esc(nm(cur.squad.find((p) => p.id === id)?.name || ""));
     h += `<p><b>Για το Round ${cur.round}</b>: ${cur.trades ? `${cur.trades} ${cur.trades === 1 ? "Trade" : "Trades"}` : "κανένα Trade"}
       · υπόλοιπο ${f1(cur.bank)} cr · xFPT ${f1(cur.x_total)}${cur.pts != null ? ` · <b>points ${f1(cur.pts)}</b>`
         : playedN ? ` · <b>μέχρι τώρα ${f1(soFar)}</b> <span class="muted">(${playedN} από ${list.length} έπαιξαν)</span>` : ""}</p>
-      <p class="muted" style="margin-top:-6px">Στο γήπεδο τα points όπως μετράνε: Captain ×2, Bench ×0,5.</p><div class="ap-split"><div class="tm-sideline">${courtView(list, moved.size ? ref : null)}</div>${apMovesHtml(rounds)}</div>`;
+      <div class="ap-split"><div class="tm-sideline">${courtView(list, null)}</div>${apMovesHtml(rounds)}</div>`;
   }
   return h + (cur ? "" : apMovesHtml(rounds)) + "</div>";
 }
 // every round's trades (the squad against the previous round's) and the changes before a later turn.
 // A round's decision is the last one before its first tip-off: until then it is a proposal that each update rewrites.
 function apMovesHtml(rounds) {
+  rounds = rounds.filter((r) => r.round <= P.round);      // the next round's trades: only once this one is over
   if (!rounds.length) return "";
   const frozenBelow = (P.trade_info && P.trade_info.round) || P.round + 1;   // rounds under way or done: decided
   const items = [];
@@ -1442,32 +1449,30 @@ function renderModel(mp, trk, ap) {
   html += `<div class="card"><h2>Φέτος: πρόβλεψη vs πραγματικότητα</h2>`;
   if (tot) {
     const gain = pctd(tot.mae_model, tot.mae_naive);
-    html += `<div class="kpis"><div class="kpi"><b>${f1(tot.mae_model)}</b><span>μέσο σφάλμα μοντέλου</span></div>
-        <div class="kpi"><b>${f1(tot.mae_naive)}</b><span>χωρίς μοντέλο (μ.ό.)</span></div>
-        <div class="kpi"><b class="${gain > 0 ? "up" : "down"}">${gain > 0 ? "+" : ""}${gain}%</b><span>βελτίωση</span></div></div>
-      <p class="muted">${tot.n} προβλέψεις παικτών με xFPT ≥ ${trk.min_xpred}, καταγεγραμμένες <b>πριν</b> από κάθε τζάμπολ. Spearman ${tot.spearman ?? "–"} · top-20 ${tot.top20 != null ? Math.round(tot.top20 * 100) + "%" : "–"}.</p>
-      <div class="tablewrap"><table class="fit"><thead><tr><th>Αγων.</th><th class="num">Παίκτες</th><th class="num">Σφάλμα μοντέλου</th>
-        <th class="num">Χωρίς μοντέλο</th><th class="num">Top-20</th></tr></thead><tbody>
+    const kpi = (v, label, k, cls = "") => `<div class="kpi"><b class="${cls}">${v}</b><span>${label} ${ii(k)}</span></div>`;
+    html += `<div class="kpis">${kpi(f1(tot.mae_model), "μέσο σφάλμα", "acc_mae")}${kpi(f1(tot.mae_naive), "χωρίς μοντέλο", "acc_naive")}
+        ${kpi(`${gain > 0 ? "+" : ""}${gain}%`, "βελτίωση", "acc_gain", gain > 0 ? "up" : "down")}
+        ${kpi(tot.spearman ?? "–", "Spearman", "acc_sp")}${kpi(tot.top20 != null ? Math.round(tot.top20 * 100) + "%" : "–", "top-20", "acc_top")}
+        ${kpi(tot.n, "προβλέψεις", "acc_n")}</div>
+      <div class="tablewrap"><table class="fit"><thead><tr><th>Αγων.</th><th class="num">Παίκτες${ii("acc_n")}</th><th class="num">Σφάλμα${ii("acc_mae")}</th>
+        <th class="num">Χωρίς μοντέλο${ii("acc_naive")}</th><th class="num">Top-20${ii("acc_top")}</th></tr></thead><tbody>
       ${trk.rounds.map((r) => `<tr><td>R${r.round}</td><td class="num">${r.n}</td>
         <td class="num ${r.mae_model <= r.mae_naive ? "up" : "down"}"><b>${f1(r.mae_model)}</b></td><td class="num">${f1(r.mae_naive)}</td>
         <td class="num">${r.top20 != null ? Math.round(r.top20 * 100) + "%" : "–"}</td></tr>`).join("")}</tbody></table></div>`;
   } else {
-    html += `<p>Η καταγραφή ξεκίνησε: κάθε update κρατά την πρόβλεψη για τους αγώνες που δεν έχουν αρχίσει ακόμα (μετράει η τελευταία πριν το τζάμπολ).
-      Τα πρώτα αποτελέσματα εμφανίζονται μόλις παιχτούν αυτοί οι αγώνες.</p>`;
+    html += `<p class="muted">Τα πρώτα αποτελέσματα εμφανίζονται μόλις παιχτούν οι αγώνες με καταγεγραμμένη πρόβλεψη ${ii("acc_n")}</p>`;
   }
-  html += `<p class="muted">«Χωρίς μοντέλο» = απλώς ο μέσος όρος PIR του παίκτη (φέτος, αλλιώς πέρσι). Αν το μοντέλο δεν τον κερδίζει σταθερά, κάτι πάει στραβά.
-    Ένα Round δεν λέει τίποτα· κρίνεται σε 5–10.</p></div>`;
+  html += `</div>`;
   // 2. my lineup (personal edition only)
   const lu = trk?.lineups || [];
   if (P.edition !== "public") {
-  html += `<div class="card"><h2>Το Starting five σου vs η πρόταση</h2>`;
+  html += `<div class="card"><h2>Το Starting five σου vs η πρόταση ${ii("lu_vs")}</h2>`;
   if (lu.length) {
     const s = lu.reduce((a, r) => a + r.diff, 0);
     html += `<div class="tablewrap"><table class="fit"><thead><tr><th>Αγων.</th><th class="num">Πρόταση</th><th class="num">Έπαιξες</th><th class="num">Διαφορά</th></tr></thead><tbody>
       ${lu.map((r) => `<tr><td>R${r.round}</td><td class="num">${f1(r.suggested)}</td><td class="num">${f1(r.actual)}</td>
         <td class="num ${r.diff >= 0 ? "up" : "down"}"><b>${r.diff >= 0 ? "+" : ""}${f1(r.diff)}</b></td></tr>`).join("")}
-      <tr><td><b>Σύνολο</b></td><td></td><td></td><td class="num ${s >= 0 ? "up" : "down"}"><b>${s >= 0 ? "+" : ""}${f1(s)}</b></td></tr></tbody></table></div>
-      <p class="muted">Και οι δύο βαθμολογούνται με τα πραγματικά points (Bench 50%, Captain ×2, Coach). Θετικό = τα δικά σου subs (π.χ. στο T2) κέρδισαν points σε σχέση με την πρόταση πριν το Round.</p>`;
+      <tr><td><b>Σύνολο</b></td><td></td><td></td><td class="num ${s >= 0 ? "up" : "down"}"><b>${s >= 0 ? "+" : ""}${f1(s)}</b></td></tr></tbody></table></div>`;
   } else {
     html += `<p class="muted">Εμφανίζεται μόλις ολοκληρωθεί ένα Round για το οποίο κρατήθηκε η πρόταση πριν ξεκινήσει.</p>`;
   }
@@ -1475,11 +1480,10 @@ function renderModel(mp, trk, ap) {
   }
   // 3. fantasy columns
   const ex = trk?.experts || [];
-  html += `<div class="card"><h2>Στήλες ειδικών</h2>`;
+  html += `<div class="card"><h2>Στήλες ειδικών ${ii("experts")}</h2>`;
   html += ex.length ? `<div class="tablewrap"><table class="fit"><thead><tr><th>Στήλη</th><th class="num">Επιλογές</th><th class="num">Έφεραν</th><th class="num">Μοντέλο έλεγε</th><th class="num">Διαφορά</th></tr></thead><tbody>
       ${ex.map((e) => `<tr><td>${esc(e.source)}</td><td class="num">${e.n}</td><td class="num">${f1(e.actual)}</td><td class="num">${f1(e.model)}</td>
-        <td class="num ${e.diff >= 0 ? "up" : "down"}"><b>${e.diff >= 0 ? "+" : ""}${f1(e.diff)}</b></td></tr>`).join("")}</tbody></table></div>
-      <p class="muted">Μέσα points των παικτών που πρότεινε κάθε στήλη, έναντι του xFPT που τους έδινε το μοντέλο. Σταθερά θετικό = η στήλη βλέπει κάτι που το μοντέλο δεν βλέπει (τότε αξίζει να της δώσουμε μεγαλύτερο βάρος). Με λίγες επιλογές, αγνόησέ το.</p>`
+        <td class="num ${e.diff >= 0 ? "up" : "down"}"><b>${e.diff >= 0 ? "+" : ""}${f1(e.diff)}</b></td></tr>`).join("")}</tbody></table></div>`
     : `<p class="muted">Εμφανίζεται μόλις ολοκληρωθεί ένα Round με καταγεγραμμένες προτάσεις στηλών.</p>`;
   html += `</div>`;
   // 4. last season's backtest
@@ -1487,26 +1491,22 @@ function renderModel(mp, trk, ap) {
     const row = (k, l, me) => mp[k] ? `<tr${me ? ' style="font-weight:700"' : ""}><td>${l}</td><td class="num">${mp[k].mae}</td><td class="num">${mp[k].spearman}</td><td class="num">${Math.round(mp[k].top20_hit * 100)}%</td></tr>` : "";
     const c = mp.params?.coef || {}, w = mp.params || {};
     const pc = (x, sgn) => `${sgn && x >= 0 ? "+" : ""}${(x * 100).toFixed(1)}%`;
-    html += `<div class="card"><h2>Backtest σεζόν ${mp.season}-${String((mp.season + 1) % 100).padStart(2, "0")}</h2>
-      <p class="muted" style="margin-top:0">Σαν να έτρεχε το μοντέλο πέρσι: κάθε Round με όσα ήξερε ως τότε, σε σύγκριση με το PIR που έγινε.</p>
+    html += `<details class="card"><summary><b>Για προχωρημένους</b> <span class="muted">· backtest και συντελεστές του μοντέλου</span></summary>
+      <h3 style="font-size:13px;margin:12px 0 6px">Backtest σεζόν ${mp.season}-${String((mp.season + 1) % 100).padStart(2, "0")} ${ii("bt")}</h3>
       <div class="tablewrap"><table class="fit"><thead><tr><th>Μέθοδος</th><th class="num">Σφάλμα</th><th class="num">Spearman</th><th class="num">Top-20</th></tr></thead><tbody>
       ${row("baseline_prev_season", "Μόνο περσινό PIR")}${row("baseline_season_avg", "Μέσος όρος σεζόν")}
       ${row("form_blend", "Φόρμα (blend)")}${row("fitted_context_insample", "Φόρμα + context (αυτό)", true)}
       </tbody></table></div>
-      <p class="muted">Σφάλμα: πόσους πόντους PIR πέφτει έξω κατά μέσο όρο ανά παίκτη/αγώνα. Spearman: πόσο σωστά βάζει τους παίκτες σε σειρά (0 τυχαία, 1 τέλεια).
-        Top-20: από τους 20 που προβλέπει ως καλύτερους, πόσοι βγήκαν όντως στο top-20.
-        Εκτός δείγματος (2ος γύρος, βάρη μόνο από τον 1ο): ${mp.oos_second_half.form_blend.mae} → ${mp.oos_second_half.fitted_context.mae}.</p>
-      <h3 style="font-size:13px;margin:12px 0 6px">Τι έμαθε το μοντέλο</h3>
+      <h3 style="font-size:13px;margin:12px 0 6px">Τι έμαθε το μοντέλο ${ii("learned")}</h3>
       <ul class="why">
         <li><span>Φόρμα: τελευταία 3 / φετινή σεζόν / περσινή</span><span>${Math.round(w.w_last3 * 100)}% / ${Math.round(w.w_season * 100)}% / ${Math.round(w.w_prev * 100)}%</span></li>
-        <li><span>Ματσάρισμα θέσης (πόσο περνά από τη διαφορά της άμυνας)</span><span>×${(c.pos ?? 0).toFixed(2)}</span></li>
+        <li><span>Ματσάρισμα θέσης</span><span>×${(c.pos ?? 0).toFixed(2)}</span></li>
         <li><span>Pace (ρυθμός αγώνα)</span><span>×${(c.pace ?? 0).toFixed(2)}</span></li>
         <li><span>Έδρα</span><span>${pc(c.home ?? 0, true)}</span></li>
         <li><span>Αναμενόμενη διαφορά σκορ, ανά 10 πόντους</span><span>${pc(c.margin ?? 0, true)}</span></li>
         <li><span>Blowout (λιγότερα λεπτά), ανά 10 πόντους διαφοράς</span><span>${pc(c.blowout ?? 0, true)}</span></li>
         <li><span>Βαθμονόμηση</span><span>${pc(c.calib ?? 0, true)}</span></li>
-      </ul>
-      <p class="muted">Π.χ. αν μια άμυνα δίνει +20% PIR στους centers, ο center απέναντί της παίρνει ~+${Math.round(20 * (c.pos ?? 0))}%. Η φόρμα των τελευταίων αγώνων μετράει λίγο: προβλέπει ελάχιστα πέρα από τον μέσο όρο.</p></div>`;
+      </ul></details>`;
   }
   $("#model").innerHTML = html;
 }

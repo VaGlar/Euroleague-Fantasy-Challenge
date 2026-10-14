@@ -205,6 +205,18 @@ test("Μοντέλο: the autopilot card (points vs the average manager; the own
       await expect(card).not.toContainText("Εσύ");
       await expect(card).not.toContainText("εσύ #");
     }
+    await expect(card.locator(".court .chip.chg")).toHaveCount(0);   // no marks for the changes between turns
     await checkLayout(page, `autopilot ${edition}`);
   }
+});
+
+test("Μοντέλο: accuracy in boxes with ⓘ, the backtest folded", async ({ page }) => {
+  await open(page, "public", { tab: "model" });
+  const acc = page.locator("#model .card", { hasText: "πρόβλεψη vs πραγματικότητα" });
+  for (const k of ["μέσο σφάλμα", "Spearman", "top-20", "προβλέψεις"]) await expect(acc.locator(".kpi", { hasText: k })).toHaveCount(1);
+  await acc.locator('.kpi [data-info="acc_n"]').click();
+  await expect(page.locator("#tip")).toContainText("πριν το τζάμπολ");
+  const adv = page.locator("#model details", { hasText: "Για προχωρημένους" });
+  await expect(adv).toHaveCount(1);
+  await expect(adv).not.toHaveAttribute("open", "");
 });
