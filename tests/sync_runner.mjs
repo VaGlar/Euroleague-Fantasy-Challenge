@@ -5,7 +5,7 @@
 const { onRequest } = await import("../functions/api/sync/[[path]].js");
 
 function fakeD1() {
-  const rows = new Map();
+  const rows = new Map(), hits = new Map();
   return {
     rows,
     prepare(sql) {
@@ -16,6 +16,7 @@ function fakeD1() {
         async run() {
           const a = this.args;
           if (s.startsWith("CREATE TABLE")) return { meta: { changes: 0 } };
+          if (s.startsWith("DELETE FROM hits")) { for (const [k, v] of hits) if (v.until < a[0]) hits.delete(k); return { meta: {} }; }
           if (s.startsWith("INSERT OR IGNORE")) {
             if (rows.has(a[0])) return { meta: { changes: 0 } };
             rows.set(a[0], { data: a[1], rev: 1, updated_at: a[2] });
@@ -30,6 +31,11 @@ function fakeD1() {
           throw new Error("unexpected SQL: " + s);
         },
         async first() {
+          if (s.startsWith("INSERT INTO hits")) {
+            const [k, until] = this.args, h = hits.get(k) || { n: 0, until };
+            h.n += 1; hits.set(k, h);
+            return { n: h.n };
+          }
           if (!s.startsWith("SELECT")) throw new Error("unexpected SQL: " + s);
           const r = rows.get(this.args[0]);
           return r ? { ...r } : null;
@@ -51,7 +57,7 @@ for (const c of JSON.parse(buf)) {
     const q = { ...q0, path: q0.path.replace("{code}", code).replace("{dashed}", dashed) };
     const parts = q.path.replace(/^\/api\/sync\/?/, "").split("/").filter(Boolean);
     const request = new Request("https://hoopslab.example" + q.path, {
-      method: q.method, body: q.body === undefined ? undefined : (typeof q.body === "string" ? q.body : JSON.stringify(q.body)),
+      method: q.method, headers: { "CF-Connecting-IP": q.ip || "203.0.113.1" }, body: q.body === undefined ? undefined : (typeof q.body === "string" ? q.body : JSON.stringify(q.body)),
     });
     const r = await onRequest({ request, env: { SYNC_DB: db }, params: parts.length ? { path: parts } : {} });
     let b = null;

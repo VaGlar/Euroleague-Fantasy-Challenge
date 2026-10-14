@@ -7,10 +7,15 @@
 // Storage: D1 (binding SYNC_DB). SQL on purpose: the table moves to Postgres (Supabase) as it is, and
 // user_id is there for when accounts come; the page only knows this endpoint.
 // Without the binding (the personal edition, or before it is set up) every call answers 503.
+// Limits per IP and hour (429 above them): new codes LIMITS.POST, writes LIMITS.PUT, reads LIMITS.GET. The
+// IP is kept only as a salted hash, in table `hits`, for the hour it counts (older rows are deleted).
 export const ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";   // no 0/O, 1/I/L: read aloud or typed
 export const CODE_LEN = 12;                                   // 31^12 ≈ 8·10^17: not guessable
 export const MAX_BYTES = 200_000;
 const CODE_RE = new RegExp(`^[${ALPHABET}]{${CODE_LEN}}$`);
+// a person makes a code or two, and a linked device writes a burst of changes as one write (1.5 s)
+export const LIMITS = { POST: 10, PUT: 300, GET: 600 };
+const HOUR = 3600;
 
 const json = (obj, status = 200) => new Response(JSON.stringify(obj), {
   status, headers: { "content-type": "application/json", "cache-control": "no-store" },
@@ -34,7 +39,24 @@ async function table(db) {
   if (ready) return;
   await db.prepare(`CREATE TABLE IF NOT EXISTS teams (code TEXT PRIMARY KEY, data TEXT NOT NULL,
     rev INTEGER NOT NULL, updated_at TEXT NOT NULL, user_id TEXT)`).run();
+  await db.prepare("CREATE TABLE IF NOT EXISTS hits (k TEXT PRIMARY KEY, n INTEGER NOT NULL, until INTEGER NOT NULL)").run();
   ready = true;
+}
+
+// the caller's IP, never stored as it is: a hash with a salt (SYNC_SALT, else a fixed one)
+async function who(request, env) {
+  const ip = request.headers.get("CF-Connecting-IP") || "local";
+  const d = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(`${env.SYNC_SALT || "hoopslab-sync"}|${ip}`));
+  return Array.from(new Uint8Array(d).slice(0, 12), (x) => x.toString(16).padStart(2, "0")).join("");
+}
+
+// over the limit of this hour for this kind of call? (counts the call)
+async function limited(db, kind, id) {
+  const now = Math.floor(Date.now() / 1000), hour = Math.floor(now / HOUR);
+  const row = await db.prepare(`INSERT INTO hits (k, n, until) VALUES (?, 1, ?)
+    ON CONFLICT(k) DO UPDATE SET n = n + 1 RETURNING n`).bind(`${kind}:${id}:${hour}`, (hour + 1) * HOUR).first();
+  if (Math.random() < 0.02) await db.prepare("DELETE FROM hits WHERE until < ?").bind(now).run();
+  return (row?.n ?? 0) > LIMITS[kind];
 }
 
 async function body(request) {
@@ -51,6 +73,10 @@ export async function onRequest({ request, env, params }) {
   const db = env.SYNC_DB;
   if (!db) return json({ error: "sync not set up" }, 503);
   await table(db);
+  if (LIMITS[request.method] && await limited(db, request.method, await who(request, env))) {
+    return new Response(JSON.stringify({ error: "too many requests" }), {
+      status: 429, headers: { "content-type": "application/json", "cache-control": "no-store", "retry-after": String(HOUR) } });
+  }
   const path = [].concat(params.path || []);
   const now = new Date().toISOString();
 
