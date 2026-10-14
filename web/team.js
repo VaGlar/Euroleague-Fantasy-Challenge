@@ -477,7 +477,7 @@
       return a + v * (p.role === "πάγκος" ? 0.5 : 1) * (p.captain ? 2 : 1); }, 0);
     // the swaps before a later turn (🕐 below): the later bench player comes in when the early starter
     // scores less, so each pair adds (1 − bench share) × E[max(0, later − early)] (optimize.py's option value)
-    const planned = lineupPts + turnPlan.reduce((a, x) => a + (1 - ELFOPT.BENCH)
+    const option = turnPlan.reduce((a, x) => a + (1 - ELFOPT.BENCH)
       * ELFOPT.expectedShortfall(x.bench.x_now, x.start.x_now), 0);
     const items = [];
     if (tradesNow) for (const pr of pairs) {
@@ -519,7 +519,7 @@
       items.push({ kind: "★", html: `Captain: <b>${esc(sur(c.name))}</b>`, why: "", wait: !ready,
         run: () => { t.captain = targetCap; save(t); toast(`CAP: ${sur(c.name)}`); } });
     }
-    return { rows, items, turnPlan, trs, ti, tradesNow, inRound, aRows, target, targetCap, keep: keep || [], avoid: avoid || [], planned };
+    return { rows, items, turnPlan, trs, ti, tradesNow, inRound, aRows, target, targetCap, keep: keep || [], avoid: avoid || [], lineupPts, option };
   }
 
   // ------------------------------------------------------------ actions on the saved team
@@ -630,6 +630,9 @@
             ${doneBtn(`data-n="${n}"`, { short: !affords(t, pr) })}</li>`; }).join("")}</ul>${keptLine}</div>`
       : !pl.tradesNow && (pl.keep.length || pl.avoid.length) ? `<div class="card"><h2>Trades για το Round ${pl.ti.round}</h2><p>Κανένα Trade δεν αξίζει με αυτές τις επιλογές σου.</p>${keptLine}</div>` : "";
     const done = !items.length && t.confirmed;
+    // the "→" number: the round's expected points when every step is done, the To do list now and the
+    // 🕐 swaps before a later turn (their option value); with no steps left the lineup already is the plan
+    const planned = (items.length ? pl.lineupPts : total) + pl.option;
     const upd = P.generated ? new Date(P.generated).toLocaleString("el-GR", { weekday: "short", hour: "2-digit", minute: "2-digit" }) : "";
     const hint = t.game
       ? `Starting five/Captain με <b>/lineup</b> · Trades στο παιχνίδι (εδώ ✓ και ✕ είναι πρόχειρο) · ενημ. ${esc(upd)}`
@@ -637,8 +640,8 @@
     return `<header class="tm-top"><div><h2 class="tm-h">${t.game ? esc(t.name || "Η ομάδα μου") : "Η ομάδα μου"}</h2>
         <div class="muted"><button class="tm-trades" id="tmBankEdit" type="button" title="Διόρθωσε τα credits σου">Credits <b>${f1(t.bank)}/${f1(Number(t.bank) + value)}</b> ✎</button>${gain ? ` <span class="${gain > 0 ? "tm-up" : "tm-down"}">(${gain > 0 ? "+" : "−"}${f1(Math.abs(gain))} gain)</span>` : ""} · ${pl.ti.max_trades <= 4 ? `<button class="tm-trades" id="tmTrades" type="button" title="Άλλαξε πόσα Trades σου μένουν">Trades <b>${usedTrades(t, pl.ti)}/${pl.ti.max_trades}</b> ✎</button>`
           : `Trades <b>${usedTrades(t, pl.ti)}/${pl.ti.max_trades > 4 ? "∞" : pl.ti.max_trades}</b>`}</div>
-        <div class="muted">xFPT <b>${f1(total)}</b>${Math.abs(pl.planned - total) >= 0.05
-          ? ` → <b class="tm-planned"${pl.turnPlan.length ? ' title="Με τις αλλαγές πριν το επόμενο Turn"' : ""}>${f1(pl.planned)}</b>` : ""}${typeof earlyII === "function" ? earlyII() : ""}</div>
+        <div class="muted">xFPT <b>${f1(total)}</b>${Math.abs(planned - total) >= 0.05
+          ? ` → <b class="tm-planned" title="Οι πόντοι στο τέλος του Round αν κάνεις όλα τα βήματα${pl.turnPlan.length ? ", και τις αλλαγές πριν το επόμενο Turn" : ""}">${f1(planned)}</b>` : ""}${typeof earlyII === "function" ? earlyII() : ""}</div>
         <div class="tm-dead">${head}</div>${clubWarn(rows, pl.trs)}</div>
         ${t.game ? (t.draft ? `<div class="tm-right"><div class="tm-toolbar" role="toolbar"><button id="tmDraftX" title="Η ομάδα όπως είναι στο παιχνίδι">↩ Ακύρωση Trades</button></div></div>` : "")
           : `<div class="tm-right">${undoBar(t)}<div class="tm-morewrap"><button class="tm-more" id="tmMore" aria-haspopup="menu">⋯ Επιλογές</button><div id="tmMenu"></div></div></div>`}</header>
@@ -646,7 +649,8 @@
       <div class="card" id="tmTodo"><h2>To do <small class="muted">${items.length ? `${items.length} ${items.length === 1 ? "βήμα" : "βήματα"}` : ""}</small></h2>
         ${pl.inRound && !t.game ? `<p class="tm-live">${ico("clock")} Το Round ${P.round} τρέχει. Αν έκανες Trades στο παιχνίδι, έλεγξε ότι είναι και εδώ
           (πάτα τον παίκτη → Trade ή ✕), ώστε το επόμενο Round να ξεκινήσει από τη σωστή ομάδα.</p>` : ""}
-        ${done ? `<div class="tm-ready">${ico("check")} Έτοιμος για το Round</div>` : `<ul class="tm-list">${confirm}${list}</ul>`}
+        ${done ? `<div class="tm-ready">${ico("check")} Έτοιμος για το Round${pl.turnPlan.length
+          ? `<span class="tm-why">Μένει να αποφασίσεις ${pl.turnPlan.length === 1 ? "μία αλλαγή" : `${pl.turnPlan.length} αλλαγές`} πριν το επόμενο Turn (${ico("clock")} παρακάτω).</span>` : ""}</div>` : `<ul class="tm-list">${confirm}${list}</ul>`}
         ${pl.tradesNow ? keptLine : ""}
         ${turnPlan ? `<ul class="plan">${turnPlan}</ul>` : ""}
         ${hint ? `<p class="tm-hint">${hint}</p>` : ""}</div>
@@ -1382,6 +1386,7 @@
   .tm-money { display: flex; justify-content: space-between; color: var(--text-secondary); font-size: 13px; margin-top: 10px; }
   .tm-up { color: var(--good, #1e8e3e); font-size: 10px; margin-left: 2px; } .tm-down { color: var(--critical); font-size: 10px; margin-left: 2px; }
   .tm-planned { color: var(--good); }
+  .tm-ready .tm-why { display: block; font-weight: normal; }
   /* a long name is cut («Beauch…»), the marks after it (🚑 $ 🆕) always show */
   .chip .cn.cnx { display: flex; justify-content: center; gap: 3px; }
   .chip .cn.cnx > span { flex: none; } .chip .cn.cnx > .nm { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
