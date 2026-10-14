@@ -615,6 +615,7 @@ html body #mCp .ic { width: 1.25em; height: 1.25em; }
           <div class="fsec"><h3>Εύρος</h3><div class="franges">
         <div class="frange"><span>Price</span><input id="fpmin" type="text" inputmode="decimal" autocomplete="off" placeholder="από" aria-label="Price από"><i>–</i><input id="fpmax" type="text" inputmode="decimal" autocomplete="off" placeholder="έως" aria-label="Price έως"></div>
         <div class="frange"><span>Total points</span><input id="fmintot" type="text" inputmode="decimal" autocomplete="off" placeholder="από" aria-label="Total points από"><i>–</i><input id="fmaxtot" type="text" inputmode="decimal" autocomplete="off" placeholder="έως" aria-label="Total points έως"></div>
+        <div class="frange"><span>Points/credit</span><input id="fminppc" type="text" inputmode="decimal" autocomplete="off" placeholder="από" aria-label="Points/credit από"><i>–</i><input id="fmaxppc" type="text" inputmode="decimal" autocomplete="off" placeholder="έως" aria-label="Points/credit έως"></div>
         <div class="frange"><span>Value <small class="muted">xFPT3/cr</small></span><input id="fminval" type="text" inputmode="decimal" autocomplete="off" placeholder="από" aria-label="Value από"><i>–</i><input id="fmaxval" type="text" inputmode="decimal" autocomplete="off" placeholder="έως" aria-label="Value έως"></div>
         <div class="frange"><span>POP %</span><input id="fminpop" type="text" inputmode="decimal" autocomplete="off" placeholder="από" aria-label="POP % από"><i>–</i><input id="fmaxpop" type="text" inputmode="decimal" autocomplete="off" placeholder="έως" aria-label="POP % έως"></div>
         <div class="frange"><span>xFPT</span><input id="fminx" type="text" inputmode="decimal" autocomplete="off" placeholder="από" aria-label="xFPT από"><i>–</i><input id="fmaxx" type="text" inputmode="decimal" autocomplete="off" placeholder="έως" aria-label="xFPT έως"></div>
@@ -902,6 +903,8 @@ function findPlayer(name) {
 const num = (v) => parseFloat(String(v).trim().replace(",", "."));
 // the filters (all in the «Φίλτρα» panel but the search): ranges from–to, the columns' word, positions
 const RANGES = [["Price", "fpmin", "fpmax", (p) => p.price], ["Total points", "fmintot", "fmaxtot", (p) => p.fpt_total],
+  // the season's points per credit of today's price (looks back; Value looks ahead: xFPT3 per credit)
+  ["Points/credit", "fminppc", "fmaxppc", (p) => (p.fpt_total != null && p.price > 0 ? p.fpt_total / p.price : null)],
   ["Value", "fminval", "fmaxval", (p) => p.value], ["POP", "fminpop", "fmaxpop", (p) => p.popularity],
   ["xFPT", "fminx", "fmaxx", (p) => p.x_now], ["xFPT3", "fminx3", "fmaxx3", (p) => xf3(p)]];
 // «Ειδικοί»: the ticked ones, any of them (PICK or CAP or AVOID); none ticked = everyone

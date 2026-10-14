@@ -186,3 +186,13 @@ test("filters: «Ειδικοί» PICK / CAP / AVOID and the from–to ranges (V
   await expect(page.locator("#fchips")).toContainText("xFPT ≤ 15");
   await checkLayout(page, "players filters");
 });
+
+test("filters: Points/credit is the season's points over today's price", async ({ page }) => {
+  await open(page, "public", { tab: "players" });
+  await filters(page);
+  await page.locator("#fminppc").fill("1");
+  await done(page);
+  const n = await page.evaluate(() => P.players.filter((p) => p.x_now != null && p.fpt_total != null && p.price > 0 && p.fpt_total / p.price >= 1).length);
+  await expect(page.locator("#fcount")).toHaveText(`${n} ${n === 1 ? "παίκτης" : "παίκτες"}`);
+  await expect(page.locator("#fchips")).toContainText("Points/credit ≥ 1");
+});
