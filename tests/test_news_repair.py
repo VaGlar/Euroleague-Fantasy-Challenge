@@ -48,3 +48,30 @@ def test_digest_all_garbled_publishes_nothing(gemini):  # noqa: F811
     gemini(*[gemini_ok(broken) for _ in range(4)])
     with pytest.raises(RuntimeError, match="αλλοιωμένο"):
         news.digest(ARTS, [])
+
+
+# ------------------------------------------------------------------ tester, 14/10 (after PR 48)
+# Known bug: _bad() counts every word with a «%» as broken, so ordinary percentages («48% στα δίποντα»)
+# make a normal summary «garbled» and drop a column's note. Pinned as strict xfail: the fix must remove
+# the marks. Suggested fix: a «%» counts only next to a letter (r"[^\W\d_]%|%[^\W\d_]").
+PCT_BUG = pytest.mark.xfail(strict=True, reason="news._bad: every «%» counts as broken (tester report 14/10)")
+STATS = ("Ο Vezenkov έχει 48% στα δίποντα και 41% στα τρίποντα στις τελευταίες 3 αγωνιστικές. "
+         "Ο Nunn είναι επιλογή στο 35% των ομάδων, ενώ ο Mattisseck μόλις στο 4%. "
+         "Η Fenerbahce κερδίζει το 70% των εντός έδρας αγώνων της.")
+
+
+@PCT_BUG
+def test_percentages_in_a_normal_summary_are_not_garbled():
+    assert not news.garbled(news.repair({"summary_el": STATS, "availability": [], "expert": []}))
+
+
+@PCT_BUG
+def test_a_note_with_a_percentage_is_kept():
+    d = news.repair({"summary_el": "", "availability": [], "expert": [
+        {"player": "A", "stance": "pick", "note": "Σουτάρει 45% από τα τρία, σταθερός."}]})
+    assert d["expert"][0].get("note") == "Σουτάρει 45% από τα τρία, σταθερός."
+
+
+def test_a_percent_sign_inside_a_word_is_still_broken():
+    """The other side of the fix: «Χαμηλ%» / «απ%δοσης» stay broken (this passes today and after the fix)."""
+    assert news._bad("απ%δοσης") and news._bad("Χαμηλ%")
