@@ -376,3 +376,8 @@ def test_the_summary_names_written_in_greek_go_back_to_the_roster():
     assert "Ολυμπιακός" in out and "Βαλένθια" in out
     d = news.resolve_names({"summary_el": text, "availability": [], "expert": []}, roster)
     assert "Jean Montero" in d["summary_el"]
+    # a wrong first name, a surname only one roster player has: «Μακί Μαντάρ» is Yam Madar (Μαντάρ: ντ = d)
+    assert news.latin_names("Ο Μακί Μαντάρ συνεχίζει.", roster + ["MADAR, YAM"]) == "Ο Yam Madar συνεχίζει."
+    # a surname several players share is never guessed
+    two = roster + ["JAMES, MIKE", "JAMES, JUSTIN"]
+    assert news.latin_names("Ο Μάκης Τζέιμς σκόραρε.", two) == "Ο Μάκης Τζέιμς σκόραρε."

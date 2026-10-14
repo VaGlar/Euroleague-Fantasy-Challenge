@@ -391,12 +391,13 @@ _LAT = [("sch", "s"), ("sh", "s"), ("ch", "ts"), ("ph", "f"), ("th", "t"), ("ck"
         ("ee", "i"), ("ai", "e"), ("ay", "ei"), ("ei", "i"), ("nd", "nt")]
 
 
-def _skel(s: str) -> str:
+def _skel(s: str, medial_nt: bool = True) -> str:
     s = unicodedata.normalize("NFD", str(s).lower())
     s = "".join(c for c in s if unicodedata.category(c) != "Mn")
     greek = any("α" <= c <= "ω" for c in s)
     if greek:
-        s = re.sub(r"(?<=[α-ω])ντ", "nt", s)      # Μοντέρο: Montero (an initial ντ is a d: Ντέιβις)
+        if medial_nt:   # Μοντέρο: Montero; but Μαντάρ: Madar (the other reading); an initial ντ is a d: Ντέιβις
+            s = re.sub(r"(?<=[α-ω])ντ", "nt", s)
         for a, b in _GR2:
             s = s.replace(a, b)
         s = "".join(_GR1.get(c, c) for c in s)
@@ -413,7 +414,7 @@ def _finder(roster: list[str]):
     import difflib
     exact = {n.upper(): n for n in roster}
     # «SURNAME, NAME» as the roster writes it, or «Name Surname» (Marcus Bingham Jr. vs BINGHAM, MARCUS)
-    words = lambda x: _skel(re.sub(r"\b(jr|sr|ii|iii)\b\.?", " ", str(x), flags=re.I)).replace(",", " ").split()
+    words = lambda x, nt=True: _skel(re.sub(r"\b(jr|sr|ii|iii)\b\.?", " ", str(x), flags=re.I), nt).replace(",", " ").split()
     skel = [(n, " ".join(words(n))) for n in roster]
     cache = {}
 
@@ -422,8 +423,9 @@ def _finder(roster: list[str]):
         if name.upper() in exact:
             return exact[name.upper()]
         if name not in cache:
-            w = words(name)
-            ks = {" ".join(w)} | ({" ".join(w[-1:] + w[:-1])} if "," not in name else set())
+            ks = set()
+            for w in (words(name), words(name, False)):        # a Greek medial ντ read as nt and as d
+                ks |= {" ".join(w)} | ({" ".join(w[-1:] + w[:-1])} if "," not in name else set())
             sc = sorted(((max(difflib.SequenceMatcher(None, k, s).ratio() for k in ks), n) for n, s in skel), reverse=True)
             ok = sc and sc[0][0] >= 0.75 and (len(sc) < 2 or sc[0][0] - sc[1][0] >= 0.04)
             cache[name] = sc[0][1] if ok else None
@@ -444,10 +446,21 @@ def latin_names(text: str, roster: list[str]) -> str:
     """Player names written in Greek in the summary, back to the roster's Latin «Name Surname»."""
     if not text or not roster:
         return text
+    import difflib
     find = _finder(roster)
+    # fallback, the surname alone (the LLM gets first names wrong: «Μακί Μαντάρ» for Yam Madar): only when
+    # exactly one roster player has a surname that close, so a common surname is never guessed
+    sur = [(n, _skel(n.split(",")[0])) for n in roster]
+
+    def by_surname(raw):
+        best = set()
+        for nt in (True, False):
+            k = _skel(raw.split()[-1], nt)
+            best |= {n for n, s in sur if difflib.SequenceMatcher(None, k, s).ratio() >= 0.85}
+        return best.pop() if len(best) == 1 else None
 
     def sub(m):
-        n = find(m.group(0))
+        n = find(m.group(0)) or by_surname(m.group(0))
         return _display(n) if n else m.group(0)
     return _GREEK_NAME.sub(sub, text)
 
