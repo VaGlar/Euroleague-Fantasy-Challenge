@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ELF">
-<meta name="theme-color" content="#13233f" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#15171b" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#08090b" media="(prefers-color-scheme: dark)">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@600;700;800&display=swap">
@@ -19,9 +19,9 @@
 :root {
   color-scheme: light;
   --surface-0: #f6f1ea; --surface-1: #fffdf9; --border: #e8dccb;
-  --text-primary: #18202e; --text-secondary: #4b5364; --text-muted: #6b7280;
+  --text-primary: #16181b; --text-secondary: #4a4d55; --text-muted: #6b7280;
   --series-1: #1f5fae; --good: #16813d; --critical: #c8372c; --accent: #e0620f;
-  --bar: #13233f; --bar-fg: #ffffff; --bar-muted: rgba(255,255,255,.72); --bar-line: var(--accent);
+  --bar: #15171b; --bar-fg: #ffffff; --bar-muted: rgba(255,255,255,.72); --bar-line: var(--accent);
   --shadow: 0 1px 2px rgba(60,40,10,.06), 0 4px 14px rgba(60,40,10,.06);
   /* the court: the same parquet in both themes, white lines like a real floor */
   --court: #dcae70; --court-line: rgba(255,255,255,.88); --court-key: rgba(255,255,255,.14); --court-text: #3a2710;
@@ -473,8 +473,8 @@ html body #mCp .ic { width: 1.25em; height: 1.25em; }
 </head>
 <body>
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
-  <!-- one icon set for the whole UI (no emoji): 24×24, stroke = currentColor -->
-  <symbol id="i-court" viewBox="0 0 24 24"><path d="M1.5 4.5h21M9.2 4.5v8h5.6v-8M9.2 12.5a2.8 2.8 0 0 0 5.6 0M3.2 4.5v4.6a8.8 8.8 0 0 0 17.6 0V4.5"/><circle cx="12" cy="7.3" r="1.3"/></symbol>
+  <!-- one icon set for the whole UI (no emoji): 24×24, stroke = currentColor; i-court is the app's ball (icon.svg), in its own colours -->
+  <symbol id="i-court" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5" fill="#ef6a1f" stroke="none"/><g fill="none" stroke="#15171b" stroke-width="1.2" stroke-linecap="round"><path d="M12 1.5v21M1.5 12h21M5.2 4.6a12 12 0 0 1 0 14.8M18.8 4.6a12 12 0 0 0 0 14.8"/></g></symbol>
   <symbol id="i-phone" viewBox="0 0 24 24"><rect x="6.5" y="2.5" width="11" height="19" rx="2"/><path d="M10.5 18.5h3"/></symbol>
   <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></symbol>
   <symbol id="i-bug" viewBox="0 0 24 24"><rect x="7" y="7" width="10" height="13" rx="5"/><path d="M12 11v9M7 12H3M21 12h-4M7 17l-3 2M17 17l3 2M8 8 5.5 5.5M16 8l2.5-2.5M9.5 7a2.5 2.5 0 0 1 5 0"/></symbol>
