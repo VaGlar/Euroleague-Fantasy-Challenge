@@ -1438,7 +1438,7 @@ fantasy_id,person_id,first_name,last_name,team,position,price,matchday,is_injure
 3772,005928,Facundo,Campazzo,MAD,Guard,13.2,5,False,1.0,,1.5
 3910,011219,Roman,Sorkin,TEL,Center,13.2,5,False,1.0,,1.0
 3767,007200,Shane,Larkin,ULK,Guard,13.1,5,False,1.0,,0.3
-7218,011217,Kameron,Taylor,PAM,Forward,13.0,5,False,1.0,,4.5
+7218,011217,Kameron,Taylor,PAM,Forward,13.0,5,False,1.0,,4.4
 11514,015163,Patty,Mills,ASV,Guard,13.0,5,False,1.0,,3.4
 3790,006540,Dzanan,Musa,DUB,Guard,12.9,5,True,0.0,,0.1
 3793,013363,Jordan,Nwora,RED,Forward,12.9,5,False,1.0,,10.4
@@ -1492,7 +1492,7 @@ fantasy_id,person_id,first_name,last_name,team,position,price,matchday,is_injure
 11494,014728,Patrick,Baldwin Jr,RED,Center,10.1,5,False,1.0,,0.6
 11516,015166,Jae,Crowder,ASV,Forward,10.1,5,False,1.0,,4.4
 3934,006760,Isaac,Bonga,PAN,Forward,10.0,5,True,0.0,,2.8
-8730,011284,Kenneth,Faried,BAS,Center,10.0,5,False,1.0,,2.2
+8730,011284,Kenneth,Faried,BAS,Center,10.0,5,False,1.0,,2.1
 11515,015165,Tremont,Waters,ASV,Guard,10.0,5,False,1.0,,0.3
 11544,015029,Trent,Frazier,VIR,Guard,10.0,5,False,1.0,,0.2
 7237,012738,Nathan,Reuvers,PAM,Forward,9.9,5,False,1.0,,0.7
@@ -1570,7 +1570,7 @@ fantasy_id,person_id,first_name,last_name,team,position,price,matchday,is_injure
 11536,015103,Damian,Jones,MAD,Center,8.3,5,False,1.0,,0.2
 11538,014739,Mo,Gueye,PAM,Forward,8.3,5,False,1.0,,0.1
 3872,CWX,Pedro,Martinez,MAD,Head Coach,8.2,5,False,1.0,,7.3
-3892,007519,Rokas,Jokubaitis,MUN,Guard,8.2,5,False,1.0,,1.4
+3892,007519,Rokas,Jokubaitis,MUN,Guard,8.2,5,False,1.0,,1.3
 4255,009154,Xavier,Albert,PAM,Head Coach,8.2,5,False,1.0,,2.7
 4280,008186,Marek,Blazevic,ZAL,Center,8.2,5,False,1.0,,0.2
 7209,014009,Lamar,Stevens,PAR,Forward,8.2,5,False,1.0,,1.8
@@ -1711,7 +1711,7 @@ fantasy_id,person_id,first_name,last_name,team,position,price,matchday,is_injure
 3867,001255,Kostas,Papanikolaou,OLY,Forward,4.1,5,False,1.0,,11.7
 3972,009513,Justus,Hollatz,MUN,Guard,4.1,5,False,1.0,,0.8
 3974,001252,Anton,Gavel,MUN,Head Coach,4.1,5,False,1.0,,2.0
-3976,007736,Arijan,Lakic,PAR,Forward,4.1,5,False,1.0,,30.5
+3976,007736,Arijan,Lakic,PAR,Forward,4.1,5,False,1.0,,30.4
 3977,TGB,Sergio,Llull,MAD,Guard,4.1,5,False,1.0,,2.4
 3984,002968,Sertac,Sanli,ULK,Center,4.1,5,False,1.0,,18.9
 4019,011209,Panagiotis,Kalaitzakis,PAN,Guard,4.1,5,False,1.0,,16.6
