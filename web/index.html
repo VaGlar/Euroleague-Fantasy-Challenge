@@ -488,9 +488,13 @@ html body .td-list li, html body .exp { border-radius: 0; }
 html body #mCp .ic { width: 1.25em; height: 1.25em; }
 
 /* ---- players' filters: a bar (search, sort, «Φίλτρα»), the chips of what is on, the panel (a shop's) */
-.fbar { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 200px) auto; gap: 8px; margin-bottom: 8px; }
-@media (max-width: 640px) {   /* phones: the search on its own row, sort and «Φίλτρα» under it */
-  .fbar { grid-template-columns: minmax(0, 1fr) auto; }
+.fbar { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 200px) auto auto; gap: 8px; margin-bottom: 8px; }
+.fwtog { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--border); border-radius: 4px; padding: 0 12px;
+  background: var(--surface-1); cursor: pointer; white-space: nowrap; }
+.fwtog:has(input:checked) { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); color: var(--accent); }
+@media (max-width: 640px) {   /* phones: the search on its own row, sort, ★ and «Φίλτρα» under it */
+  .fbar { grid-template-columns: minmax(0, 1fr) auto auto; }
+  .fwtog span { display: none; }
   .fbar #fsearch { grid-column: 1 / -1; }
 }
 .fbar input, .fbar select { min-width: 0; }
@@ -501,7 +505,7 @@ html body #mCp .ic { width: 1.25em; height: 1.25em; }
 .fchip { border: 1px solid var(--border); background: var(--surface-1); color: var(--text-primary); border-radius: 4px;
   font: inherit; font-size: 13px; padding: 4px 8px; cursor: pointer; }
 .fchip span { color: var(--text-muted); margin-left: 2px; }
-.fpanel { position: fixed; inset: 0; z-index: 20; background: rgba(0,0,0,.45); display: flex; justify-content: flex-end; }
+.fpanel { position: fixed; inset: 0; z-index: 20; background: rgba(0,0,0,.45); display: flex; justify-content: flex-start; }
 .fpanel[hidden] { display: none; }
 .fsheet { background: var(--surface-0); width: min(400px, 100%); height: 100%; display: flex; flex-direction: column; }
 .fhead { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 10px; border-bottom: 2px solid var(--text-primary); }
@@ -590,6 +594,7 @@ html body #mCp .ic { width: 1.25em; height: 1.25em; }
       <option value="x_now">xFPT</option><option value="actual">Points (Round)</option><option value="x3">xFPT3</option><option value="fpt_total">Points σεζόν</option><option value="value">Value</option>
       <option value="price">Price</option><option value="price_chg">Άνοδος price</option><option value="price_last_chg">Τελευταία αλλαγή price</option><option value="popularity">POP (πόσοι τον έχουν)</option><option value="pos_dev">Ματσάρισμα</option><option value="season_pir">PIR φέτος</option>
     </select>
+      <label class="fwtog" title="Μόνο η watchlist σου"><input id="fwatch" type="checkbox"> ★<span> Watchlist</span></label>
       <button id="fopen" class="fbtn" type="button" aria-haspopup="dialog">Φίλτρα<b id="fn"></b></button>
     </div>
     <div class="fchips" id="fchips"></div>
@@ -616,7 +621,7 @@ html body #mCp .ic { width: 1.25em; height: 1.25em; }
         <div class="frange"><span>POP %</span><input id="fminpop" type="text" inputmode="decimal" autocomplete="off" placeholder="από" aria-label="POP % από"><i>–</i><input id="fmaxpop" type="text" inputmode="decimal" autocomplete="off" placeholder="έως" aria-label="POP % έως"></div>
           </div></div>
           <div class="fsec"><h3>Διαθεσιμότητα</h3><div class="fchoice">
-            <label><input id="fhealthy" type="checkbox"> Χωρίς τραυματίες</label><label><input id="fwatch" type="checkbox"> ★ Μόνο Watchlist</label></div></div>
+            <label><input id="fhealthy" type="checkbox"> Χωρίς τραυματίες</label></div></div>
         </div>
         <div class="ffoot"><button id="fclear" class="linkbtn" type="button">Καθαρισμός</button><button id="fapply" class="fgo" type="button">Δες τους παίκτες</button></div>
       </div>
@@ -902,6 +907,7 @@ const RANGES = [["Price", "fpmin", "fpmax", (p) => p.price], ["xFPT", "fminx", "
 // «Ειδικοί»: the ticked ones, any of them (PICK or CAP or AVOID); none ticked = everyone
 const XFIL = [["fxpick", "PICK", (p) => p.expert_pick > 0], ["fxcap", "CAP", (p) => !!p.expert_cap], ["fxavoid", "AVOID", (p) => p.expert_avoid > 0]];
 const FILTERS = ["fpos", "fteam", "fturn", "fsearch", ...RANGES.flatMap(([, a, b]) => [a, b]), ...XFIL.map(([id]) => id), "fhealthy", "fwatch"];
+const ON_PAGE = ["fsearch", "fwatch"];   // on the page, not in the panel: «Καθαρισμός» leaves them
 // positions: none ticked = all of them
 const POS_N = 4;
 const POS_SHORT = { Guard: "G", Forward: "F", Center: "C", "Head Coach": "HC" };
@@ -939,7 +945,6 @@ function filterChips(n) {
   }
   for (const [id, label] of XFIL) if ($("#" + id).checked) chips.push([label, [id]]);
   if ($("#fhealthy").checked) chips.push(["Χωρίς τραυματίες", ["fhealthy"]]);
-  if ($("#fwatch").checked) chips.push(["★ Watchlist", ["fwatch"]]);
   $("#fchips").innerHTML = chips.map(([l, ids]) => `<button type="button" class="fchip" data-clear="${ids.join(",")}">${esc(l)} <span aria-hidden="true">✕</span></button>`).join("");
   $("#fn").textContent = chips.length ? ` (${chips.length})` : "";
   $("#fapply").textContent = n ? `Δες ${n} ${n === 1 ? "παίκτη" : "παίκτες"}` : "Κανένας παίκτης";
@@ -2046,7 +2051,7 @@ setInterval(() => {
     const b = e.target.closest("[data-clear]");
     if (b) { b.dataset.clear.split(",").forEach(clearFilter); renderPlayers(); }
   });
-  $("#fclear").onclick = () => { FILTERS.filter((id) => id !== "fsearch").forEach(clearFilter); renderPlayers(); };
+  $("#fclear").onclick = () => { FILTERS.filter((id) => !ON_PAGE.includes(id)).forEach(clearFilter); renderPlayers(); };
   $("#freset").onclick = () => {
     FILTERS.forEach(clearFilter);
     sortKey = "x_now"; sortDir = -1; renderPlayers();

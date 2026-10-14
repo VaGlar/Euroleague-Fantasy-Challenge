@@ -154,15 +154,12 @@ test("watchlist: ☆ adds a player, «★ Watchlist» shows only them with what 
   await expect(star).toHaveText("★");                       // the page has no emoji: ★ / ☆
   await expect(page.locator("#modal")).not.toHaveClass(/\bon\b/);   // the star doesn't open the player
   await page.locator("#fsearch").fill("");
-  await filters(page);
-  await page.locator("#fwatch").check();
-  await done(page);
+  await page.locator("#fwatch").check();                               // ★ Watchlist: on the page, next to «Φίλτρα»
   await expect(rows(page, testInfo)).toHaveCount(1);
   await expect(rows(page, testInfo).first()).toContainText("Vezenkov");
   await expect(rows(page, testInfo).first().locator(".wsince")).toContainText("χωρίς αλλαγές");   // just added
   await page.reload();
-  await expect(page.locator("#fwatch")).toBeChecked();                  // kept (in the closed panel)
-  await expect(page.locator("#fchips")).toContainText("Watchlist");
+  await expect(page.locator("#fwatch")).toBeChecked();                  // kept after the reload
   await expect(rows(page, testInfo)).toHaveCount(1);
   await rows(page, testInfo).first().locator(".wstar").click();       // out of the list
   await expect(rows(page, testInfo)).toHaveCount(0);
