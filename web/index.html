@@ -475,16 +475,20 @@ body > header nav button.on { color: var(--bar-fg); border-color: var(--bar-line
         <li><b>Συγχρονισμός</b> (μόνο αν τον ενεργοποιήσεις): η ομάδα και η watchlist κρατιούνται στον server κάτω από τον κωδικό σου,
           χωρίς τίποτα προσωπικό (παίκτες, credits, θέσεις). Όποιος έχει τον κωδικό τα βλέπει. Τα σβήνεις με «Διαγραφή από τον server».</li>
         <li><b>Προστασία από κατάχρηση:</b> για μία ώρα κρατάμε ένα κρυπτογραφημένο αποτύπωμα της IP σου (όχι την ίδια) για να μετράμε τα αιτήματα· μετά σβήνεται.</li>
+        <li><b>Σφάλματα της σελίδας:</b> αν κάτι χαλάσει, στέλνεται αυτόματα το μήνυμα του σφάλματος, το αρχείο και το tab, χωρίς τίποτα δικό σου.</li>
         <li><b>Επισκεψιμότητα:</b> Cloudflare Web Analytics, χωρίς cookies και χωρίς στοιχεία που σε ταυτοποιούν (επισκέψεις, χώρα, συσκευή).</li>
         <li><b>Φιλοξενία:</b> Cloudflare.</li>
       </ul></div>
     <div class="card"><h2>Επικοινωνία</h2>
-      <p>Λάθη, ιδέες, ερωτήσεις: <a href="mailto:euroleaguefantasy26@gmail.com?subject=HoopsLab%20beta">euroleaguefantasy26@gmail.com</a></p></div>
+      <p>Λάθη, ιδέες, ερωτήσεις: <a href="mailto:euroleaguefantasy26@gmail.com?subject=HoopsLab%20beta">euroleaguefantasy26@gmail.com</a></p>
+      <p><button class="fbcopy" type="button" onclick="reportProblem()">🐞 Ανέφερε πρόβλημα</button>
+        <span class="muted">ανοίγει email με το tab, το round και την έκδοση ήδη γραμμένα</span></p></div>
   </section>
 </main>
 <footer id="feedback" class="fb" hidden>💬 Επικοινωνία:
   <a href="mailto:euroleaguefantasy26@gmail.com?subject=HoopsLab%20beta">euroleaguefantasy26@gmail.com</a>
-  <button class="fbcopy" type="button" onclick="copyMail(this)">📋 Αντιγραφή</button></footer>
+  <button class="fbcopy" type="button" onclick="copyMail(this)">📋 Αντιγραφή</button>
+  <button class="fbcopy" type="button" onclick="reportProblem()">🐞 Ανέφερε πρόβλημα</button></footer>
 <nav class="bnav" id="bnav" aria-label="Κύρια πλοήγηση">
   <button data-t="today" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/></svg><span>Σήμερα</span></button>
   <button data-t="team"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 12h18"/><circle cx="12" cy="12" r="3"/></svg><span>Η ομάδα μου</span></button>
@@ -497,6 +501,34 @@ body > header nav button.on { color: var(--bar-fg); border-color: var(--bar-line
   <button class="clr" type="button" onclick="setCmp([])">✕</button></div>
 <div class="modal" id="modal" role="dialog" aria-modal="true"><div class="sheet" id="sheet"></div></div>
 <script>
+// the page's JavaScript errors go to functions/api/errors.js (counted, the owner hears on Telegram): the text, the
+// file and line, the tab; nothing personal. At most 5 a page load, each once. The last one goes in «Ανέφερε πρόβλημα».
+let LAST_ERR = "";
+(() => {
+  const sent = new Set();
+  // not bugs of the page: a lost connection, an extension's script (other origin: «Script error.»)
+  const NOISE = /^Script error\.?$|Failed to fetch|Load failed|NetworkError|network error|AbortError/i;
+  const report = (msg, src, line) => {
+    msg = String(msg || "").slice(0, 200);
+    if (!msg || NOISE.test(msg)) return;
+    src = String(src || "").split(/[?#]/)[0].split("/").pop();          // the file's name only
+    LAST_ERR = `${msg} (${src}:${line || ""})`;
+    const k = `${msg}|${src}|${line}`;
+    if (sent.has(k) || sent.size >= 5) return;
+    sent.add(k);
+    const tab = document.querySelector("main > section.on")?.id || "";
+    const edition = typeof P !== "undefined" && P ? P.edition : "";
+    try {
+      fetch("api/errors", { method: "POST", headers: { "content-type": "application/json" }, keepalive: true,
+        body: JSON.stringify({ msg, src, line, tab, edition }) }).catch(() => {});
+    } catch (e) {}
+  };
+  window.addEventListener("error", (e) => { if (e.message) report(e.message, e.filename, e.lineno); });
+  window.addEventListener("unhandledrejection", (e) => {
+    const r = e.reason;
+    report(r && r.message ? r.message : String(r), r && r.stack ? (String(r.stack).match(/\/([\w.-]+\.(?:js|html))/) || [])[1] : "", "");
+  });
+})();
 // hide the header on scroll down, show it on scroll up (or near the top)
 (() => {
   const hd = document.querySelector("header");
@@ -1378,6 +1410,16 @@ async function copyMail(btn) {
   setTimeout(() => (btn.textContent = old), 2000);
   return ok;
 }
+// «Ανέφερε πρόβλημα»: an email with what helps find the bug already written (no personal data: the user sees it all)
+function problemMail() {
+  const tab = document.querySelector("main > section.on")?.id || "";
+  const lines = ["Τι έγινε:", "", "Τι περίμενες:", "", "---",
+    `Tab: ${tab}`, `Round: ${P?.round ?? ""}`, `Δεδομένα: ${P?.generated ?? ""}`,
+    `Οθόνη: ${window.innerWidth}×${window.innerHeight}`, `Browser: ${navigator.userAgent}`];
+  if (LAST_ERR) lines.push(`Σφάλμα: ${LAST_ERR}`);
+  return `mailto:${FEEDBACK_MAIL}?subject=${encodeURIComponent("HoopsLab beta — πρόβλημα")}&body=${encodeURIComponent(lines.join("\n"))}`;
+}
+function reportProblem() { location.href = problemMail(); }
 function closePlayer() { $("#modal").classList.remove("on"); document.body.classList.remove("noscroll"); }
 // a sheet keeps the page where it was: iPhones scroll the page under it (the keyboard, overflow: hidden), and a change
 // made in it redraws the tab — after it closes you are back at the same spot, not at the top
