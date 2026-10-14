@@ -196,3 +196,14 @@ test("filters: Points/credit is the season's points over today's price", async (
   await expect(page.locator("#fcount")).toHaveText(`${n} ${n === 1 ? "παίκτης" : "παίκτες"}`);
   await expect(page.locator("#fchips")).toContainText("Points/credit ≥ 1");
 });
+
+test("sort by Points/credit: the best season's points per credit first", async ({ page }, testInfo) => {
+  await open(page, "public", { tab: "players" });
+  await page.locator("#fsort").selectOption("ppc");
+  const best = await page.evaluate(() => Math.max(...P.players.filter((p) => p.x_now != null && p.ppc != null).map((p) => p.ppc)));
+  test.skip(!isFinite(best), "no season points in the fixture");
+  const first = page.locator(isPhone(testInfo) ? "#plist .pcard" : "#ptable tbody tr").first();
+  const pid = await first.getAttribute("data-pid");
+  const ppc = await page.evaluate((id) => P.players.find((p) => p.person_id === id).ppc, pid);
+  expect(ppc).toBeCloseTo(best, 6);                 // ties may come in any order: the value, not the player
+});
