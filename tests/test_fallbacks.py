@@ -140,7 +140,7 @@ def bad_day(tmp_path_factory):
         block_network(mp)
         public = use_public(mp, tmp_path_factory.mktemp("bad_day") / "public")
 
-        def gemini_down(arts, roster):
+        def gemini_down(arts, roster, teams=None):
             # the last good digest, as the previous run left it (written here because the
             # runner seeds an older news.json first)
             write_news(public)
