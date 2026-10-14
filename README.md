@@ -220,7 +220,7 @@ first occurrence of each error of the day to Telegram, at most 20 a day. For the
 Pages secrets `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` on `hoopslab-beta` (the bot's values);
 without them the errors are only counted. Without the database (the personal site) it does nothing.
 
-«🐞 Ανέφερε πρόβλημα» (footer and «Σχετικά», public edition) opens an email to the feedback address
+«🐞 Ανάφερε πρόβλημα» (footer and «Σχετικά», public edition) shows the report text (to copy) and opens an email to the feedback address
 with the tab, round, data time, screen, browser and the last error already written.
 
 Every update also checks its own proposals against the game's rules (`elf/checks.py`: squad 4G 4F 2C 1H,

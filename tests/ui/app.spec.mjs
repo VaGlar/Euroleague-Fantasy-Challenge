@@ -257,11 +257,11 @@ test("«Σχετικά»: what it is, privacy, contact — in the public edition
   await expect(page.locator('#tabs button[data-t="about"]')).toBeHidden();
 });
 
-test("«Ανέφερε πρόβλημα»: an email with the tab, round and data time written; the page's errors are reported", async ({ page }, testInfo) => {
+test("«Ανάφερε πρόβλημα»: an email with the tab, round and data time written; the page's errors are reported", async ({ page }, testInfo) => {
   const sent = [];
   await page.route("**/api/errors", async (route) => { sent.push(route.request().postDataJSON()); await route.fulfill({ status: 204 }); });
   await open(page, "public", { tab: "today" });
-  await expect(page.locator('#feedback button:has-text("Ανέφερε πρόβλημα")')).toBeVisible();
+  await expect(page.locator('#feedback button:has-text("Ανάφερε πρόβλημα")')).toBeVisible();
   await page.evaluate(() => window.dispatchEvent(new ErrorEvent("error", { message: "Uncaught Error: ui-test boom", filename: location.origin + "/public/team.js?v=1", lineno: 42 })));
   await expect.poll(() => sent.length).toBe(1);
   expect(sent[0]).toMatchObject({ msg: expect.stringContaining("ui-test boom"), src: "team.js", line: 42, tab: "today", edition: "public" });
