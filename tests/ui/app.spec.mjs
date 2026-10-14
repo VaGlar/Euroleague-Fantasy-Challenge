@@ -262,15 +262,15 @@ test("«Ανέφερε πρόβλημα»: an email with the tab, round and data
   await page.route("**/api/errors", async (route) => { sent.push(route.request().postDataJSON()); await route.fulfill({ status: 204 }); });
   await open(page, "public", { tab: "today" });
   await expect(page.locator('#feedback button:has-text("Ανέφερε πρόβλημα")')).toBeVisible();
-  await page.evaluate(() => setTimeout(() => { throw new Error("ui-test boom"); }));
+  await page.evaluate(() => window.dispatchEvent(new ErrorEvent("error", { message: "Uncaught Error: ui-test boom", filename: location.origin + "/public/team.js?v=1", lineno: 42 })));
   await expect.poll(() => sent.length).toBe(1);
-  expect(sent[0]).toMatchObject({ msg: expect.stringContaining("ui-test boom"), tab: "today", edition: "public" });
+  expect(sent[0]).toMatchObject({ msg: expect.stringContaining("ui-test boom"), src: "team.js", line: 42, tab: "today", edition: "public" });
   const mail = decodeURIComponent(await page.evaluate(() => problemMail()));
   expect(mail).toContain("mailto:");
   expect(mail).toContain("Tab: today");
   expect(mail).toMatch(/Round: \d+/);
   expect(mail).toContain("ui-test boom");
-  await page.evaluate(() => setTimeout(() => { throw new Error("ui-test boom"); }));   // the same error: sent once
+  await page.evaluate(() => window.dispatchEvent(new ErrorEvent("error", { message: "Uncaught Error: ui-test boom", filename: location.origin + "/public/team.js?v=1", lineno: 42 })));   // the same error: sent once
   await page.waitForTimeout(300);
   expect(sent.length).toBe(1);
 });
