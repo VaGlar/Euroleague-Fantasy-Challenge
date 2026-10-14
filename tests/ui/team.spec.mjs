@@ -529,6 +529,44 @@ test.describe("personal edition", () => {
     await expect(page.locator("#team .tm-courtcard h2")).not.toContainText("Πρόχειρο");
   });
 
+  // the draft's two rules (owner, 13/10): it stays on this device, and it goes when the game's team changes
+  async function draftTrade(page) {
+    await court(page).first().click();
+    await page.locator("#aRep").click();
+    await page.locator("#tmList [data-n]").first().click();
+    await expect(page.locator("#team .tm-courtcard h2")).toContainText("Πρόχειρο");
+  }
+
+  test("the draft never leaves the device: no request writes anything, nothing goes to the sync keys", async ({ page }) => {
+    const writes = [];
+    page.on("request", (r) => { if (r.method() !== "GET") writes.push(`${r.method()} ${r.url()}`); });
+    await open(page, "personal", { tab: "team" });
+    await draftTrade(page);
+    await page.reload();
+    await expect(page.locator("#team .tm-courtcard h2")).toContainText("Πρόχειρο");
+    expect(writes).toEqual([]);
+    const keys = await page.evaluate(() => Object.keys(localStorage));
+    expect(keys).toContain("tm_draft");
+    expect(keys).not.toContain("myteam_v1");          // the public edition's team
+    expect(keys).not.toContain("tm_sync");            // the server copy's code
+  });
+
+  test("the draft goes by itself when the game's team changes (an update read the trades made there)", async ({ page }) => {
+    await open(page, "personal", { tab: "team" });
+    const before = await fids(page);
+    await draftTrade(page);
+    // what a new update looks like to the draft: the game's team (its signature) is no longer the one it was made on
+    await page.evaluate(() => {
+      const d = JSON.parse(localStorage.getItem("tm_draft"));
+      d.sig = `${d.sig},999999`;
+      localStorage.setItem("tm_draft", JSON.stringify(d));
+    });
+    await page.reload();
+    await expect(page.locator("#team .tm-courtcard h2")).not.toContainText("Πρόχειρο");
+    expect(await fids(page)).toEqual(before);
+    expect(await page.evaluate(() => localStorage.getItem("tm_draft"))).toBeNull();
+  });
+
   test("the game's team: ✕ and the trades left work on the draft", async ({ page }) => {
     await open(page, "personal", { tab: "team" });
     const before = await fids(page);

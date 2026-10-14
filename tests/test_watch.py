@@ -128,3 +128,29 @@ def test_endpoint_refuses_outside_the_personal_site():
     assert bad["status"] == 400 and big["status"] == 413
     assert github_down["status"] == 502 and github_down["body"] == {"error": "dispatch failed"}
     assert all(not r["sent"] for r in (hoopslab, no_access, bad, big))
+
+
+# ------------------------------------------------------------------ the workflow's command (watch.yml)
+
+def save_cli(tmp_path, watch_json):
+    """As watch.yml runs it: `python3 -m elf.watch save <path>` with the list in WATCH. -S: no
+    site-packages, as the docstring promises (the workflow installs nothing)."""
+    import os
+    import sys
+    out = tmp_path / "watch.json"
+    r = subprocess.run([sys.executable, "-S", "-m", "elf.watch", "save", str(out)], cwd=Path(__file__).parents[1],
+                       env={"PATH": os.environ.get("PATH", ""), "WATCH": watch_json}, capture_output=True, text=True)
+    return r, out
+
+
+def test_the_workflow_command_saves_only_ids_and_numbers(tmp_path):
+    r, out = save_cli(tmp_path, json.dumps({"003469": {**entry(), "note": "<script>"}, "../x": entry()}))
+    assert r.returncode == 0, r.stderr
+    players = json.loads(out.read_text())["players"]
+    assert list(players) == ["003469"] and "note" not in players["003469"]
+    assert "1 players saved" in r.stdout and "003469" not in r.stdout, "the log is public: counts only"
+
+
+def test_the_workflow_command_fails_on_a_broken_list_and_writes_nothing(tmp_path):
+    r, out = save_cli(tmp_path, "{not json")
+    assert r.returncode != 0 and not out.exists()

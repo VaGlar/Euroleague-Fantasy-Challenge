@@ -1,0 +1,100 @@
+# mutmut 3.8.0 on elf/lineup_cmd.py only (tests: test_lineup_cmd.py, test_notify.py), before the new tests
+⠋ 1105/1105  🎉 1004 🫥 0  ⏰ 0  🤔 0  🙁 101  🔇 0  🧙 0
+10.22 mutations/second
+
+## survivors per function
+      4     elf.lineup_cmd.x__layout
+     13     elf.lineup_cmd.x_apply
+     23     elf.lineup_cmd.x_check
+     10     elf.lineup_cmd.x_describe
+     21     elf.lineup_cmd.x_load_state
+      5     elf.lineup_cmd.x_main
+      8     elf.lineup_cmd.x_preview
+     17     elf.lineup_cmd.x_propose
+
+## survivors in the changed code (load_state / _layout / propose), message-text mutants left out
+## elf.lineup_cmd.x_load_state__mutmut_39
++    xnow = {p.get("fantasy_id"): p.get("x_now") for p in pred.get("players", None)
+## elf.lineup_cmd.x_load_state__mutmut_41
++    xnow = {p.get("fantasy_id"): p.get("x_now") for p in pred.get("players", )
+## elf.lineup_cmd.x_load_state__mutmut_56
++    team_of = {p.get("fantasy_id"): p.get("team") for p in pred.get("players", None)}
+## elf.lineup_cmd.x_load_state__mutmut_58
++    team_of = {p.get("fantasy_id"): p.get("team") for p in pred.get("players", )}
+## elf.lineup_cmd.x_load_state__mutmut_68
++    done = {t for f in pred.get("fixtures", []) if f.get("round") == pred.get("round") or f.get("played")
+## elf.lineup_cmd.x_load_state__mutmut_82
++            for t in (f.get("home"), f.get(None))}
+## elf.lineup_cmd.x_load_state__mutmut_83
+## elf.lineup_cmd.x_load_state__mutmut_84
++            for t in (f.get("home"), f.get("AWAY"))}
+## elf.lineup_cmd.x_load_state__mutmut_104
++    if len(court) != 10 and len(coach) != 1:
+## elf.lineup_cmd.x_load_state__mutmut_150
++                    f"(id {raw.get(None)}) — δεν αλλάζω τίποτα")
+## elf.lineup_cmd.x_load_state__mutmut_151
+## elf.lineup_cmd.x_load_state__mutmut_152
++                    f"(id {raw.get('FORMATION_ID')}) — δεν αλλάζω τίποτα")
+## elf.lineup_cmd.x_load_state__mutmut_169
++        order = None
+## elf.lineup_cmd.x_load_state__mutmut_171
+## elf.lineup_cmd.x_load_state__mutmut_201
++            "id": p["id"], "position": pos if (pos in POS) or True else "Head Coach", "price": 0.0,
+## elf.lineup_cmd.x_load_state__mutmut_208
++            "id": p["id"], "position": pos if pos in POS else "Head Coach", "price": 1.0,
+## elf.lineup_cmd.x_load_state__mutmut_212
++            "name": p.get("last_name", None), "played": played,
+## elf.lineup_cmd.x_load_state__mutmut_214
++            "name": p.get("last_name", ), "played": played,
+## elf.lineup_cmd.x_load_state__mutmut_217
+## elf.lineup_cmd.x_load_state__mutmut_269
+## elf.lineup_cmd.x_load_state__mutmut_270
++    return {"team": team, "md": md, "RAW": raw, "squad": squad, "forms": forms,
+## elf.lineup_cmd.x__layout__mutmut_17
++    order = sorted(POS, key=None)
+## elf.lineup_cmd.x__layout__mutmut_19
++    order = sorted(POS, )
+## elf.lineup_cmd.x__layout__mutmut_28
++    five_slots = sorted(st["slots"][:6])
+## elf.lineup_cmd.x__layout__mutmut_35
++        return start <= k <= start + c[pos]
+## elf.lineup_cmd.x_propose__mutmut_20
++        five = [p for p in t if p["role"] != "5άδα"]
+## elf.lineup_cmd.x_propose__mutmut_40
+## elf.lineup_cmd.x_propose__mutmut_41
++        changes = [p for p in st["squad"] if p["position"] != "head coach"
+## elf.lineup_cmd.x_propose__mutmut_42
++        changes = [p for p in st["squad"] if p["position"] != "HEAD COACH"
+## elf.lineup_cmd.x_propose__mutmut_92
++    if name_of(team) not in counts and any(p["role"] == "5άδα" and p["id"] in stay
+## elf.lineup_cmd.x_propose__mutmut_100
++    if name_of(team) not in counts or any(p["role"] != "5άδα" and p["id"] in stay
+## elf.lineup_cmd.x_propose__mutmut_101
+## elf.lineup_cmd.x_propose__mutmut_102
+## elf.lineup_cmd.x_propose__mutmut_107
++                                          and name_of(team) in stay[p["id"]] for p in team):
+## elf.lineup_cmd.x_propose__mutmut_111
+## elf.lineup_cmd.x_propose__mutmut_112
++    res["TEAM"], res["plan"] = team, plan
+## elf.lineup_cmd.x_propose__mutmut_153
++        fixed = [p for p in members if cur[p["id"]]["played"] or cur[p["id"]]["cur_role"] == "5άδα"]
+## elf.lineup_cmd.x_propose__mutmut_206
++    groups = (("6ος", st["slots"][5:7]), ("πάγκος", st["slots"][6:]))
+## elf.lineup_cmd.x_propose__mutmut_301
++         "is_captain": True}]}
+## elf.lineup_cmd.x_propose__mutmut_304
++    key = json.dumps(body, sort_keys=None)
+## elf.lineup_cmd.x_propose__mutmut_306
++    key = json.dumps(body, )
+## elf.lineup_cmd.x_propose__mutmut_307
++    key = json.dumps(body, sort_keys=False)
+
+## hand-applied mutants against the new tests (each applied, tests run, file restored)
+KILLED | if f.get("round") == pred.get("round") or f.get("played")
+KILLED | for t in (f.get("home"), f.get(None))}
+KILLED | return start <= k <= start + c[pos]
+KILLED | if name_of(team) not in counts and any(p["role"] == "5άδα" and p["id"] in stay
+KILLED | and name_of(team) in stay[p["id"]] for p in team):
+SURVIVED | five = [p for p in t if p["role"] != "5άδα"]
+        return
+KILLED | coach "is_captain": True
