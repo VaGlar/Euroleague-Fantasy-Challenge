@@ -760,7 +760,7 @@
      "team": "HTA",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 27.5
+     "x_now": 26.8
     },
     {
      "id": 3850,
@@ -785,17 +785,6 @@
      "x_now": 16.3
     },
     {
-     "id": 11547,
-     "price": 9.7,
-     "position": "Guard",
-     "person_id": "014737",
-     "name": "MOORE, WENDELL",
-     "team": "VIR",
-     "role": "πάγκος",
-     "captain": false,
-     "x_now": 16.2
-    },
-    {
      "id": 3773,
      "price": 12.4,
      "position": "Forward",
@@ -807,6 +796,17 @@
      "x_now": 16.1
     },
     {
+     "id": 11547,
+     "price": 9.7,
+     "position": "Guard",
+     "person_id": "014737",
+     "name": "MOORE, WENDELL",
+     "team": "VIR",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 15.5
+    },
+    {
      "id": 7424,
      "price": 8.6,
      "position": "Center",
@@ -815,7 +815,7 @@
      "team": "VIR",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 15.8
+     "x_now": 15.1
     },
     {
      "id": 3872,
@@ -873,8 +873,8 @@
      "x_now": 2.7
     }
    ],
-   "x_total": 126.9,
-   "decided_at": "2026-10-14T11:29+00:00"
+   "x_total": 125.6,
+   "decided_at": "2026-10-14T13:07+00:00"
   }
  ],
  "seed_id": "5a453a755a9b",
@@ -885,5 +885,5 @@
   "raw": 407.7,
   "avg_raw": 311.7
  },
- "generated": "2026-10-14T11:29:40.435211+00:00"
+ "generated": "2026-10-14T13:07:46.382699+00:00"
 }
