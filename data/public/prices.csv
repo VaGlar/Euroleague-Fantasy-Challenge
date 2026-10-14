@@ -1441,7 +1441,7 @@ fantasy_id,person_id,first_name,last_name,team,position,price,matchday,is_injure
 7218,011217,Kameron,Taylor,PAM,Forward,13.0,5,False,1.0,,4.4
 11514,015163,Patty,Mills,ASV,Guard,13.0,5,False,1.0,,3.4
 3790,006540,Dzanan,Musa,DUB,Guard,12.9,5,True,0.0,,0.1
-3793,013363,Jordan,Nwora,RED,Forward,12.9,5,False,1.0,,10.5
+3793,013363,Jordan,Nwora,RED,Forward,12.9,5,False,1.0,,10.4
 3874,009849,Tyler,Dorsey,OLY,Guard,12.9,5,False,1.0,,4.3
 3799,008987,Zach,Leday,HTA,Forward,12.8,5,False,1.0,,3.0
 8567,014124,Talen,Horton-Tucker,ULK,Guard,12.8,5,False,1.0,,5.0
@@ -1535,7 +1535,7 @@ fantasy_id,person_id,first_name,last_name,team,position,price,matchday,is_injure
 3925,011205,Devon,Hall,MIL,Guard,9.0,5,False,1.0,,3.9
 8815,014213,Cameron,Payne,IST,Guard,9.0,5,False,1.0,,1.4
 11518,007483,Mathis,Dossou-yovo,ASV,Forward,9.0,5,True,0.0,,0.0
-3842,006661,Scottie,Wilbekin,BES,Guard,8.9,5,False,1.0,,17.5
+3842,006661,Scottie,Wilbekin,BES,Guard,8.9,5,False,1.0,,17.4
 3853,011204,Jerian,Grant,PAN,Guard,8.9,5,False,1.0,,1.7
 3897,ADG,Saras,Jasikevicius,ULK,Head Coach,8.9,5,False,1.0,,4.8
 3940,010391,Nick,Weiler-Babb,RED,Guard,8.9,5,False,1.0,,0.9
