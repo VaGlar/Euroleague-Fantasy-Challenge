@@ -18,7 +18,7 @@ import numpy as np
 import pandas as pd
 import yaml
 
-from . import archive, autopilot, el_api, fantasy, history, model, news, optimize, prices, tracking
+from . import archive, autopilot, checks, el_api, fantasy, history, model, news, optimize, prices, tracking
 from .config import BUDGET, COACH_POINTS, CURRENT_SEASON, PUBLIC, ROOT, TIMEZONE, WIN_BONUS
 
 ATH = ZoneInfo(TIMEZONE)
@@ -974,7 +974,10 @@ def build(offline: bool = False) -> dict:
                     my["lineup"] = None
                 # round under way: the proposal must follow the in-round rules (like /lineup)
                 if any(r.get("played") for r in my["actual_lineup"]):
-                    live = optimize.lineup_in_round(in_round_squad(my, done_teams(trn)))
+                    over = checks.done_teams({"round": rnd, "turns": trn, "fixtures": [
+                        {"round": int(f.round), "home": f.home, "away": f.away, "played": bool(f.played)}
+                        for f in pr["fixtures"].itertuples()]})
+                    live = optimize.lineup_in_round(in_round_squad(my, over))
                     if live:
                         rows = {p["id"]: p for p in sq}
                         my["lineup"] = [{**rows.get(p["id"], p), "role": p["role"],
@@ -1109,11 +1112,6 @@ def _short(r) -> str:
     return _e(f"{str(r['name']).split(',')[0].title()} ({tv(r['team'])})")
 
 
-def done_teams(trn: list[dict]) -> set:
-    """Teams whose game of the round is over (its turn is done)."""
-    return {t for tu in trn or [] if tu.get("done") for t in tu.get("teams", [])}
-
-
 def in_round_squad(my: dict | None, done: set | frozenset = frozenset()) -> list[dict]:
     """The squad as set in the game, for optimize.lineup_in_round: players who already
     played carry their real points. A player whose team's game is over (`done`) has played,
@@ -1246,7 +1244,7 @@ def messages(rnd, trn, table, my, dig, health, dash: str | None = None) -> list[
             lines.append("<i>Βάλε Captain στο Turn 1· αν δεν φτάσει το xFPT του plan B, "
                          "μεταφέρεις το x2 σε παίκτη του Turn 2 (όχι σε κάποιον που έπαιξε).</i>")
         else:
-            lines += turn_check(tu, table, my, done_teams(trn))
+            lines += turn_check(tu, table, my, checks.done_teams({"turns": trn}))
         if tu["turn"] == 1 and len(coaches):
             c = coaches.sort_values("x_now", ascending=False).iloc[0]
             line = (f"🧑‍💼 <b>Καλύτερος Coach του Round</b>: {c['name'].split(',')[0].title()} ({tv(c['team'])}) "

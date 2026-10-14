@@ -19,7 +19,7 @@ import json
 import sys
 from html import escape
 
-from . import fantasy, notify, optimize
+from . import checks, fantasy, notify, optimize
 from .config import PUBLIC
 
 POS = {"Guard": 0, "Forward": 1, "Center": 2}
@@ -62,8 +62,7 @@ def load_state():
     # a player whose team's game of the round is over has played, points or not (a DNP is 0, and the
     # game's rules for played players hold for him): 14/10, a DNP of turn 1 was proposed as captain
     team_of = {p.get("fantasy_id"): p.get("team") for p in pred.get("players", [])}
-    done = {t for f in pred.get("fixtures", []) if f.get("round") == pred.get("round") and f.get("played")
-            for t in (f.get("home"), f.get("away"))}
+    done = checks.done_teams(pred)          # one definition for the update's checks and /lineup
 
     court = sorted([p for p in players if p["position"]["name"] in POS],
                    key=lambda p: p["court_position"])

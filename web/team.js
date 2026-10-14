@@ -156,8 +156,12 @@
     syncSet({ code: res.body.code, rev: res.body.rev, dirty: false });
     return 201;
   }
+  // the code as typed, a Greek keyboard's look-alike capitals and accents too (cleanCode in functions/api/sync)
+  const GREEK_LATIN = { Α: "A", Β: "B", Ε: "E", Ζ: "Z", Η: "H", Ι: "I", Κ: "K", Μ: "M", Ν: "N", Ο: "O", Ρ: "P", Τ: "T", Υ: "Y", Χ: "X" };
+  const syncCode = (raw) => String(raw || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase()
+    .replace(/[\u0391-\u03a9]/g, (c) => GREEK_LATIN[c] || c).replace(/[^A-Z0-9]/g, "");
   async function syncJoin(raw) {
-    const code = String(raw || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+    const code = syncCode(raw);
     if (code.length !== 12) return 400;
     const res = await syncApi("GET", code);
     if (res.status !== 200) return res.status;
@@ -670,7 +674,7 @@
     const role = r.position === "Head Coach" ? "coach" : (t.roles || {})[id];
     const canCap = role === "5άδα" && t.captain !== id && !(played(r) && t.captain !== id);
     sheet(`<div class="sh"><div><h2>${esc(nm(r.name))}</h2>
-        <div class="muted">${esc(tc(r.team))} · ${NAME[r.position]} · τώρα ${f1(r.price)} cr${r.buy != null ? ` · αγορά ${f1(r.buy)}${dPrice(r) ? ` (${dPrice(r) > 0 ? "+" : "−"}${f1(Math.abs(dPrice(r)))})` : ""}` : ""}${r.popularity != null ? ` · POP ${f1(r.popularity)} %` : ""}${r.turn ? ` · Turn ${r.turn}` : ""}${role && role !== "coach" ? ` · ${ROLE_LABEL[role] || role}` : ""}</div></div>
+        <div class="muted">${esc(tc(r.team))} · ${NAME[r.position]} · τώρα ${f1(r.price)} cr${r.buy != null ? ` · αγορά ${f1(r.buy)}${dPrice(r) ? ` (${dPrice(r) > 0 ? "+" : "−"}${f1(Math.abs(dPrice(r)))})` : ""}` : ""}${r.popularity != null ? ` · POP ${f1(r.popularity)} %` : ""}${r.turn ? ` · Turn ${r.turn}` : ""}${role && role !== "coach" ? ` · ${esc(ROLE_LABEL[role] || role)}` : ""}</div></div>
         <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
       <div class="kpis"><div class="kpi"><b>${f1(scored(r) ? pts(r) : r.x_now)}</b><span>${scored(r) ? (r.actual == null ? "δεν έπαιξε" : "points") : "xFPT"}</span></div>
         <div class="kpi"><b>${f1(xf3(r))}</b><span>xFPT3</span></div><div class="kpi"><b>${r.value == null ? "–" : r.value.toFixed(2)}</b><span>xFPT3/cr</span></div></div>
@@ -685,7 +689,7 @@
     on("aCap", () => { t.captain = id; save(t); closePlayer(); render(); flash(id); toast(`CAP: ${sur(r.name)}`); });
     on("aSwap", () => {
       const others = rows.filter((x) => x.id !== id && x.position !== "Head Coach" && (t.roles || {})[x.id] !== role);
-      sheet(`<div class="sh"><div><h2>${esc(sur(r.name))} ⇄ …</h2><div class="muted">Τώρα: ${ROLE_LABEL[role] || role}</div></div>
+      sheet(`<div class="sh"><div><h2>${esc(sur(r.name))} ⇄ …</h2><div class="muted">Τώρα: ${esc(ROLE_LABEL[role] || role)}</div></div>
           <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
         <div class="tm-acts">${others.map((x) => `<button class="tm-act" data-q="${x.id}"><span>${LETTER[x.position]}</span><div>${esc(nm(x.name))}
           <small>${(t.roles || {})[x.id]} · ${scored(x) ? `έφερε ${f1(pts(x))}` : `xFPT ${f1(x.x_now)}`}</small></div></button>`).join("")}</div>`);
