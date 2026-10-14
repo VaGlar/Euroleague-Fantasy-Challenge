@@ -309,7 +309,7 @@ ul.news li { padding: 8px 0; border-bottom: 1px solid var(--border); }
   .ap-moves { height: 0; min-height: 100%; overflow-y: auto; padding-right: 4px; }
   .ap-moves h3 { margin-top: 0; }
 }
-.xp .ic { width: 18px; flex: none; text-align: center; } .xp .nt { font-size: 12px; margin-top: 1px; }
+.xp .st { width: 50px; flex: none; } .xp .nt { font-size: 12px; margin-top: 1px; }
 .xp-src { border-top: 1px solid var(--border); padding: 8px 0 0; margin-top: 6px; }
 .xp-src summary { cursor: pointer; font-weight: 600; font-size: 14px; }
 .td-more summary { cursor: pointer; color: var(--series-1); font-size: 13px; padding: 6px 0 0; list-style: none; }
@@ -421,6 +421,7 @@ body > header nav button.on { color: var(--bar-fg); border-color: var(--bar-line
 h1 .logo { width: 1.05em; height: 1.05em; vertical-align: -0.16em; fill: none; stroke: var(--accent); stroke-width: 2.2; }
 .tag { display: inline-block; font: 800 10px/1 var(--num-font); letter-spacing: .06em; padding: 3px 4px 2px; border-radius: 2px;
   background: var(--accent); color: #fff; vertical-align: 2px; }
+.tag.t-pick { background: var(--good); } .tag.t-avoid { background: var(--critical); } .tag.t-cap { background: var(--accent); }
 html body h1 { font-family: var(--num-font); font-weight: 800; letter-spacing: .01em; text-transform: uppercase; }
 html body header { border-bottom: 3px solid var(--accent); }
 html body .card, html body .kpi { background: none; border: 0; border-top: 2px solid var(--text-primary); border-radius: 0;
@@ -662,8 +663,11 @@ const fewGames = (r) => r.position !== "Head Coach" && r.prev_pir == null && r.g
 const newb = (r, info = true) => (r.no_data && !r.prior ? ' <span class="pill">νέος</span>'
   : fewGames(r) ? ` <span class="pill few"${info ? ' data-info="few"' : ""}>νέος · ${r.games} ματς</span>`
   : r.returning ? ` <span class="pill few"${info ? ' data-info="back"' : ""}>↩ επιστρέφει</span>` : "");
-const exb = (r) => (r.expert_pick > 0 ? ` <span class="pill" title="στήλες fantasy που τον προτείνουν">${ico("up")}${r.expert_pick}${r.expert_cap ? "★" : ""}</span>` : "")
-  + (r.expert_avoid > 0 ? ` <span class="pill" title="στήλη που προτείνει να τον αποφύγεις">${ico("down")}</span>` : "")
+// the fantasy columns' word on a player, as tags (not arrows: those are the price's): PICK n · CAP · AVOID n
+const xtag = (kind, n = 1, title = "") => `<span class="tag t-${kind}"${title ? ` title="${title}"` : ""}>${kind.toUpperCase()}${n > 1 ? " " + n : ""}</span>`;
+const exb = (r) => (r.expert_pick > 0 ? " " + xtag("pick", r.expert_pick, "στήλες fantasy που τον προτείνουν") : "")
+  + (r.expert_cap ? " " + xtag("cap", 1, "στήλη που τον προτείνει για Captain") : "")
+  + (r.expert_avoid > 0 ? " " + xtag("avoid", r.expert_avoid, "στήλες που προτείνουν να τον αποφύγεις") : "")
   + (r.prior === "τιμή" ? ` <span class="pill" title="χωρίς ιστορικό: εκτίμηση από το price">≈price</span>` : "");
 const dol = (r) => (r.price_trend === "up"
   ? ` <span class="pill up" data-info="dollar" title="πιθανή άνοδος price μετά το Round${r.price_delta != null ? ` (~+${r.price_delta.toFixed(1)} cr)` : ""}">$</span>`
@@ -919,15 +923,15 @@ function courtView(list, ref) {
       ${lane("bench", "Bench (50% FPT)", by("πάγκος").sort((a, b) => (b.x_now ?? 0) - (a.x_now ?? 0)))}</div></div>`;
 }
 // «Νέα»: the columns' picks grouped by column, the one whose picks did best (tab «Μοντέλο») first and open,
-// the others folded; per player 👍 / ★ / 👎, the note on a second line
-const STANCE_ICON = { pick: ico("up"), captain: "★", avoid: ico("down") };
+// the others folded; per player PICK / CAP / AVOID, the note on a second line
+const STANCE_ICON = { pick: xtag("pick"), captain: xtag("cap"), avoid: xtag("avoid") };
 function expertsHtml(list, track) {
   const score = Object.fromEntries(track.map((e) => [e.source, e.diff]));
   const by = new Map();
   for (const e of list) { if (!by.has(e.source)) by.set(e.source, []); by.get(e.source).push(e); }
   const srcs = [...by.keys()].sort((a, b) => (score[b] ?? -99) - (score[a] ?? -99));
   const li = (e) => { const r = findPlayer(e.player);
-    return `<li${r ? ` data-pid="${esc(r.person_id)}"` : ""}><span class="ic">${STANCE_ICON[e.stance] || "•"}</span><div>
+    return `<li${r ? ` data-pid="${esc(r.person_id)}"` : ""}><span class="st">${STANCE_ICON[e.stance] || "•"}</span><div>
       <b>${esc(nm(r ? r.name : String(e.player).split(" (")[0]))}</b>${r ? ` <span class="muted">${esc(tc(r.team))} · ${esc((r.position || "")[0] || "")}${r.price != null ? " · " + f1(r.price) + "cr" : ""}${r.x_now != null ? " · xFPT " + f1(r.x_now) : ""}</span>${dol(r)}` : ""}
       ${e.note ? `<div class="muted nt">${esc(e.note)}</div>` : ""}</div></li>`; };
   const block = (src, i) => { const es = by.get(src), sc = score[src];
@@ -1400,7 +1404,7 @@ async function playerParts(r) {
       ["Έδρα", g.home ? "εντός" : "εκτός"],
       ["Αναμενόμενη διαφορά σκορ", g.margin != null ? `${marg.replace(")", " → +10%)")}` : "–"],
       ["Διαθεσιμότητα (παιχνίδι / νέα)", `${r.avail_game == null ? "–" : Math.round(r.avail_game * 100) + "%"} / ${d.news_avail == null ? "–" : Math.round(d.news_avail * 100) + "%"}`],
-      ...(done ? [] : [["Στήλες fantasy", r.expert_pick || r.expert_avoid ? `${ico("up")}${r.expert_pick || 0}${r.expert_cap ? " ★" : ""}${r.expert_avoid ? " " + ico("down") : ""}` : "–"]]),
+      ...(done ? [] : [["Στήλες fantasy", r.expert_pick || r.expert_avoid ? exb(r).trim() : "–"]]),
       ["xFPT", `<b>${f1(g.x)}</b>`],
       ["Price", r.price_trend === "up" ? "$ πιθανή άνοδος" : r.price_trend === "down" ? "↓$ πιθανή πτώση" : "σταθερή"]];
   const stats = d.stats.length ? `<div class="tablewrap"><table><thead><tr><th>Σεζόν</th><th class="num">Αγ</th><th class="num">Λεπ</th><th class="num">PIR</th>
