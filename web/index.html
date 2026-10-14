@@ -481,14 +481,13 @@ body > header nav button.on { color: var(--bar-fg); border-color: var(--bar-line
       </ul></div>
     <div class="card"><h2>Επικοινωνία</h2>
       <p>Λάθη, ιδέες, ερωτήσεις: <a href="mailto:euroleaguefantasy26@gmail.com?subject=HoopsLab%20beta">euroleaguefantasy26@gmail.com</a></p>
-      <p><button class="fbcopy" type="button" onclick="reportProblem()">🐞 Ανέφερε πρόβλημα</button>
-        <span class="muted">ανοίγει email με το tab, το round και την έκδοση ήδη γραμμένα</span></p></div>
+      <p><button class="fbcopy" type="button" onclick="reportProblem()">🐞 Ανάφερε πρόβλημα</button></p></div>
   </section>
 </main>
 <footer id="feedback" class="fb" hidden>💬 Επικοινωνία:
   <a href="mailto:euroleaguefantasy26@gmail.com?subject=HoopsLab%20beta">euroleaguefantasy26@gmail.com</a>
   <button class="fbcopy" type="button" onclick="copyMail(this)">📋 Αντιγραφή</button>
-  <button class="fbcopy" type="button" onclick="reportProblem()">🐞 Ανέφερε πρόβλημα</button></footer>
+  <button class="fbcopy" type="button" onclick="reportProblem()">🐞 Ανάφερε πρόβλημα</button></footer>
 <nav class="bnav" id="bnav" aria-label="Κύρια πλοήγηση">
   <button data-t="today" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/></svg><span>Σήμερα</span></button>
   <button data-t="team"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 12h18"/><circle cx="12" cy="12" r="3"/></svg><span>Η ομάδα μου</span></button>
@@ -502,7 +501,7 @@ body > header nav button.on { color: var(--bar-fg); border-color: var(--bar-line
 <div class="modal" id="modal" role="dialog" aria-modal="true"><div class="sheet" id="sheet"></div></div>
 <script>
 // the page's JavaScript errors go to functions/api/errors.js (counted, the owner hears on Telegram): the text, the
-// file and line, the tab; nothing personal. At most 5 a page load, each once. The last one goes in «Ανέφερε πρόβλημα».
+// file and line, the tab; nothing personal. At most 5 a page load, each once. The last one goes in «Ανάφερε πρόβλημα».
 let LAST_ERR = "";
 (() => {
   const sent = new Set();
@@ -1410,16 +1409,28 @@ async function copyMail(btn) {
   setTimeout(() => (btn.textContent = old), 2000);
   return ok;
 }
-// «Ανέφερε πρόβλημα»: an email with what helps find the bug already written (no personal data: the user sees it all)
-function problemMail() {
+// «Ανάφερε πρόβλημα»: an email with what helps find the bug already written (no personal data: the user sees it all)
+// iPhone mail apps may open the email without its body: the same text is also shown in a sheet to copy
+function problemText() {
   const tab = document.querySelector("main > section.on")?.id || "";
   const lines = ["Τι έγινε:", "", "Τι περίμενες:", "", "---",
     `Tab: ${tab}`, `Round: ${P?.round ?? ""}`, `Δεδομένα: ${P?.generated ?? ""}`,
     `Οθόνη: ${window.innerWidth}×${window.innerHeight}`, `Browser: ${navigator.userAgent}`];
   if (LAST_ERR) lines.push(`Σφάλμα: ${LAST_ERR}`);
-  return `mailto:${FEEDBACK_MAIL}?subject=${encodeURIComponent("HoopsLab beta — πρόβλημα")}&body=${encodeURIComponent(lines.join("\n"))}`;
+  return lines.join("\n");
 }
-function reportProblem() { location.href = problemMail(); }
+const problemMail = (text = problemText()) =>
+  `mailto:${FEEDBACK_MAIL}?subject=${encodeURIComponent("HoopsLab beta — πρόβλημα")}&body=${encodeURIComponent(text)}`;
+function reportProblem() {
+  const text = problemText();
+  $("#sheet").innerHTML = `<div class="sh"><h2>🐞 Ανάφερε πρόβλημα</h2><button class="x" onclick="closePlayer()">×</button></div>
+    <p class="muted">Αν το email ανοίξει άδειο, αντίγραψε αυτό το κείμενο και κόλλησέ το εκεί.</p>
+    <textarea class="tm-input" id="pbText" rows="8" readonly>${esc(text)}</textarea>
+    <p><a class="fbcopy" id="pbMail" href="${esc(problemMail(text))}">✉️ Άνοιγμα email</a>
+      <button class="fbcopy" type="button" id="pbCopy">📋 Αντιγραφή</button></p>`;
+  $("#pbCopy").onclick = async () => { $("#pbCopy").textContent = (await copyText(text)) ? "✓ Αντιγράφηκε" : "Πάτα παρατεταμένα το κείμενο"; };
+  $("#modal").classList.add("on"); document.body.classList.add("noscroll");
+}
 function closePlayer() { $("#modal").classList.remove("on"); document.body.classList.remove("noscroll"); }
 // a sheet keeps the page where it was: iPhones scroll the page under it (the keyboard, overflow: hidden), and a change
 // made in it redraws the tab — after it closes you are back at the same spot, not at the top

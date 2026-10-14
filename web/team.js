@@ -627,7 +627,7 @@
       ? `Starting five/Captain με <b>/lineup</b> · Trades στο παιχνίδι (εδώ ✓ και ✕ είναι πρόχειρο) · ενημ. ${esc(upd)}`
       : "";
     return `<header class="tm-top"><div><h2 class="tm-h">${t.game ? esc(t.name || "Η ομάδα μου") : "Η ομάδα μου"}</h2>
-        <div class="muted">Credits <b>${f1(t.bank)}/${f1(Number(t.bank) + value)}</b>${gain ? ` <span class="${gain > 0 ? "tm-up" : "tm-down"}">(${gain > 0 ? "+" : "−"}${f1(Math.abs(gain))} gain)</span>` : ""} · ${pl.ti.max_trades <= 4 ? `<button class="tm-trades" id="tmTrades" type="button" title="Άλλαξε πόσα Trades σου μένουν">Trades <b>${usedTrades(t, pl.ti)}/${pl.ti.max_trades}</b> ✎</button>`
+        <div class="muted"><button class="tm-trades" id="tmBankEdit" type="button" title="Διόρθωσε τα credits σου">Credits <b>${f1(t.bank)}/${f1(Number(t.bank) + value)}</b> ✎</button>${gain ? ` <span class="${gain > 0 ? "tm-up" : "tm-down"}">(${gain > 0 ? "+" : "−"}${f1(Math.abs(gain))} gain)</span>` : ""} · ${pl.ti.max_trades <= 4 ? `<button class="tm-trades" id="tmTrades" type="button" title="Άλλαξε πόσα Trades σου μένουν">Trades <b>${usedTrades(t, pl.ti)}/${pl.ti.max_trades}</b> ✎</button>`
           : `Trades <b>${usedTrades(t, pl.ti)}/${pl.ti.max_trades > 4 ? "∞" : pl.ti.max_trades}</b>`}</div>
         <div class="muted">xFPT <b>${f1(total)}</b>${Math.abs(pl.planned - total) >= 0.05
           ? ` → <b class="tm-planned"${pl.turnPlan.length ? ' title="Με τις αλλαγές 🕐 πριν το επόμενο Turn"' : ""}>${f1(pl.planned)}</b>` : ""}</div>
@@ -884,16 +884,26 @@
 
   // ------------------------------------------------------------ menu
   // the undo buttons stay on the screen (only when there is something to undo); the rest behind «⋯ Επιλογές»
+  // «💾 Save» next to them. On phones: ↶ (the last step) and ▾ with «Undo last» / «Undo all».
   function undoBar(t) {
-    const ti = P.trade_info || {}, n = undoSteps(t);
-    const b = (n ? `<button id="mUndoLast">Undo</button>` : "")
-      + (n > 1 || canUndo(t, ti) ? `<button id="mUsed" title="Η ομάδα όπως στο τελευταίο κλείδωμα">Undo all</button>` : "");
-    return b ? `<div class="tm-toolbar" role="toolbar">${b}</div>` : "";
+    const ti = P.trade_info || {}, n = undoSteps(t), all = n > 1 || canUndo(t, ti);
+    const undo = n || all ? `<span class="tm-undo">${n ? `<button id="mUndoLast" title="Undo last" aria-label="Undo last"><span class="tm-ico" aria-hidden="true">↶</span><span class="tm-lbl">Undo</span></button>` : ""}`
+      + `<button id="mUndoDd" class="tm-dd" aria-haspopup="menu" aria-expanded="false" aria-label="Επιλογές αναίρεσης">▾</button>`
+      + `<span class="tm-undomenu" id="tmUndoMenu">${n ? `<button id="mUndoLast2" class="tm-phone">Undo last</button>` : ""}`
+      + `${all ? `<button id="mUsed" title="Η ομάδα όπως στο τελευταίο κλείδωμα">Undo all</button>` : ""}</span></span>` : "";
+    return `<div class="tm-toolbar" role="toolbar">${undo}<button id="mCp" title="Το «Undo all» θα γυρίζει εδώ">💾 Save</button></div>`;
   }
   function bindUndo(t, best) {
-    if ($("#mUndoLast")) $("#mUndoLast").onclick = () => {
-      if (undoLast(t)) { render(best); toast(`Αναιρέθηκε η τελευταία κίνηση${undoSteps(t) ? ` · μένουν ${undoSteps(t)}` : ""}`); }
+    const last = () => { if (undoLast(t)) { render(best); toast(`Αναιρέθηκε η τελευταία κίνηση${undoSteps(t) ? ` · μένουν ${undoSteps(t)}` : ""}`); } };
+    if ($("#mUndoLast")) $("#mUndoLast").onclick = last;
+    if ($("#mUndoLast2")) $("#mUndoLast2").onclick = last;
+    if ($("#mUndoDd")) $("#mUndoDd").onclick = (e) => {
+      e.stopPropagation();
+      const open = $("#tmUndoMenu").classList.toggle("on");
+      $("#mUndoDd").setAttribute("aria-expanded", String(open));
     };
+    if ($("#mCp")) $("#mCp").onclick = () => cpSheet(t, best);
+    if ($("#tmBankEdit")) $("#tmBankEdit").onclick = () => bankSheet(t, best);
     if ($("#mUsed")) $("#mUsed").onclick = () => {
       const n = usedTrades(t, P.trade_info || {}), snap = !!(t.used && t.used.before);
       sheet(`<div class="sh"><h2>Αναίρεση ${n === 0 ? "των κινήσεων" : n === 1 ? "του Trade" : `των ${n} Trades`};</h2><button class="x" onclick="closePlayer()">×</button></div>
@@ -903,6 +913,24 @@
       $("#tmUndoOk").onclick = () => { const ok = undoAll(t) || (undoTrades(t), save(t), !!snap); closePlayer(); render(best);
         toast(ok ? "Η ομάδα γύρισε όπως ήταν" : "Ο μετρητής μηδενίστηκε"); };
     };
+  }
+
+  // Credits ✎: the first number under CREDITS in the game
+  function bankSheet(t, best) {
+    sheet(`<div class="sh"><div><h2>Credits</h2><div class="muted">Το πρώτο νούμερο στο CREDITS του παιχνιδιού</div></div>
+        <button class="x" onclick="closePlayer()">×</button></div>
+      <input id="tmBank" class="tm-input" inputmode="decimal" value="${f1(t.bank)}" autocomplete="off"><button class="tm-primary" id="tmBankOk">Αποθήκευση</button>`);
+    $("#tmBankOk").onclick = () => { const v = parseFloat(String($("#tmBank").value).replace(",", "."));
+      if (isNaN(v) || v < 0) { toast("Γράψε ένα ποσό, π.χ. 3,5"); return; }
+      t.bank = v; save(t); closePlayer(); render(best); };
+  }
+  function cpSheet(t, best) {
+    sheet(`<div class="sh"><div><h2>Save</h2><div class="muted">Η ομάδα όπως είναι τώρα</div></div>
+        <button class="x" onclick="closePlayer()">×</button></div>
+      <p class="muted">Το «Undo all» θα γυρίζει την ομάδα εδώ, όχι πιο πίσω: π.χ. αν πέρασες τώρα Trades του προηγούμενου Round,
+        δεν θα αναιρούνται μαζί με τα τωρινά. Ο μετρητής «Trades» μένει όπως είναι· αν χρειάζεται, διόρθωσέ τον με το ✎.</p>
+      <button class="tm-primary" id="tmCpOk">💾 Save</button>`);
+    $("#tmCpOk").onclick = () => { checkpoint(t); closePlayer(); render(best); toast("💾 Saved · το «Undo all» γυρίζει πλέον εδώ"); };
   }
 
   // the team's options: a dropdown behind «⋯ Επιλογές» (phones and wide screens alike)
@@ -915,8 +943,6 @@
       <button id="mSync">🔄 Συγχρονισμός συσκευών${syncGet() ? " ✓" : ""}</button>
       <button id="mBackup">🔗 Αντίγραφο ασφαλείας</button>
       <button id="mEdit">✏️ Αλλαγή ομάδας</button>
-      <button id="mBank">💰 Διόρθωση credits</button>
-      <button id="mCp">💾 Save</button>
       ${WIDE() ? "" : `<button id="mInstall">📱 Βάλ' το στην οθόνη σου</button>`}
       <button id="mMail">✉️ Επικοινωνία</button>
       <button id="mDel" class="tm-danger">🗑 Διαγραφή ομάδας</button></div>`;
@@ -930,24 +956,6 @@
         <textarea class="tm-input" rows="4" readonly onclick="this.select()">${esc(link)}</textarea>`); }
     };
     $("#mEdit").onclick = () => { close(); setup = { players: t.players.map((x) => ({ ...x })) }; mode = "setup"; render(best); };
-    $("#mBank").onclick = () => {
-      close();
-      sheet(`<div class="sh"><div><h2>Credits</h2><div class="muted">Το πρώτο νούμερο στο CREDITS του παιχνιδιού</div></div>
-          <button class="x" onclick="closePlayer()">×</button></div>
-        <input id="tmBank" class="tm-input" inputmode="decimal" value="${f1(t.bank)}" autocomplete="off"><button class="tm-primary" id="tmBankOk">Αποθήκευση</button>`);
-      $("#tmBankOk").onclick = () => { const v = parseFloat(String($("#tmBank").value).replace(",", "."));
-        if (isNaN(v) || v < 0) { toast("Γράψε ένα ποσό, π.χ. 3,5"); return; }
-        t.bank = v; save(t); closePlayer(); render(best); };
-    };
-    $("#mCp").onclick = () => {
-      close();
-      sheet(`<div class="sh"><div><h2>Save</h2><div class="muted">Η ομάδα όπως είναι τώρα</div></div>
-          <button class="x" onclick="closePlayer()">×</button></div>
-        <p class="muted">Το «Undo all» θα γυρίζει την ομάδα εδώ, όχι πιο πίσω: π.χ. αν πέρασες τώρα Trades του προηγούμενου Round,
-          δεν θα αναιρούνται μαζί με τα τωρινά. Ο μετρητής «Trades» μένει όπως είναι· αν χρειάζεται, διόρθωσέ τον με το ✎.</p>
-        <button class="tm-primary" id="tmCpOk">💾 Save</button>`);
-      $("#tmCpOk").onclick = () => { checkpoint(t); closePlayer(); render(best); toast("💾 Saved · το «Undo all» γυρίζει πλέον εδώ"); };
-    };
     $("#mMail").onclick = async () => { close();
       toast(await copyText(FEEDBACK_MAIL) ? `Αντιγράφηκε: ${FEEDBACK_MAIL}` : FEEDBACK_MAIL); };
     if ($("#mInstall")) $("#mInstall").onclick = () => { close(); installGuide(true); };
@@ -960,6 +968,7 @@
     };
   }
   document.addEventListener("click", (e) => { if (!e.target.closest("#tmMenu, #tmMore")) { const h = document.getElementById("tmMenu"); if (h) h.innerHTML = ""; } });
+  document.addEventListener("click", (e) => { if (!e.target.closest("#mUndoDd")) { const m = document.getElementById("tmUndoMenu"); if (m) m.classList.remove("on"); } });
 
   // ------------------------------------------------------------ setup on an empty court
   function setupView() {
@@ -1326,6 +1335,23 @@
   .tm-kept { font-size: 14px; margin: 10px 0 0; }
   .tm-kept .linkbtn { font-size: 13px; }
   .tm-trades { border: 0; background: none; padding: 0; font: inherit; color: inherit; cursor: pointer; }
+  /* undo: words on wide screens; on phones ↶ and ▾ with «Undo last» / «Undo all» */
+  .tm-undo { display: contents; }
+  .tm-undomenu { display: contents; }
+  .tm-ico, .tm-dd, .tm-phone { display: none; }
+  @media (max-width: 699px) {
+    .tm-undo { display: inline-flex; position: relative; }
+    .tm-undo > #mUndoLast { border-radius: 999px 0 0 999px; padding: 6px 12px; font-size: 18px; line-height: 1; }
+    .tm-ico { display: inline; }
+    .tm-lbl { display: none; }
+    .tm-toolbar .tm-dd { display: inline-block; padding: 7px 10px; }
+    .tm-undo > #mUndoLast + .tm-dd { border-radius: 0 999px 999px 0; border-left: 0; }
+    .tm-undomenu { display: none; position: absolute; right: 0; top: 40px; z-index: 6; background: var(--surface-1); border: 1px solid var(--border);
+      border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,.15); min-width: 160px; overflow: hidden; }
+    .tm-undomenu.on { display: block; }
+    .tm-toolbar .tm-undomenu button { display: block; width: 100%; text-align: left; border: 0; border-radius: 0; padding: 12px 14px; }
+    .tm-toolbar .tm-undomenu button + button { border-top: 1px solid var(--border); }
+  }
   /* wide screens: the to-do list and the court side by side */
   @media (min-width: 1000px) {
     .tm-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.85fr); gap: 14px; align-items: start; }

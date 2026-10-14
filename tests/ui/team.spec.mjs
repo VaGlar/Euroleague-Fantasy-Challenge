@@ -7,6 +7,12 @@ const court = (page) => page.locator(`${C} .chip[data-fid]`);
 const header = (page) => page.locator("#team .tm-top");
 const tradeRows = (page) => page.locator("#team li.tm-item.tm-trade");
 
+// «Undo all»: a button on wide screens; on phones behind ▾ next to ↶
+async function undoAll(page) {
+  if (await page.locator("#mUndoDd").isVisible()) await page.locator("#mUndoDd").click();
+  await page.locator("#mUsed").click();
+}
+
 async function savedTeam(page) {
   await open(page, "public", { tab: "team" });
   await buildTeam(page);
@@ -109,7 +115,7 @@ test.describe("public edition", () => {
     await savedTeam(page);
     await expect(page.locator("#mBackup")).toHaveCount(0);           // closed until tapped
 
-    await option(page, "mBank");
+    await page.locator("#tmBankEdit").click();                      // Credits ✎, as Trades ✎
     await page.locator("#tmBank").fill("2,5");
     await page.locator("#tmBankOk").click();
     await expect(header(page)).toContainText("Credits 2.5/");
@@ -180,7 +186,7 @@ test.describe("public edition", () => {
     // sold at today's price: bank = before + out(today) - in
     expect(mid.bank).not.toBeNaN();
 
-    await page.locator("#mUsed").click();
+    await undoAll(page);
     await page.locator("#tmUndoOk").click();
     const after = await stored(page);
     for (const k of ["players", "bank", "roles", "captain"]) expect(after[k]).toEqual(before[k]);
@@ -335,7 +341,7 @@ test.describe("public edition", () => {
     await page.locator("#tmFinish").click();
     await expect(header(page)).toContainText("Trades 0/4");        // not binding: the count starts again
 
-    await page.locator("#mUsed").click();                                   // …but the undo is still there
+    await undoAll(page);                                   // …but the undo is still there
     await expect(page.locator("#sheet")).toContainText("Αναίρεση των κινήσεων");
     await page.locator("#tmUndoOk").click();
     const after = await stored(page);
@@ -347,13 +353,13 @@ test.describe("public edition", () => {
     await page.locator("#tmConfirm").click();
     await tradeRows(page).first().locator(".tm-done").click();              // e.g. last round's trade, recorded late
     const mark = await stored(page);
-    await option(page, "mCp");
+    await page.locator("#mCp").click();                                     // next to the undo buttons
     await page.locator("#tmCpOk").click();
     await expect(header(page)).toContainText("Trades 1/4");
     await expect(page.locator("#mUsed, #mUndoLast")).toHaveCount(0);        // nothing to undo at the mark
     await tradeRows(page).first().locator(".tm-done").click();
     await expect(header(page)).toContainText("Trades 2/4");
-    await page.locator("#mUsed").click();
+    await undoAll(page);
     await page.locator("#tmUndoOk").click();
     const now = await stored(page);
     for (const k of ["players", "bank", "roles", "captain"]) expect(now[k]).toEqual(mark[k]);
@@ -627,4 +633,33 @@ test("phones: a line above the court says how many steps are left and takes you 
   await line.click();
   await expect.poll(() => page.locator("#tmTodo").evaluate((el) => Math.round(el.getBoundingClientRect().top))).toBeLessThan(40);
   await checkLayout(page, "steps line");
+});
+
+test("Undo on phones: ↶ takes the last step, ▾ opens «Undo last» / «Undo all»; Save next to them; Credits ✎", async ({ page }, testInfo) => {
+  await savedTeam(page);
+  await page.locator("#tmConfirm").click();
+  await tradeRows(page).first().locator(".tm-done").click();
+  await tradeRows(page).first().locator(".tm-done").click();
+  await expect(header(page)).toContainText("Trades 2/4");
+  await expect(page.locator("#team .tm-toolbar #mCp")).toBeVisible();
+  await expect(page.locator("#tmBankEdit")).toContainText("✎");
+  await expect(page.locator("#mBank")).toHaveCount(0);                     // no longer in «⋯ Επιλογές»
+  if (isPhone(testInfo)) {
+    await expect(page.locator("#mUndoLast .tm-ico")).toBeVisible();           // ↶, not the word
+    await expect(page.locator("#mUndoLast .tm-lbl")).toBeHidden();
+    await expect(page.locator("#mUsed")).toBeHidden();
+    await page.locator("#mUndoLast").click();
+    await expect(header(page)).toContainText("Trades 1/4");
+    await page.locator("#mUndoDd").click();
+    await expect(page.locator("#mUndoLast2")).toBeVisible();
+    await expect(page.locator("#mUsed")).toBeVisible();
+    await checkLayout(page, "undo menu");
+    await page.locator("#mUndoLast2").click();
+    await expect(header(page)).toContainText("Trades 0/4");
+  } else {
+    await expect(page.locator("#mUndoLast .tm-lbl")).toBeVisible();           // the word, not ↶
+    await expect(page.locator("#mUndoLast .tm-ico")).toBeHidden();
+    await expect(page.locator("#mUndoDd")).toBeHidden();
+    await expect(page.locator("#mUsed")).toBeVisible();
+  }
 });
