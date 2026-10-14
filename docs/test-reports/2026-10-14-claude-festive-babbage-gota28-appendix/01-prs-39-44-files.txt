@@ -1,0 +1,75 @@
+# Files changed by PRs 39-44 (data/ left out), from the GitHub API
+=== PR 39: Personal team draft, planned xFPT with turn swaps, turn in compare
+a +122 -0 docs/test-reports/2026-10-08-claude-vibrant-cannon-u7rds6.md
+m +1 -0 tests/js_runner.js
+m +8 -0 tests/test_js_optimizer.py
+m +36 -9 tests/ui/team.spec.mjs
+m +2 -1 web/index.html
+m +14 -1 web/opt.js
+m +72 -32 web/team.js
+=== PR 40: /lineup court-slot fix, «💾 Save», watchlist with Telegram alerts
+m +14 -1 .github/workflows/update.yml
+a +47 -0 .github/workflows/watch.yml
+m +2 -0 .gitignore
+m +16 -0 README.md
+m +67 -21 elf/lineup_cmd.py
+m +27 -6 elf/optimize.py
+m +2 -1 elf/publish.py
+a +137 -0 elf/watch.py
+a +48 -0 functions/api/watch.js
+m +15 -0 tests/conftest.py
+m +27 -0 tests/test_lineup_cmd.py
+a +130 -0 tests/test_watch.py
+m +23 -0 tests/ui/players.spec.mjs
+m +25 -0 tests/ui/team.spec.mjs
+a +16 -0 tests/watch_fn_runner.mjs
+m +90 -8 web/index.html
+m +44 -9 web/team.js
+=== PR 41: Model tab: less text, ⓘ on every measure, season top-20 fix
+m +3 -0 elf/tracking.py
+a +68 -0 research/023_live_bias/README.md
+a +432 -0 research/023_live_bias/result.json
+a +195 -0 research/023_live_bias/run.py
+m +1 -0 research/README.md
+m +21 -0 tests/test_tracking.py
+m +15 -0 tests/ui/app.spec.mjs
+m +46 -45 web/index.html
+=== PR 42: Claude/vibrant cannon u7rds6
+m +6 -1 elf/lineup_cmd.py
+m +29 -0 elf/model.py
+m +84 -10 elf/news.py
+m +20 -11 elf/run.py
+a +33 -0 research/024_total_defense/README.md
+a +42 -0 research/024_total_defense/result.json
+a +93 -0 research/024_total_defense/run.py
+m +1 -0 research/README.md
+m +1 -1 tests/test_fallbacks.py
+m +20 -0 tests/test_lineup_cmd.py
+m +3 -3 tests/test_pipeline.py
+a +22 -0 tests/test_total_allowed.py
+m +28 -0 tests/test_units.py
+m +21 -4 web/index.html
+m +12 -7 web/team.js
+=== PR 43: Claude/vibrant cannon u7rds6
+m +22 -1 README.md
+a +92 -0 elf/checks.py
+m +14 -5 elf/news.py
+m +7 -0 elf/validate.py
+a +63 -0 functions/api/errors.js
+m +32 -0 functions/api/sync/[[path]].js
+a +44 -0 tests/errors_fn_runner.mjs
+m +9 -2 tests/sync_runner.mjs
+a +56 -0 tests/test_checks.py
+a +41 -0 tests/test_errors_fn.py
+m +2 -2 tests/test_publish_repo.py
+m +18 -0 tests/test_sync.py
+m +7 -0 tests/test_units.py
+m +52 -1 tests/ui/app.spec.mjs
+m +92 -17 web/index.html
+m +11 -1 web/team.js
+=== PR 44: Team toolbar (Credits ✎, Save beside Undo, ↶ ▾ on phones); «Ανάφερε πρόβλημα» with copyable text
+m +1 -1 README.md
+m +2 -2 tests/ui/app.spec.mjs
+m +40 -5 tests/ui/team.spec.mjs
+m +19 -8 web/index.html
+m +53 -27 web/team.js

@@ -1,0 +1,58 @@
+# Before the new tests (main at d4cb34f)
+$ python -m pytest -q --cov
+........................................................................ [ 19%]
+........................................................................ [ 38%]
+........................................................................ [ 58%]
+........................................................................ [ 77%]
+........................................................................ [ 96%]
+............                                                             [100%]
+================================ tests coverage ================================
+_______________ coverage: platform linux, python 3.11.15-final-0 _______________
+Coverage XML written to file <scratch>/r2/cov.xml
+Required test coverage of 90.0% reached. Total coverage: 91.84%
+372 passed in 117.88s (0:01:57)
+
+$ diff-cover cov.xml --compare-branch=de7895bc100330f80c965cb424d1bae14f230815 (PR 38 merge = start of PRs 39-44)
+-------------
+Diff Coverage
+Diff: de7895bc100330f80c965cb424d1bae14f230815...HEAD, staged and unstaged changes
+-------------
+elf/checks.py (95.6%): Missing lines 52,80,85
+elf/lineup_cmd.py (92.0%): Missing lines 158-159,170,178
+elf/model.py (95.2%): Missing lines 156
+elf/news.py (100%)
+elf/optimize.py (100%)
+elf/publish.py (100%)
+elf/run.py (100%)
+elf/tracking.py (100%)
+elf/validate.py (66.7%): Missing lines 122-123
+elf/watch.py (93.6%): Missing lines 132-137
+-------------
+Total:   314 lines
+Missing: 16 lines
+Coverage: 94%
+-------------
+
+
+# After the new tests
+$ python -m pytest -q --cov  (after the new tests)
+Required test coverage of 90.0% reached. Total coverage: 91.97%
+379 passed in 113.69s (0:01:53)
+
+$ diff-cover vs PR 38 merge
+elf/checks.py (95.6%): Missing lines 52,80,85
+elf/lineup_cmd.py (96.0%): Missing lines 170,178
+elf/model.py (95.2%): Missing lines 156
+elf/news.py (100%)
+elf/optimize.py (100%)
+elf/publish.py (100%)
+elf/run.py (100%)
+elf/tracking.py (100%)
+elf/validate.py (100%)
+elf/watch.py (93.6%): Missing lines 132-137
+-------------
+Total:   314 lines
+Missing: 12 lines
+Coverage: 96%
+-------------
+

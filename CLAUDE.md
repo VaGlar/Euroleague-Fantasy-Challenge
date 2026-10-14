@@ -21,6 +21,8 @@ it affects. Don't merge it on your own.
   required check or protection that blocks those pushes stops the updates. Check this before
   suggesting any GitHub setting.
 - **Sync with `main` before each new change.** `main` moves on its own with every data commit.
+  Then read the newest report in `docs/test-reports/`, at least its «Κενά» section: the findings for
+  your role are there. The sessions don't talk to each other, and nobody relays them.
 - **The repo is public.** Read «Public repo and private data» in the README before adding an output file:
   - every new `data/public` file goes into `PUBLIC_FILES` or `PRIVATE_ONLY` in `elf/publish.py`;
   - nothing personal goes in logs, test output or fixtures;
