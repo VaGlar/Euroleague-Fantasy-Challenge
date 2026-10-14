@@ -154,15 +154,12 @@ test("watchlist: ☆ adds a player, «★ Watchlist» shows only them with what 
   await expect(star).toHaveText("★");                       // the page has no emoji: ★ / ☆
   await expect(page.locator("#modal")).not.toHaveClass(/\bon\b/);   // the star doesn't open the player
   await page.locator("#fsearch").fill("");
-  await filters(page);
-  await page.locator("#fwatch").check();
-  await done(page);
+  await page.locator("#fwatch").check();                               // ★ Watchlist: on the page, next to «Φίλτρα»
   await expect(rows(page, testInfo)).toHaveCount(1);
   await expect(rows(page, testInfo).first()).toContainText("Vezenkov");
   await expect(rows(page, testInfo).first().locator(".wsince")).toContainText("χωρίς αλλαγές");   // just added
   await page.reload();
-  await expect(page.locator("#fwatch")).toBeChecked();                  // kept (in the closed panel)
-  await expect(page.locator("#fchips")).toContainText("Watchlist");
+  await expect(page.locator("#fwatch")).toBeChecked();                  // kept after the reload
   await expect(rows(page, testInfo)).toHaveCount(1);
   await rows(page, testInfo).first().locator(".wstar").click();       // out of the list
   await expect(rows(page, testInfo)).toHaveCount(0);
@@ -188,4 +185,37 @@ test("filters: «Ειδικοί» PICK / CAP / AVOID and the from–to ranges (V
   await expect(page.locator("#fchips")).toContainText("Value ≥ 2,5");
   await expect(page.locator("#fchips")).toContainText("xFPT ≤ 15");
   await checkLayout(page, "players filters");
+});
+
+test("filters: Points/credit is the season's points over today's price", async ({ page }) => {
+  await open(page, "public", { tab: "players" });
+  await filters(page);
+  await page.locator("#fminppc").fill("1");
+  await done(page);
+  const n = await page.evaluate(() => P.players.filter((p) => p.x_now != null && p.fpt_total != null && p.price > 0 && p.fpt_total / p.price >= 1).length);
+  await expect(page.locator("#fcount")).toHaveText(`${n} ${n === 1 ? "παίκτης" : "παίκτες"}`);
+  await expect(page.locator("#fchips")).toContainText("Points/credit ≥ 1");
+});
+
+test("sort by Points/credit: the best season's points per credit first", async ({ page }, testInfo) => {
+  await open(page, "public", { tab: "players" });
+  await page.locator("#fsort").selectOption("ppc");
+  const best = await page.evaluate(() => Math.max(...P.players.filter((p) => p.x_now != null && p.ppc != null).map((p) => p.ppc)));
+  test.skip(!isFinite(best), "no season points in the fixture");
+  const first = page.locator(isPhone(testInfo) ? "#plist .pcard" : "#ptable tbody tr").first();
+  const pid = await first.getAttribute("data-pid");
+  const ppc = await page.evaluate((id) => P.players.find((p) => p.person_id === id).ppc, pid);
+  expect(ppc).toBeCloseTo(best, 6);                 // ties may come in any order: the value, not the player
+});
+
+test("filters: $▲ keeps the players whose price is expected to rise, shown with the same tag", async ({ page }, testInfo) => {
+  await open(page, "public", { tab: "players" });
+  await filters(page);
+  await page.locator("#fxup").check();
+  await done(page);
+  const n = await page.evaluate(() => P.players.filter((p) => p.x_now != null && p.price_trend === "up").length);
+  await expect(page.locator("#fcount")).toHaveText(`${n} ${n === 1 ? "παίκτης" : "παίκτες"}`);
+  await expect(page.locator("#fchips")).toContainText("$▲");
+  const rows = page.locator(isPhone(testInfo) ? "#plist .pcard" : "#ptable tbody tr");
+  if (n) await expect(rows.first().locator(".tag.t-up")).toHaveText("$▲");
 });
