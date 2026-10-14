@@ -949,7 +949,7 @@
     const close = () => { host.innerHTML = ""; };
     if (host.innerHTML) { close(); return; }
     host.innerHTML = `<div class="tm-menu" role="menu">
-      <button id="mSync">${ico("sync")} Συγχρονισμός συσκευών${syncGet() ? " ✓" : ""}</button>
+      <button id="mSync">${ico("sync")} Συγχρονισμός συσκευών${syncGet() ? '<span class="tm-on" title="ενεργός">✓</span>' : ""}</button>
       <button id="mBackup">${ico("link")} Αντίγραφο ασφαλείας</button>
       <button id="mEdit">${ico("edit")} Αλλαγή ομάδας</button>
       ${WIDE() ? "" : `<button id="mInstall">${ico("phone")} Βάλ' το στην οθόνη σου</button>`}
@@ -1232,6 +1232,8 @@
   .tm-menu { position: absolute; right: 0; top: 44px; z-index: 5; background: var(--surface-1); border: 1px solid var(--border);
     border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,.15); min-width: 230px; overflow: hidden; }
   .tm-menu button, .tm-menu a { box-sizing: border-box; text-decoration: none; }
+  .tm-menu button, .tm-menu a { white-space: nowrap; }   /* the ✓ of «Συγχρονισμός» stays on its line */
+  .tm-menu .tm-on { color: var(--good); font-weight: 700; margin-left: 6px; }
   .tm-menu button, .tm-menu a { display: block; width: 100%; text-align: left; border: 0; background: none; color: var(--text-primary);
     font: inherit; padding: 12px 14px; cursor: pointer; }
   .tm-menu button + button, .tm-menu button + a, .tm-menu a + button { border-top: 1px solid var(--border); }

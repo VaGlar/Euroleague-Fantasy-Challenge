@@ -436,7 +436,10 @@ body > header nav button.on { color: var(--bar-fg); border-color: var(--bar-line
   stroke-linecap: round; stroke-linejoin: round; flex: none; }
 h1 .logo { width: 1.05em; height: 1.05em; vertical-align: -0.16em; fill: none; stroke: var(--accent); stroke-width: 2.2; }
 .tag { display: inline-block; font: 800 10px/1 var(--num-font); letter-spacing: .06em; padding: 3px 4px 2px; border-radius: 2px;
-  background: var(--accent); color: #fff; vertical-align: 2px; }
+  background: var(--accent); color: #fff; vertical-align: middle; }
+/* the marks next to a name (NEW, PICK, $▲, «εκτός», «νέος») share one middle line */
+html body .pill { vertical-align: middle; line-height: 1.35; }
+html body .pill .ic { vertical-align: -0.12em; }
 .tag.t-pick, .tag.t-up { background: var(--good); } .tag.t-down { background: var(--critical); }
 .tag[data-info] { cursor: help; }
 .tag.t-pick { background: var(--good); } .tag.t-avoid { background: var(--critical); } .tag.t-cap { background: var(--accent); }
