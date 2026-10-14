@@ -25,6 +25,9 @@ LATER_PENALTY = 1000.0   # per later-turn starter, per turn he plays after the c
 # LATER_PENALTY, so it never pulls one more later player into the five; more than any xFPT gap. An
 # earlier captain always dominates: if he flops, the armband moves to the later player before his game.
 CAP_LATER_PENALTY = 100.0
+# five vs sixth man score the same, so which of two players starts is a tie: the stronger one does
+# (a tiny bonus per xFPT in the five, far below any real difference; left out of the objective reported)
+FIVE_TIE = 1e-5
 PLAN_MIN_X = 5.0  # a later-turn bench player below this is not worth a swap plan
 
 
@@ -83,7 +86,7 @@ def _model(players: list[dict], value: str, now: str, budget: float,
         full = five[i] + six[i]
         bb = (bench_bonus or {}).get(p["id"], 0.0)  # option value of a later-turn bench player
         obj += [v * full, (BENCH_MULTIPLIER * v + bb) * (pick[i] - full),
-                float(p.get(now) or 0) * cap[i]]
+                float(p.get(now) or 0) * cap[i], FIVE_TIE * v * five[i]]
         m += full <= pick[i]
         m += cap[i] <= five[i]
         if bench_only and p["id"] in bench_only:   # already played from the bench: locked
@@ -135,6 +138,8 @@ def _model(players: list[dict], value: str, now: str, budget: float,
     pen = sum(later[p["id"]] * (LATER_PENALTY * (five[i].value() + six[i].value())
                                 + CAP_LATER_PENALTY * cap[i].value())
               for i, p in enumerate(players) if p["id"] in later)
+    pen -= sum(FIVE_TIE * float(p.get(value) or 0) * five[i].value()
+               for i, p in enumerate(players) if p["position"] != "Head Coach")
 
     def role(i):
         if players[i]["position"] == "Head Coach":
