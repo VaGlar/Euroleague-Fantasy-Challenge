@@ -4,6 +4,9 @@ import { open, goTab, checkLayout, checkNoOverlap, isPhone } from "./helpers.mjs
 
 // the rows the user sees: the table on a PC, the cards on a phone
 const rows = (page, testInfo) => page.locator(isPhone(testInfo) ? "#plist .pcard" : "#ptable tbody tr");
+// the filters live in a panel («Φίλτρα»), on PCs and phones alike; search and sort stay on the page
+const filters = async (page) => { await page.locator("#fopen").click(); await expect(page.locator("#fpanel")).toBeVisible(); };
+const done = async (page) => { await page.locator("#fapply").click(); await expect(page.locator("#fpanel")).toBeHidden(); };
 
 test("table on PC, cards on phones; cards don't overlap", async ({ page }, testInfo) => {
   await open(page, "public", { tab: "players" });
@@ -19,13 +22,10 @@ test("table on PC, cards on phones; cards don't overlap", async ({ page }, testI
   await checkLayout(page, "players");
 });
 
-test("filters: visible on PC, behind «Φίλτρα» on phones; search, position, price, reset", async ({ page }, testInfo) => {
+test("filters: search on the page, the rest in the «Φίλτρα» panel; position, price, chips, reset", async ({ page }, testInfo) => {
   await open(page, "public", { tab: "players" });
-  if (isPhone(testInfo)) {
-    await expect(page.locator("#fsearch")).toBeHidden();
-    await page.locator("#fsum").click();
-  }
   await expect(page.locator("#fsearch")).toBeVisible();
+  await expect(page.locator("#fpanel")).toBeHidden();
   const all = parseInt(await page.locator("#fcount").innerText());
 
   await page.locator("#fsearch").fill("vezenkov");
@@ -33,29 +33,35 @@ test("filters: visible on PC, behind «Φίλτρα» on phones; search, positio
   await expect(rows(page, testInfo).first()).toContainText("Vezenkov");
   await page.locator("#fsearch").fill("");
 
-  await page.locator("#fpossum").click();
-  await expect(page.locator(`#fpos input[value="Center"]`)).toBeChecked();   // all ticked by default
-  await page.locator("#fposall").uncheck();                       // «Όλες» unticks them all
+  await filters(page);
+  await expect(page.locator(`#fpos input[value="Center"]`)).not.toBeChecked();   // none ticked = all positions
   await page.locator(`#fpos input[value="Center"]`).check();
-  await page.locator("#fpossum").click();                         // closes the dropdown
-  await expect(page.locator("#fcount")).not.toHaveText(new RegExp(`^${all} `));
+  await page.locator("#fpmin").fill("10");
+  await page.locator("#fpmax").fill("12");
+  const prices = await page.evaluate(() => P.players.filter((p) => p.x_now != null && p.position === "Center" && p.price >= 10 && p.price <= 12).length);
+  await expect(page.locator("#fapply")).toContainText(String(prices));          // the button counts them live
+  await checkLayout(page, "filters panel");
+  await done(page);
+  await expect(page.locator("#fcount")).toHaveText(new RegExp(`^${prices} `));
+  await expect(page.locator("#fopen")).toContainText("(2)");
+  await expect(page.locator("#fchips .fchip")).toHaveText([/^C/, /^Price 10–12/]);
   const pos = await page.evaluate(() => [...document.querySelectorAll("#plist .pcard .pm, #ptable tbody tr td:first-child .muted")]
     .filter((e) => e.getBoundingClientRect().width).map((e) => e.textContent));
   expect(pos.length).toBeGreaterThan(0);
   for (const t of pos) expect(t).toMatch(/· C|Center/);
 
-  await page.locator("#fpmin").fill("10");
-  await page.locator("#fpmax").fill("12");
-  const prices = await page.evaluate(() => P.players.filter((p) => p.position === "Center" && p.price >= 10 && p.price <= 12).length);
-  await expect(page.locator("#fcount")).toHaveText(new RegExp(`^${prices} `));
+  await page.locator("#fchips .fchip", { hasText: "Price" }).click();           // ✕ on a chip takes that one off
+  await expect(page.locator("#fpmin")).toHaveValue("");
+  await expect(page.locator("#fchips .fchip")).toHaveCount(1);
 
   await page.locator("#freset").click();
   await expect(page.locator("#fcount")).toHaveText(new RegExp(`^${all} `));
+  await expect(page.locator("#fchips .fchip")).toHaveCount(0);
 });
 
 test("sort by POP puts the most owned first", async ({ page }, testInfo) => {
   await open(page, "public", { tab: "players" });
-  if (isPhone(testInfo)) { await page.locator("#fsum").click(); await page.locator("#fsort").selectOption("popularity"); }
+  if (isPhone(testInfo)) await page.locator("#fsort").selectOption("popularity");
   else await page.locator('#ptable th[data-k="popularity"]').click();      // PC: the table's headers sort
   const pops = isPhone(testInfo)
     ? await page.locator("#plist .pcard").evaluateAll((els) => els.slice(0, 6).map((e) => parseFloat((e.textContent.match(/POP ([\d.]+)/) || [])[1])))
@@ -87,12 +93,9 @@ test("player popup: xFPT, POP, price chart section; closes with × and Escape", 
 
 test("a head coach's popup has upcoming games too", async ({ page }, testInfo) => {
   await open(page, "public", { tab: "players" });
-  if (isPhone(testInfo)) await page.locator("#fsum").click();
-  await page.locator("#fpossum").click();
-  await expect(page.locator(`#fpos input[value="Head Coach"]`)).toBeChecked();   // all ticked by default
-  await page.locator("#fposall").uncheck();                       // «Όλες» unticks them all
+  await filters(page);
   await page.locator(`#fpos input[value="Head Coach"]`).check();
-  await page.locator("#fpossum").click();                         // closes the dropdown
+  await done(page);
   await rows(page, testInfo).first().click();
   await expect(page.locator("#sheet h3", { hasText: "Επόμενα 3 παιχνίδια" })).toBeVisible();
   await expect(page.locator("#sheet")).not.toContainText("Δεν υπάρχουν προγραμματισμένοι αγώνες");
@@ -121,22 +124,21 @@ test("club codes as in the game (EFS, BAY, RMB…), not the API's (IST, MUN, MAD
   const text = await list.innerText();
   expect(text).toMatch(/\b(EFS|BAY|RMB|VBC|FBT|PAO|BJK|CZV|PBB|MTA|KBA)\b/);
   expect(text).not.toMatch(/\b(IST|MUN|MAD|PAM|ULK|PAN|BES|RED|PRS|TEL|BAS)\b/);
-  const opts = await page.locator("#fteam option").evaluateAll((os) => os.map((o) => o.textContent));   // hidden on phones until «Φίλτρα»
+  const opts = await page.locator("#fteam option").evaluateAll((os) => os.map((o) => o.textContent));   // in the «Φίλτρα» panel
   expect(opts).toContain("EFS");
   expect(opts).not.toContain("IST");
-  if (isPhone(testInfo)) await page.locator("#fsum").click();
+  await filters(page);
   await page.locator("#fteam").selectOption({ label: "EFS" });           // the filter still works on the data's codes
+  await done(page);
   await expect(list).toContainText("EFS");
   expect(await list.innerText()).not.toMatch(/\b(BAY|RMB|ZAL|OLY)\b ·/);
 });
 
 test("a player back after 3 missed games is marked «↩ επιστρέφει» and it's explained", async ({ page }, testInfo) => {
   await open(page, "public", { tab: "players" });
-  if (isPhone(testInfo)) await page.locator("#fsum").click();
   await page.locator("#fsearch").fill("carlik");
   const row = rows(page, testInfo).first();
   await expect(row).toContainText("↩ επιστρέφει");
-  if (isPhone(testInfo)) await page.locator("#fsum").click();          // close the filters again
   await row.locator('[data-info="back"]').click();
   await expect(page.locator("#tip")).toContainText("3 τελευταία ματς");
   await expect(page.locator("#modal")).not.toHaveClass(/\bon\b/);      // the mark explains, it doesn't open the player
@@ -145,7 +147,6 @@ test("a player back after 3 missed games is marked «↩ επιστρέφει» 
 
 test("watchlist: ☆ adds a player, «★ Watchlist» shows only them with what changed since, kept after a reload", async ({ page }, testInfo) => {
   await open(page, "public", { tab: "players" });
-  if (isPhone(testInfo)) await page.locator("#fsum").click();
   await page.locator("#fsearch").fill("vezenkov");
   const star = rows(page, testInfo).first().locator(".wstar");
   await expect(star).toHaveText("☆");
@@ -153,31 +154,38 @@ test("watchlist: ☆ adds a player, «★ Watchlist» shows only them with what 
   await expect(star).toHaveText("★");                       // the page has no emoji: ★ / ☆
   await expect(page.locator("#modal")).not.toHaveClass(/\bon\b/);   // the star doesn't open the player
   await page.locator("#fsearch").fill("");
+  await filters(page);
   await page.locator("#fwatch").check();
+  await done(page);
   await expect(rows(page, testInfo)).toHaveCount(1);
   await expect(rows(page, testInfo).first()).toContainText("Vezenkov");
   await expect(rows(page, testInfo).first().locator(".wsince")).toContainText("χωρίς αλλαγές");   // just added
   await page.reload();
-  if (isPhone(testInfo)) await page.locator("#fsum").click();
-  await expect(page.locator("#fwatch")).toBeChecked();
+  await expect(page.locator("#fwatch")).toBeChecked();                  // kept (in the closed panel)
+  await expect(page.locator("#fchips")).toContainText("Watchlist");
   await expect(rows(page, testInfo)).toHaveCount(1);
   await rows(page, testInfo).first().locator(".wstar").click();       // out of the list
   await expect(rows(page, testInfo)).toHaveCount(0);
   await expect(page.locator("#fcount")).toContainText("άδεια");
 });
 
-test("filters: «Ειδικοί» PICK / CAP / AVOID and the minimums for points and Value", async ({ page }, testInfo) => {
+test("filters: «Ειδικοί» PICK / CAP / AVOID and the from–to ranges (Value, xFPT)", async ({ page }, testInfo) => {
   await open(page, "public", { tab: "players" });
-  if (isPhone(testInfo)) await page.locator("#fsum").click();
   const rows = isPhone(testInfo) ? page.locator("#plist .pcard") : page.locator("#ptable tbody tr");
-  await expect(page.locator("#fminx, #fminx3")).toHaveCount(0);              // no xFPT minimums
+  await filters(page);
   await page.locator("#fxpick").check();
+  await done(page);
   const n = await rows.count();
   expect(n).toBeGreaterThan(0);
   for (let i = 0; i < Math.min(n, 10); i++) await expect(rows.nth(i).locator(".t-pick")).toHaveCount(1);
+  await filters(page);
   await page.locator("#fxpick").uncheck();
   await page.locator("#fminval").fill("2,5");
-  const vals = await page.evaluate(() => P.players.filter((p) => p.x_now != null && p.value != null && p.value >= 2.5).length);
+  await page.locator("#fmaxx").fill("15");
+  await done(page);
+  const vals = await page.evaluate(() => P.players.filter((p) => p.x_now != null && p.x_now <= 15 && p.value != null && p.value >= 2.5).length);
   await expect(page.locator("#fcount")).toHaveText(`${vals} ${vals === 1 ? "παίκτης" : "παίκτες"}`);
+  await expect(page.locator("#fchips")).toContainText("Value ≥ 2,5");
+  await expect(page.locator("#fchips")).toContainText("xFPT ≤ 15");
   await checkLayout(page, "players filters");
 });
