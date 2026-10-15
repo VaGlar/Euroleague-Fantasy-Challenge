@@ -754,7 +754,7 @@
   {
    "round": 6,
    "trades": 3,
-   "bank": -0.0,
+   "bank": 0.3,
    "squad": [
     {
      "id": 3898,
@@ -776,7 +776,18 @@
      "team": "MAD",
      "role": "5άδα",
      "captain": true,
-     "x_now": 19.2
+     "x_now": 18.3
+    },
+    {
+     "id": 7424,
+     "price": 9.0,
+     "position": "Center",
+     "person_id": "014108",
+     "name": "DIARRA, ALIOU",
+     "team": "VIR",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 17.2
     },
     {
      "id": 11545,
@@ -787,7 +798,7 @@
      "team": "VIR",
      "role": "5άδα",
      "captain": false,
-     "x_now": 18.0
+     "x_now": 17.1
     },
     {
      "id": 11547,
@@ -796,31 +807,20 @@
      "person_id": "014737",
      "name": "MOORE, WENDELL",
      "team": "VIR",
-     "role": "5άδα",
+     "role": "6ος",
      "captain": false,
-     "x_now": 17.9
+     "x_now": 17.1
     },
     {
-     "id": 3773,
-     "price": 12.6,
-     "position": "Forward",
-     "person_id": "000796",
-     "name": "MIROTIC, NIKOLA",
-     "team": "PAM",
-     "role": "5άδα",
-     "captain": false,
-     "x_now": 17.5
-    },
-    {
-     "id": 7424,
-     "price": 9.0,
-     "position": "Center",
-     "person_id": "014108",
-     "name": "DIARRA, ALIOU",
-     "team": "VIR",
+     "id": 4180,
+     "price": 10.7,
+     "position": "Guard",
+     "person_id": "013285",
+     "name": "DOTSON, DEVON",
+     "team": "BES",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 17.2
+     "x_now": 15.9
     },
     {
      "id": 4255,
@@ -834,6 +834,17 @@
      "x_now": 13.7
     },
     {
+     "id": 4246,
+     "price": 8.7,
+     "position": "Forward",
+     "person_id": "011982",
+     "name": "OJELEYE, SEMI",
+     "team": "RED",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 13.3
+    },
+    {
      "id": 3948,
      "price": 8.7,
      "position": "Forward",
@@ -845,17 +856,6 @@
      "x_now": 11.8
     },
     {
-     "id": 3851,
-     "price": 7.2,
-     "position": "Guard",
-     "person_id": "011247",
-     "name": "FELIZ, ANDRES",
-     "team": "MAD",
-     "role": "6ος",
-     "captain": false,
-     "x_now": 9.9
-    },
-    {
      "id": 4061,
      "price": 5.1,
      "position": "Forward",
@@ -864,22 +864,22 @@
      "team": "PAN",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 6.0
+     "x_now": 6.5
     },
     {
-     "id": 3986,
-     "price": 4.0,
+     "id": 4012,
+     "price": 4.1,
      "position": "Forward",
-     "person_id": "001557",
-     "name": "GIFFEY, NIELS",
-     "team": "MUN",
-     "role": "πάγκος",
+     "person_id": "001518",
+     "name": "RICCI, GIAMPAOLO",
+     "team": "MIL",
+     "role": "5άδα",
      "captain": false,
-     "x_now": 1.8
+     "x_now": 3.0
     }
    ],
-   "x_total": 155.2,
-   "decided_at": "2026-10-15T14:04+00:00"
+   "x_total": 150.3,
+   "decided_at": "2026-10-15T14:07+00:00"
   }
  ],
  "seed_id": "5a453a755a9b",
@@ -890,5 +890,5 @@
   "raw": 514.7,
   "avg_raw": 410.2
  },
- "generated": "2026-10-15T14:04:23.822857+00:00"
+ "generated": "2026-10-15T14:07:43.639737+00:00"
 }
