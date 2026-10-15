@@ -27,23 +27,15 @@ def test_only_https_on_the_allowed_hosts():
     assert bad["status"] == 400 and none["status"] == 400
 
 
-# ------------------------------------------------------------------ tester, 15/10: known gaps, pinned
-# Workers' fetch follows redirects, and a Substack with a custom domain redirects there: the allow-list is
-# checked on the asked host only. The answer goes out with the upstream's content-type (text/html) from the
-# site's own origin, without a CSP (web/_headers doesn't reach Functions): a page from outside the list would
-# run its script on the site, next to the sync code in localStorage. Fix: check the final host (r.url) too,
-# and answer as text/plain with nosniff and «content-security-policy: sandbox» (the pipeline only reads text).
-FEED_GAP = pytest.mark.xfail(strict=True, reason="feed.js: redirects not re-checked / HTML served from our origin (tester 15/10)")
-
-
-@FEED_GAP
+# Workers' fetch follows redirects (a Substack with a custom domain redirects there), so the host is checked
+# again where it ended; the answer is always text/plain with nosniff and «content-security-policy: sandbox»,
+# so a page from outside the list can't run its script on the site (tester 15/10).
 def test_a_redirect_off_the_list_is_refused():
     r, = run({"u": "https://x.substack.com/p/post", "upstream": {"url": "https://attacker.example/p/post",
                                                                   "type": "text/html", "body": "<script>x</script>"}})
     assert r["status"] == 403
 
 
-@FEED_GAP
 def test_the_answer_is_never_a_page_of_our_site():
     r, = run({"u": "https://x.substack.com/p/post", "upstream": {"type": "text/html", "body": "<html>…</html>"}})
     assert not r["type"].startswith("text/html")

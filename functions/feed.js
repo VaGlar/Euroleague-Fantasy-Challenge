@@ -7,10 +7,8 @@ const ALLOWED = [/\.substack\.com$/, /(^|\.)basketnews\.com$/];
 export async function onRequestGet({ request }) {
   const u = new URL(request.url).searchParams.get("u") || "";
   let target;
-  try { target = new URL(u); } catch { return new Response("bad url", { status: 400 }); }
-  if (target.protocol !== "https:" || !ALLOWED.some((re) => re.test(target.hostname))) {
-    return new Response("host not allowed", { status: 403 });
-  }
+  try { target = new URL(u); } catch { return text("bad url", 400); }
+  if (!allowed(target)) return text("host not allowed", 403);
   const r = await fetch(target.toString(), {
     // a browser's headers: BasketNews (Cloudflare) refuses clients that don't look like one
     headers: {
@@ -20,8 +18,22 @@ export async function onRequestGet({ request }) {
     },
     cf: { cacheTtl: 900, cacheEverything: true },
   });
-  return new Response(r.body, {
-    status: r.status,
-    headers: { "content-type": r.headers.get("content-type") || "text/plain" },
-  });
+  // fetch follows redirects: a Substack with a custom domain ends outside the list, so check where it ended
+  let final;
+  try { final = new URL(r.url || target.toString()); } catch { return text("host not allowed", 403); }
+  if (!allowed(final)) return text("host not allowed", 403);
+  return text(r.body, r.status);
 }
+
+const allowed = (url) => url.protocol === "https:" && ALLOWED.some((re) => re.test(url.hostname));
+
+// always plain text that can't run as a page of this site: the pipeline only reads the bytes, and
+// web/_headers doesn't reach Functions, so the headers are set here
+const text = (body, status) => new Response(body, {
+  status,
+  headers: {
+    "content-type": "text/plain; charset=utf-8",
+    "x-content-type-options": "nosniff",
+    "content-security-policy": "sandbox",
+  },
+});
