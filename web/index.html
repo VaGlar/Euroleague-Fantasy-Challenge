@@ -21,6 +21,28 @@
   ["gesturestart", "gesturechange"].forEach((e) => document.addEventListener(e, (ev) => ev.preventDefault(), { passive: false }));
 })();
 </script>
+<script>
+// the move to coachdime.com: the old address (<project>.pages.dev) sends this device's data in a #move=
+// fragment (a fragment never reaches a server). Only the app's own keys, never the sync code (a link can't
+// tie this device to someone else's copy); a different team already here is replaced only if the user says so.
+const MOVE_KEYS = ["myteam_v1", "tm_keep", "tm_avoid", "watch", "filters", "theme", "teamsView2", "cmp", "earlyOff", "tab"];
+(function () {
+  const m = location.hash.match(/[#&]move=([A-Za-z0-9_-]+)/);
+  if (!m) return;
+  history.replaceState(null, "", location.pathname + location.search);
+  try {
+    const bin = atob(m[1].replace(/-/g, "+").replace(/_/g, "/"));
+    const data = JSON.parse(new TextDecoder().decode(Uint8Array.from(bin, (c) => c.charCodeAt(0))));
+    const keys = MOVE_KEYS.filter((k) => typeof data[k] === "string");
+    if (!keys.length) return;
+    const here = localStorage.getItem("myteam_v1");
+    if (here && data.myteam_v1 && here !== data.myteam_v1
+        && !confirm("Υπάρχει ήδη ομάδα εδώ. Να την αντικαταστήσω με αυτή από την παλιά διεύθυνση;")) return;
+    keys.forEach((k) => localStorage.setItem(k, data[k]));
+    sessionStorage.setItem("moved", "1");
+  } catch (e) {}
+})();
+</script>
 <script>try { const t = localStorage.getItem("theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <link rel="manifest" href="manifest.json" crossorigin="use-credentials">   <!-- behind Cloudflare Access the manifest needs the login cookie -->
 <link rel="icon" href="icon.svg" type="image/svg+xml">
@@ -28,6 +50,10 @@
 <link rel="apple-touch-icon" href="icon-180.png">
 <title>ELF Dashboard</title>
 <style>
+  .movebar { display: flex; gap: 10px; align-items: center; justify-content: space-between; flex-wrap: wrap;
+    padding: 10px 16px; background: var(--bar); color: var(--bar-fg); font-size: 14px; }
+  .movebar .muted { display: block; color: var(--bar-muted); font-size: 12px; }
+  .movebar button { flex: none; padding: 8px 14px; border-radius: 8px; border: 0; font-weight: 600; cursor: pointer; }
 :root {
   color-scheme: light;
   --surface-0: #f6f1ea; --surface-1: #fffdf9; --border: #e8dccb;
@@ -683,12 +709,12 @@ html body #mCp .ic { width: 1.25em; height: 1.25em; }
         <li><b>Φιλοξενία:</b> Cloudflare.</li>
       </ul></div>
     <div class="card"><h2>Επικοινωνία</h2>
-      <p>Λάθη, ιδέες, ερωτήσεις: <a href="mailto:euroleaguefantasy26@gmail.com?subject=Coach%20Dime%20beta" onclick="mailTap(this)">euroleaguefantasy26@gmail.com</a></p>
+      <p>Λάθη, ιδέες, ερωτήσεις: <a href="mailto:hello@coachdime.com?subject=Coach%20Dime%20beta" onclick="mailTap(this)">hello@coachdime.com</a></p>
       <p><button class="fbcopy" type="button" onclick="reportProblem()"><svg class="ic" aria-hidden="true"><use href="#i-bug"/></svg> Ανάφερε πρόβλημα</button></p></div>
   </section>
 </main>
 <footer id="feedback" class="fb" hidden><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg> Επικοινωνία:
-  <a href="mailto:euroleaguefantasy26@gmail.com?subject=Coach%20Dime%20beta" onclick="mailTap(this)">euroleaguefantasy26@gmail.com</a>
+  <a href="mailto:hello@coachdime.com?subject=Coach%20Dime%20beta" onclick="mailTap(this)">hello@coachdime.com</a>
   <button class="fbcopy" type="button" onclick="reportProblem()"><svg class="ic" aria-hidden="true"><use href="#i-bug"/></svg> Ανάφερε πρόβλημα</button></footer>
 <nav class="bnav" id="bnav" aria-label="Κύρια πλοήγηση">
   <button data-t="today" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/></svg><span>Σήμερα</span></button>
@@ -1654,7 +1680,7 @@ function searchToTop(el) {
   setTimeout(go, 300);        // after the keyboard has opened
 }
 // the feedback address (mailto does nothing on phones without a mail app: it is copied too)
-const FEEDBACK_MAIL = "euroleaguefantasy26@gmail.com";
+const FEEDBACK_MAIL = "hello@coachdime.com";
 async function copyText(text) {
   try { await navigator.clipboard.writeText(text); return true; } catch (e) {}
   const ta = document.createElement("textarea");       // older iOS / no clipboard permission
@@ -2058,6 +2084,26 @@ setInterval(() => {
   if (c && $("#today").classList.contains("on")) { const st = roundState(); if (st.at) c.textContent = (st.kind === "before" ? "κλείνει σε " : `Turn ${st.turn.turn} σε `) + span(st.at - Date.now()); }
 }, 30000);
 
+// the public site moved to coachdime.com: its old address (<project>.pages.dev; not the previews, not the
+// personal edition) shows a bar whose button takes this device's data along (#move=, read at the top)
+const NEW_HOME = "https://coachdime.com/";
+function moveLink() {
+  const data = {};
+  for (const k of MOVE_KEYS) { try { const v = localStorage.getItem(k); if (v != null) data[k] = v; } catch (e) {} }
+  if (!Object.keys(data).length) return NEW_HOME;
+  let bin = "";
+  for (const b of new TextEncoder().encode(JSON.stringify(data))) bin += String.fromCharCode(b);
+  return NEW_HOME + "#move=" + btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+function moveBar() {
+  const h = location.hostname;
+  if (P.edition !== "public" || !h.endsWith(".pages.dev") || h.split(".").length !== 3) return;
+  document.body.insertAdjacentHTML("afterbegin", `<div class="movebar" role="status"><span><b>Το Coach Dime μετακόμισε στο coachdime.com</b>
+    <span class="muted">Η ομάδα, η watchlist και οι επιλογές σου έρχονται μαζί. Αν το έχεις στην αρχική οθόνη, πρόσθεσέ το ξανά από τη νέα διεύθυνση.</span></span>
+    <button type="button" id="moveGo">Μεταφορά ➜</button></div>`);
+  $("#moveGo").onclick = () => { location.href = moveLink(); };
+}
+
 (async () => {
   const [p, rep, nw, mp, trk, cl, ap] = await Promise.all([get("predictions.json"), get("report.json"), get("news.json"),
     get("model_params.json"), get("tracking.json"), get("clubs.json"), get("autopilot.json")]);
@@ -2065,6 +2111,7 @@ setInterval(() => {
   if (Array.isArray(cl)) CLUB_BY_NAME = Object.fromEntries(cl.flatMap((c) => [[c.short, c.code], [c.name, c.code]]).filter(([n]) => n));
   if (!p) { $("#updated").textContent = "Δεν υπάρχουν δεδομένα ακόμα."; return; }
   P = p; NW = nw;
+  moveBar();
   // points/credit (the season's points over today's price): a field, so the sort and the filter read it alike
   for (const r of P.players) r.ppc = r.fpt_total != null && r.price > 0 ? r.fpt_total / r.price : null;
   $("#round").textContent = `Round ${p.round}`;

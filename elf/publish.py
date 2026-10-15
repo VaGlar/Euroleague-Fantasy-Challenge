@@ -21,6 +21,7 @@ from pathlib import Path
 from .config import PUBLIC, ROOT
 
 PRODUCT = "Coach Dime"
+HOME = "https://coachdime.com/"                 # the public site's address (Cloudflare custom domain)
 
 # file -> function returning the sanitized content (None = copy unchanged)
 PUBLIC_FILES = {
@@ -92,7 +93,7 @@ def site(out: Path, src: Path | None = None) -> list[str]:
     html = index.read_text()
     for old, new in (('<meta name="apple-mobile-web-app-title" content="ELF">',
                       f'<meta name="apple-mobile-web-app-title" content="{PRODUCT}">'),
-                     ("<title>ELF Dashboard</title>", f"<title>{PRODUCT}</title>"),
+                     ("<title>ELF Dashboard</title>", f'<title>{PRODUCT}</title>\n<link rel="canonical" href="{HOME}">'),
                      ('<h1><svg class="logo" aria-hidden="true"><use href="#i-court"/></svg> EuroLeague Fantasy — ',
                       f'<h1><svg class="logo" aria-hidden="true"><use href="#i-court"/></svg> {PRODUCT} <small class="muted">beta</small> — ')):
         if old not in html:

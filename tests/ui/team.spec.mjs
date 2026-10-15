@@ -126,7 +126,7 @@ test.describe("public edition", () => {
     await expect(court(page)).toHaveCount(11);
 
     await option(page, "mMail");
-    await expect(page.locator("#tmtoast")).toContainText("euroleaguefantasy26@gmail.com");
+    await expect(page.locator("#tmtoast")).toContainText("hello@coachdime.com");
 
     // backup link -> another device (empty storage) -> the same team
     const team = await stored(page);
@@ -158,6 +158,40 @@ test.describe("public edition", () => {
     await expect(p2.locator(`${C} .chip[data-fid]`)).toHaveCount(11);
     expect((await stored(p2)).players).toEqual(team.players);
     await other.close();
+  });
+
+  test("the move to coachdime.com: the old address's data comes along, never the sync code", async ({ page, browser }, testInfo) => {
+    await savedTeam(page);
+    await expect(page.locator(".movebar")).toHaveCount(0);           // only on <project>.pages.dev
+    await page.evaluate(() => { localStorage.setItem("watch", JSON.stringify({ p1: 1 }));
+      localStorage.setItem("tm_sync", JSON.stringify({ code: "ABCD2345" })); });
+    const team = await stored(page);
+    const link = await page.evaluate(() => moveLink());
+    expect(link).toMatch(/^https:\/\/coachdime\.com\/#move=[A-Za-z0-9_-]+$/);
+    const other = await browser.newContext(testInfo.project.use);
+    const p2 = await other.newPage();
+    await open(p2, "public", { tab: "today" });
+    await p2.goto(`/public/index.html#${link.split("#")[1]}`);
+    await p2.reload();
+    expect(p2.url()).not.toContain("#move=");
+    expect((await stored(p2)).players).toEqual(team.players);
+    expect(await p2.evaluate(() => [localStorage.getItem("watch"), localStorage.getItem("tm_sync")]))
+      .toEqual([JSON.stringify({ p1: 1 }), null]);
+    await expect(p2.locator("#tmtoast")).toContainText("coachdime.com");
+    await other.close();
+  });
+
+  test("the move keeps a different team already there unless the user says so", async ({ page }) => {
+    await savedTeam(page);
+    const mine = await stored(page);
+    const other = { ...mine, bank: (Number(mine.bank) || 0) + 1 };
+    const code = await page.evaluate((t) => { let bin = "";
+      for (const b of new TextEncoder().encode(JSON.stringify({ myteam_v1: JSON.stringify(t) }))) bin += String.fromCharCode(b);
+      return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""); }, other);
+    page.once("dialog", (d) => d.dismiss());
+    await page.goto(`/public/index.html#move=${code}`);
+    await page.reload();
+    expect((await stored(page)).bank).toEqual(mine.bank);
   });
 
   test("restore from a pasted backup link", async ({ page }) => {
