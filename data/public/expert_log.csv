@@ -210,17 +210,68 @@ round,source,stance,person_id,name,team,model_xpts
 5,Basketball Sphere – Fantasy,avoid,012878,"WRIGHT, MOSES",MIL,17.95
 5,Basketball Sphere – Fantasy,avoid,008084,"MANTZOUKAS, ELEFTHERIOS",PAN,6.11
 6,EuroLeague Fantasy Tips (official),pick,010042,"MONTERO, JEAN",OLY,18.66
-6,EuroLeague Fantasy Tips (official),pick,011987,"EDWARDS, CARSEN",ZAL,13.91
-6,EuroLeague Fantasy Tips (official),pick,010568,"JONES, CHRIS",RED,13.47
-6,EuroLeague Fantasy Tips (official),pick,011247,"FELIZ, ANDRES",MAD,9.56
-6,EuroLeague Fantasy Tips (official),pick,011052,"MADAR, YAM",TEL,9.98
-6,EuroLeague Fantasy Tips (official),pick,011982,"OJELEYE, SEMI",RED,12.76
-6,EuroLeague Fantasy Tips (official),pick,013900,"GACH, BOTH",ASV,7.98
-6,EuroLeague Fantasy Tips (official),pick,008987,"LEDAY, ZACH",HTA,12.03
-6,EuroLeague Fantasy Tips (official),pick,014005,"ALSTON JR. , DERRICK",VIR,10.56
-6,EuroLeague Fantasy Tips (official),pick,009783,"COLSON, BONZIE",TEL,8.97
-6,EuroLeague Fantasy Tips (official),pick,014108,"DIARRA, ALIOU",VIR,16.6
-6,EuroLeague Fantasy Tips (official),pick,004554,"ZIZIC, ANTE",BES,19.11
+6,EuroLeague Fantasy Tips (official),pick,011987,"EDWARDS, CARSEN",ZAL,13.9
+6,EuroLeague Fantasy Tips (official),pick,010568,"JONES, CHRIS",RED,13.46
+6,EuroLeague Fantasy Tips (official),pick,011247,"FELIZ, ANDRES",MAD,13.25
+6,EuroLeague Fantasy Tips (official),pick,011052,"MADAR, YAM",TEL,10.95
+6,EuroLeague Fantasy Tips (official),pick,011982,"OJELEYE, SEMI",RED,12.73
+6,EuroLeague Fantasy Tips (official),pick,013900,"GACH, BOTH",ASV,8.28
+6,EuroLeague Fantasy Tips (official),pick,008987,"LEDAY, ZACH",HTA,11.99
+6,EuroLeague Fantasy Tips (official),pick,014005,"ALSTON JR. , DERRICK",VIR,10.53
+6,EuroLeague Fantasy Tips (official),pick,009783,"COLSON, BONZIE",TEL,10.19
+6,EuroLeague Fantasy Tips (official),pick,014108,"DIARRA, ALIOU",VIR,16.61
+6,EuroLeague Fantasy Tips (official),pick,004554,"ZIZIC, ANTE",BES,19.13
 6,EuroLeague Fantasy Tips (official),pick,013667,"FERNANDO, BRUNO",IST,7.25
-6,EuroLeague Fantasy Tips (official),pick,012403,"FAYE, MOUHAMED",PRS,6.21
-6,EuroLeague Fantasy Tips (official),pick,012796,"KABENGELE, MFIONDU",DUB,16.33
+6,EuroLeague Fantasy Tips (official),pick,012403,"FAYE, MOUHAMED",PRS,6.22
+6,EuroLeague Fantasy Tips (official),pick,012796,"KABENGELE, MFIONDU",DUB,16.95
+6,EuroLeague Fantasy Tips (official),pick,003112,"SARIC, DARIO",IST,14.65
+6,EuroLeague Fantasy Tips (official),pick,015143,"ETIENNE, TYSON",PRS,9.76
+6,EuroLeague Fantasy Tips (official),avoid,013278,"WILEY, AUSTIN",MUN,5.93
+6,EuroLeague Fantasy Tips (official),avoid,012742,"DOZIER, PJ",IST,5.11
+6,Basketball Sphere – Fantasy,pick,012608,"SHORTS, TJ",PAM,15.36
+6,Basketball Sphere – Fantasy,pick,007027,"MALEDON, THEO",MAD,18.67
+6,Basketball Sphere – Fantasy,pick,012707,"CARR, MARCUS",VIR,17.27
+6,Basketball Sphere – Fantasy,pick,014163,"BUTLER, JARED",RED,6.95
+6,Basketball Sphere – Fantasy,pick,011247,"FELIZ, ANDRES",MAD,13.25
+6,Basketball Sphere – Fantasy,pick,011706,"SAINT-SUPERY, MARIO",PAM,0.29
+6,Basketball Sphere – Fantasy,pick,012201,"MONEKE, CHIMA",RED,14.96
+6,Basketball Sphere – Fantasy,pick,006835,"HOARD, JAYLEN",TEL,11.48
+6,Basketball Sphere – Fantasy,pick,000796,"MIROTIC, NIKOLA",PAM,15.98
+6,Basketball Sphere – Fantasy,pick,014168,"KEY, BRAXTON",ULK,9.87
+6,Basketball Sphere – Fantasy,pick,011982,"OJELEYE, SEMI",RED,12.73
+6,Basketball Sphere – Fantasy,pick,007960,"DAVIDOVAC, DEJAN",RED,5.19
+6,Basketball Sphere – Fantasy,pick,000898,"VALANCIUNAS, JONAS",ZAL,18.51
+6,Basketball Sphere – Fantasy,pick,005791,"TAVARES, WALTER",MAD,16.17
+6,Basketball Sphere – Fantasy,pick,013278,"WILEY, AUSTIN",MUN,5.93
+6,Basketball Sphere – Fantasy,pick,014108,"DIARRA, ALIOU",VIR,16.61
+6,Basketball Sphere – Fantasy,pick,014010,"DOKOSSI, ALLAN",PRS,8.64
+6,Basketball Sphere – Fantasy,pick,009846,"BRYANT, ELIJAH",HTA,18.92
+6,Basketball Sphere – Fantasy,pick,014737,"MOORE, WENDELL",VIR,17.29
+6,Basketball Sphere – Fantasy,pick,011305,"CARTER, TYSON",RED,5.73
+6,Basketball Sphere – Fantasy,pick,001844,"HACKETT, DANIEL",VIR,1.17
+6,Basketball Sphere – Fantasy,pick,003469,"VEZENKOV, SASHA",OLY,18.58
+6,Basketball Sphere – Fantasy,pick,011286,"BACON, DWAYNE",DUB,16.76
+6,Basketball Sphere – Fantasy,pick,007464,"PARRA, JOEL",BAR,6.05
+6,Basketball Sphere – Fantasy,pick,014107,"JOKSIMOVIC, STEFAN",BAS,0.3
+6,Basketball Sphere – Fantasy,pick,012796,"KABENGELE, MFIONDU",DUB,16.95
+6,Basketball Sphere – Fantasy,pick,012788,"OTURU, DAN",HTA,10.53
+6,Basketball Sphere – Fantasy,pick,003958,"THIEMANN, JOHANNES",MUN,12.95
+6,Basketball Sphere – Fantasy,pick,014029,"IZUNDU, EBUKA",RED,0.0
+6,Basketball Sphere – Fantasy,pick,013667,"FERNANDO, BRUNO",IST,7.25
+6,Basketball Sphere – Fantasy,avoid,008192,"TUBELIS, AZUOLAS",ZAL,14.83
+6,Basketball Sphere – Fantasy,avoid,012878,"WRIGHT, MOSES",MIL,19.06
+6,Basketball Sphere – Fantasy,avoid,008084,"MANTZOUKAS, ELEFTHERIOS",PAN,6.61
+6,EuroBallin (Substack),pick,010042,"MONTERO, JEAN",OLY,18.66
+6,EuroBallin (Substack),pick,014735,"DUARTE, CHRIS",BAS,15.55
+6,EuroBallin (Substack),pick,009754,"LOYD, JORDAN",IST,10.34
+6,EuroBallin (Substack),pick,006661,"WILBEKIN, SCOTTIE",BES,11.05
+6,EuroBallin (Substack),pick,003112,"SARIC, DARIO",IST,14.65
+6,EuroBallin (Substack),pick,015141,"EVBUOMWAN, TOSAN",BAR,8.84
+6,EuroBallin (Substack),pick,011982,"OJELEYE, SEMI",RED,12.73
+6,EuroBallin (Substack),pick,011244,"DA SILVA, OSCAR",MUN,6.4
+6,EuroBallin (Substack),pick,007960,"DAVIDOVAC, DEJAN",RED,5.19
+6,EuroBallin (Substack),pick,003842,"LESSORT, MATHIAS",PAN,19.27
+6,EuroBallin (Substack),pick,000898,"VALANCIUNAS, JONAS",ZAL,18.51
+6,EuroBallin (Substack),pick,011199,"NEBO, JOSH",BAR,8.44
+6,EuroBallin (Substack),pick,003958,"THIEMANN, JOHANNES",MUN,12.95
+6,EuroBallin (Substack),pick,014108,"DIARRA, ALIOU",VIR,16.61

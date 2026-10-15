@@ -840,7 +840,7 @@
      "person_id": "011982",
      "name": "OJELEYE, SEMI",
      "team": "RED",
-     "role": "πάγκος",
+     "role": "5άδα",
      "captain": false,
      "x_now": 13.3
     },
@@ -873,13 +873,155 @@
      "person_id": "001518",
      "name": "RICCI, GIAMPAOLO",
      "team": "MIL",
-     "role": "5άδα",
+     "role": "πάγκος",
      "captain": false,
      "x_now": 3.0
     }
    ],
    "x_total": 150.3,
-   "decided_at": "2026-10-15T14:39+00:00"
+   "decided_at": "2026-10-15T14:39+00:00",
+   "moves": {
+    "2": {
+     "in": [
+      4246
+     ],
+     "out": [
+      4012
+     ],
+     "captain": null,
+     "at": "2026-10-15T22:08+00:00"
+    }
+   }
+  },
+  {
+   "round": 7,
+   "trades": 3,
+   "bank": 0.2,
+   "squad": [
+    {
+     "id": 3898,
+     "price": 12.7,
+     "position": "Center",
+     "person_id": "004554",
+     "name": "ZIZIC, ANTE",
+     "team": "BES",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 19.9
+    },
+    {
+     "id": 3850,
+     "price": 11.7,
+     "position": "Guard",
+     "person_id": "007027",
+     "name": "MALEDON, THEO",
+     "team": "MAD",
+     "role": "5άδα",
+     "captain": true,
+     "x_now": 19.5
+    },
+    {
+     "id": 7424,
+     "price": 9.0,
+     "position": "Center",
+     "person_id": "014108",
+     "name": "DIARRA, ALIOU",
+     "team": "VIR",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 18.0
+    },
+    {
+     "id": 11545,
+     "price": 10.8,
+     "position": "Guard",
+     "person_id": "012707",
+     "name": "CARR, MARCUS",
+     "team": "VIR",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 18.0
+    },
+    {
+     "id": 11547,
+     "price": 9.9,
+     "position": "Guard",
+     "person_id": "014737",
+     "name": "MOORE, WENDELL",
+     "team": "VIR",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 17.9
+    },
+    {
+     "id": 3851,
+     "price": 7.2,
+     "position": "Guard",
+     "person_id": "011247",
+     "name": "FELIZ, ANDRES",
+     "team": "MAD",
+     "role": "6ος",
+     "captain": false,
+     "x_now": 14.5
+    },
+    {
+     "id": 4246,
+     "price": 8.7,
+     "position": "Forward",
+     "person_id": "011982",
+     "name": "OJELEYE, SEMI",
+     "team": "RED",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 13.8
+    },
+    {
+     "id": 3868,
+     "price": 11.5,
+     "position": "Head Coach",
+     "person_id": "WBC",
+     "name": "OBRADOVIC, ZELJKO",
+     "team": "PAN",
+     "role": "coach",
+     "captain": false,
+     "x_now": 13.4
+    },
+    {
+     "id": 3948,
+     "price": 8.7,
+     "position": "Forward",
+     "person_id": "012731",
+     "name": "NDIAYE, MBAYE",
+     "team": "OLY",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 11.7
+    },
+    {
+     "id": 4061,
+     "price": 5.1,
+     "position": "Forward",
+     "person_id": "008084",
+     "name": "MANTZOUKAS, ELEFTHERIOS",
+     "team": "PAN",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 6.0
+    },
+    {
+     "id": 4005,
+     "price": 4.1,
+     "position": "Forward",
+     "person_id": "000229",
+     "name": "JACKSON, EDWIN",
+     "team": "ASV",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 3.7
+    }
+   ],
+   "x_total": 153.7,
+   "decided_at": "2026-10-15T22:08+00:00"
   }
  ],
  "seed_id": "5a453a755a9b",
@@ -890,5 +1032,5 @@
   "raw": 514.7,
   "avg_raw": 410.2
  },
- "generated": "2026-10-15T14:39:11.030218+00:00"
+ "generated": "2026-10-15T22:08:52.791889+00:00"
 }
