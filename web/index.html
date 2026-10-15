@@ -23,13 +23,21 @@
 </script>
 <script>
 // the move to coachdime.com: the old address (<project>.pages.dev) sends this device's data in a #move=
-// fragment (a fragment never reaches a server). Only the app's own keys, never the sync code (a link can't
-// tie this device to someone else's copy); a different team already here is replaced only if the user says so.
+// fragment (a fragment never reaches a server) and the team's backup code in &sync= (its copy on the server,
+// functions/api/sync). On a phone the Home Screen app keeps its own storage apart from the browser's, so the
+// code also goes in a cookie: iOS copies the browser's cookies into a web app added to the Home Screen, and
+// team.js (adoptMove) links that app to the same copy. A different team already here is replaced only if the
+// user says so (also for a crafted link).
 const MOVE_KEYS = ["myteam_v1", "tm_keep", "tm_avoid", "watch", "filters", "theme", "teamsView2", "cmp", "earlyOff", "tab"];
 (function () {
+  const sync = location.hash.match(/[#&]sync=([A-Z0-9]{12})(?![A-Za-z0-9])/);
+  if (sync) try {
+    sessionStorage.setItem("move_sync", sync[1]);
+    document.cookie = `cd_sync=${sync[1]}; Max-Age=2592000; Path=/; Secure; SameSite=Lax`;
+  } catch (e) {}
   const m = location.hash.match(/[#&]move=([A-Za-z0-9_-]+)/);
+  if (m || sync) history.replaceState(null, "", location.pathname + location.search);
   if (!m) return;
-  history.replaceState(null, "", location.pathname + location.search);
   try {
     const bin = atob(m[1].replace(/-/g, "+").replace(/_/g, "/"));
     const data = JSON.parse(new TextDecoder().decode(Uint8Array.from(bin, (c) => c.charCodeAt(0))));
@@ -2087,21 +2095,33 @@ setInterval(() => {
 // the public site moved to coachdime.com: its old address (<project>.pages.dev; not the previews, not the
 // personal edition) shows a bar whose button takes this device's data along (#move=, read at the top)
 const NEW_HOME = "https://coachdime.com/";
-function moveLink() {
+function moveLink(code) {
   const data = {};
   for (const k of MOVE_KEYS) { try { const v = localStorage.getItem(k); if (v != null) data[k] = v; } catch (e) {} }
-  if (!Object.keys(data).length) return NEW_HOME;
-  let bin = "";
-  for (const b of new TextEncoder().encode(JSON.stringify(data))) bin += String.fromCharCode(b);
-  return NEW_HOME + "#move=" + btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  const parts = [];
+  if (Object.keys(data).length) {
+    let bin = "";
+    for (const b of new TextEncoder().encode(JSON.stringify(data))) bin += String.fromCharCode(b);
+    parts.push("move=" + btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""));
+  }
+  if (code) parts.push("sync=" + code);
+  return NEW_HOME + (parts.length ? "#" + parts.join("&") : "");
 }
 function moveBar() {
   const h = location.hostname;
   if (P.edition !== "public" || !h.endsWith(".pages.dev") || h.split(".").length !== 3) return;
   document.body.insertAdjacentHTML("afterbegin", `<div class="movebar" role="status"><span><b>Το Coach Dime μετακόμισε στο coachdime.com</b>
-    <span class="muted">Η ομάδα, η watchlist και οι επιλογές σου έρχονται μαζί. Αν το έχεις στην αρχική οθόνη, πρόσθεσέ το ξανά από τη νέα διεύθυνση.</span></span>
+    <span class="muted">Η ομάδα, η watchlist και οι επιλογές σου έρχονται μαζί. Αν το έχεις στην αρχική οθόνη, πρόσθεσέ το ξανά από τη νέα διεύθυνση.</span>
+    <span class="muted" id="moveCode"></span></span>
     <button type="button" id="moveGo">Μεταφορά ➜</button></div>`);
-  $("#moveGo").onclick = () => { location.href = moveLink(); };
+  // the team's backup on the server, made now: the new address (and the Home Screen app made from it) links to it
+  const ready = window.TEAM && TEAM.backup ? TEAM.backup().catch(() => null) : Promise.resolve(null);
+  ready.then((code) => { if (code) $("#moveCode").textContent =
+    `Κωδικός αντιγράφου: ${code.replace(/(....)(?=.)/g, "$1-")} · αν η ομάδα δεν φανεί, βάλ' τον στο ⋯ Επιλογές → Συγχρονισμός συσκευών.`; });
+  $("#moveGo").onclick = async () => {
+    $("#moveGo").disabled = true;
+    location.href = moveLink(await ready);
+  };
 }
 
 (async () => {

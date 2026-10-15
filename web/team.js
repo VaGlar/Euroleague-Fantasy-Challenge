@@ -171,6 +171,35 @@
     takeRemote(res.body, true);
     return 200;
   }
+  // the move to coachdime.com (index.html: moveBar, the #sync= reader): the old address backs the team up
+  // on the server (a sync code) and sends the code along; here this device links to it by itself. The
+  // Home Screen app finds the code in the cookie iOS copied from the browser when it was added.
+  async function backup() {
+    if (GAME() || !load()) return null;
+    if (!syncGet() && await syncNew() !== 201) return null;
+    if (syncGet().dirty) await syncPush();
+    return syncGet().code;
+  }
+  const APP = () => !!(navigator.standalone || matchMedia("(display-mode: standalone)").matches);
+  const dropMoveCookie = () => { document.cookie = "cd_sync=; Max-Age=0; Path=/; Secure; SameSite=Lax"; };
+  async function adoptMove(justMoved) {
+    let code = null;
+    try { code = sessionStorage.getItem("move_sync"); sessionStorage.removeItem("move_sync"); } catch (e) {}
+    if (!code) { const m = document.cookie.match(/(?:^|;\s*)cd_sync=([A-Z0-9]{12})(?:;|$)/); code = m && m[1]; }
+    if (!code || syncGet()) return;
+    // a team made here before (not the one the move just brought) is replaced only if the user says so
+    if (load() && !justMoved && !confirm("Υπάρχει ήδη ομάδα εδώ. Να την αντικαταστήσω με αυτή από την παλιά διεύθυνση;")) {
+      dropMoveCookie(); return; }
+    let st = 0;
+    try { st = await syncJoin(code); } catch (e) {}
+    if (st !== 200) { if (st === 404) dropMoveCookie(); return; }
+    // the browser keeps the cookie for the Home Screen app made from it; the app itself needs it no more
+    if (APP()) dropMoveCookie();
+    setup = null; mode = null;
+    const phone = /iPhone|iPad|Android/.test(navigator.userAgent);
+    toastSoon(!APP() && phone ? "Η ομάδα σου ήρθε. Πρόσθεσε το Coach Dime στην οθόνη Αφετηρίας· θα είναι κι εκεί."
+      : "Η ομάδα σου ήρθε από την παλιά διεύθυνση");
+  }
   const syncErr = (st) => st === 503 ? "Ο συγχρονισμός δεν είναι ακόμα διαθέσιμος" : st === 404 ? "Αυτός ο κωδικός δεν υπάρχει"
     : st === 429 ? "Πολλές προσπάθειες από αυτή τη σύνδεση· δοκίμασε ξανά σε μία ώρα"
     : st === 400 ? "Ο κωδικός έχει 12 γράμματα/αριθμούς, π.χ. ABCD-EFGH-JKMN" : "Δεν έγινε σύνδεση· δοκίμασε ξανά";
@@ -1418,7 +1447,10 @@
   document.head.appendChild(css);
 
   if (typeof P === "undefined" || !GAME()) importFromHash();
-  try { if (sessionStorage.getItem("moved")) { sessionStorage.removeItem("moved"); toastSoon("Η ομάδα και οι επιλογές σου ήρθαν στο coachdime.com"); } } catch (e) {}
+  let justMoved = false;
+  try { justMoved = !!sessionStorage.getItem("moved"); sessionStorage.removeItem("moved"); } catch (e) {}
+  if (justMoved) toastSoon("Η ομάδα και οι επιλογές σου ήρθαν στο coachdime.com");
+  if (typeof P === "undefined" || !GAME()) adoptMove(justMoved);
   // the link pasted into a tab that already shows the app: only the #hash changes, no reload
   window.addEventListener("hashchange", () => {
     if (!/[#&]t=/.test(location.hash) || (typeof P !== "undefined" && GAME())) return;
@@ -1438,5 +1470,5 @@
         bank: t.bank, name: t.game ? t.name : null, inRound: pl.inRound };
     } catch (e) { return null; }
   }
-  window.TEAM = { render, summary, encode, decode, KEY, sizeFloors };
+  window.TEAM = { render, summary, encode, decode, KEY, sizeFloors, backup };
 })();

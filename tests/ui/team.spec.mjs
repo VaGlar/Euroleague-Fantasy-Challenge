@@ -181,6 +181,48 @@ test.describe("public edition", () => {
     await other.close();
   });
 
+  test("the move backs the team up on the server; the new address and its Home Screen app link to it by themselves", async ({ page, browser }, testInfo) => {
+    const store = new Map();
+    const server = async (route) => {
+      const req = route.request(), code = (new URL(req.url()).pathname.match(/api\/sync\/?(.*)$/)[1] || "").toUpperCase();
+      if (req.method() === "POST") { store.set("ABCDEFGHJKMN", { data: req.postDataJSON().data, rev: 1 }); return route.fulfill({ status: 201, json: { code: "ABCDEFGHJKMN", rev: 1 } }); }
+      const row = store.get(code);
+      if (!row) return route.fulfill({ status: 404, json: { error: "unknown code" } });
+      if (req.method() === "GET") return route.fulfill({ json: row });
+      store.set(code, { data: req.postDataJSON().data, rev: row.rev + 1 });
+      return route.fulfill({ json: { rev: row.rev + 1 } });
+    };
+    await page.route("**/api/sync**", server);
+    await savedTeam(page);
+    const team = await stored(page);
+    const code = await page.evaluate(() => TEAM.backup());
+    expect(code).toBe("ABCDEFGHJKMN");
+    expect(store.get(code).data.players).toEqual(team.players);
+    expect(await page.evaluate((c) => moveLink(c), code)).toMatch(/#move=[A-Za-z0-9_-]+&sync=ABCDEFGHJKMN$/);
+
+    // the browser on the new address: the code links it and stays in a cookie for the Home Screen app
+    const ctx = await browser.newContext(testInfo.project.use);
+    const p2 = await ctx.newPage();
+    await p2.route("**/api/sync**", server);
+    await open(p2, "public", { tab: "team" });
+    await p2.goto("/public/index.html#sync=ABCDEFGHJKMN");
+    await p2.reload();
+    expect(p2.url()).not.toContain("sync=");
+    await expect.poll(async () => (await stored(p2))?.players).toEqual(team.players);
+    expect(await p2.evaluate(() => JSON.parse(localStorage.getItem("tm_sync")).code)).toBe("ABCDEFGHJKMN");
+    expect((await ctx.cookies()).find((c) => c.name === "cd_sync")?.value).toBe("ABCDEFGHJKMN");
+    await ctx.close();
+
+    // the Home Screen app: its own empty storage, only the cookie copied from the browser
+    const app = await browser.newContext(testInfo.project.use);
+    await app.addCookies([{ name: "cd_sync", value: "ABCDEFGHJKMN", url: testInfo.project.use.baseURL }]);
+    const p3 = await app.newPage();
+    await p3.route("**/api/sync**", server);
+    await open(p3, "public", { tab: "team" });
+    await expect.poll(async () => (await stored(p3))?.players).toEqual(team.players);
+    await app.close();
+  });
+
   test("the move keeps a different team already there unless the user says so", async ({ page }) => {
     await savedTeam(page);
     const mine = await stored(page);
