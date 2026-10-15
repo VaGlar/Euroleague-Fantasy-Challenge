@@ -1418,6 +1418,7 @@
   document.head.appendChild(css);
 
   if (typeof P === "undefined" || !GAME()) importFromHash();
+  try { if (sessionStorage.getItem("moved")) { sessionStorage.removeItem("moved"); toastSoon("Η ομάδα και οι επιλογές σου ήρθαν στο coachdime.com"); } } catch (e) {}
   // the link pasted into a tab that already shows the app: only the #hash changes, no reload
   window.addEventListener("hashchange", () => {
     if (!/[#&]t=/.test(location.hash) || (typeof P !== "undefined" && GAME())) return;

@@ -4,8 +4,11 @@ A personal tool for the [EuroLeague Fantasy Challenge](https://euroleaguefantasy
 a data-driven player ranking built from stats, news and expert opinion, trade and captain suggestions,
 and a Telegram report at 10:05 on every game day. Running cost: €0.
 
-> **Public edition: Coach Dime** («σου δίνει την ασίστ»). Its Cloudflare Pages project is still `hoopslab-beta`
-> (the address); the name the users see is `PRODUCT` in `elf/publish.py`. The product plan (two editions from one engine, subscriptions, security) is in [`docs/PRODUCT.md`](docs/PRODUCT.md).
+> **Public edition: Coach Dime** («σου δίνει την ασίστ») at **https://coachdime.com** (a custom domain on the
+> Cloudflare Pages project `hoopslab-beta`; `HOME` in `elf/publish.py`, repo variable `PUBLIC_URL`). The name the
+> users see is `PRODUCT` in `elf/publish.py`. The old address `hoopslab-beta.pages.dev` still serves the site with a
+> bar whose «Μεταφορά» button carries the device's data over in a `#move=` fragment (`moveBar` / `MOVE_KEYS` in
+> `web/index.html`; the sync code stays behind). Once its visits are near zero, the bar becomes a redirect. The product plan (two editions from one engine, subscriptions, security) is in [`docs/PRODUCT.md`](docs/PRODUCT.md).
 >
 > **R&D:** experiments to improve the model, including the ones that failed, and the ideas on hold are in [`research/`](research/README.md).
 >

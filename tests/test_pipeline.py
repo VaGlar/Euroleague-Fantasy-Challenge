@@ -197,6 +197,7 @@ def test_public_site_is_renamed(pipeline, tmp_path):
     publish.site(tmp_path, src=run.PUBLIC)
     html = (tmp_path / "index.html").read_text()
     assert "<title>Coach Dime</title>" in html and 'content="Coach Dime"' in html
+    assert '<link rel="canonical" href="https://coachdime.com/">' in html
     assert "EuroLeague Fantasy —" not in html
     assert json.loads((tmp_path / "manifest.json").read_text())["name"] == "Coach Dime"
     assert (tmp_path / "data" / "predictions.json").exists() and (tmp_path / "opt.js").exists()
