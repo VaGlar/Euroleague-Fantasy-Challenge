@@ -29,6 +29,8 @@ it affects. Don't merge it on your own.
   - `tests/test_public_repo.py` enforces this.
 - **Actions minutes count.** Tests run on PRs only, never twice. Batch pushes to an open PR. Don't
   re-run CI to "see if it passes".
+- **UI tests (Playwright) run only in CI, never in a Claude session** (owner's rule: tokens). Check a
+  changed spec with `node --check`; the fast Python tests (`pytest`) may run locally.
 - **Security headers** for the sites are in `web/_headers`. Pages Functions don't get them: a Function
   sets its own headers.
 - No commit messages, comments or files that name a model.
