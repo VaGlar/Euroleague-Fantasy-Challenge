@@ -94,12 +94,20 @@ test("dark mode: dark background, light text, every tab fits", async ({ page }, 
 
 test("Σήμερα: no «Invalid time value» when the browser writes en-CA dates as M/D/Y", async ({ page }) => {
   // some browser versions format en-CA as 10/16/2026, not 2026-10-16: the page must not depend on it
+  // (format is a getter on the prototype: wrap the constructor and give en-CA instances their own format)
   await page.addInitScript(() => {
-    const fmt = Intl.DateTimeFormat.prototype.format;
-    Intl.DateTimeFormat.prototype.format = function (d) {
-      const o = this.resolvedOptions(), s = fmt.call(this, d);
-      return o.locale.startsWith("en-CA") ? s.replace(/^(\d{4})-(\d{2})-(\d{2})$/, "$2/$3/$1") : s;
-    };
+    const DTF = Intl.DateTimeFormat;
+    function MDY(locales, options) {
+      const f = new DTF(locales, options);
+      if (String(locales).startsWith("en-CA")) {
+        const fmt = f.format;
+        Object.defineProperty(f, "format", { value: (d) => fmt(d).replace(/^(\d{4})-(\d{2})-(\d{2})$/, "$2/$3/$1") });
+      }
+      return f;
+    }
+    MDY.prototype = DTF.prototype;
+    MDY.supportedLocalesOf = DTF.supportedLocalesOf;
+    Intl.DateTimeFormat = MDY;
   });
   const errors = await open(page, "public");
   await expect(page.locator("#updated")).toContainText(/επόμενη ενημέρωση \S+ \d{2}:\d{2}/);
