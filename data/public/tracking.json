@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-16T14:07:36.610076+00:00",
+ "generated": "2026-10-16T21:07:33.883355+00:00",
  "rounds": [
   {
    "round": 1,
@@ -43,19 +43,19 @@
   },
   {
    "round": 6,
-   "n": 72,
-   "mae_model": 6.84,
-   "mae_naive": 6.91,
-   "spearman": 0.211,
-   "top20": 0.3
+   "n": 184,
+   "mae_model": 6.89,
+   "mae_naive": 7.2,
+   "spearman": 0.229,
+   "top20": 0.2
   }
  ],
  "total": {
-  "n": 796,
-  "mae_model": 6.48,
-  "mae_naive": 7.05,
-  "spearman": 0.313,
-  "top20": 0.392
+  "n": 908,
+  "mae_model": 6.54,
+  "mae_naive": 7.09,
+  "spearman": 0.304,
+  "top20": 0.375
  },
  "experts": [
   {
@@ -74,10 +74,10 @@
   },
   {
    "source": "EuroLeague Fantasy Tips (official)",
-   "n": 69,
-   "actual": 14.3,
+   "n": 86,
+   "actual": 14.8,
    "model": 12.5,
-   "diff": 1.8
+   "diff": 2.2
   }
  ],
  "lineups": [],

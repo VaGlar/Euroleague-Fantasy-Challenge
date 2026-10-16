@@ -891,23 +891,37 @@
      "captain": null,
      "at": "2026-10-15T22:08+00:00"
     }
-   }
+   },
+   "pts": 143.6,
+   "raw": 131.6,
+   "avg_raw": 108.4
   },
   {
    "round": 7,
-   "trades": 3,
-   "bank": 0.2,
+   "trades": 7,
+   "bank": 0.4,
    "squad": [
     {
-     "id": 3898,
-     "price": 12.7,
-     "position": "Center",
-     "person_id": "004554",
-     "name": "ZIZIC, ANTE",
-     "team": "BES",
+     "id": 3903,
+     "price": 17.2,
+     "position": "Guard",
+     "person_id": "009846",
+     "name": "BRYANT, ELIJAH",
+     "team": "HTA",
      "role": "5άδα",
+     "captain": true,
+     "x_now": 23.8
+    },
+    {
+     "id": 4252,
+     "price": 14.5,
+     "position": "Guard",
+     "person_id": "010042",
+     "name": "MONTERO, JEAN",
+     "team": "OLY",
+     "role": "πάγκος",
      "captain": false,
-     "x_now": 19.9
+     "x_now": 20.3
     },
     {
      "id": 3850,
@@ -917,52 +931,8 @@
      "name": "MALEDON, THEO",
      "team": "MAD",
      "role": "5άδα",
-     "captain": true,
-     "x_now": 18.6
-    },
-    {
-     "id": 7424,
-     "price": 9.0,
-     "position": "Center",
-     "person_id": "014108",
-     "name": "DIARRA, ALIOU",
-     "team": "VIR",
-     "role": "5άδα",
      "captain": false,
-     "x_now": 17.2
-    },
-    {
-     "id": 11545,
-     "price": 10.8,
-     "position": "Guard",
-     "person_id": "012707",
-     "name": "CARR, MARCUS",
-     "team": "VIR",
-     "role": "5άδα",
-     "captain": false,
-     "x_now": 17.1
-    },
-    {
-     "id": 11547,
-     "price": 9.9,
-     "position": "Guard",
-     "person_id": "014737",
-     "name": "MOORE, WENDELL",
-     "team": "VIR",
-     "role": "πάγκος",
-     "captain": false,
-     "x_now": 17.1
-    },
-    {
-     "id": 3851,
-     "price": 7.2,
-     "position": "Guard",
-     "person_id": "011247",
-     "name": "FELIZ, ANDRES",
-     "team": "MAD",
-     "role": "6ος",
-     "captain": false,
-     "x_now": 13.8
+     "x_now": 18.2
     },
     {
      "id": 3868,
@@ -973,18 +943,18 @@
      "team": "PAN",
      "role": "coach",
      "captain": false,
-     "x_now": 13.4
+     "x_now": 17.9
     },
     {
-     "id": 4246,
-     "price": 8.7,
-     "position": "Forward",
-     "person_id": "011982",
-     "name": "OJELEYE, SEMI",
-     "team": "RED",
-     "role": "πάγκος",
+     "id": 7424,
+     "price": 9.0,
+     "position": "Center",
+     "person_id": "014108",
+     "name": "DIARRA, ALIOU",
+     "team": "VIR",
+     "role": "5άδα",
      "captain": false,
-     "x_now": 13.2
+     "x_now": 14.2
     },
     {
      "id": 3948,
@@ -995,18 +965,40 @@
      "team": "OLY",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 11.7
+     "x_now": 13.7
     },
     {
-     "id": 4061,
-     "price": 5.1,
-     "position": "Forward",
-     "person_id": "008084",
-     "name": "MANTZOUKAS, ELEFTHERIOS",
-     "team": "PAN",
+     "id": 3851,
+     "price": 7.2,
+     "position": "Guard",
+     "person_id": "011247",
+     "name": "FELIZ, ANDRES",
+     "team": "MAD",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 12.9
+    },
+    {
+     "id": 7229,
+     "price": 6.8,
+     "position": "Center",
+     "person_id": "012403",
+     "name": "FAYE, MOUHAMED",
+     "team": "PRS",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 6.5
+     "x_now": 9.1
+    },
+    {
+     "id": 3983,
+     "price": 4.4,
+     "position": "Forward",
+     "person_id": "007960",
+     "name": "DAVIDOVAC, DEJAN",
+     "team": "RED",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 4.9
     },
     {
      "id": 4005,
@@ -1015,22 +1007,33 @@
      "person_id": "000229",
      "name": "JACKSON, EDWIN",
      "team": "ASV",
-     "role": "5άδα",
+     "role": "πάγκος",
      "captain": false,
-     "x_now": 3.8
+     "x_now": 4.1
+    },
+    {
+     "id": 4012,
+     "price": 4.1,
+     "position": "Forward",
+     "person_id": "001518",
+     "name": "RICCI, GIAMPAOLO",
+     "team": "MIL",
+     "role": "6ος",
+     "captain": false,
+     "x_now": 2.3
     }
    ],
-   "x_total": 149.2,
-   "decided_at": "2026-10-16T14:07+00:00"
+   "x_total": 144.8,
+   "decided_at": "2026-10-16T21:07+00:00"
   }
  ],
  "seed_id": "5a453a755a9b",
  "start_round": 1,
  "total": {
-  "rounds": 5,
-  "pts": 617.7,
-  "raw": 514.7,
-  "avg_raw": 410.2
+  "rounds": 6,
+  "pts": 761.3,
+  "raw": 646.3,
+  "avg_raw": 518.6
  },
- "generated": "2026-10-16T14:07:38.479806+00:00"
+ "generated": "2026-10-16T21:07:35.833093+00:00"
 }
