@@ -1,6 +1,15 @@
 {
  "articles": [
   {
+   "title": "EuroLeague Fantasy winners and losers, Round 6: Thursday",
+   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/euroleague-fantasy-winners-and-losers-round-6-thursday/",
+   "date": "2026-10-15T23:00:00+00:00",
+   "source": "EuroLeague Fantasy Tips (official)",
+   "weight": 2,
+   "fantasy": true,
+   "report": false
+  },
+  {
    "title": "EuroLeague Fantasy Tips, Round 6: Guards",
    "url": "https://www.euroleaguebasketball.net/en/euroleague/news/fantasy-tips-round-6-guards/",
    "date": "2026-10-15T10:35:17.259000+00:00",
@@ -118,12 +127,12 @@
    "report": false
   },
   {
-   "title": "EuroLeague Fantasy winners and losers, Round 4: Thursday",
-   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/euroleague-fantasy-winners-and-losers-round-4-thursday/",
-   "date": "2026-10-08T23:50:28.206000+00:00",
-   "source": "EuroLeague Fantasy Tips (official)",
-   "weight": 2,
-   "fantasy": true,
+   "title": "Backdoor cuts: What you might have missed from Thursday’s action",
+   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/backdoor-cuts-what-you-might-have-missed-from-thursdays-action-round-6/",
+   "date": "2026-10-15T23:22:25.075000+00:00",
+   "source": "EuroLeague (official)",
+   "weight": 1,
+   "fantasy": false,
    "report": false
   },
   {
@@ -131,6 +140,15 @@
    "url": "https://www.gazzetta.gr/football/europa-league/2577791/nikopolidis-gia-ortegka-sto-gazzetta-magazino-post-game-i-kalyteri",
    "date": "2026-10-16T00:57:13+02:00",
    "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Feliz's fireworks fuel Madrid's mastery of ASVEL",
+   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/felizs-fireworks-fuel-madrids-mastery-of-asvel/",
+   "date": "2026-10-15T22:50:19.676000+00:00",
+   "source": "EuroLeague (official)",
    "weight": 1,
    "fantasy": false,
    "report": false
@@ -172,10 +190,28 @@
    "report": false
   },
   {
+   "title": "Fenerbahce's blocks barrage buries Partizan",
+   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/fenerbahces-blocks-barrage-buries-partizan/",
+   "date": "2026-10-15T22:27:19.750000+00:00",
+   "source": "EuroLeague (official)",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
    "title": "Μαρσέιγ - Ολυμπιακός 0-1: Τα highlights του αγώνα",
    "url": "https://www.gazzetta.gr/football/europa-league/2577781/marseig-olympiakos-0-1-ta-highlights-toy-agona",
    "date": "2026-10-16T00:21:40+02:00",
    "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Maccabi earns birthday win for Mizrahi in Valencia",
+   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/maccabi-earns-birthday-win-for-mizrahi-in-valencia/",
+   "date": "2026-10-15T22:16:26.380000+00:00",
+   "source": "EuroLeague (official)",
    "weight": 1,
    "fantasy": false,
    "report": false
@@ -460,7 +496,7 @@
    "report": false
   },
   {
-   "title": "Η Ντουμπάι με 29άρη Μπέικον πήρε “διπλό” επί της Αρμάνι των 4 συνεχόμενων ηττών",
+   "title": "Η Ντουμπάι με 29άρη Μπέικον “βύθισε” την Αρμάνι στο Μιλάνο",
    "url": "https://www.eurohoops.net/el/euroleague-el-2/2021370/i-ntoumpai-me-29ari-beikon-pire-diplo-epi-tis-armani-ton-4-sinechomenon-itton/",
    "date": "2026-10-15T20:42:01+00:00",
    "source": "Eurohoops (GR)",
@@ -721,7 +757,7 @@
    "report": false
   },
   {
-   "title": "Pregame quotes, Round 6: ‘The EuroLeague is a marathon’",
+   "title": "Pregame quotes, Round 6: ‘Zalgiris has one of the best crowds in the EuroLeague’",
    "url": "https://www.euroleaguebasketball.net/en/euroleague/news/pregame-quotes-round-6-el2627/",
    "date": "2026-10-15T17:10:06.019000+00:00",
    "source": "EuroLeague (official)",
@@ -775,7 +811,7 @@
    "report": false
   },
   {
-   "title": "Βεζένκοφ ξανά για κορυφαίο εκτός NBA ψήφισαν οι GM",
+   "title": "Βεζένκοφ ξανά ψήφισαν οι GM, για κορυφαίο εκτός NBA",
    "url": "https://www.eurohoops.net/el/euroleague-el-2/2021316/vezenkof-xana-gia-korifeo-ektos-nba-psifisan-i-gm/",
    "date": "2026-10-15T16:40:44+00:00",
    "source": "Eurohoops (GR)",
@@ -811,7 +847,7 @@
    "report": false
   },
   {
-   "title": "Παπανικολάου: “Θα δούμε όλοι μαζί τον Θρύλο κόντρα στη Μαρσέιγ” – Τι είπε για Ντόρσεϊ",
+   "title": "Παπανικολάου για Ντόρσεϊ: “Αυτή τη στιγμή είναι παίκτης της ομάδας…”",
    "url": "https://www.eurohoops.net/el/euroleague-el-2/2021303/papanikolaou-to-vradi-tha-doume-oli-mazi-ton-thrilo-sti-massalia-ti-ipe-gia-ntorsei/",
    "date": "2026-10-15T16:22:55+00:00",
    "source": "Eurohoops (GR)",
@@ -833,15 +869,6 @@
    "url": "https://www.eurohoops.net/el/euroleague-el-2/2021298/bartzokas-gia-ntorsei-pano-ap-ola-o-olimpiakos-i-diikisi-ipagorevi-tis-exelixis-ochi-ego/",
    "date": "2026-10-15T16:18:30+00:00",
    "source": "Eurohoops (GR)",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Ολυμπιακός: “Απαράδεκτη η κλήση μας…”",
-   "url": "https://www.novasports.gr/sport/podosfairo/event/super-league-1/article/15171369/olympiakos-aparadekti-i-klisi-mas/",
-   "date": "2026-10-15T16:13:25+00:00",
-   "source": "Novasports",
    "weight": 1,
    "fantasy": false,
    "report": false
@@ -1048,33 +1075,6 @@
    "title": "Olympiacos excludes Dorsey from game vs Barcelona",
    "url": "https://www.eurohoops.net/en/euroleague/2020894/olympiacos-excludes-dorsey-from-game-vs-barcelona/",
    "date": "2026-10-14T17:45:28+00:00",
-   "source": "Eurohoops",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Galbiati and Baskonia part ways, Perasovic takes over",
-   "url": "https://www.eurohoops.net/en/euroleague/2020854/galbiati-and-baskonia-have-parted-ways-perasovic-to-take-over/",
-   "date": "2026-10-14T16:54:29+00:00",
-   "source": "Eurohoops",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Markus Howard and Baskonia part ways",
-   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/markus-howard-leaves-baskonia/",
-   "date": "2026-10-14T15:38:47.636000+00:00",
-   "source": "EuroLeague (official)",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Markus Howard leaves Baskonia and joins Zenit",
-   "url": "https://www.eurohoops.net/en/euroleague/2020796/markus-howard-leaves-baskonia-his-next-stop-is-zenit/",
-   "date": "2026-10-14T15:07:01+00:00",
    "source": "Eurohoops",
    "weight": 1,
    "fantasy": false,
