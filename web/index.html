@@ -1918,9 +1918,15 @@ function athensMs(date, hm) {
   const m = z.match(/GMT([+-]\d+)(?::(\d+))?/), off = m ? Number(m[1]) * 60 + Math.sign(Number(m[1])) * Number(m[2] || 0) : 120;
   return guess - off * 60000;
 }
-const athensDate = (ms) => new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Athens" }).format(new Date(ms));
-const athensHM = (ms) => new Intl.DateTimeFormat("el-GR", { timeZone: "Europe/Athens", hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date(ms));
+// "YYYY-MM-DD" in Athens, from the parts: a locale's own date format isn't fixed (en-CA has been M/D/Y in
+// some browser versions, and a date athensMs can't read throws «Invalid time value» on the «Σήμερα» screen)
+const ATHENS_YMD = new Intl.DateTimeFormat("en-US", { timeZone: "Europe/Athens", year: "numeric", month: "2-digit", day: "2-digit" });
+const athensDate = (ms) => { const p = Object.fromEntries(ATHENS_YMD.formatToParts(new Date(ms)).map((x) => [x.type, x.value]));
+  return `${p.year}-${p.month}-${p.day}`; };
+const athensHM = (ms) => Number.isFinite(ms)
+  ? new Intl.DateTimeFormat("el-GR", { timeZone: "Europe/Athens", hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date(ms)) : "";
 function dayWord(ms) {
+  if (!Number.isFinite(ms)) return "";
   const today = athensDate(Date.now()), d = athensDate(ms);
   if (d === today) return "σήμερα";
   if (d === athensDate(Date.now() + 864e5)) return "αύριο";

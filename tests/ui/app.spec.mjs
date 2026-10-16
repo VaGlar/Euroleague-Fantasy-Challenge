@@ -92,6 +92,21 @@ test("dark mode: dark background, light text, every tab fits", async ({ page }, 
   }
 });
 
+test("Σήμερα: no «Invalid time value» when the browser writes en-CA dates as M/D/Y", async ({ page }) => {
+  // some browser versions format en-CA as 10/16/2026, not 2026-10-16: the page must not depend on it
+  await page.addInitScript(() => {
+    const fmt = Intl.DateTimeFormat.prototype.format;
+    Intl.DateTimeFormat.prototype.format = function (d) {
+      const o = this.resolvedOptions(), s = fmt.call(this, d);
+      return o.locale.startsWith("en-CA") ? s.replace(/^(\d{4})-(\d{2})-(\d{2})$/, "$2/$3/$1") : s;
+    };
+  });
+  const errors = await open(page, "public");
+  await expect(page.locator("#updated")).toContainText(/επόμενη ενημέρωση \S+ \d{2}:\d{2}/);
+  await expect(page.locator("section#today .td-hero")).toBeVisible();
+  expect(errors).toEqual([]);
+});
+
 test("Σήμερα: countdown, captain picks and picks per price tier", async ({ page }) => {
   await open(page, "public");
   const today = page.locator("section#today");
