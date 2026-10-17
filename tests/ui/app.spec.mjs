@@ -115,6 +115,24 @@ test("Σήμερα: no «Invalid time value» when the browser writes en-CA date
   expect(errors).toEqual([]);
 });
 
+test("Σήμερα: works on a browser without timeZoneName «shortOffset» (older Safari / Chrome)", async ({ page }) => {
+  await page.addInitScript(() => {
+    const DTF = Intl.DateTimeFormat;
+    function Old(locales, options) {
+      if (options && options.timeZoneName === "shortOffset")
+        throw new RangeError("Value shortOffset out of range for Intl.DateTimeFormat options property timeZoneName");
+      return new DTF(locales, options);
+    }
+    Old.prototype = DTF.prototype;
+    Old.supportedLocalesOf = DTF.supportedLocalesOf;
+    Intl.DateTimeFormat = Old;
+  });
+  const errors = await open(page, "public");
+  await expect(page.locator("#updated")).toContainText(/επόμενη ενημέρωση \S+ \d{2}:\d{2}/);
+  await expect(page.locator("section#today .td-hero")).toBeVisible();
+  expect(errors).toEqual([]);
+});
+
 test("Σήμερα: countdown, captain picks and picks per price tier", async ({ page }) => {
   await open(page, "public");
   const today = page.locator("section#today");

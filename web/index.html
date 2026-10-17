@@ -1910,13 +1910,17 @@ function renderModel(mp, trk, ap) {
 let NW = null;
 const DAYS_GR = ["Κυριακή", "Δευτέρα", "Τρίτη", "Τετάρτη", "Πέμπτη", "Παρασκευή", "Σάββατο"];
 // Athens wall-clock time -> epoch ms (DST-proof, as the bot)
+// The offset is Athens' wall clock at that moment minus the moment, from formatToParts: no
+// timeZoneName "shortOffset", which older browsers reject («Value shortOffset out of range»). NaN, not
+// an error, for a date or time it can't read.
+const ATHENS_WALL = new Intl.DateTimeFormat("en-US", { timeZone: "Europe/Athens", hour12: false,
+  year: "numeric", month: "numeric", day: "numeric", hour: "numeric", minute: "numeric" });
 function athensMs(date, hm) {
-  const [y, mo, d] = date.split("-").map(Number), [h, mi] = String(hm).split(":").map(Number);
+  const [y, mo, d] = String(date).split("-").map(Number), [h, mi] = String(hm).split(":").map(Number);
   const guess = Date.UTC(y, mo - 1, d, h, mi);
-  const z = new Intl.DateTimeFormat("en-US", { timeZone: "Europe/Athens", timeZoneName: "shortOffset" })
-    .formatToParts(new Date(guess)).find((x) => x.type === "timeZoneName")?.value || "GMT+2";
-  const m = z.match(/GMT([+-]\d+)(?::(\d+))?/), off = m ? Number(m[1]) * 60 + Math.sign(Number(m[1])) * Number(m[2] || 0) : 120;
-  return guess - off * 60000;
+  if (!Number.isFinite(guess)) return NaN;
+  const p = Object.fromEntries(ATHENS_WALL.formatToParts(new Date(guess)).map((x) => [x.type, Number(x.value)]));
+  return guess - (Date.UTC(p.year, p.month - 1, p.day, p.hour % 24, p.minute) - guess);
 }
 // "YYYY-MM-DD" in Athens, from the parts: a locale's own date format isn't fixed (en-CA has been M/D/Y in
 // some browser versions, and a date athensMs can't read throws «Invalid time value» on the «Σήμερα» screen)
