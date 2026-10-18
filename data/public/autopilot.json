@@ -981,26 +981,26 @@
      "x_now": 13.5
     },
     {
-     "id": 3983,
-     "price": 4.6,
-     "position": "Forward",
-     "person_id": "007960",
-     "name": "DAVIDOVAC, DEJAN",
-     "team": "RED",
-     "role": "5άδα",
-     "captain": false,
-     "x_now": 5.2
-    },
-    {
      "id": 4061,
      "price": 4.9,
      "position": "Forward",
      "person_id": "008084",
      "name": "MANTZOUKAS, ELEFTHERIOS",
      "team": "PAN",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 5.3
+    },
+    {
+     "id": 3983,
+     "price": 4.6,
+     "position": "Forward",
+     "person_id": "007960",
+     "name": "DAVIDOVAC, DEJAN",
+     "team": "RED",
      "role": "6ος",
      "captain": false,
-     "x_now": 4.8
+     "x_now": 5.2
     },
     {
      "id": 4005,
@@ -1025,8 +1025,8 @@
      "x_now": 2.0
     }
    ],
-   "x_total": 145.9,
-   "decided_at": "2026-10-18T00:20+00:00"
+   "x_total": 146.3,
+   "decided_at": "2026-10-18T04:07+00:00"
   }
  ],
  "seed_id": "5a453a755a9b",
@@ -1037,5 +1037,5 @@
   "raw": 646.3,
   "avg_raw": 518.6
  },
- "generated": "2026-10-18T00:21:00.265409+00:00"
+ "generated": "2026-10-18T04:07:45.995751+00:00"
 }
