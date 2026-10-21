@@ -911,7 +911,7 @@
      "name": "BRYANT, ELIJAH",
      "team": "HTA",
      "role": "5άδα",
-     "captain": true,
+     "captain": false,
      "x_now": 22.0
     },
     {
@@ -933,7 +933,7 @@
      "name": "MALEDON, THEO",
      "team": "MAD",
      "role": "5άδα",
-     "captain": false,
+     "captain": true,
      "x_now": 17.3
     },
     {
@@ -1026,7 +1026,145 @@
     }
    ],
    "x_total": 141.0,
-   "decided_at": "2026-10-21T13:09+00:00"
+   "decided_at": "2026-10-21T13:09+00:00",
+   "moves": {
+    "2": {
+     "in": [],
+     "out": [],
+     "captain": 3850,
+     "at": "2026-10-21T19:08+00:00"
+    }
+   }
+  },
+  {
+   "round": 8,
+   "trades": 1,
+   "bank": 0.4,
+   "squad": [
+    {
+     "id": 3903,
+     "price": 17.4,
+     "position": "Guard",
+     "person_id": "009846",
+     "name": "BRYANT, ELIJAH",
+     "team": "HTA",
+     "role": "5άδα",
+     "captain": true,
+     "x_now": 20.8
+    },
+    {
+     "id": 3868,
+     "price": 11.1,
+     "position": "Head Coach",
+     "person_id": "WBC",
+     "name": "OBRADOVIC, ZELJKO",
+     "team": "PAN",
+     "role": "coach",
+     "captain": false,
+     "x_now": 17.9
+    },
+    {
+     "id": 3850,
+     "price": 12.3,
+     "position": "Guard",
+     "person_id": "007027",
+     "name": "MALEDON, THEO",
+     "team": "MAD",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 17.3
+    },
+    {
+     "id": 3898,
+     "price": 12.9,
+     "position": "Center",
+     "person_id": "004554",
+     "name": "ZIZIC, ANTE",
+     "team": "BES",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 15.8
+    },
+    {
+     "id": 7424,
+     "price": 9.3,
+     "position": "Center",
+     "person_id": "014108",
+     "name": "DIARRA, ALIOU",
+     "team": "VIR",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 14.4
+    },
+    {
+     "id": 3948,
+     "price": 9.6,
+     "position": "Forward",
+     "person_id": "012731",
+     "name": "NDIAYE, MBAYE",
+     "team": "OLY",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 13.7
+    },
+    {
+     "id": 11517,
+     "price": 9.5,
+     "position": "Guard",
+     "person_id": "015162",
+     "name": "WASHINGTON JR, TYTY",
+     "team": "ASV",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 12.4
+    },
+    {
+     "id": 3975,
+     "price": 5.1,
+     "position": "Guard",
+     "person_id": "012611",
+     "name": "HERRERA, SEBASTIAN",
+     "team": "PRS",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 5.4
+    },
+    {
+     "id": 4061,
+     "price": 4.9,
+     "position": "Forward",
+     "person_id": "008084",
+     "name": "MANTZOUKAS, ELEFTHERIOS",
+     "team": "PAN",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 5.3
+    },
+    {
+     "id": 4005,
+     "price": 4.5,
+     "position": "Forward",
+     "person_id": "000229",
+     "name": "JACKSON, EDWIN",
+     "team": "ASV",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 4.4
+    },
+    {
+     "id": 4012,
+     "price": 4.0,
+     "position": "Forward",
+     "person_id": "001518",
+     "name": "RICCI, GIAMPAOLO",
+     "team": "MIL",
+     "role": "6ος",
+     "captain": false,
+     "x_now": 2.3
+    }
+   ],
+   "x_total": 134.5,
+   "decided_at": "2026-10-21T19:08+00:00"
   }
  ],
  "seed_id": "5a453a755a9b",
@@ -1037,5 +1175,5 @@
   "raw": 646.3,
   "avg_raw": 518.6
  },
- "generated": "2026-10-21T13:09:35.579515+00:00"
+ "generated": "2026-10-21T19:08:23.992640+00:00"
 }
