@@ -324,6 +324,7 @@ def digest(articles: list[dict], roster: list[str], teams: dict | None = None) -
         r = None
         for wait in (0, 20, 45):  # 503 "high demand" is usually over within a minute
             time.sleep(wait)
+            t0 = time.monotonic()
             try:
                 r = requests.post(f"{base}/models/{model_name}:generateContent", headers=headers,
                                   json=body, timeout=REQUEST_TIMEOUT_S)
@@ -342,6 +343,8 @@ def digest(articles: list[dict], roster: list[str], teams: dict | None = None) -
                 errors.append(f"200 {model_name}: αλλοιωμένο κείμενο")
                 continue
             out["_model"] = model_name
+            # how long the answer took: to set REQUEST_TIMEOUT_S from what the models really need
+            out["_seconds"] = round(time.monotonic() - t0, 1)
             return out
         try:
             msg = r.json().get("error", {}).get("message", "")[:120]

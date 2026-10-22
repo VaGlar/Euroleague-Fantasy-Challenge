@@ -51,9 +51,17 @@ def test_a_connection_error_counts_as_a_timeout(models):
 
 
 def test_no_new_model_after_the_time_budget(models, monkeypatch):
-    clock = iter([0, 0, news.DIGEST_BUDGET_S + 1])           # start, before m1, before m2
+    clock = iter([0, 0, 0, news.DIGEST_BUDGET_S + 1])        # start, before m1, m1 post, before m2
     monkeypatch.setattr(news.time, "monotonic", lambda: next(clock))
     asked = models(requests.ReadTimeout("slow"), gemini_ok({"summary_el": "x", "expert": []}))
     with pytest.raises(RuntimeError):
         news.digest(ARTS, [])
     assert [m for m, _ in asked] == ["m1"]
+
+
+def test_the_digest_records_how_long_the_answer_took(models, monkeypatch):
+    clock = iter([0, 0, 100.0, 137.25])                 # start, budget check, before the post, after it
+    monkeypatch.setattr(news.time, "monotonic", lambda: next(clock))
+    models(gemini_ok({"summary_el": "Σύνοψη.", "expert": []}))
+    out = news.digest(ARTS, [])
+    assert out["_model"] == "m1" and out["_seconds"] == 37.2
