@@ -133,6 +133,16 @@ test("Σήμερα: works on a browser without timeZoneName «shortOffset» (old
   expect(errors).toEqual([]);
 });
 
+test("Νέα: without an AI summary the page says so above the articles", async ({ page }) => {
+  await page.route("**/news.json", async (route) => {
+    const r = await route.fetch(), j = await r.json();
+    await route.fulfill({ response: r, json: { ...j, digest: null, digest_at: null } });
+  });
+  await open(page, "public", { tab: "news" });
+  await expect(page.locator("#news")).toContainText("Η σύνοψη AI δεν βγήκε");
+  await expect(page.locator("#news")).not.toContainText("Σύνοψη (AI)");
+});
+
 test("Σήμερα: countdown, captain picks and picks per price tier", async ({ page }) => {
   await open(page, "public");
   const today = page.locator("section#today");
