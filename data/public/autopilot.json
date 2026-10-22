@@ -1038,19 +1038,19 @@
   },
   {
    "round": 8,
-   "trades": 4,
-   "bank": 0.2,
+   "trades": 1,
+   "bank": 0.4,
    "squad": [
     {
-     "id": 3766,
-     "price": 18.4,
-     "position": "Forward",
-     "person_id": "003469",
-     "name": "VEZENKOV, SASHA",
-     "team": "OLY",
+     "id": 3903,
+     "price": 17.4,
+     "position": "Guard",
+     "person_id": "009846",
+     "name": "BRYANT, ELIJAH",
+     "team": "HTA",
      "role": "5άδα",
-     "captain": false,
-     "x_now": 22.8
+     "captain": true,
+     "x_now": 23.5
     },
     {
      "id": 3850,
@@ -1061,7 +1061,18 @@
      "team": "MAD",
      "role": "5άδα",
      "captain": false,
-     "x_now": 18.2
+     "x_now": 19.0
+    },
+    {
+     "id": 3868,
+     "price": 11.1,
+     "position": "Head Coach",
+     "person_id": "WBC",
+     "name": "OBRADOVIC, ZELJKO",
+     "team": "PAN",
+     "role": "coach",
+     "captain": false,
+     "x_now": 17.9
     },
     {
      "id": 3898,
@@ -1082,8 +1093,8 @@
      "name": "DIARRA, ALIOU",
      "team": "VIR",
      "role": "5άδα",
-     "captain": true,
-     "x_now": 15.1
+     "captain": false,
+     "x_now": 15.8
     },
     {
      "id": 3948,
@@ -1095,17 +1106,6 @@
      "role": "πάγκος",
      "captain": false,
      "x_now": 14.4
-    },
-    {
-     "id": 3851,
-     "price": 8.2,
-     "position": "Guard",
-     "person_id": "011247",
-     "name": "FELIZ, ANDRES",
-     "team": "MAD",
-     "role": "5άδα",
-     "captain": false,
-     "x_now": 12.9
     },
     {
      "id": 11517,
@@ -1130,15 +1130,15 @@
      "x_now": 5.4
     },
     {
-     "id": 3938,
-     "price": 7.0,
-     "position": "Head Coach",
-     "person_id": "000019",
-     "name": "NAVARRO, IBON",
-     "team": "RED",
-     "role": "coach",
+     "id": 4061,
+     "price": 4.9,
+     "position": "Forward",
+     "person_id": "008084",
+     "name": "MANTZOUKAS, ELEFTHERIOS",
+     "team": "PAN",
+     "role": "5άδα",
      "captain": false,
-     "x_now": 5.4
+     "x_now": 5.3
     },
     {
      "id": 4005,
@@ -1163,8 +1163,8 @@
      "x_now": 2.3
     }
    ],
-   "x_total": 128.6,
-   "decided_at": "2026-10-22T08:13+00:00"
+   "x_total": 144.1,
+   "decided_at": "2026-10-22T14:07+00:00"
   }
  ],
  "seed_id": "5a453a755a9b",
@@ -1175,5 +1175,5 @@
   "raw": 646.3,
   "avg_raw": 518.6
  },
- "generated": "2026-10-22T08:13:55.798317+00:00"
+ "generated": "2026-10-22T14:07:26.289980+00:00"
 }
