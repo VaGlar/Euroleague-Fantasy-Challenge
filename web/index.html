@@ -2189,7 +2189,8 @@ function moveBar() {
 
   const d = nw?.digest;
   $("#news").innerHTML = (d ? `<div class="card"><h2>Σύνοψη (AI)</h2><div class="msg">${linkNames(esc(d.summary_el))}</div></div>`
-    + (d.expert?.length ? expertsHtml(d.expert, trk?.experts || []) : "") : "")
+    + (d.expert?.length ? expertsHtml(d.expert, trk?.experts || []) : "")
+    : nw?.articles?.length ? `<p class="muted">Η σύνοψη AI δεν βγήκε σε αυτή την ενημέρωση· θα ξαναδοκιμάσει στην επόμενη.</p>` : "")
     + articlesHtml(nw?.articles || []);
   $("#news").querySelectorAll("[data-pid]").forEach((el) => el.onclick = () => openPlayer(el.dataset.pid));
 

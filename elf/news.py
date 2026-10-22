@@ -276,6 +276,10 @@ ARTICLES:
 """
 
 
+REQUEST_TIMEOUT_S = 90    # one model's answer; a slow one gives way to the next
+DIGEST_BUDGET_S = 360     # no new model is asked after this (the update must not hang on Gemini)
+
+
 def digest(articles: list[dict], roster: list[str], teams: dict | None = None) -> dict | None:
     key = os.environ.get("GEMINI_API_KEY")
     if not key or not articles:
@@ -307,20 +311,31 @@ def digest(articles: list[dict], roster: list[str], teams: dict | None = None) -
     tried, errors = [], []
     candidates = [m for m in [os.environ.get("GEMINI_MODEL")] if m] or []
     listed = False
+    start = time.monotonic()
     while True:
         if not candidates and not listed:  # ask the API which stable flash models exist
             candidates, listed = _flash_models(base, headers), True
         candidates = [c for c in candidates if c not in tried]
-        if not candidates or len(tried) >= 4:
+        # 18-22/10: every run's first model timed out and the whole digest went with it
+        if not candidates or len(tried) >= 4 or time.monotonic() - start > DIGEST_BUDGET_S:
             break
         model_name = candidates.pop(0)
         tried.append(model_name)
+        r = None
         for wait in (0, 20, 45):  # 503 "high demand" is usually over within a minute
             time.sleep(wait)
-            r = requests.post(f"{base}/models/{model_name}:generateContent", headers=headers,
-                              json=body, timeout=120)
+            t0 = time.monotonic()
+            try:
+                r = requests.post(f"{base}/models/{model_name}:generateContent", headers=headers,
+                                  json=body, timeout=REQUEST_TIMEOUT_S)
+            except (requests.Timeout, requests.ConnectionError) as e:
+                r = None   # a model that doesn't answer in time: the next one, not the same again
+                errors.append(f"timeout {model_name}: {type(e).__name__}")
+                break
             if r.status_code not in (500, 503):
                 break
+        if r is None:
+            continue
         if r.status_code == 200:
             text = r.json()["candidates"][0]["content"]["parts"][0]["text"]
             out = repair(_normalize(json.loads(text)))
@@ -328,6 +343,8 @@ def digest(articles: list[dict], roster: list[str], teams: dict | None = None) -
                 errors.append(f"200 {model_name}: αλλοιωμένο κείμενο")
                 continue
             out["_model"] = model_name
+            # how long the answer took: to set REQUEST_TIMEOUT_S from what the models really need
+            out["_seconds"] = round(time.monotonic() - t0, 1)
             return out
         try:
             msg = r.json().get("error", {}).get("message", "")[:120]
@@ -336,6 +353,8 @@ def digest(articles: list[dict], roster: list[str], teams: dict | None = None) -
         errors.append(f"{r.status_code} {model_name}: {msg}")
         if r.status_code not in (404, 429, 500, 503):  # bad key etc.: no point retrying
             break
+    if errors and all(e.startswith("timeout") for e in errors):
+        raise RuntimeError(f"Gemini δεν απάντησε σε {REQUEST_TIMEOUT_S}s ({', '.join(tried)})")
     if errors and all(e.startswith(("503", "500")) for e in errors):
         raise RuntimeError(f"Gemini υπερφορτωμένο ({', '.join(tried)}) — δοκίμασε /update αργότερα")
     raise RuntimeError("Gemini " + (" | ".join(errors[-2:]) or "δεν βρέθηκε διαθέσιμο μοντέλο"))
