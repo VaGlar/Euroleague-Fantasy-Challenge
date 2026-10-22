@@ -932,8 +932,8 @@
      "person_id": "007027",
      "name": "MALEDON, THEO",
      "team": "MAD",
-     "role": "5άδα",
-     "captain": true,
+     "role": "πάγκος",
+     "captain": false,
      "x_now": 17.3
     },
     {
@@ -954,8 +954,8 @@
      "person_id": "012731",
      "name": "NDIAYE, MBAYE",
      "team": "OLY",
-     "role": "πάγκος",
-     "captain": false,
+     "role": "5άδα",
+     "captain": true,
      "x_now": 13.7
     },
     {
@@ -987,7 +987,7 @@
      "person_id": "012611",
      "name": "HERRERA, SEBASTIAN",
      "team": "PRS",
-     "role": "πάγκος",
+     "role": "5άδα",
      "captain": false,
      "x_now": 5.4
     },
@@ -998,7 +998,7 @@
      "person_id": "008084",
      "name": "MANTZOUKAS, ELEFTHERIOS",
      "team": "PAN",
-     "role": "5άδα",
+     "role": "πάγκος",
      "captain": false,
      "x_now": 5.3
     },
@@ -1033,13 +1033,25 @@
      "out": [],
      "captain": 3850,
      "at": "2026-10-21T19:08+00:00"
+    },
+    "3": {
+     "in": [
+      3948,
+      3975
+     ],
+     "out": [
+      3850,
+      4061
+     ],
+     "captain": 3948,
+     "at": "2026-10-22T22:08+00:00"
     }
    }
   },
   {
    "round": 8,
-   "trades": 1,
-   "bank": 0.4,
+   "trades": 3,
+   "bank": 0.1,
    "squad": [
     {
      "id": 3903,
@@ -1053,15 +1065,15 @@
      "x_now": 23.5
     },
     {
-     "id": 3850,
-     "price": 12.3,
-     "position": "Guard",
-     "person_id": "007027",
-     "name": "MALEDON, THEO",
-     "team": "MAD",
+     "id": 4233,
+     "price": 15.0,
+     "position": "Center",
+     "person_id": "012796",
+     "name": "KABENGELE, MFIONDU",
+     "team": "DUB",
      "role": "5άδα",
      "captain": false,
-     "x_now": 19.0
+     "x_now": 21.1
     },
     {
      "id": 3868,
@@ -1075,15 +1087,15 @@
      "x_now": 17.9
     },
     {
-     "id": 3898,
-     "price": 12.9,
-     "position": "Center",
-     "person_id": "004554",
-     "name": "ZIZIC, ANTE",
-     "team": "BES",
+     "id": 3850,
+     "price": 12.3,
+     "position": "Guard",
+     "person_id": "007027",
+     "name": "MALEDON, THEO",
+     "team": "MAD",
      "role": "5άδα",
      "captain": false,
-     "x_now": 16.6
+     "x_now": 17.6
     },
     {
      "id": 7424,
@@ -1094,7 +1106,18 @@
      "team": "VIR",
      "role": "5άδα",
      "captain": false,
-     "x_now": 15.8
+     "x_now": 15.9
+    },
+    {
+     "id": 3851,
+     "price": 8.2,
+     "position": "Guard",
+     "person_id": "011247",
+     "name": "FELIZ, ANDRES",
+     "team": "MAD",
+     "role": "6ος",
+     "captain": false,
+     "x_now": 14.4
     },
     {
      "id": 3948,
@@ -1108,15 +1131,15 @@
      "x_now": 14.4
     },
     {
-     "id": 11517,
-     "price": 9.5,
-     "position": "Guard",
-     "person_id": "015162",
-     "name": "WASHINGTON JR, TYTY",
-     "team": "ASV",
-     "role": "πάγκος",
+     "id": 3991,
+     "price": 4.4,
+     "position": "Forward",
+     "person_id": "003733",
+     "name": "ABALDE, ALBERTO",
+     "team": "MAD",
+     "role": "5άδα",
      "captain": false,
-     "x_now": 12.9
+     "x_now": 5.6
     },
     {
      "id": 3975,
@@ -1130,17 +1153,6 @@
      "x_now": 5.4
     },
     {
-     "id": 4061,
-     "price": 4.9,
-     "position": "Forward",
-     "person_id": "008084",
-     "name": "MANTZOUKAS, ELEFTHERIOS",
-     "team": "PAN",
-     "role": "5άδα",
-     "captain": false,
-     "x_now": 5.3
-    },
-    {
      "id": 4005,
      "price": 4.5,
      "position": "Forward",
@@ -1149,7 +1161,7 @@
      "team": "ASV",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 4.3
+     "x_now": 4.4
     },
     {
      "id": 4012,
@@ -1158,13 +1170,13 @@
      "person_id": "001518",
      "name": "RICCI, GIAMPAOLO",
      "team": "MIL",
-     "role": "6ος",
+     "role": "πάγκος",
      "captain": false,
-     "x_now": 2.3
+     "x_now": 2.1
     }
    ],
-   "x_total": 144.1,
-   "decided_at": "2026-10-22T14:07+00:00"
+   "x_total": 153.4,
+   "decided_at": "2026-10-22T22:08+00:00"
   }
  ],
  "seed_id": "5a453a755a9b",
@@ -1175,5 +1187,5 @@
   "raw": 646.3,
   "avg_raw": 518.6
  },
- "generated": "2026-10-22T14:07:26.289980+00:00"
+ "generated": "2026-10-22T22:08:08.636284+00:00"
 }
