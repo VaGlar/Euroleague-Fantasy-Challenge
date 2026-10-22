@@ -134,7 +134,7 @@ test("Σήμερα: works on a browser without timeZoneName «shortOffset» (old
 });
 
 test("Νέα: without an AI summary the page says so above the articles", async ({ page }) => {
-  await page.route("**/news.json", async (route) => {
+  await page.route("**/news.json?*", async (route) => {          // fetched as data/news.json?t=…
     const r = await route.fetch(), j = await r.json();
     await route.fulfill({ response: r, json: { ...j, digest: null, digest_at: null } });
   });
