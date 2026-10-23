@@ -1,6 +1,15 @@
 {
  "articles": [
   {
+   "title": "EuroLeague Fantasy winners and losers, Round 7: Thursday",
+   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/euroleague-fantasy-winners-and-losers-round-7-thursday/",
+   "date": "2026-10-22T23:35:45.099000+00:00",
+   "source": "EuroLeague Fantasy Tips (official)",
+   "weight": 2,
+   "fantasy": true,
+   "report": false
+  },
+  {
    "title": "Euroleague Fantasy Round 7 Tips: Best Player Picks & Head Coaches",
    "url": "https://basketballsphere.com/en/euroleague-fantasy-26-27-round-7-best-picks/",
    "date": "2026-10-21T07:37:31+00:00",
@@ -64,12 +73,30 @@
    "report": false
   },
   {
-   "title": "EuroLeague Fantasy winners and losers, Round 6: Thursday",
-   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/euroleague-fantasy-winners-and-losers-round-6-thursday/",
-   "date": "2026-10-15T23:00:00+00:00",
-   "source": "EuroLeague Fantasy Tips (official)",
-   "weight": 2,
-   "fantasy": true,
+   "title": "Backdoor cuts: More you should know from Thursday’s games",
+   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/backdoor-cuts-more-you-should-know-from-thursdays-games/",
+   "date": "2026-10-23T00:15:51.233000+00:00",
+   "source": "EuroLeague (official)",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Hayes-Davis after Baskonia escape: “A lot of players make a lot of money, so we made our shots”",
+   "url": "https://www.eurohoops.net/en/euroleague/2024726/hayes-davis-after-baskonia-escape-a-lot-of-players-make-a-lot-of-money-so-we-made-our-shots/",
+   "date": "2026-10-22T23:15:45+00:00",
+   "source": "Eurohoops",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Cam Payne on EuroLeague over NBA Finals: “Lowkey… I’m having fun”",
+   "url": "https://www.eurohoops.net/en/euroleague/2024723/cam-payne-on-euroleague-over-nba-finals-lowkey-im-having-fun/",
+   "date": "2026-10-22T23:05:18+00:00",
+   "source": "Eurohoops",
+   "weight": 1,
+   "fantasy": false,
    "report": false
   },
   {
@@ -181,6 +208,15 @@
    "report": false
   },
   {
+   "title": "Nunn returns as Panathinaikos edges Baskonia",
+   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/tae2627-rs7-game-report-pan-bas/",
+   "date": "2026-10-22T22:26:22.617000+00:00",
+   "source": "EuroLeague (official)",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
    "title": "Παναθηναϊκός: Ο Χέιζ-Ντέιβις έκανε δώρο δύο μπουκαλάκια με τη... σάλτσα του στον Φαρίντ",
    "url": "https://www.gazzetta.gr/basketball/euroleague/2579828/panathinaikos-o-heiz-nteibis-ekane-doro-dyo-mpoykalakia-me-ti-saltsa",
    "date": "2026-10-23T00:24:15+02:00",
@@ -217,10 +253,28 @@
    "report": false
   },
   {
+   "title": "Carlik's class carries Partizan to derby win",
+   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/carliks-class-carries-partizan-to-derby-win/",
+   "date": "2026-10-22T22:12:30.709000+00:00",
+   "source": "EuroLeague (official)",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
    "title": "Παρτίζαν - Ερυθρός Αστέρας 85-82: Νίκη... χρυσάφι στην παράταση του ντέρμπι",
    "url": "https://www.gazzetta.gr/basketball/euroleague/2579803/partizan-erythros-asteras-85-82-niki-hrysafi-stin-paratasi-toy",
    "date": "2026-10-23T00:05:17+02:00",
    "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Η Μπαρτσελόνα πέρασε από το Μιλάνο, βυθίζνοντας την Αρμάνι στη δύνη των 5 σερί ηττών",
+   "url": "https://www.eurohoops.net/el/euroleague-el-2/2024702/armani-bartselona-81-89-me-panter-polifonia-alose-to-milano/",
+   "date": "2026-10-22T22:02:25+00:00",
+   "source": "Eurohoops (GR)",
    "weight": 1,
    "fantasy": false,
    "report": false
@@ -514,7 +568,7 @@
    "report": false
   },
   {
-   "title": "Παρτίζαν – Ερυθρός Αστέρας 85-82: Ο Κάρλικ Τζόουνς δεν την… άφησε να “αυτοκτονήσει”!",
+   "title": "Παρτιζάν – Ερυθρός Αστέρας 85-82: Ο Κάρλικ Τζόουνς δεν την… άφησε να “αυτοκτονήσει”!",
    "url": "https://www.eurohoops.net/el/euroleague-el-2/2024501/partizan-erithros-asteras-o-karlik-tzoouns-den-tin-afise-na-aftoktonisi/",
    "date": "2026-10-22T21:07:40+00:00",
    "source": "Eurohoops (GR)",
@@ -973,7 +1027,7 @@
    "report": false
   },
   {
-   "title": "Αινιγματική ανάρτηση Φουρνιέ: “Ή άνδρας ή δειλός…” (photo)",
+   "title": "Αινιγματική ανάρτηση Φουρνιέ: “Ή άνδρας ή δειλός…” (pic)",
    "url": "https://www.eurohoops.net/el/heba-el/2024388/fournie-i-enigmatiki-anartisi-photo/",
    "date": "2026-10-22T14:43:57+00:00",
    "source": "Eurohoops (GR)",
@@ -1025,60 +1079,6 @@
    "weight": 1,
    "fantasy": false,
    "report": false
-  },
-  {
-   "title": "Bartzokas confirms Olympiacos roster search, reacts to Greek match-fixing scandal",
-   "url": "https://www.eurohoops.net/en/euroleague/2024279/bartzokas-confirms-olympiacos-roster-search-reacts-to-greek-match-fixing-scandal/",
-   "date": "2026-10-22T10:15:09+00:00",
-   "source": "Eurohoops",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Greece bribery scandal hits Athens courts with postponement granted",
-   "url": "https://www.eurohoops.net/en/euroleague/2024242/greece-bribery-match-fixing-investigation-update/",
-   "date": "2026-10-22T09:37:24+00:00",
-   "source": "Eurohoops",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Partizan reportedly nears agreement with experienced forward Robert Franks",
-   "url": "https://www.eurohoops.net/en/euroleague/2024229/robert-franks-to-partizan-update-euroleague/",
-   "date": "2026-10-22T09:24:25+00:00",
-   "source": "Eurohoops",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Barkas Breakdown: The first “Spanish” Serbian derby",
-   "url": "https://www.eurohoops.net/en/voices/2023884/barkas-breakdown-the-first-spanish-serbian-derby/",
-   "date": "2026-10-22T08:00:42+00:00",
-   "source": "Eurohoops",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Barkas Breakdown: The first “Spanish” Serbian derby",
-   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/barkas-breakdown-the-first-spanish-serbian-derby/",
-   "date": "2026-10-22T08:00:00+00:00",
-   "source": "EuroLeague (official)",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Rookie loses total respect for Luka Doncic: “That was awful”",
-   "url": "https://www.eurohoops.net/en/nba-news/2024158/luka-doncic-yaxel-lendeborg-talk-exchange-trashtalk-los-angeles-lakers-versus-golden-state-warriors-nba/",
-   "date": "2026-10-22T06:43:46+00:00",
-   "source": "Eurohoops",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
   }
  ],
  "digest": {
@@ -1086,335 +1086,407 @@
    {
     "player": "MONTERO, JEAN",
     "status": "doubtful",
-    "note": "Αμφίβολος για την 7η αγωνιστική.",
-    "source": "EuroLeague"
+    "note": "Αμφίβολος για τον 7ο γύρο",
+    "source": "EuroLeague (official)"
    },
    {
     "player": "FOURNIER, EVAN",
     "status": "out",
-    "note": "Εκτός μάχης για τον Ολυμπιακό.",
-    "source": "EuroLeague"
+    "note": "Εκτός λόγω τραυματισμού",
+    "source": "EuroLeague (official)"
    },
    {
     "player": "WILLIAMS-GOSS, NIGEL",
     "status": "out",
-    "note": "Εκτός αποστολής.",
-    "source": "EuroLeague"
+    "note": "Εκτός λόγω τραυματισμού",
+    "source": "EuroLeague (official)"
+   },
+   {
+    "player": "JEKIRI, TONYE",
+    "status": "out",
+    "note": "Εκτός δράσης για τουλάχιστον 2 εβδομάδες",
+    "source": "EuroBallin (Substack)"
+   },
+   {
+    "player": "JAMES, MIKE",
+    "status": "out",
+    "note": "Εκτός λόγω τραυματισμού",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "MUSA, DZANAN",
+    "status": "out",
+    "note": "Μη διαθέσιμος",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "HIFI, NADIR",
+    "status": "questionable",
+    "note": "Αμφίβολος λόγω προηγούμενου τραυματισμού",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "NEBO, JOSH",
+    "status": "available",
+    "note": "Επέστρεψε στην ενεργό δράση",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "NUNN, KENDRICK",
+    "status": "available",
+    "note": "Επέστρεψε στην αγωνιστική δράση",
+    "source": "EuroLeague (official)"
+   },
+   {
+    "player": "IZUNDU, EBUKA",
+    "status": "available",
+    "note": "Αναμένεται να επιστρέψει",
+    "source": "EuroLeague Fantasy Tips (official)"
    }
   ],
   "expert": [
    {
-    "player": "BRYANT, ELIJAH",
+    "player": "OKOBO, ELIE",
     "stance": "pick",
-    "note": "Ελκυστική επιλογή με δυνατότητα και για αρχηγό.",
-    "source": "Basketball Sphere – Fantasy"
+    "note": "Εξαιρετική εμφάνιση με 30.8 πόντους fantasy",
+    "source": "EuroLeague Fantasy Tips (official)"
    },
    {
-    "player": "BRYANT, ELIJAH",
-    "stance": "captain",
-    "note": "Προτείνεται για αρχηγός στην πρεμιέρα της αγωνιστικής.",
-    "source": "Basketball Sphere – Fantasy"
-   },
-   {
-    "player": "SHORTS, TJ",
+    "player": "CAMPAZZO, FACUNDO",
     "stance": "pick",
-    "note": "Υψηλό επιθετικό ταβάνι σε πιθανό ματς με πολλούς πόντους.",
-    "source": "Basketball Sphere – Fantasy"
-   },
-   {
-    "player": "MALEDON, THEO",
-    "stance": "pick",
-    "note": "Εξαιρετική φόρμα και ευνοϊκό πρόγραμμα για τη Real Madrid.",
-    "source": "Basketball Sphere – Fantasy"
-   },
-   {
-    "player": "RHODEN, JARED",
-    "stance": "pick",
-    "note": "Αξιόλογη οικονομική λύση με πιθανό αυξημένο ρόλο.",
-    "source": "Basketball Sphere – Fantasy"
-   },
-   {
-    "player": "FELIZ, ANDRES",
-    "stance": "pick",
-    "note": "Value επιλογή στα 8.2 credits με καλή αγωνιστική φόρμα.",
-    "source": "Basketball Sphere – Fantasy"
-   },
-   {
-    "player": "SAINT-SUPERY, MARIO",
-    "stance": "pick",
-    "note": "Εξαιρετικά φθηνή επιλογή για εξοικονόμηση credits.",
-    "source": "Basketball Sphere – Fantasy"
-   },
-   {
-    "player": "SARIC, DARIO",
-    "stance": "pick",
-    "note": "Αυξημένος χρόνος συμμετοχής και ηγετικός ρόλος στην Anadolu Efes.",
-    "source": "Basketball Sphere – Fantasy"
-   },
-   {
-    "player": "BACON, DWAYNE",
-    "stance": "pick",
-    "note": "Βασικός επιθετικός πυλώνας για τη Dubai.",
-    "source": "Basketball Sphere – Fantasy"
-   },
-   {
-    "player": "TUBELIS, AZUOLAS",
-    "stance": "pick",
-    "note": "Ευκαιρία ανάκαμψης μετά από μια μικρή κάμψη στην τιμή του.",
-    "source": "Basketball Sphere – Fantasy"
-   },
-   {
-    "player": "OJELEYE, SEMI",
-    "stance": "pick",
-    "note": "Δυνατός και σκληροτράχηλος για παιχνίδια υψηλής έντασης.",
-    "source": "Basketball Sphere – Fantasy"
-   },
-   {
-    "player": "PARRA, JOEL",
-    "stance": "pick",
-    "note": "Πιθανός διαφορικός παράγοντας σε χαμηλή τιμή.",
-    "source": "Basketball Sphere – Fantasy"
-   },
-   {
-    "player": "BRYANT, ELIJAH",
-    "stance": "pick",
-    "note": "Από τους κορυφαίους σταθερούς γκαρντ.",
-    "source": "EuroBallin (Substack)"
-   },
-   {
-    "player": "MONTERO, JEAN",
-    "stance": "pick",
-    "note": "Εξαιρετικός πλειμέικερ με καλό πρόγραμμα στη συνέχεια.",
-    "source": "EuroBallin (Substack)"
+    "note": "Κυρίαρχος στον γρήγορο ρυθμό της ομάδας του",
+    "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "JONES, CARLIK",
     "stance": "pick",
-    "note": "Υψηλή συμμετοχή και ευκαιρία επαναφοράς μετά από κακά παιχνίδια.",
-    "source": "EuroBallin (Substack)"
+    "note": "Ηγετική εμφάνιση στο ντέρμπι και άνοδος της αξίας του",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "BUTLER, JARED",
+    "stance": "avoid",
+    "note": "Πολύ κακή εμφάνιση και άνοδος του ανταγωνισμού στη θέση",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "BALCEROWSKI, OLEK",
+    "stance": "avoid",
+    "note": "Μειώθηκε ο ρόλος του μετά την επιστροφή του βασικού σέντερ",
+    "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "MALEDON, THEO",
     "stance": "pick",
-    "note": "Απαραίτητος παίκτης με τεράστια εμπιστοσύνη από τον προπονητή του.",
-    "source": "EuroBallin (Substack)"
-   },
-   {
-    "player": "ETIENNE, TYSON",
-    "stance": "pick",
-    "note": "Βασική επιθετική πηγή για την Paris.",
-    "source": "EuroBallin (Substack)"
-   },
-   {
-    "player": "CARR, MARCUS",
-    "stance": "pick",
-    "note": "Κορυφαία μεσαία επιλογή με ηγετικό ρόλο.",
-    "source": "EuroBallin (Substack)"
-   },
-   {
-    "player": "STRAZEL, MATTHEW",
-    "stance": "pick",
-    "note": "Αξιόπιστη λυσή στη μεσαία κατηγορία τιμής.",
-    "source": "EuroBallin (Substack)"
-   },
-   {
-    "player": "MADAR, YAM",
-    "stance": "pick",
-    "note": "Αποδοτικός και ικανός να αυξήσει το μπάτζετ.",
-    "source": "EuroBallin (Substack)"
-   },
-   {
-    "player": "WASHINGTON JR, TYTY",
-    "stance": "pick",
-    "note": "Εντυπωσιακός scorer με σημαντικό ρόλο.",
-    "source": "EuroBallin (Substack)"
-   },
-   {
-    "player": "FELIZ, ANDRES",
-    "stance": "pick",
-    "note": "Κέρδισε θέση βασικού με εξαιρετικές εμφανίσεις.",
-    "source": "EuroBallin (Substack)"
-   },
-   {
-    "player": "VEZENKOV, SASHA",
-    "stance": "pick",
-    "note": "Ο κορυφαίος φόργουορντ, προσοχή όμως στο δύσκολο ματς με τη Fenerbahce.",
-    "source": "EuroBallin (Substack)"
-   },
-   {
-    "player": "SARIC, DARIO",
-    "stance": "pick",
-    "note": "Ικανός σε σκοράρισμα και ριμπάουντ.",
-    "source": "EuroBallin (Substack)"
-   },
-   {
-    "player": "BACON, DWAYNE",
-    "stance": "pick",
-    "note": "Ιδανικός για γρήγορα παιχνίδια και υψηλό σκορ.",
-    "source": "EuroBallin (Substack)"
-   },
-   {
-    "player": "LEDAY, ZACH",
-    "stance": "pick",
-    "note": "Αναδεικνύεται σε βασικό πάουερ φόργουορντ της Hapoel IBI Tel Aviv.",
-    "source": "EuroBallin (Substack)"
-   },
-   {
-    "player": "TUBELIS, AZUOLAS",
-    "stance": "pick",
-    "note": "Ευκαιρία επανόδου μετά από δύσκολο πρόγραμμα.",
-    "source": "EuroBallin (Substack)"
-   },
-   {
-    "player": "NDIAYE, MBAYE",
-    "stance": "pick",
-    "note": "Μαχητικός και πανταχού παρών στο παρκέ.",
-    "source": "EuroBallin (Substack)"
-   },
-   {
-    "player": "MALCOLM, COLLIN",
-    "stance": "pick",
-    "note": "Επέστρεψε στις καλές εμφανίσεις, παίκτης για κάθε προπονητή.",
-    "source": "EuroBallin (Substack)"
-   },
-   {
-    "player": "MARTIN, TYRESE",
-    "stance": "pick",
-    "note": "Πλήρως προσαρμοσμένος με έφεση σε σκορ και ριμπάουντ.",
-    "source": "EuroBallin (Substack)"
-   },
-   {
-    "player": "STEVENS, LAMAR",
-    "stance": "pick",
-    "note": "Ευνοϊκό πρόγραμμα και μεγάλη συνεισφορά για την Partizan.",
-    "source": "EuroBallin (Substack)"
+    "note": "Παρά την κακή εμφάνιση παραμένει ασφαλής επιλογή",
+    "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "DIARRA, ALIOU",
     "stance": "pick",
-    "note": "Must pick στα σέντερ λόγω κυριαρχίας σε λίγα λεπτά.",
-    "source": "EuroBallin (Substack)"
-   },
-   {
-    "player": "VALANCIUNAS, JONAS",
-    "stance": "pick",
-    "note": "Ασφαλής επιλογή με ευνοϊκό πρόγραμμα μπροστά.",
-    "source": "EuroBallin (Substack)"
-   },
-   {
-    "player": "LESSORT, MATHIAS",
-    "stance": "pick",
-    "note": "Ιδανικός αντίπαλος στα επόμενα παιχνίδια για σέντερ.",
-    "source": "EuroBallin (Substack)"
-   },
-   {
-    "player": "KABENGELE, MFIONDU",
-    "stance": "pick",
-    "note": "Εξαιρετικές προοπτικές αν πάρει τον χρόνο που του αξίζει.",
-    "source": "EuroBallin (Substack)"
-   },
-   {
-    "player": "HAYES, KEVARRIUS",
-    "stance": "pick",
-    "note": "Αυξημένος χρόνος λόγω τραυματισμού συμπαικτών.",
-    "source": "EuroBallin (Substack)"
-   },
-   {
-    "player": "DIARRA, ALIOU",
-    "stance": "pick",
-    "note": "Εξαιρετική αξία και υψηλό PIR.",
+    "note": "Συνεχίζει να είναι εξαιρετικά αποδοτικός και υποτιμημένος",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "FAYE, MOUHAMED",
     "stance": "pick",
-    "note": "Οικονομική λύση με εξαιρετική φόρμα στα ριμπάουντ και τα μπλοκ.",
+    "note": "Πολύ καλή οικονομική επιλογή στη θέση του σέντερ",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "HAYES, KEVARRIUS",
     "stance": "pick",
-    "note": "Ωφελημένος από απουσίες, ιδανικός για τη θέση του σέντερ.",
+    "note": "Αυξημένος ρόλος λόγω του τραυματισμού του βασικού σέντερ",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "WRIGHT, MOSES",
     "stance": "pick",
-    "note": "Φορμαρισμένος και με έξτρα κίνητρο απέναντι στην πρώην ομάδα του.",
+    "note": "Εξαιρετική κατάσταση και πρόσθετο κίνητρο απέναντι στην πρώην υποψήφια ομάδα του",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "ZIZIC, ANTE",
     "stance": "pick",
-    "note": "Αυξημένος χρόνος συμμετοχής και υψηλή ευστοχία.",
+    "note": "Υψηλή παραγωγικότητα και αυξημένος χρόνος συμμετοχής",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "BACON, DWAYNE",
     "stance": "pick",
-    "note": "Πρωταγωνιστής και κύριος εκτελεστής της Dubai.",
+    "note": "Κορυφαίος σκόρερ και ηγέτης στην επίθεση",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "DAVIDOVAC, DEJAN",
     "stance": "pick",
-    "note": "Εμπειρία και εξαιρετική τιμή για τα αγωνιστικά του λεπτά.",
+    "note": "Εμπειρία σε ντέρμπι και πολύ χαμηλή τιμή",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "MALCOLM, COLLIN",
     "stance": "pick",
-    "note": "Εξαιρετική απόδοση και value για τα χρήματά του.",
+    "note": "Κερδίζει ρόλο και fantasy πόντους μετά την απουσία του βασικού γκαρντ",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "PROCIDA, GABRIELE",
     "stance": "pick",
-    "note": "Φθηνή επιλογή από τη Real Madrid με αυξανόμενο ρόλο.",
+    "note": "Πολύ φθηνή λύση με αυξανόμενο ρόλο στο ροτέισον",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "VEZENKOV, SASHA",
     "stance": "pick",
-    "note": "Ο απόλυτος σταρ και κορυφαία επιλογή για τη θέση του.",
+    "note": "Κορυφαίος παίκτης της διοργάνωσης και ιδανική στιγμή για προσθήκη",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "ETIENNE, TYSON",
     "stance": "pick",
-    "note": "Αναπληρώνει επάξια τυχόν απουσίες με πολλές προσπάθειες.",
+    "note": "Αναλαμβάνει μεγάλο επιθετικό όγκο σε γρήγορο ρυθμό",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "FELIZ, ANDRES",
     "stance": "pick",
-    "note": "Εξαιρετική εβδομάδα και χαμηλή τιμή.",
+    "note": "Συνεχόμενα εξαιρετικά παιχνίδια σε ελκυστική τιμή",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "MADAR, YAM",
     "stance": "pick",
-    "note": "Σταθερά καλός και υποτιμημένος στο μπάτζετ.",
+    "note": "Υποτιμημένος με σταθερά θετική συνεισφορά σε πολλούς τομείς",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "ROBINSON, JUSTIN",
     "stance": "pick",
-    "note": "Ανεβασμένη ψυχολογία και συνεχόμενα καλά παιχνίδια.",
+    "note": "Σε εξαιρετική κατάσταση και με υψηλή αυτοπεποίθηση",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "WATERS, TREMONT",
     "stance": "pick",
-    "note": "X-factor με ελάχιστη έως τώρα κατοχή από άλλους managers.",
+    "note": "Ικανός να δώσει μεγάλο σκορ με χαμηλή ιδιοκτησία",
     "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "BRYANT, ELIJAH",
+    "stance": "captain",
+    "note": "Ευνοϊκό πρόγραμμα και ιδανικός υποψήφιος για αρχηγός",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "SHORTS, TJ",
+    "stance": "pick",
+    "note": "Ιδανικό ματσάρισμα υψηλού ρυθμού απέναντι στην πρώην ομάδα του",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "MALEDON, THEO",
+    "stance": "pick",
+    "note": "Σταθερή απόδοση και εξαιρετικό επερχόμενο πρόγραμμα",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "RHODEN, JARED",
+    "stance": "pick",
+    "note": "Οικονομική λύση με αυξημένες αρμοδιότητες λόγω απουσιών",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "FELIZ, ANDRES",
+    "stance": "pick",
+    "note": "Συνεχής άνοδος της αξίας του και ευνοϊκοί αγώνες μπροστά",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "SAINT-SUPERY, MARIO",
+    "stance": "pick",
+    "note": "Εξαιρετική λύση για εξοικονόμηση χρημάτων με σταθερά λεπτά",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "SARIC, DARIO",
+    "stance": "pick",
+    "note": "Αυξημένος χρόνος και επιθετικές ευθύνες απέναντι σε ευάλωτη άμυνα",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "BACON, DWAYNE",
+    "stance": "pick",
+    "note": "Κύριος εκφραστής της επίθεσης εν τη απουσία του βασικού φόργουορντ",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "TUBELIS, AZUOLAS",
+    "stance": "pick",
+    "note": "Καλή ευκαιρία ανάκαμψης σε προσιτή τιμή",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "OJELEYE, SEMI",
+    "stance": "pick",
+    "note": "Ιδανικός για παιχνίδι υψηλής έντασης και physical επαφών",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "PARRA, JOEL",
+    "stance": "pick",
+    "note": "Αξιόλογη διαφορική επιλογή με σταθερό χρόνο συμμετοχής",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "BRYANT, ELIJAH",
+    "stance": "pick",
+    "note": "Υποψήφιος πολυτιμότερος παίκτης με ικανότητα για μεγάλα στατιστικά",
+    "source": "EuroBallin (Substack)"
+   },
+   {
+    "player": "MONTERO, JEAN",
+    "stance": "pick",
+    "note": "Σε εξαιρετική κατάσταση με θετικό πρόγραμμα στη συνέχεια",
+    "source": "EuroBallin (Substack)"
+   },
+   {
+    "player": "JONES, CARLIK",
+    "stance": "pick",
+    "note": "Υψηλή χρήση και εξαιρετική ευκαιρία επαναφοράς σε χαμηλότερη τιμή",
+    "source": "EuroBallin (Substack)"
+   },
+   {
+    "player": "MALEDON, THEO",
+    "stance": "pick",
+    "note": "Απόλυτη εμπιστοσύνη από τον προπονητή και υψηλό ταβάνι",
+    "source": "EuroBallin (Substack)"
+   },
+   {
+    "player": "ETIENNE, TYSON",
+    "stance": "pick",
+    "note": "Κύριος επιθετικός πόλος με υψηλό όγκο προσπαθειών",
+    "source": "EuroBallin (Substack)"
+   },
+   {
+    "player": "CARR, MARCUS",
+    "stance": "pick",
+    "note": "Κορυφαία επιλογή μεσαίας τιμής με ηγετικό ρόλο",
+    "source": "EuroBallin (Substack)"
+   },
+   {
+    "player": "STRAZEL, MATTHEW",
+    "stance": "pick",
+    "note": "Ηγετικός ρόλος και υψηλή χρήση σε προσιτή τιμή",
+    "source": "EuroBallin (Substack)"
+   },
+   {
+    "player": "MADAR, YAM",
+    "stance": "pick",
+    "note": "Εξαιρετική αποτελεσματικότητα για αύξηση του διαθέσιμου μπάτζετ",
+    "source": "EuroBallin (Substack)"
+   },
+   {
+    "player": "WASHINGTON JR, TYTY",
+    "stance": "pick",
+    "note": "Σημαντικό σκοραριστικό ταλέντο και προοπτική",
+    "source": "EuroBallin (Substack)"
+   },
+   {
+    "player": "FELIZ, ANDRES",
+    "stance": "pick",
+    "note": "Κερδίζει διαρκώς την εμπιστοσύνη του προπονητή του",
+    "source": "EuroBallin (Substack)"
+   },
+   {
+    "player": "VEZENKOV, SASHA",
+    "stance": "pick",
+    "note": "Απαραίτητη προσθήκη στην ομάδα παρά το πιθανό χαμηλό σκορ στον γύρο",
+    "source": "EuroBallin (Substack)"
+   },
+   {
+    "player": "SARIC, DARIO",
+    "stance": "avoid",
+    "note": "Δύσκολο πρόγραμμα στις επερχόμενες αγωνιστικές",
+    "source": "EuroBallin (Substack)"
+   },
+   {
+    "player": "BACON, DWAYNE",
+    "stance": "pick",
+    "note": "Ευνοϊκό πρόγραμμα με αγώνες υψηλού ρυθμού",
+    "source": "EuroBallin (Substack)"
+   },
+   {
+    "player": "LEDAY, ZACH",
+    "stance": "pick",
+    "note": "Κυρίαρχος πάουερ φόργουορντ με σταθερή αγωνιστική άνοδο",
+    "source": "EuroBallin (Substack)"
+   },
+   {
+    "player": "TUBELIS, AZUOLAS",
+    "stance": "pick",
+    "note": "Κατάλληλη χρονική στιγμή επαναφοράς καθώς βελτιώνεται το πρόγραμμα",
+    "source": "EuroBallin (Substack)"
+   },
+   {
+    "player": "NDIAYE, MBAYE",
+    "stance": "pick",
+    "note": "Εντυπωσιακή μαχητικότητα που ανταμείβεται στο fantasy",
+    "source": "EuroBallin (Substack)"
+   },
+   {
+    "player": "MALCOLM, COLLIN",
+    "stance": "pick",
+    "note": "Επέστρεψε σε υψηλό χρόνο συμμετοχής και αποδοτικότητα",
+    "source": "EuroBallin (Substack)"
+   },
+   {
+    "player": "MARTIN, TYRESE",
+    "stance": "pick",
+    "note": "Πλήρως προσαρμοσμένος με υψηλές επιδόσεις σε σκορ και ριμπάουντ",
+    "source": "EuroBallin (Substack)"
+   },
+   {
+    "player": "STEVENS, LAMAR",
+    "stance": "pick",
+    "note": "Πολύ καλό πρόγραμμα και σταθερή επιθετική παραγωγή",
+    "source": "EuroBallin (Substack)"
+   },
+   {
+    "player": "DIARRA, ALIOU",
+    "stance": "pick",
+    "note": "Απόλυτο pick στη θέση του σέντερ με εξαιρετική αποτελεσματικότητα",
+    "source": "EuroBallin (Substack)"
+   },
+   {
+    "player": "VALANCIUNAS, JONAS",
+    "stance": "pick",
+    "note": "Ασφαλής επιλογή με πολύ ευνοϊκό επερχόμενο πρόγραμμα",
+    "source": "EuroBallin (Substack)"
+   },
+   {
+    "player": "LESSORT, MATHIAS",
+    "stance": "pick",
+    "note": "Εξαιρετικές αναμετρήσεις μπροστά απέναντι σε αδύναμες ρακέτες",
+    "source": "EuroBallin (Substack)"
+   },
+   {
+    "player": "KABENGELE, MFIONDU",
+    "stance": "pick",
+    "note": "Ιδιαίτερα ευνοϊκά ματσαρίσματα στους επόμενους γύρους",
+    "source": "EuroBallin (Substack)"
+   },
+   {
+    "player": "HAYES, KEVARRIUS",
+    "stance": "pick",
+    "note": "Αναβαθμισμένος ρόλος ως βασικός σέντερ λόγω τραυματισμού",
+    "source": "EuroBallin (Substack)"
    }
   ],
   "round": 7,
-  "summary_el": "Ξεκινά η 7η αγωνιστική της EuroLeague με το πρώτο παράθυρο απεριορίστων αλλαγών (unlimited trades) στη φετινή διοργάνωση, προσφέροντας ιδανική ευκαιρία για δομικές αλλαγές στα ρόστερ των χρηστών. Ο Elijah Bryant αποτελεί εξαιρετική επιλογή και πρόταση για αρχηγό, χάρη στο ευνοϊκό πρόγραμμα της Hapoel IBI Tel Aviv. Ο Theo Maledon της Real Madrid συνεχίζει να συγκεντρώνει τεράστια προτίμηση, όντας βασικό γρανάζι στα πλάνα του προπονητή του. Στη θέση των σέντερ, ο Aliou Diarra παραμένει value for money επιλογή με σταθερά υψηλή απόδοση, ενώ παίκτες όπως ο Kevarrius Hayes κερδίζουν χρόνο λόγω τραυματισμών. Σημαντικά αγωνιστικά νέα περιλαμβάνουν την αμφίβολη συμμετοχή του Jean Montero και τις γνωστές απουσίες των Evan Fournier και Nigel Williams-Goss. Οι managers καλούνται να αξιολογήσουν προσεκτικά το πρόγραμμα των επόμενων αγωνιστικών για τη μέγιστη ενίσχυση της βαθμολογίας και των διαθέσιμων credits τους.",
-  "_model": "gemini-3.5-flash-lite",
-  "_seconds": 9.9
+  "summary_el": "• Ο 7ος γύρος αποτελεί την πρώτη εβδομάδα με απεριόριστες αλλαγές, δίνοντας στους μάνατζερ τη δυνατότητα να αναδιαμορφώσουν πλήρως τις ομάδες τους επενδύοντας σε παίκτες αξίας.\n• Ο Sasha Vezenkov της Olympiacos Piraeus παραμένει το απόλυτο φαβορί του παιχνιδιού, ενώ ο Elijah Bryant της Hapoel IBI Tel Aviv ξεχωρίζει ως ηγετική επιλογή και εξαιρετική λύση για αρχηγός.\n• Στην περιφέρεια προτείνονται έντονα οι Theo Maledon και Andres Feliz της Real Madrid, καθώς και ο Carlik Jones της Partizan Mozzart Bet Belgrade που πρωταγωνίστησε στο σερβικό ντέρμπι.\n• Στη θέση του σέντερ, ο Aliou Diarra της Virtus Bologna θεωρείται ιδανική υποτιμημένη επιλογή, ενώ ο Kevarrius Hayes της Partizan Mozzart Bet Belgrade κερδίζει χρόνο μετά τον τραυματισμό του Tonye Jekiri.\n• Σημαντικά προβλήματα τραυματισμών προκύπτουν στην Olympiacos Piraeus με τους Evan Fournier και Nigel Williams-Goss να μένουν εκτός και τον Jean Montero να δίνεται αμφίβολος.\n• Αντίθετα, ο Jared Butler της Crvena Zvezda Meridianbet Belgrade και ο Olek Balcerowski της FC Barcelona προτείνονται προς πώληση λόγω πτώσης της παραγωγικότητάς τους.\n• Στην ανάλυση προγράμματος από τον 7ο έως τον 13ο γύρο, οι Hapoel IBI Tel Aviv και Partizan Mozzart Bet Belgrade διαθέτουν το πιο ευνοϊκό καλεντάρι, ενώ η Armani Olimpia Milan και η Kosner Baskonia Vitoria-Gasteiz έχουν τις δυσκολότερες αναμετρήσεις.",
+  "_model": "gemini-3.8-flash",
+  "_seconds": 81.7
  },
- "digest_at": "2026-10-22T22:08:06.599254+00:00",
+ "digest_at": "2026-10-23T04:07:30.386249+00:00",
  "failed": []
 }

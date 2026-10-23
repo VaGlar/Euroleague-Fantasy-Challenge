@@ -229,7 +229,27 @@ round,source,stance,person_id,name,team,model_xpts
 6,EuroLeague Fantasy Tips (official),pick,013667,"FERNANDO, BRUNO",IST,7.25
 6,EuroLeague Fantasy Tips (official),pick,012403,"FAYE, MOUHAMED",PRS,6.22
 6,EuroLeague Fantasy Tips (official),pick,012796,"KABENGELE, MFIONDU",DUB,16.95
-7,Basketball Sphere – Fantasy,pick,009846,"BRYANT, ELIJAH",HTA,20.85
+7,EuroLeague Fantasy Tips (official),pick,011212,"OKOBO, ELIE",DUB,14.26
+7,EuroLeague Fantasy Tips (official),pick,005928,"CAMPAZZO, FACUNDO",MAD,13.44
+7,EuroLeague Fantasy Tips (official),pick,013369,"JONES, CARLIK",PAR,17.27
+7,EuroLeague Fantasy Tips (official),avoid,014163,"BUTLER, JARED",RED,6.58
+7,EuroLeague Fantasy Tips (official),avoid,007553,"BALCEROWSKI, OLEK",BAR,6.39
+7,EuroLeague Fantasy Tips (official),pick,007027,"MALEDON, THEO",MAD,15.98
+7,EuroLeague Fantasy Tips (official),pick,014108,"DIARRA, ALIOU",VIR,14.44
+7,EuroLeague Fantasy Tips (official),pick,012403,"FAYE, MOUHAMED",PRS,8.68
+7,EuroLeague Fantasy Tips (official),pick,010390,"HAYES, KEVARRIUS",PAR,10.03
+7,EuroLeague Fantasy Tips (official),pick,012878,"WRIGHT, MOSES",MIL,17.74
+7,EuroLeague Fantasy Tips (official),pick,004554,"ZIZIC, ANTE",BES,14.65
+7,EuroLeague Fantasy Tips (official),pick,011286,"BACON, DWAYNE",DUB,15.04
+7,EuroLeague Fantasy Tips (official),pick,007960,"DAVIDOVAC, DEJAN",RED,4.02
+7,EuroLeague Fantasy Tips (official),pick,012609,"MALCOLM, COLLIN",IST,12.09
+7,EuroLeague Fantasy Tips (official),pick,008384,"PROCIDA, GABRIELE",MAD,1.25
+7,EuroLeague Fantasy Tips (official),pick,003469,"VEZENKOV, SASHA",OLY,21.7
+7,EuroLeague Fantasy Tips (official),pick,015143,"ETIENNE, TYSON",PRS,15.07
+7,EuroLeague Fantasy Tips (official),pick,011247,"FELIZ, ANDRES",MAD,13.11
+7,EuroLeague Fantasy Tips (official),pick,011052,"MADAR, YAM",TEL,12.83
+7,EuroLeague Fantasy Tips (official),pick,014008,"ROBINSON, JUSTIN",BAR,13.39
+7,EuroLeague Fantasy Tips (official),pick,015165,"WATERS, TREMONT",ASV,9.09
 7,Basketball Sphere – Fantasy,captain,009846,"BRYANT, ELIJAH",HTA,20.85
 7,Basketball Sphere – Fantasy,pick,012608,"SHORTS, TJ",PAM,14.6
 7,Basketball Sphere – Fantasy,pick,007027,"MALEDON, THEO",MAD,15.98
@@ -252,7 +272,7 @@ round,source,stance,person_id,name,team,model_xpts
 7,EuroBallin (Substack),pick,015162,"WASHINGTON JR, TYTY",ASV,14.37
 7,EuroBallin (Substack),pick,011247,"FELIZ, ANDRES",MAD,13.11
 7,EuroBallin (Substack),pick,003469,"VEZENKOV, SASHA",OLY,21.7
-7,EuroBallin (Substack),pick,003112,"SARIC, DARIO",IST,19.61
+7,EuroBallin (Substack),avoid,003112,"SARIC, DARIO",IST,19.61
 7,EuroBallin (Substack),pick,011286,"BACON, DWAYNE",DUB,15.04
 7,EuroBallin (Substack),pick,008987,"LEDAY, ZACH",HTA,19.36
 7,EuroBallin (Substack),pick,008192,"TUBELIS, AZUOLAS",ZAL,14.15
@@ -265,18 +285,3 @@ round,source,stance,person_id,name,team,model_xpts
 7,EuroBallin (Substack),pick,003842,"LESSORT, MATHIAS",PAN,19.17
 7,EuroBallin (Substack),pick,012796,"KABENGELE, MFIONDU",DUB,20.1
 7,EuroBallin (Substack),pick,010390,"HAYES, KEVARRIUS",PAR,10.03
-7,EuroLeague Fantasy Tips (official),pick,014108,"DIARRA, ALIOU",VIR,14.44
-7,EuroLeague Fantasy Tips (official),pick,012403,"FAYE, MOUHAMED",PRS,8.68
-7,EuroLeague Fantasy Tips (official),pick,010390,"HAYES, KEVARRIUS",PAR,10.03
-7,EuroLeague Fantasy Tips (official),pick,012878,"WRIGHT, MOSES",MIL,17.74
-7,EuroLeague Fantasy Tips (official),pick,004554,"ZIZIC, ANTE",BES,14.65
-7,EuroLeague Fantasy Tips (official),pick,011286,"BACON, DWAYNE",DUB,15.04
-7,EuroLeague Fantasy Tips (official),pick,007960,"DAVIDOVAC, DEJAN",RED,4.02
-7,EuroLeague Fantasy Tips (official),pick,012609,"MALCOLM, COLLIN",IST,12.09
-7,EuroLeague Fantasy Tips (official),pick,008384,"PROCIDA, GABRIELE",MAD,1.25
-7,EuroLeague Fantasy Tips (official),pick,003469,"VEZENKOV, SASHA",OLY,21.7
-7,EuroLeague Fantasy Tips (official),pick,015143,"ETIENNE, TYSON",PRS,15.07
-7,EuroLeague Fantasy Tips (official),pick,011247,"FELIZ, ANDRES",MAD,13.11
-7,EuroLeague Fantasy Tips (official),pick,011052,"MADAR, YAM",TEL,12.83
-7,EuroLeague Fantasy Tips (official),pick,014008,"ROBINSON, JUSTIN",BAR,13.39
-7,EuroLeague Fantasy Tips (official),pick,015165,"WATERS, TREMONT",ASV,9.09
