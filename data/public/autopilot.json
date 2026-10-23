@@ -1062,7 +1062,7 @@
      "team": "HTA",
      "role": "5άδα",
      "captain": true,
-     "x_now": 23.5
+     "x_now": 21.9
     },
     {
      "id": 4233,
@@ -1095,7 +1095,7 @@
      "team": "MAD",
      "role": "5άδα",
      "captain": false,
-     "x_now": 17.6
+     "x_now": 16.8
     },
     {
      "id": 7424,
@@ -1106,18 +1106,7 @@
      "team": "VIR",
      "role": "5άδα",
      "captain": false,
-     "x_now": 15.9
-    },
-    {
-     "id": 3851,
-     "price": 8.2,
-     "position": "Guard",
-     "person_id": "011247",
-     "name": "FELIZ, ANDRES",
-     "team": "MAD",
-     "role": "6ος",
-     "captain": false,
-     "x_now": 14.4
+     "x_now": 15.1
     },
     {
      "id": 3948,
@@ -1129,6 +1118,17 @@
      "role": "πάγκος",
      "captain": false,
      "x_now": 14.4
+    },
+    {
+     "id": 3851,
+     "price": 8.2,
+     "position": "Guard",
+     "person_id": "011247",
+     "name": "FELIZ, ANDRES",
+     "team": "MAD",
+     "role": "6ος",
+     "captain": false,
+     "x_now": 13.7
     },
     {
      "id": 3991,
@@ -1175,8 +1175,8 @@
      "x_now": 2.1
     }
    ],
-   "x_total": 153.4,
-   "decided_at": "2026-10-23T04:07+00:00"
+   "x_total": 148.0,
+   "decided_at": "2026-10-23T14:07+00:00"
   }
  ],
  "seed_id": "5a453a755a9b",
@@ -1187,5 +1187,5 @@
   "raw": 646.3,
   "avg_raw": 518.6
  },
- "generated": "2026-10-23T04:07:32.362448+00:00"
+ "generated": "2026-10-23T14:07:55.574828+00:00"
 }
