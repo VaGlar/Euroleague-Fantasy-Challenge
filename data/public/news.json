@@ -1,6 +1,15 @@
 {
  "articles": [
   {
+   "title": "EuroLeague Fantasy winners and losers, Round 7: Friday",
+   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/fantasy-winners-and-losers-round-7-friday-el2627/",
+   "date": "2026-10-23T23:53:05.073000+00:00",
+   "source": "EuroLeague Fantasy Tips (official)",
+   "weight": 2,
+   "fantasy": true,
+   "report": false
+  },
+  {
    "title": "EuroLeague Fantasy winners and losers, Round 7: Thursday",
    "url": "https://www.euroleaguebasketball.net/en/euroleague/news/euroleague-fantasy-winners-and-losers-round-7-thursday/",
    "date": "2026-10-22T23:35:45.099000+00:00",
@@ -64,12 +73,21 @@
    "report": false
   },
   {
-   "title": "EuroLeague Fantasy winners and losers, Round 6: Friday",
-   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/fantasy-winners-and-losers-round-6-friday/",
-   "date": "2026-10-16T22:40:00.408000+00:00",
-   "source": "EuroLeague Fantasy Tips (official)",
-   "weight": 2,
-   "fantasy": true,
+   "title": "F1, ΗΠΑ: Ο Λεκλέρ ταχύτερος στο FP2, μικρές οι διαφορές στην κορυφή",
+   "url": "https://www.gazzetta.gr/gmotion/2580130/f1-ipa-o-lekler-tahyteros-sto-fp2-mikres-oi-diafores-stin-koryfi",
+   "date": "2026-10-24T01:07:16+02:00",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Κόντσαρ: Ένα “πολυεργαλείο” με σπάνια επιμονή και προσαρμοστικότητα",
+   "url": "https://www.eurohoops.net/el/trademarks-el/2025029/kontsar-ena-poliergalio-me-spania-epimoni-ke-prosarmostikotita/",
+   "date": "2026-10-23T23:01:48+00:00",
+   "source": "Eurohoops (GR)",
+   "weight": 1,
+   "fantasy": false,
    "report": false
   },
   {
@@ -163,7 +181,7 @@
    "report": false
   },
   {
-   "title": "Μπαρτζώκας για Κόντσαρ: “Μπορεί να συνδέσει αποτελεσματικά διαφορετικά στοιχεία” – Τι είπε για περαιτέρω ενίσχυση",
+   "title": "Μπαρτζώκας για Κόντσαρ: “Είχαμε μιλήσει ήδη πριν, αλλά πιεστήκαμε λόγω Ντόρσεϊ”",
    "url": "https://www.eurohoops.net/el/euroleague-el-2/2025225/bartzokas-gia-kontsar-mpori-na-sindesi-apotelesmatika-diaforetika-stichia-ti-ipe-gia-peretero-enischisi/",
    "date": "2026-10-23T21:36:00+00:00",
    "source": "Eurohoops (GR)",
@@ -541,15 +559,6 @@
    "report": false
   },
   {
-   "title": "Κόντσαρ: Ένα “πολυεργαλείο” με σπάνια επιμονή και προσαρμοστικότητα",
-   "url": "https://www.eurohoops.net/el/trademarks-el/2025029/kontsar-ena-poliergalio-me-spania-epimoni-ke-prosarmostikotita/",
-   "date": "2026-10-23T17:09:48+00:00",
-   "source": "Eurohoops (GR)",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
    "title": "Μπάγερν Μονάχου: Ενημέρωση για τον Κομπανί",
    "url": "https://www.novasports.gr/sport/podosfairo/event/bundesliga/article/15188548/mpagern-monaxou-enimerosi-gia-ton-kompani/",
    "date": "2026-10-23T16:42:22+00:00",
@@ -793,15 +802,6 @@
    "report": false
   },
   {
-   "title": "Hayes-Davis after Baskonia escape: “A lot of players make a lot of money, so we made our shots”",
-   "url": "https://www.eurohoops.net/en/euroleague/2024726/hayes-davis-after-baskonia-escape-a-lot-of-players-make-a-lot-of-money-so-we-made-our-shots/",
-   "date": "2026-10-22T23:15:45+00:00",
-   "source": "Eurohoops",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
    "title": "Nunn returns as Panathinaikos edges Baskonia",
    "url": "https://www.euroleaguebasketball.net/en/euroleague/news/tae2627-rs7-game-report-pan-bas/",
    "date": "2026-10-22T22:26:22.617000+00:00",
@@ -956,230 +956,369 @@
   }
  ],
  "digest": {
-  "availability": [],
+  "availability": [
+   {
+    "player": "JAMES, MIKE",
+    "status": "out",
+    "note": "Τραυματίας",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "MUSA, DZANAN",
+    "status": "out",
+    "note": "Μη διαθέσιμος",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "HIFI, NADIR",
+    "status": "questionable",
+    "note": "Αμφίβολος λόγω πιθανής απουσίας",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "JEKIRI, TONYE",
+    "status": "out",
+    "note": "Εκτός δράσης για τουλάχιστον δύο εβδομάδες",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "IZUNDU, EBUKA",
+    "status": "available",
+    "note": "Αναμένεται να επιστρέψει",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "NEBO, JOSH",
+    "status": "available",
+    "note": "Επέστρεψε στην ενεργό δράση",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "FOURNIER, EVAN",
+    "status": "out",
+    "note": "Τραυματίας",
+    "source": "Eurohoops (GR)"
+   },
+   {
+    "player": "MONTERO, JEAN",
+    "status": "out",
+    "note": "Τραυματίας",
+    "source": "Eurohoops (GR)"
+   },
+   {
+    "player": "DORSEY, TYLER",
+    "status": "out",
+    "note": "Τιμωρημένος",
+    "source": "Eurohoops (GR)"
+   },
+   {
+    "player": "WILLIAMS-GOSS, NIGEL",
+    "status": "out",
+    "note": "Εκτός αποστολής",
+    "source": "Eurohoops (GR)"
+   },
+   {
+    "player": "LUNDBERG, IFFE",
+    "status": "out",
+    "note": "Τραυματίας",
+    "source": "Novasports"
+   }
+  ],
   "expert": [
    {
     "player": "BRYANT, ELIJAH",
-    "stance": "pick",
-    "note": "Εξαιρετική επιλογή για την πρεμιέρα της αγωνιστικής και ισχυρός υποψήφιος για αρχηγός.",
+    "stance": "captain",
+    "note": "Κορυφαία επιλογή και υποψήφιος αρχηγός με ευνοϊκό πρόγραμμα",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "SHORTS, TJ",
     "stance": "pick",
-    "note": "Προσφέρει σημαντικό επιθετικό ταβάνι σε αναμενόμενα υψηλό σκορ απέναντι στην Παρί.",
+    "note": "Υψηλό ταβάνι σε παιχνίδι υψηλού ρυθμού",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "MALEDON, THEO",
     "stance": "pick",
-    "note": "Σταθερά ψηλά στις προτιμήσεις, διατηρεί εξαιρετική φόρμα και ευνοϊκό πρόγραμμα.",
+    "note": "Εξαιρετική φόρμα και ευνοϊκό επερχόμενο πρόγραμμα",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "RHODEN, JARED",
     "stance": "pick",
-    "note": "Οικονομική λύση με αυξημένο ρόλο λόγω πιθανών απουσιών στην περιφέρεια.",
+    "note": "Ελκυστική οικονομική επιλογή με αυξημένο ρόλο",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "FELIZ, ANDRES",
     "stance": "pick",
-    "note": "Εξαιρετική τιμή και συνεχόμενες καλές εμφανίσεις με τη φανέλα της Real Madrid.",
+    "note": "Πολύ καλή αξία για τα χρήματά του και καλό μομέντουμ",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "SAINT-SUPERY, MARIO",
     "stance": "pick",
-    "note": "Εξαιρετική value for money επιλογή για εξοικονόμηση credits στον πάγκο.",
+    "note": "Φθηνή λύση για εξοικονόμηση πόρων",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "SARIC, DARIO",
     "stance": "pick",
-    "note": "Αυξημένος χρόνος συμμετοχής και ηγετικός ρόλος στα ριμπάουντ.",
+    "note": "Αυξημένος χρόνος και επιθετικός ρόλος εν τη απουσία του James",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "BACON, DWAYNE",
     "stance": "pick",
-    "note": "Κεντρικός επιθετικός πυλώνας για τη Dubai με εξαιρεδική επαφή με το καλάθι.",
+    "note": "Ηγέτης της επίθεσης όσο απουσιάζει ο Musa",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "TUBELIS, AZUOLAS",
     "stance": "pick",
-    "note": "Ευκαιρία ανάκαμψης σε προσιτή τιμή ενόψει ευνοϊκού προγράμματος.",
+    "note": "Καλή ευκαιρία ανάκαμψης σε προσιτή τιμή",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "OJELEYE, SEMI",
     "stance": "pick",
-    "note": "Δυναμικός φόργουορντ ιδανικός για φυσικά και σκληρά παιχνίδια.",
+    "note": "Ιδανικός για σκληρά ντέρμπι με αυξημένα λεπτά",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "PARRA, JOEL",
     "stance": "pick",
-    "note": "Ποιοτική διαφοροποίηση για το ρόστερ με σταθερά λεπτά συμμετοχής.",
+    "note": "Αξιόλογη διαφορική επιλογή με σταθερό χρόνο συμμετοχής",
     "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "BRYANT, ELIJAH",
+    "stance": "pick",
+    "note": "Απαραίτητη επιλογή με ικανότητα για μεγάλα στατιστικά",
+    "source": "EuroBallin (Substack)"
    },
    {
     "player": "MONTERO, JEAN",
     "stance": "pick",
-    "note": "Εξαιρετικός δημιουργός και παίκτης υψηλςης αυτοπεποίθησης στην περιφέρεια.",
+    "note": "Σε εξαιρετική κατάσταση με ευνοϊκό πρόγραμμα στη συνέχεια",
     "source": "EuroBallin (Substack)"
    },
    {
     "player": "JONES, CARLIK",
     "stance": "pick",
-    "note": "Διατηρεί υψηλό usage rate και αναμένεται να επιστρέψει στανηψηλά στάνταρ απόδοσης.",
+    "note": "Υψηλό usage και ευκαιρία επαναφοράς σε χαμηλότερη τιμή",
+    "source": "EuroBallin (Substack)"
+   },
+   {
+    "player": "MALEDON, THEO",
+    "stance": "pick",
+    "note": "Απόλυτη εμπιστοσύνη από τον προπονητή του",
     "source": "EuroBallin (Substack)"
    },
    {
     "player": "ETIENNE, TYSON",
     "stance": "pick",
-    "note": "Κύρια επιθετική πηγή για την Paris λόγω των απουσιών.",
+    "note": "Κύριος επιθετικός πυλώνας όσο απουσιάζει ο Hifi",
     "source": "EuroBallin (Substack)"
    },
    {
     "player": "CARR, MARCUS",
     "stance": "pick",
-    "note": "Κορυφαία mid-price επιλογή με ηγετικό ρόλο στην ομάδα του.",
+    "note": "Ηγετικός ρόλος και υψηλή χρήση",
     "source": "EuroBallin (Substack)"
    },
    {
     "player": "STRAZEL, MATTHEW",
     "stance": "pick",
-    "note": "Αξιόπιστη λύση στη μεσαία κατηγορία τιμής με σταθερή εμπιστοσύνη.",
+    "note": "Από τις καλύτερες επιλογές στη μεσαία κατηγορία τιμής",
     "source": "EuroBallin (Substack)"
    },
    {
     "player": "MADAR, YAM",
     "stance": "pick",
-    "note": "Υψηλή αποδοτικότητα και εξαιρετική φόρμα στα τελευταία παιχνίδια.",
+    "note": "Αποδοτικός με καλές πιθανότητες αύξησης αξίας",
     "source": "EuroBallin (Substack)"
    },
    {
     "player": "WASHINGTON JR, TYTY",
     "stance": "pick",
-    "note": "Εντυπωσιακός σκόρερ με τεράστιο δυναμικό στην περιφέρεια της ASVEL.",
+    "note": "Μεγάλο σκοραριστικό ταλέντο για την ASVEL",
+    "source": "EuroBallin (Substack)"
+   },
+   {
+    "player": "FELIZ, ANDRES",
+    "stance": "pick",
+    "note": "Κερδίζει θέση και εμπιστοσύνη στο ροτέισον",
     "source": "EuroBallin (Substack)"
    },
    {
     "player": "VEZENKOV, SASHA",
-    "stance": "captain",
-    "note": "Ο απόλυτος σταρ του παιχνιδιού και κορυφαία επιλογή για αρχηγός.",
+    "stance": "pick",
+    "note": "Κορυφαίος παίκτης του παιχνιδιού, παρά το πιθανό χαμηλό σκορ",
+    "source": "EuroBallin (Substack)"
+   },
+   {
+    "player": "SARIC, DARIO",
+    "stance": "avoid",
+    "note": "Δύσκολο πρόγραμμα στις αγωνιστικές 8 και 9",
+    "source": "EuroBallin (Substack)"
+   },
+   {
+    "player": "BACON, DWAYNE",
+    "stance": "pick",
+    "note": "Σπουδαίος σκόρερ που ευνοείται από αγώνες υψηλού ρυθμού",
     "source": "EuroBallin (Substack)"
    },
    {
     "player": "LEDAY, ZACH",
     "stance": "pick",
-    "note": "Αναδεικνύεται σε βασικό πυλώνα στη φροντ-λάιν της Hapoel IBI Tel Aviv.",
+    "note": "Βασικός πάουερ φόργουορντ με σταθερότητα",
+    "source": "EuroBallin (Substack)"
+   },
+   {
+    "player": "TUBELIS, AZUOLAS",
+    "stance": "pick",
+    "note": "Ευνοϊκό πρόγραμμα για επιστροφή στις καλές εμφανίσεις",
     "source": "EuroBallin (Substack)"
    },
    {
     "player": "NDIAYE, MBAYE",
     "stance": "pick",
-    "note": "Μαχητικός παίκτης που προσφέρει παντού στο παρκέ.",
+    "note": "Μαχητικός και αποδοτικός στον χρόνο συμμετοχής του",
     "source": "EuroBallin (Substack)"
    },
    {
     "player": "MALCOLM, COLLIN",
     "stance": "pick",
-    "note": "Επανέρχεται σε εξαιρετική αγωνιστική κατάσταση με πολύπλευρη προσφορά.",
+    "note": "Αυξημένος ρόλος και συνεισφορά σε πολλούς τομείς",
     "source": "EuroBallin (Substack)"
    },
    {
     "player": "MARTIN, TYRESE",
     "stance": "pick",
-    "note": "Πλήρως προσαρμοσμένος πλέον, προσφέρει σκορ και ριμπάουντ.",
+    "note": "Πλήρως προσαρμοσμένος με έφεση στο σκοράρισμα και ριμπάουντ",
     "source": "EuroBallin (Substack)"
    },
    {
     "player": "STEVENS, LAMAR",
     "stance": "pick",
-    "note": "Ευνοϊκό πρόγραμμα και μεγάλη συνεισφορά σε σκοράρισμα και ριμπάουντ.",
+    "note": "Ευνοϊκό πρόγραμμα και σημαντικός ρόλος",
     "source": "EuroBallin (Substack)"
    },
    {
     "player": "DIARRA, ALIOU",
     "stance": "pick",
-    "note": "Εξαιρετικά αποδοτικός σέντερ σε χαμηλή τιμή, από τις μεγαλύτερες ευκαιρίες.",
+    "note": "Εξαιρετικά κυρίαρχος και αποδοτικός στα λεπτά του",
     "source": "EuroBallin (Substack)"
    },
    {
     "player": "VALANCIUNAS, JONAS",
     "stance": "pick",
-    "note": "Ασφαλής και κυριαρχική επιλογή στη ρακέτα με εύκολο πρόγραμμα μπροστά.",
+    "note": "Ασφαλής επιλογή με πολύ βατό πρόγραμμα μπροστά του",
     "source": "EuroBallin (Substack)"
    },
    {
     "player": "LESSORT, MATHIAS",
     "stance": "pick",
-    "note": "Ιδανικές αναμετρήσεις απέναντι σε ομάδες που επιτρέπουν πολλούς πόντους στους σέντερ.",
+    "note": "Ευνοϊκά ματσαρίσματα απέναντι σε άμυνες αδύναμες στους ψηλούς",
     "source": "EuroBallin (Substack)"
    },
    {
     "player": "KABENGELE, MFIONDU",
     "stance": "pick",
-    "note": "Υψηλό ταβάνι αν εξασφαλίσει τον απαραίτητο χρόνο συμμετοχής.",
+    "note": "Πολύ καλό πρόγραμμα αν διατηρήσει τον απαιτούμενο χρόνο",
     "source": "EuroBallin (Substack)"
    },
    {
     "player": "HAYES, KEVARRIUS",
     "stance": "pick",
-    "note": "Αυξημένος χρόνος συμμετοχής λόγω της απουσίας του Tonye Jekiri.",
+    "note": "Αυξημένα λεπτά λόγω της απουσίας του Jekiri",
     "source": "EuroBallin (Substack)"
+   },
+   {
+    "player": "DIARRA, ALIOU",
+    "stance": "pick",
+    "note": "Εξαιρετικά υποτιμημένος με σταθερά κορυφαίο PIR",
+    "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "FAYE, MOUHAMED",
     "stance": "pick",
-    "note": "Πολύ φτηνή και αποδοτική λύση στη θέση του σέντερ.",
+    "note": "Αξιόπιστη και πολύ οικονομική επιλογή στους σέντερ",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "HAYES, KEVARRIUS",
+    "stance": "pick",
+    "note": "Κερδίζει ρόλο και λεπτά στη ρακέτα λόγω τραυματισμού Jekiri",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "WRIGHT, MOSES",
     "stance": "pick",
-    "note": "Σε εξαιρετική κατάσταση με σταθερά υψηλές πτήσεις και έξτρα κίνητρο.",
+    "note": "Σε τρομερή φόρμα με υψηλότατη παραγωγικότητα",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "ZIZIC, ANTE",
     "stance": "pick",
-    "note": "Αυξημένος χρόνος συμμετοχής και εξαιρερετική αποτελεσματικότητα εντός πεδιάς.",
+    "note": "Πολύ υψηλή αποτελεσματικότητα και αυξημένος χρόνος",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "BACON, DWAYNE",
+    "stance": "pick",
+    "note": "Απόλυτος ηγέτης και κύριος εκτελεστής της ομάδας",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "DAVIDOVAC, DEJAN",
     "stance": "pick",
-    "note": "Εμπειρία και εξαιρετική τιμή για το rotation της ομάδας του.",
+    "note": "Φθηνή λύση με εμπειρία για ντέρμπι",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "MALCOLM, COLLIN",
+    "stance": "pick",
+    "note": "Εξαιρετική αναλογία τιμής και απόδοσης μετά τον τραυματισμό James",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "PROCIDA, GABRIELE",
     "stance": "pick",
-    "note": "Πολύ φτηνοί πόντοι και σταθεροποίηση στο αρχικό σχήμα.",
+    "note": "Πολύ φθηνή λύση με θέση στη βασική πεντάδα",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
-    "player": "ROBINSON, JUSTIN",
+    "player": "VEZENKOV, SASHA",
     "stance": "pick",
-    "note": "Γεμάτος αυτοπεποίθηση και εξαιρετικά ντεμαράζ στα τελευταία παιχνίδια.",
+    "note": "Ο πιο απαραίτητος παίκτης του παιχνιδιού",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
-    "player": "WATERS, TREMONT",
-    "stance": "pick",
-    "note": "Χαμηλή τιμή και τεράστιες δυνατότητες ως X-factor στην αγωνιστική.",
+    "player": "BALCEROWSKI, OLEK",
+    "stance": "avoid",
+    "note": "Μειωμένος ρόλος και παραγωγικότητα μετά την επιστροφή Nebo",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "TAYLOR, KAMERON",
+    "stance": "avoid",
+    "note": "Συνεχιζόμενη πτώση στην αξιολόγηση και τα νούμερά του",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "BUTLER, JARED",
+    "stance": "avoid",
+    "note": "Πεσμένη απόδοση και άνοδος του ανταγωνισμού στην περιφέρεια",
     "source": "EuroLeague Fantasy Tips (official)"
    }
   ],
   "round": 7,
-  "summary_el": "Ξεκινά η 7η αγωνιστική στη EuroLeague, η οποία συνοδεύεται από την πρώτη περίοδο απεριόριστων αλλαγών (unlimited trades) στο EuroLeague Fantasy Challenge, δίνοντας την ευκαιρία στους managers να αναδιαμορφώσουν πλήρως τις ομάδες τους.\nΟ Sasha Vezenkov παραμένει η ασφαλέστερη και ακριβέστερη επιλογή για τη θέση του αρχηγού, παρά το δύσκολο έργο που έχει απέναντι στη Fenerbahce.\nΟ Elijah Bryant της Hapoel IBI Tel Aviv συγκαταλέγεται στους κορυφαίους παίκτες προς επιλογή, προσφέροντας εξαιρετική πολυδιάστατη συνεισφορά.\nΣτη θέση των γκαρντ, οι TJ Shorts και Theo Maledon συνεχίζουν να τραβούν τα βλέμματα χάρη στις σταθερά υψηλές πτήσεις και το ευνοϊκό πρόγραμμα των ομάδων τους.\nΣτη φροντ-λάιν, παίκτες όπως ο Dario Saric και ο Dwayne Bacon προσφέρουν λύσεις κορυφαίου επιπέδου, ενώ επιλογές value for money όπως ο Aliou Diarra και ο Kevarrius Hayes επιτρέπουν την εξοικονόμηση πολύτιμων credits.\nΣημαντικές απουσίες, όπως αυτή του Tonye Jekiri στη Partizan Mozzart Bet Belgrade, ανοίγουν τον δρόμο για αυξημένο χρόνο συμμετοχής σε άλλους αθλητές.",
-  "_model": "gemini-3.5-flash-lite",
-  "_seconds": 8.3
+  "summary_el": "• Στην Round 7 ενεργοποιείται το παράθυρο απεριόριστων αλλαγών, δίνοντας ιδανική ευκαιρία για γενική αναδιάρθρωση των ρόστερ.\n• Ο Elijah Bryant αποτελεί την κυριότερη πρόταση των ειδικών και ιδανική επιλογή για αρχηγός, ενώ οι Sasha Vezenkov και Dwayne Bacon παραμένουν σταθερές στα θέσεις των φόργουορντ.\n• Στα γκαρντ ξεχωρίζουν οι TJ Shorts, Theo Maledon και Carlik Jones λόγω μεγάλου ρόλου και υψηλών επιδόσεων.\n• Στη θέση των σέντερ προτείνονται οι Aliou Diarra, Kevarrius Hayes, Mathias Lessort και Moses Wright, εκμεταλλευόμενοι ρόλους και απουσίες.\n• Σημαντικά προβλήματα αντιμετωπίζει ο Olympiacos Piraeus, έχοντας εκτός τους τραυματίες Evan Fournier και Jean Montero, καθώς και τον τιμωρημένο Tyler Dorsey.\n• Στο απουσιολόγιο της αγωνιστικής βρίσκονται επίσης οι τραυματίες Mike James της Anadolu Efes Istanbul, Dzanan Musa της Dubai Basketball και Tonye Jekiri της Partizan Mozzart Bet Belgrade.\n• Αντίθετα, οι Olek Balcerowski και Kameron Taylor συνιστάται να απομακρυνθούν λόγω πτωτικής τάσης και απώλειας ρόλου.",
+  "_model": "gemini-3.8-flash",
+  "_seconds": 76.7
  },
- "digest_at": "2026-10-23T22:07:40.329315+00:00",
+ "digest_at": "2026-10-24T04:07:12.896857+00:00",
  "failed": []
 }
