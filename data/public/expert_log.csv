@@ -265,14 +265,18 @@ round,source,stance,person_id,name,team,model_xpts
 7,EuroLeague Fantasy Tips (official),pick,008384,"PROCIDA, GABRIELE",MAD,1.25
 7,EuroLeague Fantasy Tips (official),pick,014008,"ROBINSON, JUSTIN",BAR,13.39
 7,EuroLeague Fantasy Tips (official),pick,015165,"WATERS, TREMONT",ASV,9.09
-8,Basketball Sphere – Fantasy,pick,009846,"BRYANT, ELIJAH",HTA,21.82
+8,Basketball Sphere – Fantasy,captain,009846,"BRYANT, ELIJAH",HTA,21.82
+8,EuroBallin (Substack),pick,009846,"BRYANT, ELIJAH",HTA,21.82
 8,Basketball Sphere – Fantasy,pick,012608,"SHORTS, TJ",PAM,15.75
 8,Basketball Sphere – Fantasy,pick,007027,"MALEDON, THEO",MAD,16.41
+8,EuroBallin (Substack),pick,007027,"MALEDON, THEO",MAD,16.41
 8,Basketball Sphere – Fantasy,pick,014178,"RHODEN, JARED",PRS,6.88
 8,Basketball Sphere – Fantasy,pick,011247,"FELIZ, ANDRES",MAD,13.45
+8,EuroBallin (Substack),pick,011247,"FELIZ, ANDRES",MAD,13.45
 8,Basketball Sphere – Fantasy,pick,011706,"SAINT-SUPERY, MARIO",PAM,0.45
 8,Basketball Sphere – Fantasy,pick,003112,"SARIC, DARIO",IST,15.05
 8,Basketball Sphere – Fantasy,pick,011286,"BACON, DWAYNE",DUB,17.79
+8,EuroBallin (Substack),pick,011286,"BACON, DWAYNE",DUB,17.79
 8,Basketball Sphere – Fantasy,pick,008192,"TUBELIS, AZUOLAS",ZAL,13.16
 8,Basketball Sphere – Fantasy,pick,011982,"OJELEYE, SEMI",RED,12.71
 8,Basketball Sphere – Fantasy,pick,007464,"PARRA, JOEL",BAR,6.55
@@ -285,6 +289,7 @@ round,source,stance,person_id,name,team,model_xpts
 8,EuroBallin (Substack),pick,015162,"WASHINGTON JR, TYTY",ASV,12.42
 8,EuroBallin (Substack),pick,003469,"VEZENKOV, SASHA",OLY,23.38
 8,EuroBallin (Substack),pick,008987,"LEDAY, ZACH",HTA,17.84
+8,EuroBallin (Substack),pick,012731,"NDIAYE, MBAYE",OLY,11.92
 8,EuroBallin (Substack),pick,012609,"MALCOLM, COLLIN",IST,9.28
 8,EuroBallin (Substack),pick,015138,"MARTIN, TYRESE",BAR,9.47
 8,EuroBallin (Substack),pick,014009,"STEVENS, LAMAR",PAR,9.04
@@ -293,7 +298,11 @@ round,source,stance,person_id,name,team,model_xpts
 8,EuroBallin (Substack),pick,003842,"LESSORT, MATHIAS",PAN,18.74
 8,EuroBallin (Substack),pick,012796,"KABENGELE, MFIONDU",DUB,20.66
 8,EuroBallin (Substack),pick,010390,"HAYES, KEVARRIUS",PAR,9.9
+8,EuroLeague Fantasy Tips (official),pick,014108,"DIARRA, ALIOU",VIR,14.2
+8,EuroLeague Fantasy Tips (official),pick,010390,"HAYES, KEVARRIUS",PAR,9.9
 8,EuroLeague Fantasy Tips (official),pick,012878,"WRIGHT, MOSES",MIL,12.81
 8,EuroLeague Fantasy Tips (official),pick,004554,"ZIZIC, ANTE",BES,14.82
 8,EuroLeague Fantasy Tips (official),pick,007960,"DAVIDOVAC, DEJAN",RED,4.6
+8,EuroLeague Fantasy Tips (official),pick,012609,"MALCOLM, COLLIN",IST,9.28
 8,EuroLeague Fantasy Tips (official),pick,008384,"PROCIDA, GABRIELE",MAD,1.22
+8,EuroLeague Fantasy Tips (official),pick,003469,"VEZENKOV, SASHA",OLY,23.38
