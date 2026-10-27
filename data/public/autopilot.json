@@ -1056,7 +1056,7 @@
   {
    "round": 8,
    "trades": 4,
-   "bank": 0.0,
+   "bank": 0.6,
    "squad": [
     {
      "id": 3766,
@@ -1067,18 +1067,18 @@
      "team": "OLY",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 25.7
+     "x_now": 23.4
     },
     {
-     "id": 3903,
-     "price": 17.2,
-     "position": "Guard",
-     "person_id": "009846",
-     "name": "BRYANT, ELIJAH",
-     "team": "HTA",
-     "role": "πάγκος",
-     "captain": false,
-     "x_now": 24.6
+     "id": 4233,
+     "price": 15.6,
+     "position": "Center",
+     "person_id": "012796",
+     "name": "KABENGELE, MFIONDU",
+     "team": "DUB",
+     "role": "5άδα",
+     "captain": true,
+     "x_now": 21.7
     },
     {
      "id": 3850,
@@ -1088,8 +1088,8 @@
      "name": "MALEDON, THEO",
      "team": "MAD",
      "role": "5άδα",
-     "captain": true,
-     "x_now": 18.0
+     "captain": false,
+     "x_now": 17.2
     },
     {
      "id": 7424,
@@ -1100,7 +1100,7 @@
      "team": "VIR",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 15.6
+     "x_now": 14.9
     },
     {
      "id": 3851,
@@ -1111,18 +1111,18 @@
      "team": "MAD",
      "role": "5άδα",
      "captain": false,
-     "x_now": 14.8
+     "x_now": 14.1
     },
     {
-     "id": 3948,
-     "price": 8.9,
-     "position": "Forward",
-     "person_id": "012731",
-     "name": "NDIAYE, MBAYE",
-     "team": "OLY",
+     "id": 11547,
+     "price": 9.7,
+     "position": "Guard",
+     "person_id": "014737",
+     "name": "MOORE, WENDELL",
+     "team": "VIR",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 12.5
+     "x_now": 13.1
     },
     {
      "id": 3938,
@@ -1158,15 +1158,15 @@
      "x_now": 4.9
     },
     {
-     "id": 3984,
-     "price": 4.2,
-     "position": "Center",
-     "person_id": "002968",
-     "name": "SANLI, SERTAC",
-     "team": "ULK",
-     "role": "5άδα",
+     "id": 4005,
+     "price": 4.4,
+     "position": "Forward",
+     "person_id": "000229",
+     "name": "JACKSON, EDWIN",
+     "team": "ASV",
+     "role": "πάγκος",
      "captain": false,
-     "x_now": 2.3
+     "x_now": 4.2
     },
     {
      "id": 4012,
@@ -1180,8 +1180,8 @@
      "x_now": 1.8
     }
    ],
-   "x_total": 124.4,
-   "decided_at": "2026-10-26T05:07+00:00"
+   "x_total": 130.9,
+   "decided_at": "2026-10-27T05:08+00:00"
   }
  ],
  "seed_id": "5a453a755a9b",
@@ -1192,5 +1192,5 @@
   "raw": 715.0,
   "avg_raw": 625.0
  },
- "generated": "2026-10-26T05:07:51.264262+00:00"
+ "generated": "2026-10-27T05:08:58.000258+00:00"
 }
