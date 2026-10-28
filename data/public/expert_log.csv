@@ -265,7 +265,7 @@ round,source,stance,person_id,name,team,model_xpts
 7,EuroLeague Fantasy Tips (official),pick,008384,"PROCIDA, GABRIELE",MAD,1.25
 7,EuroLeague Fantasy Tips (official),pick,014008,"ROBINSON, JUSTIN",BAR,13.39
 7,EuroLeague Fantasy Tips (official),pick,015165,"WATERS, TREMONT",ASV,9.09
-8,Basketball Sphere – Fantasy,pick,009846,"BRYANT, ELIJAH",HTA,21.84
+8,Basketball Sphere – Fantasy,captain,009846,"BRYANT, ELIJAH",HTA,21.84
 8,Basketball Sphere – Fantasy,pick,013369,"JONES, CARLIK",PAR,16.77
 8,Basketball Sphere – Fantasy,pick,007027,"MALEDON, THEO",MAD,15.88
 8,Basketball Sphere – Fantasy,pick,014163,"BUTLER, JARED",RED,9.71
@@ -283,10 +283,11 @@ round,source,stance,person_id,name,team,model_xpts
 8,EuroBallin (Substack),pick,012080,"LUWAWU-CABARROT, TIMOTHE",MAD,7.68
 8,EuroBallin (Substack),pick,011231,"BLOSSOMGAME, JARON",DUB,8.98
 8,EuroBallin (Substack),pick,012796,"KABENGELE, MFIONDU",DUB,21.72
-8,EuroBallin (Substack),pick,003941,"MILUTINOV, NIKOLA",OLY,10.8
+8,EuroBallin (Substack),pick,003941,"MILUTINOV, NIKOLA",OLY,0.0
 8,EuroBallin (Substack),pick,014108,"DIARRA, ALIOU",VIR,14.2
 8,EuroLeague Fantasy Tips (official),pick,003842,"LESSORT, MATHIAS",PAN,19.47
 8,EuroLeague Fantasy Tips (official),pick,011199,"NEBO, JOSH",BAR,15.6
+8,EuroLeague Fantasy Tips (official),pick,007975,"FRANCISCO, SYLVAIN",PAN,16.48
 8,EuroLeague Fantasy Tips (official),pick,011212,"OKOBO, ELIE",DUB,14.26
 8,EuroLeague Fantasy Tips (official),pick,007990,"DIBARTOLOMEO, JOHN",TEL,1.75
 8,EuroLeague Fantasy Tips (official),pick,013855,"GIBSON, UMOJA",BAR,13.57
