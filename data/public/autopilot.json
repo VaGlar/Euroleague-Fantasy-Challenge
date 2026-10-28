@@ -1197,12 +1197,15 @@
      "captain": 3766,
      "at": "2026-10-27T23:07+00:00"
     }
-   }
+   },
+   "pts": 151.3,
+   "raw": 133.8,
+   "avg_raw": 101.0
   },
   {
    "round": 9,
-   "trades": 3,
-   "bank": 0.0,
+   "trades": 4,
+   "bank": 0.1,
    "squad": [
     {
      "id": 3766,
@@ -1211,9 +1214,9 @@
      "person_id": "003469",
      "name": "VEZENKOV, SASHA",
      "team": "OLY",
-     "role": "5άδα",
+     "role": "πάγκος",
      "captain": false,
-     "x_now": 25.2
+     "x_now": 25.7
     },
     {
      "id": 4233,
@@ -1223,8 +1226,8 @@
      "name": "KABENGELE, MFIONDU",
      "team": "DUB",
      "role": "5άδα",
-     "captain": true,
-     "x_now": 22.8
+     "captain": false,
+     "x_now": 21.9
     },
     {
      "id": 7424,
@@ -1233,20 +1236,31 @@
      "person_id": "014108",
      "name": "DIARRA, ALIOU",
      "team": "VIR",
-     "role": "5άδα",
-     "captain": false,
-     "x_now": 14.9
-    },
-    {
-     "id": 11547,
-     "price": 9.7,
-     "position": "Guard",
-     "person_id": "014737",
-     "name": "MOORE, WENDELL",
-     "team": "VIR",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 13.1
+     "x_now": 16.4
+    },
+    {
+     "id": 3850,
+     "price": 11.9,
+     "position": "Guard",
+     "person_id": "007027",
+     "name": "MALEDON, THEO",
+     "team": "MAD",
+     "role": "5άδα",
+     "captain": true,
+     "x_now": 15.7
+    },
+    {
+     "id": 11519,
+     "price": 9.7,
+     "position": "Guard",
+     "person_id": "015164",
+     "name": "BESSON, HUGO",
+     "team": "ASV",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 13.6
     },
     {
      "id": 3851,
@@ -1257,29 +1271,18 @@
      "team": "MAD",
      "role": "5άδα",
      "captain": false,
-     "x_now": 13.0
+     "x_now": 12.3
     },
     {
-     "id": 11517,
-     "price": 9.2,
-     "position": "Guard",
-     "person_id": "015162",
-     "name": "WASHINGTON JR, TYTY",
-     "team": "ASV",
-     "role": "πάγκος",
-     "captain": false,
-     "x_now": 11.8
-    },
-    {
-     "id": 3885,
-     "price": 9.9,
+     "id": 4006,
+     "price": 6.6,
      "position": "Head Coach",
-     "person_id": "001869",
-     "name": "BARTZOKAS, GEORGIOS",
-     "team": "OLY",
+     "person_id": "ACX",
+     "name": "MASIULIS, TOMAS",
+     "team": "ZAL",
      "role": "coach",
      "captain": false,
-     "x_now": 7.1
+     "x_now": 9.9
     },
     {
      "id": 3975,
@@ -1290,18 +1293,18 @@
      "team": "PRS",
      "role": "5άδα",
      "captain": false,
-     "x_now": 6.4
+     "x_now": 6.9
     },
     {
-     "id": 4061,
-     "price": 4.8,
+     "id": 3991,
+     "price": 5.0,
      "position": "Forward",
-     "person_id": "008084",
-     "name": "MANTZOUKAS, ELEFTHERIOS",
-     "team": "PAN",
-     "role": "6ος",
+     "person_id": "003733",
+     "name": "ABALDE, ALBERTO",
+     "team": "MAD",
+     "role": "5άδα",
      "captain": false,
-     "x_now": 4.5
+     "x_now": 6.5
     },
     {
      "id": 4005,
@@ -1315,28 +1318,28 @@
      "x_now": 4.1
     },
     {
-     "id": 3867,
-     "price": 4.1,
+     "id": 3983,
+     "price": 4.4,
      "position": "Forward",
-     "person_id": "001255",
-     "name": "PAPANIKOLAOU, KOSTAS",
-     "team": "OLY",
-     "role": "πάγκος",
+     "person_id": "007960",
+     "name": "DAVIDOVAC, DEJAN",
+     "team": "RED",
+     "role": "6ος",
      "captain": false,
-     "x_now": 3.7
+     "x_now": 3.9
     }
    ],
-   "x_total": 134.3,
-   "decided_at": "2026-10-28T14:07+00:00"
+   "x_total": 128.9,
+   "decided_at": "2026-10-28T22:08+00:00"
   }
  ],
  "seed_id": "5a453a755a9b",
  "start_round": 1,
  "total": {
-  "rounds": 7,
-  "pts": 821.8,
-  "raw": 715.0,
-  "avg_raw": 625.0
+  "rounds": 8,
+  "pts": 973.1,
+  "raw": 848.8,
+  "avg_raw": 726.0
  },
- "generated": "2026-10-28T14:07:40.880248+00:00"
+ "generated": "2026-10-28T22:08:57.319730+00:00"
 }
