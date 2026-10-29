@@ -1200,12 +1200,14 @@
    },
    "pts": 151.3,
    "raw": 133.8,
-   "avg_raw": 101.0
+   "avg_raw": 101.0,
+   "rank": 72429,
+   "teams": 421990
   },
   {
    "round": 9,
-   "trades": 4,
-   "bank": 0.0,
+   "trades": 2,
+   "bank": 0.2,
    "squad": [
     {
      "id": 3766,
@@ -1220,7 +1222,7 @@
     },
     {
      "id": 4233,
-     "price": 15.6,
+     "price": 15.9,
      "position": "Center",
      "person_id": "012796",
      "name": "KABENGELE, MFIONDU",
@@ -1231,7 +1233,7 @@
     },
     {
      "id": 7424,
-     "price": 9.8,
+     "price": 10.0,
      "position": "Center",
      "person_id": "014108",
      "name": "DIARRA, ALIOU",
@@ -1253,25 +1255,14 @@
     },
     {
      "id": 11519,
-     "price": 9.7,
+     "price": 9.8,
      "position": "Guard",
      "person_id": "015164",
      "name": "BESSON, HUGO",
      "team": "ASV",
-     "role": "πάγκος",
+     "role": "5άδα",
      "captain": false,
      "x_now": 13.6
-    },
-    {
-     "id": 4675,
-     "price": 9.7,
-     "position": "Guard",
-     "person_id": "013402",
-     "name": "BLAKENEY, ANTONIO",
-     "team": "HTA",
-     "role": "πάγκος",
-     "captain": false,
-     "x_now": 12.8
     },
     {
      "id": 3851,
@@ -1285,35 +1276,46 @@
      "x_now": 12.3
     },
     {
+     "id": 11547,
+     "price": 9.6,
+     "position": "Guard",
+     "person_id": "014737",
+     "name": "MOORE, WENDELL",
+     "team": "VIR",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 12.1
+    },
+    {
      "id": 3975,
-     "price": 5.3,
+     "price": 5.7,
      "position": "Guard",
      "person_id": "012611",
      "name": "HERRERA, SEBASTIAN",
      "team": "PRS",
-     "role": "5άδα",
+     "role": "6ος",
      "captain": false,
      "x_now": 6.9
     },
     {
      "id": 4005,
-     "price": 4.4,
+     "price": 4.3,
      "position": "Forward",
      "person_id": "000229",
      "name": "JACKSON, EDWIN",
      "team": "ASV",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 4.2
+     "x_now": 4.1
     },
     {
-     "id": 3983,
-     "price": 4.4,
+     "id": 4061,
+     "price": 4.7,
      "position": "Forward",
-     "person_id": "007960",
-     "name": "DAVIDOVAC, DEJAN",
-     "team": "RED",
-     "role": "6ος",
+     "person_id": "008084",
+     "name": "MANTZOUKAS, ELEFTHERIOS",
+     "team": "PAN",
+     "role": "πάγκος",
      "captain": false,
      "x_now": 3.9
     },
@@ -1329,8 +1331,8 @@
      "x_now": 1.2
     }
    ],
-   "x_total": 132.0,
-   "decided_at": "2026-10-29T05:08+00:00"
+   "x_total": 135.7,
+   "decided_at": "2026-10-29T14:30+00:00"
   }
  ],
  "seed_id": "5a453a755a9b",
@@ -1341,5 +1343,5 @@
   "raw": 848.8,
   "avg_raw": 726.0
  },
- "generated": "2026-10-29T05:08:05.600239+00:00"
+ "generated": "2026-10-29T14:30:58.770434+00:00"
 }
