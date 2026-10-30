@@ -1344,7 +1344,10 @@
      "captain": 3766,
      "at": "2026-10-29T23:07+00:00"
     }
-   }
+   },
+   "pts": 118.8,
+   "raw": 97.9,
+   "avg_raw": 100.4
   },
   {
    "round": 10,
@@ -1358,20 +1361,20 @@
      "person_id": "003469",
      "name": "VEZENKOV, SASHA",
      "team": "OLY",
-     "role": "5άδα",
+     "role": "πάγκος",
      "captain": false,
-     "x_now": 24.9
+     "x_now": 24.7
     },
     {
-     "id": 3834,
-     "price": 14.4,
-     "position": "Guard",
-     "person_id": "012640",
-     "name": "HIFI, NADIR",
-     "team": "PRS",
+     "id": 11549,
+     "price": 16.2,
+     "position": "Center",
+     "person_id": "000898",
+     "name": "VALANCIUNAS, JONAS",
+     "team": "ZAL",
      "role": "5άδα",
-     "captain": true,
-     "x_now": 18.5
+     "captain": false,
+     "x_now": 19.1
     },
     {
      "id": 3850,
@@ -1381,8 +1384,8 @@
      "name": "MALEDON, THEO",
      "team": "MAD",
      "role": "5άδα",
-     "captain": false,
-     "x_now": 17.7
+     "captain": true,
+     "x_now": 18.1
     },
     {
      "id": 7424,
@@ -1391,31 +1394,42 @@
      "person_id": "014108",
      "name": "DIARRA, ALIOU",
      "team": "VIR",
-     "role": "5άδα",
+     "role": "πάγκος",
      "captain": false,
-     "x_now": 16.4
+     "x_now": 16.3
     },
     {
-     "id": 11519,
-     "price": 9.8,
+     "id": 11517,
+     "price": 8.8,
      "position": "Guard",
-     "person_id": "015164",
-     "name": "BESSON, HUGO",
+     "person_id": "015162",
+     "name": "WASHINGTON JR, TYTY",
      "team": "ASV",
      "role": "5άδα",
      "captain": false,
-     "x_now": 13.6
+     "x_now": 14.0
     },
     {
-     "id": 3911,
+     "id": 3851,
      "price": 8.6,
-     "position": "Center",
-     "person_id": "010390",
-     "name": "HAYES, KEVARRIUS",
-     "team": "PAR",
-     "role": "πάγκος",
+     "position": "Guard",
+     "person_id": "011247",
+     "name": "FELIZ, ANDRES",
+     "team": "MAD",
+     "role": "5άδα",
      "captain": false,
-     "x_now": 8.9
+     "x_now": 11.2
+    },
+    {
+     "id": 4255,
+     "price": 8.0,
+     "position": "Head Coach",
+     "person_id": "009154",
+     "name": "ALBERT, XAVIER",
+     "team": "PAM",
+     "role": "coach",
+     "captain": false,
+     "x_now": 9.4
     },
     {
      "id": 3975,
@@ -1426,7 +1440,7 @@
      "team": "PRS",
      "role": "6ος",
      "captain": false,
-     "x_now": 8.1
+     "x_now": 7.9
     },
     {
      "id": 4005,
@@ -1446,9 +1460,9 @@
      "person_id": "008084",
      "name": "MANTZOUKAS, ELEFTHERIOS",
      "team": "PAN",
-     "role": "πάγκος",
+     "role": "5άδα",
      "captain": false,
-     "x_now": 3.9
+     "x_now": 3.7
     },
     {
      "id": 4012,
@@ -1459,31 +1473,20 @@
      "team": "MIL",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 1.2
-    },
-    {
-     "id": 3897,
-     "price": 8.8,
-     "position": "Head Coach",
-     "person_id": "ADG",
-     "name": "JASIKEVICIUS, SARAS",
-     "team": "ULK",
-     "role": "coach",
-     "captain": false,
-     "x_now": -4.8
+     "x_now": 1.5
     }
    ],
-   "x_total": 122.3,
-   "decided_at": "2026-10-30T13:09+00:00"
+   "x_total": 130.1,
+   "decided_at": "2026-10-30T22:08+00:00"
   }
  ],
  "seed_id": "5a453a755a9b",
  "start_round": 1,
  "total": {
-  "rounds": 8,
-  "pts": 973.1,
-  "raw": 848.8,
-  "avg_raw": 726.0
+  "rounds": 9,
+  "pts": 1091.9,
+  "raw": 946.7,
+  "avg_raw": 826.4
  },
- "generated": "2026-10-30T13:09:04.454001+00:00"
+ "generated": "2026-10-30T22:08:24.009807+00:00"
 }
