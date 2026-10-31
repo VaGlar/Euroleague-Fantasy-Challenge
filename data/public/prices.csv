@@ -3031,7 +3031,7 @@ fantasy_id,person_id,first_name,last_name,team,position,price,matchday,is_injure
 4124,011837,Kevin,Kokila,VIR,Center,7.5,9,False,1.0,,0.1
 4280,008186,Marek,Blazevic,ZAL,Center,7.5,9,False,1.0,,0.2
 7422,012710,Ercan,Osmani,IST,Forward,7.5,9,False,1.0,,0.7
-13935,015397,Antonio,Reeves,PAR,Guard,7.5,9,False,1.0,,0.4
+13935,015397,Antonio,Reeves,PAR,Guard,7.5,9,False,1.0,,0.5
 13936,015400,Robert,Franks,PAR,Forward,7.5,9,False,1.0,,0.3
 7210,014115,Omari,Moore,PAM,Guard,7.4,9,False,1.0,,0.4
 7215,010581,Dylan,Osetkowski,PAM,Forward,7.4,9,False,1.0,,0.8
@@ -3181,7 +3181,7 @@ fantasy_id,person_id,first_name,last_name,team,position,price,matchday,is_injure
 7250,004451,Ioannis,Kouzeloglou,PAN,Forward,4.0,9,False,1.0,,1.6
 7254,004161,Itay,Segev,HTA,Center,4.0,9,False,1.0,,1.6
 7255,014122,Omiros,Netzipoglou,OLY,Guard,4.0,9,False,1.0,,1.0
-7347,F7347,George,Papas,OLY,Guard,4.0,9,False,1.0,,0.2
+7347,F7347,George,Papas,OLY,Guard,4.0,9,False,1.0,,0.3
 8677,014103,Pedro,Souza,BAS,Forward,4.0,9,False,1.0,,0.7
 8681,012948,Aleksej,Nedeljkovic,RED,Forward,4.0,9,False,1.0,,0.6
 8769,012453,Uros,Danilovic,PAR,Forward,4.0,9,False,1.0,,1.6
