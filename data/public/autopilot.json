@@ -1347,16 +1347,18 @@
    },
    "pts": 118.8,
    "raw": 97.9,
-   "avg_raw": 100.4
+   "avg_raw": 100.4,
+   "rank": 56266,
+   "teams": 430146
   },
   {
    "round": 10,
    "trades": 4,
-   "bank": 0.3,
+   "bank": 0.0,
    "squad": [
     {
      "id": 3766,
-     "price": 18.4,
+     "price": 18.6,
      "position": "Forward",
      "person_id": "003469",
      "name": "VEZENKOV, SASHA",
@@ -1367,7 +1369,7 @@
     },
     {
      "id": 11549,
-     "price": 16.2,
+     "price": 16.6,
      "position": "Center",
      "person_id": "000898",
      "name": "VALANCIUNAS, JONAS",
@@ -1375,17 +1377,6 @@
      "role": "5άδα",
      "captain": false,
      "x_now": 19.1
-    },
-    {
-     "id": 3850,
-     "price": 12.1,
-     "position": "Guard",
-     "person_id": "007027",
-     "name": "MALEDON, THEO",
-     "team": "MAD",
-     "role": "5άδα",
-     "captain": true,
-     "x_now": 18.7
     },
     {
      "id": 7424,
@@ -1399,8 +1390,19 @@
      "x_now": 16.3
     },
     {
+     "id": 3897,
+     "price": 8.3,
+     "position": "Head Coach",
+     "person_id": "ADG",
+     "name": "JASIKEVICIUS, SARAS",
+     "team": "ULK",
+     "role": "coach",
+     "captain": false,
+     "x_now": 15.6
+    },
+    {
      "id": 11517,
-     "price": 8.8,
+     "price": 9.7,
      "position": "Guard",
      "person_id": "015162",
      "name": "WASHINGTON JR, TYTY",
@@ -1410,30 +1412,30 @@
      "x_now": 14.7
     },
     {
+     "id": 11519,
+     "price": 9.8,
+     "position": "Guard",
+     "person_id": "015164",
+     "name": "BESSON, HUGO",
+     "team": "ASV",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 13.7
+    },
+    {
      "id": 3851,
-     "price": 8.6,
+     "price": 8.5,
      "position": "Guard",
      "person_id": "011247",
      "name": "FELIZ, ANDRES",
      "team": "MAD",
      "role": "5άδα",
-     "captain": false,
+     "captain": true,
      "x_now": 11.2
     },
     {
-     "id": 4255,
-     "price": 8.0,
-     "position": "Head Coach",
-     "person_id": "009154",
-     "name": "ALBERT, XAVIER",
-     "team": "PAM",
-     "role": "coach",
-     "captain": false,
-     "x_now": 9.4
-    },
-    {
      "id": 3975,
-     "price": 5.7,
+     "price": 6.0,
      "position": "Guard",
      "person_id": "012611",
      "name": "HERRERA, SEBASTIAN",
@@ -1443,19 +1445,30 @@
      "x_now": 7.6
     },
     {
+     "id": 3983,
+     "price": 4.7,
+     "position": "Forward",
+     "person_id": "007960",
+     "name": "DAVIDOVAC, DEJAN",
+     "team": "RED",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 4.4
+    },
+    {
      "id": 4005,
-     "price": 4.3,
+     "price": 4.2,
      "position": "Forward",
      "person_id": "000229",
      "name": "JACKSON, EDWIN",
      "team": "ASV",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 4.0
+     "x_now": 3.9
     },
     {
      "id": 4061,
-     "price": 4.7,
+     "price": 4.6,
      "position": "Forward",
      "person_id": "008084",
      "name": "MANTZOUKAS, ELEFTHERIOS",
@@ -1463,21 +1476,10 @@
      "role": "5άδα",
      "captain": false,
      "x_now": 3.7
-    },
-    {
-     "id": 4012,
-     "price": 4.0,
-     "position": "Forward",
-     "person_id": "001518",
-     "name": "RICCI, GIAMPAOLO",
-     "team": "MIL",
-     "role": "πάγκος",
-     "captain": false,
-     "x_now": 1.5
     }
    ],
-   "x_total": 131.3,
-   "decided_at": "2026-10-31T05:07+00:00"
+   "x_total": 127.1,
+   "decided_at": "2026-11-01T05:07+00:00"
   }
  ],
  "seed_id": "5a453a755a9b",
@@ -1488,5 +1490,5 @@
   "raw": 946.7,
   "avg_raw": 826.4
  },
- "generated": "2026-10-31T05:07:34.952292+00:00"
+ "generated": "2026-11-01T05:07:37.735659+00:00"
 }

@@ -340,9 +340,9 @@ round,source,stance,person_id,name,team,model_xpts
 10,EuroLeague Fantasy Tips (official),pick,015162,"WASHINGTON JR, TYTY",ASV,14.16
 10,EuroLeague Fantasy Tips (official),pick,013403,"WALKER IV, LONNIE",BES,14.69
 10,EuroLeague Fantasy Tips (official),avoid,009846,"BRYANT, ELIJAH",HTA,20.23
-10,EuroLeague Fantasy Tips (official),avoid,015138,"MARTIN, TYRESE",BAR,7.22
+10,Eurohoops,avoid,015138,"MARTIN, TYRESE",BAR,7.22
 10,EuroLeague Fantasy Tips (official),avoid,010357,"YABUSELE, GUERSCHON",PAN,8.39
-10,EuroLeague Fantasy Tips (official),captain,007027,"MALEDON, THEO",MAD,17.28
+10,EuroLeague Fantasy Tips (official),pick,007027,"MALEDON, THEO",MAD,17.28
 10,EuroLeague Fantasy Tips (official),pick,007960,"DAVIDOVAC, DEJAN",RED,4.21
 10,EuroLeague Fantasy Tips (official),pick,015160,"JOHNSON, ALIZE",PRS,6.56
 10,EuroLeague Fantasy Tips (official),avoid,009863,"BALDWIN IV, WADE",ULK,15.61
@@ -369,6 +369,7 @@ round,source,stance,person_id,name,team,model_xpts
 10,Basketball Sphere – Fantasy,pick,014168,"KEY, BRAXTON",ULK,7.08
 10,Basketball Sphere – Fantasy,pick,014026,"FRISCH, CLEMENT",BAS,3.55
 10,Basketball Sphere – Fantasy,pick,005791,"TAVARES, WALTER",MAD,15.85
+10,Basketball Sphere – Fantasy,pick,013369,"JONES, CARLIK",PAR,17.27
 10,Basketball Sphere – Fantasy,pick,011247,"FELIZ, ANDRES",MAD,10.65
 10,Basketball Sphere – Fantasy,pick,014316,"JOSEPH, CORY",OLY,3.65
 10,Basketball Sphere – Fantasy,pick,011244,"DA SILVA, OSCAR",MUN,8.35
