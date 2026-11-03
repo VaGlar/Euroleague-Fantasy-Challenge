@@ -1376,18 +1376,7 @@
      "team": "ZAL",
      "role": "5άδα",
      "captain": false,
-     "x_now": 19.1
-    },
-    {
-     "id": 7424,
-     "price": 10.0,
-     "position": "Center",
-     "person_id": "014108",
-     "name": "DIARRA, ALIOU",
-     "team": "VIR",
-     "role": "πάγκος",
-     "captain": false,
-     "x_now": 16.3
+     "x_now": 20.1
     },
     {
      "id": 3897,
@@ -1401,6 +1390,17 @@
      "x_now": 15.6
     },
     {
+     "id": 7424,
+     "price": 10.0,
+     "position": "Center",
+     "person_id": "014108",
+     "name": "DIARRA, ALIOU",
+     "team": "VIR",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 15.5
+    },
+    {
      "id": 11517,
      "price": 9.7,
      "position": "Guard",
@@ -1409,7 +1409,7 @@
      "team": "ASV",
      "role": "5άδα",
      "captain": false,
-     "x_now": 14.7
+     "x_now": 14.0
     },
     {
      "id": 11519,
@@ -1453,7 +1453,7 @@
      "team": "RED",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 4.4
+     "x_now": 4.2
     },
     {
      "id": 4005,
@@ -1478,8 +1478,8 @@
      "x_now": 3.7
     }
    ],
-   "x_total": 127.1,
-   "decided_at": "2026-11-02T05:07+00:00"
+   "x_total": 126.7,
+   "decided_at": "2026-11-03T05:08+00:00"
   }
  ],
  "seed_id": "5a453a755a9b",
@@ -1490,5 +1490,5 @@
   "raw": 946.7,
   "avg_raw": 826.4
  },
- "generated": "2026-11-02T05:07:48.502590+00:00"
+ "generated": "2026-11-03T05:08:43.314757+00:00"
 }
