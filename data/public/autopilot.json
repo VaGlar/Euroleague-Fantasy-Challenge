@@ -1354,7 +1354,7 @@
   {
    "round": 10,
    "trades": 4,
-   "bank": 0.9,
+   "bank": 0.3,
    "squad": [
     {
      "id": 3766,
@@ -1365,7 +1365,7 @@
      "team": "OLY",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 24.1
+     "x_now": 22.9
     },
     {
      "id": 11549,
@@ -1376,7 +1376,7 @@
      "team": "ZAL",
      "role": "5άδα",
      "captain": false,
-     "x_now": 20.1
+     "x_now": 21.1
     },
     {
      "id": 3897,
@@ -1409,7 +1409,7 @@
      "team": "ASV",
      "role": "5άδα",
      "captain": false,
-     "x_now": 14.7
+     "x_now": 14.0
     },
     {
      "id": 11519,
@@ -1431,7 +1431,7 @@
      "team": "MAD",
      "role": "5άδα",
      "captain": true,
-     "x_now": 11.5
+     "x_now": 12.0
     },
     {
      "id": 3975,
@@ -1464,22 +1464,22 @@
      "team": "ASV",
      "role": "5άδα",
      "captain": false,
-     "x_now": 3.9
+     "x_now": 3.8
     },
     {
-     "id": 4012,
-     "price": 4.0,
+     "id": 4061,
+     "price": 4.6,
      "position": "Forward",
-     "person_id": "001518",
-     "name": "RICCI, GIAMPAOLO",
-     "team": "MIL",
+     "person_id": "008084",
+     "name": "MANTZOUKAS, ELEFTHERIOS",
+     "team": "PAN",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 1.5
+     "x_now": 0.0
     }
    ],
-   "x_total": 126.6,
-   "decided_at": "2026-11-04T05:09+00:00"
+   "x_total": 126.0,
+   "decided_at": "2026-11-04T16:08+00:00"
   }
  ],
  "seed_id": "5a453a755a9b",
@@ -1490,5 +1490,5 @@
   "raw": 946.7,
   "avg_raw": 826.4
  },
- "generated": "2026-11-04T05:09:02.951000+00:00"
+ "generated": "2026-11-04T16:08:41.916722+00:00"
 }
