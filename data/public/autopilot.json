@@ -1354,7 +1354,7 @@
   {
    "round": 10,
    "trades": 4,
-   "bank": 0.0,
+   "bank": 0.9,
    "squad": [
     {
      "id": 3766,
@@ -1365,7 +1365,7 @@
      "team": "OLY",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 24.7
+     "x_now": 24.1
     },
     {
      "id": 11549,
@@ -1409,7 +1409,7 @@
      "team": "ASV",
      "role": "5άδα",
      "captain": false,
-     "x_now": 14.0
+     "x_now": 14.7
     },
     {
      "id": 11519,
@@ -1431,7 +1431,7 @@
      "team": "MAD",
      "role": "5άδα",
      "captain": true,
-     "x_now": 11.2
+     "x_now": 11.5
     },
     {
      "id": 3975,
@@ -1445,15 +1445,15 @@
      "x_now": 7.6
     },
     {
-     "id": 3983,
-     "price": 4.7,
+     "id": 3867,
+     "price": 4.4,
      "position": "Forward",
-     "person_id": "007960",
-     "name": "DAVIDOVAC, DEJAN",
-     "team": "RED",
+     "person_id": "001255",
+     "name": "PAPANIKOLAOU, KOSTAS",
+     "team": "OLY",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 4.2
+     "x_now": 4.5
     },
     {
      "id": 4005,
@@ -1462,24 +1462,24 @@
      "person_id": "000229",
      "name": "JACKSON, EDWIN",
      "team": "ASV",
-     "role": "πάγκος",
+     "role": "5άδα",
      "captain": false,
      "x_now": 3.9
     },
     {
-     "id": 4061,
-     "price": 4.6,
+     "id": 4012,
+     "price": 4.0,
      "position": "Forward",
-     "person_id": "008084",
-     "name": "MANTZOUKAS, ELEFTHERIOS",
-     "team": "PAN",
-     "role": "5άδα",
+     "person_id": "001518",
+     "name": "RICCI, GIAMPAOLO",
+     "team": "MIL",
+     "role": "πάγκος",
      "captain": false,
-     "x_now": 3.7
+     "x_now": 1.5
     }
    ],
-   "x_total": 126.7,
-   "decided_at": "2026-11-03T05:08+00:00"
+   "x_total": 126.6,
+   "decided_at": "2026-11-04T05:09+00:00"
   }
  ],
  "seed_id": "5a453a755a9b",
@@ -1490,5 +1490,5 @@
   "raw": 946.7,
   "avg_raw": 826.4
  },
- "generated": "2026-11-03T05:08:43.314757+00:00"
+ "generated": "2026-11-04T05:09:02.951000+00:00"
 }
