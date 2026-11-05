@@ -336,13 +336,11 @@ round,source,stance,person_id,name,team,model_xpts
 9,EuroBallin (Substack),pick,012080,"LUWAWU-CABARROT, TIMOTHE",MAD,7.27
 9,EuroBallin (Substack),pick,011231,"BLOSSOMGAME, JARON",DUB,8.18
 9,EuroBallin (Substack),pick,003941,"MILUTINOV, NIKOLA",OLY,11.72
-10,EuroLeague Fantasy Tips (official),pick,003733,"ABALDE, ALBERTO",MAD,8.21
-10,EuroLeague Fantasy Tips (official),captain,012774,"NUNN, KENDRICK",PAN,17.05
 10,Basketball Sphere – Fantasy,pick,009846,"BRYANT, ELIJAH",HTA,20.21
 10,Basketball Sphere – Fantasy,pick,013369,"JONES, CARLIK",PAR,17.26
 10,Basketball Sphere – Fantasy,pick,009863,"BALDWIN IV, WADE",ULK,15.59
 10,Basketball Sphere – Fantasy,pick,014213,"PAYNE, CAMERON",IST,12.24
-10,Basketball Sphere – Fantasy,pick,011247,"FELIZ, ANDRES",MAD,12.25
+10,Basketball Sphere – Fantasy,captain,011247,"FELIZ, ANDRES",MAD,12.25
 10,Basketball Sphere – Fantasy,pick,011706,"SAINT-SUPERY, MARIO",PAM,1.02
 10,Basketball Sphere – Fantasy,pick,003112,"SARIC, DARIO",IST,15.69
 10,Basketball Sphere – Fantasy,pick,007831,"SHIELDS, SHAVON",ULK,15.49
@@ -350,13 +348,14 @@ round,source,stance,person_id,name,team,model_xpts
 10,Basketball Sphere – Fantasy,pick,012610,"WARD, TYSON",OLY,10.78
 10,Basketball Sphere – Fantasy,pick,014168,"KEY, BRAXTON",ULK,7.07
 10,Basketball Sphere – Fantasy,pick,001255,"PAPANIKOLAOU, KOSTAS",OLY,4.3
-10,Basketball Sphere – Fantasy,pick,000898,"VALANCIUNAS, JONAS",ZAL,19.11
 10,EuroLeague Fantasy Tips (official),pick,012878,"WRIGHT, MOSES",MIL,14.49
 10,EuroLeague Fantasy Tips (official),pick,015396,"KOLOKO, CHRISTIAN",RED,11.11
+10,EuroLeague Fantasy Tips (official),pick,000898,"VALANCIUNAS, JONAS",ZAL,19.11
 10,EuroLeague Fantasy Tips (official),pick,010390,"HAYES, KEVARRIUS",PAR,10.89
 10,EuroLeague Fantasy Tips (official),pick,012403,"FAYE, MOUHAMED",PRS,8.94
 10,EuroLeague Fantasy Tips (official),pick,011286,"BACON, DWAYNE",DUB,17.14
 10,EuroLeague Fantasy Tips (official),pick,014107,"JOKSIMOVIC, STEFAN",BAS,2.3
+10,EuroLeague Fantasy Tips (official),pick,003733,"ABALDE, ALBERTO",MAD,8.21
 10,EuroLeague Fantasy Tips (official),pick,012609,"MALCOLM, COLLIN",IST,12.78
 10,EuroLeague Fantasy Tips (official),pick,014134,"NORRIS, MILES",MUN,6.15
 10,EuroLeague Fantasy Tips (official),pick,013384,"BROOKS, ARMONI",PAM,13.45
