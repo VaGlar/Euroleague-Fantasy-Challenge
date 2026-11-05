@@ -1363,7 +1363,7 @@
      "person_id": "003469",
      "name": "VEZENKOV, SASHA",
      "team": "OLY",
-     "role": "πάγκος",
+     "role": "5άδα",
      "captain": false,
      "x_now": 22.9
     },
@@ -1396,7 +1396,7 @@
      "person_id": "014108",
      "name": "DIARRA, ALIOU",
      "team": "VIR",
-     "role": "πάγκος",
+     "role": "6ος",
      "captain": false,
      "x_now": 15.5
     },
@@ -1440,7 +1440,7 @@
      "person_id": "012611",
      "name": "HERRERA, SEBASTIAN",
      "team": "PRS",
-     "role": "6ος",
+     "role": "πάγκος",
      "captain": false,
      "x_now": 7.6
     },
@@ -1462,7 +1462,7 @@
      "person_id": "000229",
      "name": "JACKSON, EDWIN",
      "team": "ASV",
-     "role": "5άδα",
+     "role": "πάγκος",
      "captain": false,
      "x_now": 3.8
     },
@@ -1480,12 +1480,25 @@
    ],
    "x_total": 126.0,
    "decided_at": "2026-11-04T16:08+00:00",
-   "moves": {}
+   "moves": {
+    "3": {
+     "in": [
+      3766,
+      7424
+     ],
+     "out": [
+      3975,
+      4005
+     ],
+     "captain": null,
+     "at": "2026-11-05T22:08+00:00"
+    }
+   }
   },
   {
    "round": 11,
-   "trades": 2,
-   "bank": 0.1,
+   "trades": 3,
+   "bank": 0.3,
    "squad": [
     {
      "id": 3766,
@@ -1521,15 +1534,15 @@
      "x_now": 15.5
     },
     {
-     "id": 11517,
-     "price": 9.7,
+     "id": 8815,
+     "price": 9.5,
      "position": "Guard",
-     "person_id": "015162",
-     "name": "WASHINGTON JR, TYTY",
-     "team": "ASV",
+     "person_id": "014213",
+     "name": "PAYNE, CAMERON",
+     "team": "IST",
      "role": "5άδα",
      "captain": false,
-     "x_now": 14.0
+     "x_now": 15.0
     },
     {
      "id": 11519,
@@ -1562,7 +1575,7 @@
      "team": "PAM",
      "role": "coach",
      "captain": false,
-     "x_now": 9.5
+     "x_now": 10.2
     },
     {
      "id": 3991,
@@ -1584,7 +1597,18 @@
      "team": "PRS",
      "role": "6ος",
      "captain": false,
-     "x_now": 7.5
+     "x_now": 7.2
+    },
+    {
+     "id": 4005,
+     "price": 4.2,
+     "position": "Forward",
+     "person_id": "000229",
+     "name": "JACKSON, EDWIN",
+     "team": "ASV",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 5.2
     },
     {
      "id": 3867,
@@ -1596,21 +1620,10 @@
      "role": "πάγκος",
      "captain": false,
      "x_now": 4.5
-    },
-    {
-     "id": 4005,
-     "price": 4.2,
-     "position": "Forward",
-     "person_id": "000229",
-     "name": "JACKSON, EDWIN",
-     "team": "ASV",
-     "role": "πάγκος",
-     "captain": false,
-     "x_now": 3.9
     }
    ],
-   "x_total": 128.0,
-   "decided_at": "2026-11-05T14:10+00:00"
+   "x_total": 130.0,
+   "decided_at": "2026-11-05T22:08+00:00"
   }
  ],
  "seed_id": "5a453a755a9b",
@@ -1621,5 +1634,5 @@
   "raw": 946.7,
   "avg_raw": 826.4
  },
- "generated": "2026-11-05T14:10:54.286350+00:00"
+ "generated": "2026-11-05T22:08:45.072905+00:00"
 }
