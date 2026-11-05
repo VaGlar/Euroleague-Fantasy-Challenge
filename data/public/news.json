@@ -1,6 +1,15 @@
 {
  "articles": [
   {
+   "title": "EuroLeague Fantasy winners and losers, Round 10: Wednesday",
+   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/euroleague-fantasy-winners-and-losers-round-10-wednesday/",
+   "date": "2026-11-04T23:56:39.185000+00:00",
+   "source": "EuroLeague Fantasy Tips (official)",
+   "weight": 2,
+   "fantasy": true,
+   "report": false
+  },
+  {
    "title": "EuroLeague Fantasy Round 10 Tips: Best Player Picks & Head Coaches",
    "url": "https://basketballsphere.com/en/euroleague-fantasy-26-27-round-10-best-picks/",
    "date": "2026-11-03T08:56:56+00:00",
@@ -91,19 +100,64 @@
    "report": false
   },
   {
-   "title": "EuroLeague Fantasy winners and losers, Round 8: Wednesday",
-   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/euroleague-fantasy-winners-and-losers-round-8-wednesday/",
-   "date": "2026-10-29T00:28:36.920000+00:00",
-   "source": "EuroLeague Fantasy Tips (official)",
-   "weight": 2,
-   "fantasy": true,
+   "title": "Μπενφίκα - Ολυμπιακός 2-3: Επική «ερυθρόλευκη» πρόκριση μέσα στην Πορτογαλία",
+   "url": "https://www.gazzetta.gr/volleyball/challenge-cup/2583768/mpenfika-olympiakos-2-3-epiki-erythroleyki-prokrisi-mesa-stin",
+   "date": "2026-11-05T01:50:57+02:00",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false,
    "report": false
   },
   {
-   "title": "Injury report, Round 10: Valencia without Mirotic in Milan?",
+   "title": "Ρεάλ Μαδρίτης - Παναθηναϊκός 112-115: Τα highlights της αναμέτρησης",
+   "url": "https://www.gazzetta.gr/basketball/euroleague/2583763/real-madritis-panathinaikos-112-115-ta-highlights-tis-anametrisis",
+   "date": "2026-11-05T01:24:17+02:00",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Ρεάλ Μαδρίτης - Παναθηναϊκός: Γιουλ και Χουάντσο αντάλλαξαν φανέλες!",
+   "url": "https://www.gazzetta.gr/basketball/euroleague/2583765/real-madritis-panathinaikos-gioyl-kai-hoyantso-antallaxan-faneles",
+   "date": "2026-11-05T01:22:37+02:00",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Μαρτίνεθ: «Ο Ναν είναι ελίτ παίκτης, θα μπορούσαμε να αμυνθούμε καλύτερα»",
+   "url": "https://www.gazzetta.gr/basketball/euroleague/2583764/martineth-o-nan-einai-elit-paiktis-tha-mporoysame-na-amynthoyme",
+   "date": "2026-11-05T01:11:26+02:00",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Μήτογλου: “Περήφανος για όλους, δεν είναι εύκολο να κερδίσεις στη Μαδρίτη”",
+   "url": "https://www.eurohoops.net/el/euroleague-el-2/2030873/mitoglou-perifanos-gia-olous-den-ine-efkolo-na-kerdisis-sti-madriti/",
+   "date": "2026-11-04T23:08:59+00:00",
+   "source": "Eurohoops (GR)",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Injury report, Round 10: Valencia without Nikola Mirotic in Milan?",
    "url": "https://www.euroleaguebasketball.net/en/euroleague/news/injury-report-round-10-fantasy/",
    "date": "2026-11-04T23:03:27.436000+00:00",
    "source": "EuroLeague (official)",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Zeljko Obradovic praises Kendrick Nunn after his historic game: “We all know what he’s capable of”",
+   "url": "https://www.eurohoops.net/en/euroleague/2030850/zeljko-obradovic-praises-kendrick-nunn-after-his-historic-game-we-all-know-what-hes-capable-of/",
+   "date": "2026-11-04T23:03:24+00:00",
+   "source": "Eurohoops",
    "weight": 1,
    "fantasy": false,
    "report": false
@@ -127,7 +181,7 @@
    "report": false
   },
   {
-   "title": "Panathinaikos outlasts Real Madrid in classic behind Kendrick Nunn",
+   "title": "Panathinaikos edges Real Madrid in classic behind Kendrick Nunn",
    "url": "https://www.euroleaguebasketball.net/en/euroleague/news/panathinaikos-outlasts-real-madrid-in-classic-behind-kendrick-nunn/",
    "date": "2026-11-04T22:52:37.671000+00:00",
    "source": "EuroLeague (official)",
@@ -163,8 +217,8 @@
    "report": false
   },
   {
-   "title": "Παναθηναϊκός: Τρίτη σερί φορά στην έδρα της Ρεάλ!",
-   "url": "https://www.novasports.gr/sport/mpasket/event/euroleague/article/15213739/panathinaikos-triti-seri-fora-stin-edra-tis-real/",
+   "title": "Κόμο: Το ιστορικό σκορ τοποθετεί τους Ιταλούς σε δύο σπάνιες λίστες!",
+   "url": "https://www.novasports.gr/sport/podosfairo/event/uefa-champions-league/article/15213694/komo-to-istoriko-skor-topothetei-tous-italous-se-dyo-spanies-listes/",
    "date": "2026-11-04T22:37:20+00:00",
    "source": "Novasports",
    "weight": 1,
@@ -172,8 +226,8 @@
    "report": false
   },
   {
-   "title": "Κόμο: Το ιστορικό σκορ τοποθετεί τους Ιταλούς σε δύο σπάνιες λίστες!",
-   "url": "https://www.novasports.gr/sport/podosfairo/event/uefa-champions-league/article/15213694/komo-to-istoriko-skor-topothetei-tous-italous-se-dyo-spanies-listes/",
+   "title": "Παναθηναϊκός: Τρίτη σερί φορά στην έδρα της Ρεάλ!",
+   "url": "https://www.novasports.gr/sport/mpasket/event/euroleague/article/15213739/panathinaikos-triti-seri-fora-stin-edra-tis-real/",
    "date": "2026-11-04T22:37:20+00:00",
    "source": "Novasports",
    "weight": 1,
@@ -190,19 +244,19 @@
    "report": false
   },
   {
-   "title": "ΕΞΩΓΗΙΝΟΣ Ναν στη Μαδρίτη: 30άρα με All-Time ρεκόρ πόντων στην τέταρτη περίοδο (video)",
-   "url": "https://www.eurohoops.net/el/euroleague-el-2/2030825/exogiinos-nan-sti-madriti-30ara-me-all-time-rekor-ponton-stin-tetarti-periodo-video/",
-   "date": "2026-11-04T22:34:50+00:00",
-   "source": "Eurohoops (GR)",
+   "title": "Παναθηναϊκός: Ιστορικό ρεκόρ από τον Ναν!",
+   "url": "https://www.novasports.gr/sport/mpasket/event/euroleague/article/15213691/panathinaikos-istoriko-rekor-apo-ton-nan/",
+   "date": "2026-11-04T22:32:38+00:00",
+   "source": "Novasports",
    "weight": 1,
    "fantasy": false,
    "report": false
   },
   {
-   "title": "Παναθηναϊκός: Ιστορικό ρεκόρ από τον Ναν!",
-   "url": "https://www.novasports.gr/sport/mpasket/event/euroleague/article/15213691/panathinaikos-istoriko-rekor-apo-ton-nan/",
-   "date": "2026-11-04T22:32:38+00:00",
-   "source": "Novasports",
+   "title": "ΕΞΩΓΗΙΝΟΣ 33άρης Ναν στη Μαδρίτη με All-Time ρεκόρ πόντων σε 4η περίοδο (videos)",
+   "url": "https://www.eurohoops.net/el/euroleague-el-2/2030825/exogiinos-nan-sti-madriti-30ara-me-all-time-rekor-ponton-stin-tetarti-periodo-video/",
+   "date": "2026-11-04T22:28:50+00:00",
+   "source": "Eurohoops (GR)",
    "weight": 1,
    "fantasy": false,
    "report": false
@@ -307,18 +361,9 @@
    "report": false
   },
   {
-   "title": "Ευρωλίγκα αποτελέσματα & βαθμολογία: Δεν πέφτει με τίποτα ο Παναθηναϊκός από την κορυφή",
+   "title": "Bαθμολογία Ευρωλίγκα: Δεν πέφτει με τίποτα ο Παναθηναϊκός από την κορυφή",
    "url": "https://www.eurohoops.net/el/euroleague-el-2/2030774/evroligka-apotelesmata-vathmologia-den-pefti-me-tipota-o-panathinaikos-apo-tin-korifi/",
    "date": "2026-11-04T22:09:56+00:00",
-   "source": "Eurohoops (GR)",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Σπανούλης: “Αντιμετωπίσαμε τραυματισμούς και φάουλ – Δεν μπορείς πάντα να ζητάς το απόλυτο”",
-   "url": "https://www.eurohoops.net/el/eurocup-el/2030803/spanoulis-antimetopisame-travmatismous-ke-faoul-den-boris-panta-na-zitas-to-apolito/",
-   "date": "2026-11-04T22:08:09+00:00",
    "source": "Eurohoops (GR)",
    "weight": 1,
    "fantasy": false,
@@ -343,8 +388,8 @@
    "report": false
   },
   {
-   "title": "Ρεάλ-Παναθηναϊκός 112-115: Ο Λεσόρ…τίμησε την 33άρα του Ναν για το μεγάλο «διπλό» στην Μαδρίτη Ρεάλ Μαδρίτης – Παναθηναϊκός: 112 – 115 (παρ.) (highlights)",
-   "url": "https://www.novasports.gr/sport/mpasket/event/euroleague/article/15213034/real-panathinaikos-112-115-o-lesor-timise-tin-33ara-tou-nan-gia-to-megalo-diplo-stin-madriti-real-madritis-panathinaikos-112-115-par-highlights/",
+   "title": "Ρεάλ-Παναθηναϊκός 112-115 (παρ.): Ο Λεσόρ… τίμησε την 33άρα του Ναν για το μεγάλο «διπλό» στην Μαδρίτη (highlights)",
+   "url": "https://www.novasports.gr/sport/mpasket/event/euroleague/article/15213034/real-panathinaikos-112-115-par-o-lesor-timise-tin-33ara-tou-nan-gia-to-megalo-diplo-stin-madriti-highlights/",
    "date": "2026-11-04T22:05:35+00:00",
    "source": "Novasports",
    "weight": 1,
@@ -419,6 +464,15 @@
    "url": "https://www.gazzetta.gr/football/champions-league/2583742/bathmologia-champions-league-i-aek-epese-29i-i-komo-stin-8ada",
    "date": "2026-11-04T23:58:20+02:00",
    "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Σπανούλης: “Αντιμετωπίσαμε τραυματισμούς και φάουλ – Δεν μπορείς πάντα να ζητάς το απόλυτο”",
+   "url": "https://www.eurohoops.net/el/eurocup-el/2030803/spanoulis-antimetopisame-travmatismous-ke-faoul-den-boris-panta-na-zitas-to-apolito/",
+   "date": "2026-11-04T21:58:09+00:00",
+   "source": "Eurohoops (GR)",
    "weight": 1,
    "fantasy": false,
    "report": false
@@ -667,46 +721,10 @@
    "report": false
   },
   {
-   "title": "ΑΕΚ: Ο Σάκοτα παρακολούθησε το ποδοσφαιρικό ματς με τη Ρεάλ από το πούλμαν - Το μήνυμά του στους οπαδούς",
-   "url": "https://www.gazzetta.gr/basketball/basketball-champions-league/2583714/aek-o-sakota-parakoloythise-podosfairiko-mats-me-ti",
-   "date": "2026-11-04T22:16:13+02:00",
-   "source": "Gazzetta",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Μοντέρο: Στη Μαδρίτη και βλέπει “Ρεάλ-Παναθηναϊκός”",
+   "title": "Μοντέρο: Στη Μαδρίτη και είδε “Ρεάλ-Παναθηναϊκός”",
    "url": "https://www.eurohoops.net/el/euroleague-el-2/2030715/montero-sti-madriti-ke-vlepi-real-panathinaikos/",
    "date": "2026-11-04T20:15:37+00:00",
    "source": "Eurohoops (GR)",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "ΑΕΚ - Ρεάλ Μαδρίτης 2-3: Τα highlights του δραματικού αγώνα",
-   "url": "https://www.gazzetta.gr/football/champions-league/2583712/aek-real-madritis-2-3-ta-highlights-toy-dramatikoy-agona",
-   "date": "2026-11-04T22:11:41+02:00",
-   "source": "Gazzetta",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "ΑΕΚ - Ρεάλ Μαδρίτης: Το τετ-α-τετ Μουρίνιο - Νίκολιτς και η «παρέμβαση» Ηλιόπουλου",
-   "url": "https://www.gazzetta.gr/football/champions-league/2583710/aek-real-madritis-tet-tet-moyrinio-nikolits-kai-i-parembasi",
-   "date": "2026-11-04T22:09:02+02:00",
-   "source": "Gazzetta",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Νίκολιτς: «Περήφανος και στεναχωρημένος, πολύ ωραίο να λέει τέτοια λόγια ένας από τους κορυφαίους προπονητές στην ιστορία»",
-   "url": "https://www.gazzetta.gr/football/champions-league/2583709/nikolits-perifanos-kai-stenahorimenos-poly-oraio-na-leei-tetoia",
-   "date": "2026-11-04T22:06:11+02:00",
-   "source": "Gazzetta",
    "weight": 1,
    "fantasy": false,
    "report": false
@@ -1036,15 +1054,6 @@
    "report": false
   },
   {
-   "title": "Real Madrid sidelines Facundo Campazzo indefinitely amid demanding stretch",
-   "url": "https://www.eurohoops.net/en/euroleague/2030111/facundo-campazzo-out-indefinitely-real-madrid-euroleague/",
-   "date": "2026-11-03T12:06:43+00:00",
-   "source": "Eurohoops",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
    "title": "Valencia’s TJ Shorts named EuroLeague MVP of October",
    "url": "https://www.euroleaguebasketball.net/en/euroleague/news/tj-shorts-mvp-of-october-valencia-basket/",
    "date": "2026-11-03T11:02:06.420000+00:00",
@@ -1070,200 +1079,186 @@
    "weight": 1,
    "fantasy": false,
    "report": false
-  },
-  {
-   "title": "Stats review: Paris pioneers a different three-point diet",
-   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/stats-review-paris-pioneers-a-different-three-point-diet/",
-   "date": "2026-11-01T09:05:36.148000+00:00",
-   "source": "EuroLeague (official)",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
   }
  ],
  "digest": {
-  "availability": [],
+  "availability": [
+   {
+    "player": "MIROTIC, NIKOLA",
+    "status": "out",
+    "note": "Εκτός δράσης λόγω τραυματισμού ενόψει του αγώνα με τη Milano.",
+    "source": "EuroLeague (official)"
+   }
+  ],
   "expert": [
+   {
+    "player": "ABALDE, ALBERTO",
+    "stance": "pick",
+    "note": "Εξαιρετική εμφάνιση και value για τη χαμηλή τιμή του.",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "NUNN, KENDRICK",
+    "stance": "captain",
+    "note": "Σε τρομερή φόρμα με ιστορικό ρεκόρ πόντων.",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
    {
     "player": "BRYANT, ELIJAH",
     "stance": "pick",
-    "note": "Ευνοϊκό πρόγραμμα και εξαιρετική αξία για τη συνέχεια.",
+    "note": "Ευνοϊκό πρόγραμμα και δυνατότητα συνεισφοράς σε όλες τις κατηγορίες.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "JONES, CARLIK",
     "stance": "pick",
-    "note": "Τέσσερα σερί εντός έδρας παιχνίδια για την Partizan.",
+    "note": "Πολύ καλή επιλογή με τα επόμενα παιχνίδια στην έδρα της Partizan.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "BALDWIN IV, WADE",
     "stance": "pick",
-    "note": "Ευνοϊκό πρόγραμμα και προοπτική κέρδους στη Fenerbahce.",
+    "note": "Αξιόπιστη μακροπρόθεσμη επιλογή με ευνοϊκό πρόγραμμα.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "PAYNE, CAMERON",
     "stance": "pick",
-    "note": "Αυξημένος ρόλος και γρήγορος ρυθμός απέναντι στην Paris.",
+    "note": "Ηγείται της Anadolu Efes μετά τον τραυματισμό του Mike James.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "FELIZ, ANDRES",
-    "stance": "captain",
-    "note": "Εξαιρερετική επιλογή αρχηγού από την πρώτη ημέρα λόγω απουσιών.",
+    "stance": "pick",
+    "note": "Αυξημένος ρόλος λόγω των απουσιών στη Real Madrid.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "SAINT-SUPERY, MARIO",
     "stance": "pick",
-    "note": "Εξαιρερετική επιλογή χαμηλού προϋπολογισμού για κέρδος.",
+    "note": "Εξαιρετική επιλογή χαμηλού προϋπολογισμού για κέρδος.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "SARIC, DARIO",
     "stance": "pick",
-    "note": "Κεντρικός ρόλος και ριμπάουντ απέναντι στον γρήγορο ρυθμό της Paris.",
+    "note": "Αναβαθμισμένος ρόλος και κυριαρχία στα ριμπάουντ.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "SHIELDS, SHAVON",
     "stance": "pick",
-    "note": "Σταθερή προσφορά και ευνοϊκό πρόγραμμα.",
+    "note": "Σταθερά υψηλή απόδοση και θετικό πρόγραμμα.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "TAYLOR, KAMERON",
     "stance": "pick",
-    "note": "Αυξημένος ρόλος λόγω απουσιών σε βατές άμυνες.",
+    "note": "Αναμένεται αυξημένος χρόνος λόγω απουσιών.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "WARD, TYSON",
     "stance": "pick",
-    "note": "Σταθερή απόδοση και περισσότερος χρόνος συμμετοχής.",
+    "note": "Συνεχείς καλές εμφανίσεις και γεμάτη στατιστική.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "KEY, BRAXTON",
     "stance": "pick",
-    "note": "Ευκαιρία απόκτησης σε χαμηλότερη τιμή λόγω ντεφορμαρίσματος.",
+    "note": "Ευκαιρία απόκτησης σε χαμηλότερη τιμή.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "PAPANIKOLAOU, KOSTAS",
     "stance": "pick",
-    "note": "Πολύτιμος χρόνος συμμετοχής σε εξαιρετική τιμή.",
+    "note": "Πολύτιμος παίκτης χαμηλού κόστους με σταθερό χρόνο συμμετοχής.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "VALANCIUNAS, JONAS",
     "stance": "pick",
-    "note": "Απόλυτη σταθερότητα και αυξημένος χρόνος συμμετοχής.",
+    "note": "Από τους πιο σταθερούς και αξιόπιστους σέντερ.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "WRIGHT, MOSES",
     "stance": "pick",
-    "note": "Ευκαιρία αντίδρασης απέναντι στη Valencia.",
-    "source": "Basketball Sphere – Fantasy"
-   },
-   {
-    "player": "WRIGHT, MOSES",
-    "stance": "pick",
-    "note": "Ευνοϊκό εντός έδρας παιχνίδι απέναντι στη Valencia.",
+    "note": "Ευκαιρία ανάκαμψης απέναντι σε ομάδα με προβλήματα στη φροντ-λάιν.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "KOLOKO, CHRISTIAN",
     "stance": "pick",
-    "note": "Εξαιρετική τιμή και τρομερή αμυντική παρουσία.",
-    "source": "EuroLeague Fantasy Tips (official)"
-   },
-   {
-    "player": "VALANCIUNAS, JONAS",
-    "stance": "pick",
-    "note": "Κορυφαία επισλογή αξίας από τους ακριβούς παίκτες.",
+    "note": "Εξαιρετική value επιλογή στη θέση των σέντερ.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "HAYES, KEVARRIUS",
     "stance": "pick",
-    "note": "Μοναδικός βασικός σέντερ πλέον στην Partizan.",
+    "note": "Βασική επιλογή στη ρακετα της Partizan μετά τον τραυματισμό του Tonye Jekiri.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "FAYE, MOUHAMED",
     "stance": "pick",
-    "note": "Σταθερή παρουσία σε χαμηλή τιμή.",
+    "note": "Σταθερή παρουσία και σταθερά ανοδική πορεία.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "BACON, DWAYNE",
     "stance": "pick",
-    "note": "Σταθερότατος σκόρερ και ριμπάουντερ.",
+    "note": "Σταθερότατος επιθετικά και εξαιρετικός σκόρερ.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "JOKSIMOVIC, STEFAN",
     "stance": "pick",
-    "note": "Εξαιρετική φόρμα σε εγχώρια διοργάνωση και χαμηλό κόστος.",
-    "source": "EuroLeague Fantasy Tips (official)"
-   },
-   {
-    "player": "ABALDE, ALBERTO",
-    "stance": "pick",
-    "note": "Απαραίτητη οικονομική λύση λόγω των προβλημάτων στην περιφέρεια.",
+    "note": "Προοπτική για καλή εμφάνιση και χαμηλό κόστος.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "MALCOLM, COLLIN",
     "stance": "pick",
-    "note": "Απίστευτη συνέπεια και μεγάλος χρόνος συμμετοχής.",
+    "note": "Εξαιρετικά συνεπής με συνεχόμενα διψήφια νούμερα.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "NORRIS, MILES",
     "stance": "pick",
-    "note": "Ευκαιρία διάκρισης μετά τις καλές εμφανίσεις.",
-    "source": "EuroLeague Fantasy Tips (official)"
-   },
-   {
-    "player": "FELIZ, ANDRES",
-    "stance": "pick",
-    "note": "Ασφαλέστατη επιλογή γκαρντ λόγω απουσιών.",
+    "note": "Value επιλογή με καλή πρόσφατη παρουσία.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "BROOKS, ARMONI",
     "stance": "pick",
-    "note": "Εξαιρετικό σερί ευστοχίας στην επίθεση.",
+    "note": "Εξαιρετική φόρμα στα σουτ από την περιφέρεια.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "COLE, RJ",
     "stance": "pick",
-    "note": "Αυξημένος ρόλος και χαμηλή δημοτικότητα.",
+    "note": "X-factor με ελάχιστη κατοχή από τους managers.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "PUNTER, KEVIN",
     "stance": "pick",
-    "note": "Ηγετικός ρόλος και σταθερά υψηλή απόδοση.",
+    "note": "Αδιαμφισβήτητος ηγέτης της FC Barcelona.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "MILLS, PATTY",
     "stance": "pick",
-    "note": "Υποτιμημένος παίκτης με καλό πρόγραμμα εντός έδρας.",
+    "note": "Υποτιμημένος παίκτης σε εξαιρετική κατάσταση.",
     "source": "EuroLeague Fantasy Tips (official)"
    }
   ],
   "round": 10,
-  "summary_el": "Ο Panathinaikos επικράτησε της Real Madrid με 115-112 στην παράταση σε έναν αγώνα θρίλερ για την 10η αγωνιστική της EuroLeague. Ο Kendrick Nunn πραγματοποίησε ιστορική εμφάνιση με 33 πόντους, σημειώνοντας ρεκόρ στην τέταρτη περίοδο. Ο Mathias Lessort ήταν καθοριστικός με 20 πόντους και 9 ριμπάουντ για τους νικητές. Ο Andres Feliz οδήγησε τη Real Madrid στη διεκδίκηση του αγώνα μέχρι το τέλος. Ο Zeljko Obradovic αποθέωσε την απόδοση της ομάδας του και την εμφάνιση του Nunn. Η ομάδα συνεχίζει στην κορυφή της βαθμολογίας.",
+  "summary_el": "Ο Kendrick Nunn πραγματοποίησε μυθική εμφάνιση με 33 πόντους και ιστορικό ρεκόρ 23 πόντων στην τέταρτη περίοδο, οδηγώντας τον Panathinaikos σε σπουδαία νίκη στην παράταση επί της Real Madrid.\nΟ Mathias Lessort συνέβαλε καθοριστικά με 20 πόντους και 9 ριμπάουντ για τους νικητές.\nΟ Alberto Abalde ξεχώρισε θετικά για τη Real Madrid προσφέροντας τεράστια αξία στους φανταστικούς μάνατζερς.\nΟ Nikola Mirotic είναι εκτός δράσης για τη Valencia Basket ενόψει της αναμέτρησης με την Armani Olimpia Milan.\nΟι αναλυτές προτείνουν επιλογές όπως ο Jonas Valanciunas, ο Dwayne Bacon και ο Kevin Punter για τις ομάδες του Fantasy Challenge.\nΗ 10η αγωνιστική της EuroLeague προσφέρει εξαιρε ευκαιρίες σε παίκτες με χαμηλή τιμή και αυξημένο χρόνο συμμετοχής λόγω τραυματισμών.",
   "_model": "gemini-3.5-flash-lite",
-  "_seconds": 5.7
+  "_seconds": 6.4
  },
- "digest_at": "2026-11-04T23:08:19.978544+00:00",
+ "digest_at": "2026-11-05T05:07:35.436616+00:00",
  "failed": []
 }

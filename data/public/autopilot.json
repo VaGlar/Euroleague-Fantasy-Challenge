@@ -1507,7 +1507,7 @@
      "team": "ZAL",
      "role": "5άδα",
      "captain": false,
-     "x_now": 21.0
+     "x_now": 20.1
     },
     {
      "id": 7424,
@@ -1532,17 +1532,6 @@
      "x_now": 14.0
     },
     {
-     "id": 3851,
-     "price": 8.5,
-     "position": "Guard",
-     "person_id": "011247",
-     "name": "FELIZ, ANDRES",
-     "team": "MAD",
-     "role": "5άδα",
-     "captain": true,
-     "x_now": 13.8
-    },
-    {
      "id": 11519,
      "price": 9.8,
      "position": "Guard",
@@ -1552,6 +1541,17 @@
      "role": "5άδα",
      "captain": false,
      "x_now": 13.7
+    },
+    {
+     "id": 3851,
+     "price": 8.5,
+     "position": "Guard",
+     "person_id": "011247",
+     "name": "FELIZ, ANDRES",
+     "team": "MAD",
+     "role": "5άδα",
+     "captain": true,
+     "x_now": 12.9
     },
     {
      "id": 4255,
@@ -1606,11 +1606,11 @@
      "team": "ASV",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 3.9
+     "x_now": 3.8
     }
    ],
-   "x_total": 130.0,
-   "decided_at": "2026-11-04T23:08+00:00"
+   "x_total": 127.3,
+   "decided_at": "2026-11-05T05:07+00:00"
   }
  ],
  "seed_id": "5a453a755a9b",
@@ -1621,5 +1621,5 @@
   "raw": 946.7,
   "avg_raw": 826.4
  },
- "generated": "2026-11-04T23:08:22.140253+00:00"
+ "generated": "2026-11-05T05:07:36.832220+00:00"
 }
