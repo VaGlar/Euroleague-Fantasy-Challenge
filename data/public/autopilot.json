@@ -1493,7 +1493,10 @@
      "captain": null,
      "at": "2026-11-05T22:08+00:00"
     }
-   }
+   },
+   "pts": 183.5,
+   "raw": 158.7,
+   "avg_raw": 120.2
   },
   {
    "round": 11,
@@ -1507,9 +1510,9 @@
      "person_id": "003469",
      "name": "VEZENKOV, SASHA",
      "team": "OLY",
-     "role": "πάγκος",
+     "role": "5άδα",
      "captain": false,
-     "x_now": 22.9
+     "x_now": 22.2
     },
     {
      "id": 11549,
@@ -1520,51 +1523,7 @@
      "team": "ZAL",
      "role": "5άδα",
      "captain": false,
-     "x_now": 20.1
-    },
-    {
-     "id": 7424,
-     "price": 10.0,
-     "position": "Center",
-     "person_id": "014108",
-     "name": "DIARRA, ALIOU",
-     "team": "VIR",
-     "role": "πάγκος",
-     "captain": false,
-     "x_now": 15.5
-    },
-    {
-     "id": 8815,
-     "price": 9.5,
-     "position": "Guard",
-     "person_id": "014213",
-     "name": "PAYNE, CAMERON",
-     "team": "IST",
-     "role": "5άδα",
-     "captain": false,
-     "x_now": 15.0
-    },
-    {
-     "id": 11519,
-     "price": 9.8,
-     "position": "Guard",
-     "person_id": "015164",
-     "name": "BESSON, HUGO",
-     "team": "ASV",
-     "role": "5άδα",
-     "captain": false,
-     "x_now": 13.7
-    },
-    {
-     "id": 3851,
-     "price": 8.5,
-     "position": "Guard",
-     "person_id": "011247",
-     "name": "FELIZ, ANDRES",
-     "team": "MAD",
-     "role": "5άδα",
-     "captain": true,
-     "x_now": 12.9
+     "x_now": 20.5
     },
     {
      "id": 4255,
@@ -1575,7 +1534,51 @@
      "team": "PAM",
      "role": "coach",
      "captain": false,
-     "x_now": 10.2
+     "x_now": 14.7
+    },
+    {
+     "id": 8815,
+     "price": 9.5,
+     "position": "Guard",
+     "person_id": "014213",
+     "name": "PAYNE, CAMERON",
+     "team": "IST",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 14.3
+    },
+    {
+     "id": 7424,
+     "price": 10.0,
+     "position": "Center",
+     "person_id": "014108",
+     "name": "DIARRA, ALIOU",
+     "team": "VIR",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 14.1
+    },
+    {
+     "id": 11519,
+     "price": 9.8,
+     "position": "Guard",
+     "person_id": "015164",
+     "name": "BESSON, HUGO",
+     "team": "ASV",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 13.4
+    },
+    {
+     "id": 3851,
+     "price": 8.5,
+     "position": "Guard",
+     "person_id": "011247",
+     "name": "FELIZ, ANDRES",
+     "team": "MAD",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 13.0
     },
     {
      "id": 3991,
@@ -1586,7 +1589,7 @@
      "team": "MAD",
      "role": "5άδα",
      "captain": false,
-     "x_now": 8.6
+     "x_now": 8.8
     },
     {
      "id": 3975,
@@ -1595,9 +1598,9 @@
      "person_id": "012611",
      "name": "HERRERA, SEBASTIAN",
      "team": "PRS",
-     "role": "6ος",
-     "captain": false,
-     "x_now": 7.2
+     "role": "5άδα",
+     "captain": true,
+     "x_now": 6.8
     },
     {
      "id": 4005,
@@ -1608,7 +1611,7 @@
      "team": "ASV",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 5.2
+     "x_now": 5.5
     },
     {
      "id": 3867,
@@ -1617,22 +1620,22 @@
      "person_id": "001255",
      "name": "PAPANIKOLAOU, KOSTAS",
      "team": "OLY",
-     "role": "πάγκος",
+     "role": "6ος",
      "captain": false,
-     "x_now": 4.5
+     "x_now": 3.8
     }
    ],
-   "x_total": 129.3,
-   "decided_at": "2026-11-06T14:07+00:00"
+   "x_total": 123.0,
+   "decided_at": "2026-11-06T23:07+00:00"
   }
  ],
  "seed_id": "5a453a755a9b",
  "start_round": 1,
  "total": {
-  "rounds": 9,
-  "pts": 1091.9,
-  "raw": 946.7,
-  "avg_raw": 826.4
+  "rounds": 10,
+  "pts": 1275.4,
+  "raw": 1105.4,
+  "avg_raw": 946.6
  },
- "generated": "2026-11-06T14:07:35.022432+00:00"
+ "generated": "2026-11-06T23:07:07.580739+00:00"
 }
