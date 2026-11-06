@@ -3213,7 +3213,7 @@ fantasy_id,person_id,first_name,last_name,team,position,price,matchday,is_injure
 3769,005791,Walter,Tavares,MAD,Center,15.2,10,False,1.0,,4.6
 3765,005985,Mike,James,IST,Guard,15.1,10,True,0.0,,0.4
 3770,012201,Chima,Moneke,RED,Forward,15.1,10,False,1.0,,3.3
-3834,012640,Nadir,Hifi,PRS,Guard,15.1,10,False,1.0,,5.2
+3834,012640,Nadir,Hifi,PRS,Guard,15.1,10,False,1.0,,5.3
 7201,011286,Dwayne,Bacon,DUB,Forward,14.7,10,False,1.0,,16.6
 4252,010042,Jean,Montero,OLY,Guard,14.4,10,True,0.0,,4.0
 11487,003112,Dario,Saric,IST,Forward,14.4,10,False,1.0,,4.1
@@ -3319,7 +3319,7 @@ fantasy_id,person_id,first_name,last_name,team,position,price,matchday,is_injure
 13947,015402,John,Konchar,OLY,Forward,9.0,10,False,1.0,,0.0
 3934,006760,Isaac,Bonga,PAN,Forward,8.9,10,False,1.0,,2.2
 7194,014006,Chuma,Okeke,MAD,Forward,8.9,10,False,1.0,,1.2
-7268,013929,Rj,Cole,MIL,Guard,8.9,10,False,1.0,,1.3
+7268,013929,Rj,Cole,MIL,Guard,8.9,10,False,1.0,,1.2
 11532,014742,Ethan,Thompson,PAR,Guard,8.9,10,False,1.0,,0.9
 4246,011982,Semi,Ojeleye,RED,Forward,8.8,10,False,1.0,,5.8
 7226,014010,Allan,Dokossi,PRS,Center,8.8,10,False,1.0,,1.9
@@ -3428,7 +3428,7 @@ fantasy_id,person_id,first_name,last_name,team,position,price,matchday,is_injure
 3828,005844,Georgios,Papagiannis,IST,Center,6.5,10,False,1.0,,0.1
 3845,004194,Joffrey,Lauvergne,PAR,Center,6.5,10,False,1.0,,0.3
 3861,008855,Thomas,Walkup,DUB,Guard,6.5,10,False,0.5,,0.7
-3992,012515,Terry,Tarpey,PRS,Guard,6.5,10,False,1.0,,0.6
+3992,012515,Terry,Tarpey,PRS,Guard,6.5,10,False,1.0,,0.5
 4073,011823,Tai,Odiase,HTA,Center,6.5,10,False,1.0,,2.5
 7867,014015,Armando,Bacot,TEL,Center,6.5,10,False,1.0,,0.6
 3826,006591,Frank,Ntilikina,PRS,Guard,6.3,10,False,1.0,,0.2
@@ -3445,7 +3445,7 @@ fantasy_id,person_id,first_name,last_name,team,position,price,matchday,is_injure
 4167,013284,Ish,Wainright,HTA,Forward,6.0,10,False,1.0,,1.2
 7238,005713,Rodions,Kurucs,BAS,Forward,6.0,10,True,0.0,,0.3
 7390,010726,Tobias,Jensen,MUN,Guard,6.0,10,False,1.0,,0.2
-8834,014220,Chris,Silva,ULK,Center,6.0,10,False,1.0,,0.6
+8834,014220,Chris,Silva,ULK,Center,6.0,10,False,1.0,,0.5
 11558,015142,Justin,Minaya,BAR,Forward,6.0,10,False,1.0,,0.1
 3952,002581,Mam,Jaiteh,DUB,Center,5.9,10,False,0.5,,0.1
 7328,013845,Kaodirichi,Akobundu-Ehiogu,ZAL,Center,5.8,10,False,1.0,,0.6
