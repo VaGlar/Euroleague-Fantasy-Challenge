@@ -358,6 +358,24 @@ round,source,stance,person_id,name,team,model_xpts
 10,EuroLeague Fantasy Tips (official),pick,003733,"ABALDE, ALBERTO",MAD,8.21
 10,EuroLeague Fantasy Tips (official),pick,012609,"MALCOLM, COLLIN",IST,14.09
 10,EuroLeague Fantasy Tips (official),pick,014134,"NORRIS, MILES",MUN,5.67
+11,EuroLeague Fantasy Tips (official),pick,014108,"DIARRA, ALIOU",VIR,14.12
+11,EuroLeague Fantasy Tips (official),pick,014009,"STEVENS, LAMAR",PAR,10.36
+11,EuroLeague Fantasy Tips (official),pick,005637,"TANASKOVIC, NIKOLA",PAR,11.91
+11,EuroLeague Fantasy Tips (official),pick,003469,"VEZENKOV, SASHA",OLY,22.25
+11,EuroLeague Fantasy Tips (official),pick,013363,"NWORA, JORDAN",RED,14.33
+11,EuroLeague Fantasy Tips (official),avoid,011219,"SORKIN, ROMAN",TEL,10.42
+11,EuroLeague Fantasy Tips (official),avoid,012201,"MONEKE, CHIMA",RED,13.09
+11,EuroLeague Fantasy Tips (official),avoid,013403,"WALKER IV, LONNIE",BES,11.78
+11,EuroLeague Fantasy Tips (official),pick,013385,"DIOP, OUSMANE",MIL,3.37
+11,EuroLeague Fantasy Tips (official),pick,013278,"WILEY, AUSTIN",MUN,9.21
+11,EuroLeague Fantasy Tips (official),pick,012640,"HIFI, NADIR",PRS,19.64
+11,EuroLeague Fantasy Tips (official),avoid,013402,"BLAKENEY, ANTONIO",HTA,11.08
+11,EuroLeague Fantasy Tips (official),avoid,007464,"PARRA, JOEL",BAR,6.3
+11,EuroLeague Fantasy Tips (official),avoid,009863,"BALDWIN IV, WADE",ULK,13.88
+11,EuroLeague Fantasy Tips (official),pick,003733,"ABALDE, ALBERTO",MAD,8.37
+11,EuroLeague Fantasy Tips (official),captain,012774,"NUNN, KENDRICK",PAN,19.08
+11,EuroLeague Fantasy Tips (official),avoid,008962,"HAYES-DAVIS, NIGEL",PAN,10.39
+11,EuroLeague Fantasy Tips (official),avoid,012080,"LUWAWU-CABARROT, TIMOTHE",MAD,6.69
 11,Basketball Sphere – Fantasy,pick,009846,"BRYANT, ELIJAH",HTA,21.2
 11,Basketball Sphere – Fantasy,pick,013369,"JONES, CARLIK",PAR,15.39
 11,Basketball Sphere – Fantasy,pick,009863,"BALDWIN IV, WADE",ULK,13.88
@@ -375,8 +393,3 @@ round,source,stance,person_id,name,team,model_xpts
 11,EuroLeague Fantasy Tips (official),pick,015396,"KOLOKO, CHRISTIAN",RED,9.75
 11,EuroLeague Fantasy Tips (official),pick,010390,"HAYES, KEVARRIUS",PAR,10.87
 11,EuroLeague Fantasy Tips (official),pick,012403,"FAYE, MOUHAMED",PRS,9.13
-11,EuroLeague Fantasy Tips (official),pick,011286,"BACON, DWAYNE",DUB,15.21
-11,EuroLeague Fantasy Tips (official),pick,014107,"JOKSIMOVIC, STEFAN",BAS,2.06
-11,EuroLeague Fantasy Tips (official),pick,003733,"ABALDE, ALBERTO",MAD,8.37
-11,EuroLeague Fantasy Tips (official),pick,012609,"MALCOLM, COLLIN",IST,13.67
-11,EuroLeague Fantasy Tips (official),pick,014134,"NORRIS, MILES",MUN,5.18

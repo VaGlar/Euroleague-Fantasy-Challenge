@@ -1,6 +1,15 @@
 {
  "articles": [
   {
+   "title": "EuroLeague Fantasy winners and losers, Round 10: Friday",
+   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/euroleague-fantasy-winners-and-losers-round-10-friday/",
+   "date": "2026-11-07T00:09:51.982000+00:00",
+   "source": "EuroLeague Fantasy Tips (official)",
+   "weight": 2,
+   "fantasy": true,
+   "report": false
+  },
+  {
    "title": "EuroLeague Fantasy winners and losers, Round 10: Thursday",
    "url": "https://www.euroleaguebasketball.net/en/euroleague/news/euroleague-fantasy-winners-and-losers-round-10-thursday/",
    "date": "2026-11-06T00:51:02.386000+00:00",
@@ -55,12 +64,21 @@
    "report": false
   },
   {
-   "title": "EuroLeague Fantasy winners and losers, Round 9: Friday",
-   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/fantasy-winners-and-losers-round-9-friday/",
-   "date": "2026-10-31T00:58:33.597000+00:00",
-   "source": "EuroLeague Fantasy Tips (official)",
-   "weight": 2,
-   "fantasy": true,
+   "title": "NBA’s global expansion finds perfect target at Mexico City",
+   "url": "https://www.eurohoops.net/en/nba-news/2031732/nikola-jokic-nba-mexico-city-game/",
+   "date": "2026-11-07T00:40:19+00:00",
+   "source": "Eurohoops",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Ολυμπιακός - Ερυθρός Αστέρας 57-62: Τα highlights του αγώνα",
+   "url": "https://www.gazzetta.gr/basketball/euroleague/2584358/olympiakos-erythros-asteras-57-62-ta-highlights-toy-agona",
+   "date": "2026-11-07T01:16:53+02:00",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false,
    "report": false
   },
   {
@@ -208,7 +226,7 @@
    "report": false
   },
   {
-   "title": "Κόντσαρ για το ντεμπούτο του: “Πρέπει να είμαι καλύτερος στην επίθεση, ήταν γραφτό να έρθω στον Ολυμπιακό”",
+   "title": "Κόντσαρ μετά το ντεμπούτο του: “Πρέπει να είμαι καλύτερος στην επίθεση, ήταν γραφτό να έρθω στον Ολυμπιακό”",
    "url": "https://www.eurohoops.net/el/euroleague-el-2/2031654/kontsar-gia-to-ntempouto-tou-prepi-na-ime-kaliteros-stin-epithesi-itan-grafto-na-ertho-ston-olimpiako/",
    "date": "2026-11-06T22:04:36+00:00",
    "source": "Eurohoops (GR)",
@@ -253,7 +271,7 @@
    "report": false
   },
   {
-   "title": "“Διπλός” Νουόρα με career high απέναντι στον Ολυμπιακό, όμως: “Η άμυνα έκανε τη διαφορά”",
+   "title": "“Διπλός” Νουόρα με career high απέναντι στον Ολυμπιακό, αλλά: “Η άμυνα έκανε τη διαφορά”",
    "url": "https://www.eurohoops.net/el/euroleague-el-2/2031590/nouora-i-amina-ekane-ti-diafora-sto-finale/",
    "date": "2026-11-06T21:50:44+00:00",
    "source": "Eurohoops (GR)",
@@ -622,7 +640,7 @@
    "report": false
   },
   {
-   "title": "EuroLeague roundup: Zvezda beats Olympiacos after a drama, wins for Zalgiris and Dubai",
+   "title": "EuroLeague roundup: Zvezda beats Olympiacos on the road, wins for Zalgiris, Partizan, and Dubai",
    "url": "https://www.eurohoops.net/en/euroleague/2031432/euroleague-roundup-zalgiris-dominates-besiktas-wins-fourth-in-a-row/",
    "date": "2026-11-06T19:04:47+00:00",
    "source": "Eurohoops",
@@ -707,15 +725,6 @@
    "url": "https://www.euroleaguebasketball.net/en/euroleague/news/milan-fires-coach-giuseppe-poeta/",
    "date": "2026-11-06T18:36:27.014000+00:00",
    "source": "EuroLeague (official)",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Eπική τούμπα για φίλη του Ολυμπιακού, όταν ο Άνγκιαλ «εκτέλεσε» τον Παναθηναϊκό",
-   "url": "https://www.gazzetta.gr/polo/a1-andron/2584306/epiki-toympa-gia-fili-toy-olympiakoy-otan-o-angkial-ektelese-ton",
-   "date": "2026-11-06T20:29:50+02:00",
-   "source": "Gazzetta",
    "weight": 1,
    "fantasy": false,
    "report": false
@@ -991,15 +1000,6 @@
    "report": false
   },
   {
-   "title": "Navarro leaves Motley in Belgrade, Koloko ready for game vs Olympiacos",
-   "url": "https://www.eurohoops.net/en/euroleague/2031071/navarro-leaves-motley-in-belgrade-koloko-in-the-team-for-olympiacos/",
-   "date": "2026-11-05T15:45:31+00:00",
-   "source": "Eurohoops",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
    "title": "Greens ‘get wheels going’ with statement win at Real Madrid",
    "url": "https://www.euroleaguebasketball.net/en/euroleague/news/greens-panathinaikos-wheels-going-statement-win-real-madrid-kendrick-nunn-33-points/",
    "date": "2026-11-05T08:55:35.153000+00:00",
@@ -1076,143 +1076,221 @@
   "availability": [],
   "expert": [
    {
-    "player": "BRYANT, ELIJAH",
+    "player": "DIARRA, ALIOU",
     "stance": "pick",
-    "note": "Ευνοϊκό πρόγραμμα και δυνατότητα συνεισφοράς σε πολλές στατιστικές κατηγορίες.",
-    "source": "Basketball Sphere – Fantasy"
+    "note": "Εξαιρετική φόρμα και κορυφαία απόδοση.",
+    "source": "EuroLeague Fantasy Tips (official)"
    },
    {
-    "player": "JONES, CARLIK",
+    "player": "STEVENS, LAMAR",
     "stance": "pick",
-    "note": "Τέσσερα σερί εντός έδρας παιχνίδια στο Βελιγράδι και ευνοϊκότερο πρόγραμμα.",
-    "source": "Basketball Sphere – Fantasy"
+    "note": "Value επιλογή με εξαιρετική συνεισφορά.",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "TANASKOVIC, NIKOLA",
+    "stance": "pick",
+    "note": "Χαμηλή τιμή και αυξημένος χρόνος συμμετοχής.",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "VEZENKOV, SASHA",
+    "stance": "pick",
+    "note": "Σταθερά υψηλή απόδοση παρά το δύσκολο παιχνίδι.",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "NWORA, JORDAN",
+    "stance": "pick",
+    "note": "Καλός αγώνας σε χαμηλού σκορ παιχνίδι.",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "SORKIN, ROMAN",
+    "stance": "avoid",
+    "note": "Ασταθής και χαμηλή παραγωγικότητα.",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "MONEKE, CHIMA",
+    "stance": "avoid",
+    "note": "Απογοητευτική εμφάνιση σε χαμηλού σκορ αγώνα.",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "WALKER IV, LONNIE",
+    "stance": "avoid",
+    "note": "Υψηλή τιμή αλλά χαμηλή απόδοση.",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "DIOP, OUSMANE",
+    "stance": "pick",
+    "note": "Εξαιρετική αξία και προσωπικό ρεκόρ.",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "WILEY, AUSTIN",
+    "stance": "pick",
+    "note": "Εκπληκτική εμφάνιση και τεράστια άνοδος.",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "HIFI, NADIR",
+    "stance": "pick",
+    "note": "Κορυφαία εμφάνιση με πόντους και ασίστ.",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "BLAKENEY, ANTONIO",
+    "stance": "avoid",
+    "note": "Αρνητικό σκορ και μεγάλη πτώση τιμής.",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "PARRA, JOEL",
+    "stance": "avoid",
+    "note": "Απογοητευτική βραδιά με αποβολή.",
+    "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "BALDWIN IV, WADE",
-    "stance": "pick",
-    "note": "Αναμένεται να βελτιώσει την απόδοσή του λόγω ευνοϊκού προγράμματος.",
-    "source": "Basketball Sphere – Fantasy"
-   },
-   {
-    "player": "PAYNE, CAMERON",
-    "stance": "pick",
-    "note": "Ηγέτης μετά την απουσία του Mike James, ιδανικός αντίπαλος η Paris Basketball.",
-    "source": "Basketball Sphere – Fantasy"
-   },
-   {
-    "player": "FELIZ, ANDRES",
-    "stance": "captain",
-    "note": "Αυξημένος ρόλος λόγω απουσιών και ιδανική επιλογή για αρχηγός στην πρώτη μέρα.",
-    "source": "Basketball Sphere – Fantasy"
-   },
-   {
-    "player": "SAINT-SUPERY, MARIO",
-    "stance": "pick",
-    "note": "Εξαιρετική φθηνή επιλογή για κέρδος credits με χαμηλό ρίσκο.",
-    "source": "Basketball Sphere – Fantasy"
-   },
-   {
-    "player": "SARIC, DARIO",
-    "stance": "pick",
-    "note": "Κεντρικός πυλώνας της ομάδας μετά τον τραυματισμό του Mike James, εξαιρετικός στα ριμπάουντ.",
-    "source": "Basketball Sphere – Fantasy"
-   },
-   {
-    "player": "SHIELDS, SHAVON",
-    "stance": "pick",
-    "note": "Σταθερός και αποδοτικός με πολύ καλό πρόγραμμα για τη Φενέρμπαχτσε.",
-    "source": "Basketball Sphere – Fantasy"
-   },
-   {
-    "player": "TAYLOR, KAMERON",
-    "stance": "pick",
-    "note": "Αναμένεται μεγαλύτερος ρόλος λόγω απουσιών, απέναντι σε αδύναμες άμυνες.",
-    "source": "Basketball Sphere – Fantasy"
-   },
-   {
-    "player": "WARD, TYSON",
-    "stance": "pick",
-    "note": "Συνεχείς καλές εμφανίσεις και αυξημένος χρόνος συμμετοχής στις θέσεις των γκαρντ.",
-    "source": "Basketball Sphere – Fantasy"
-   },
-   {
-    "player": "KEY, BRAXTON",
-    "stance": "pick",
-    "note": "Πτώση τιμής που προσφέρει ευκαιρία αγοράς με έκπτωση.",
-    "source": "Basketball Sphere – Fantasy"
-   },
-   {
-    "player": "PAPANIKOLAOU, KOSTAS",
-    "stance": "pick",
-    "note": "Ασυναγώνιστη τιμή για γκαρντ/φόργουορντ με περίπου 25 λεπτά συμμετοχής.",
-    "source": "Basketball Sphere – Fantasy"
-   },
-   {
-    "player": "VALANCIUNAS, JONAS",
-    "stance": "pick",
-    "note": "Από τους πιο σταθερούς και κυριαρχικούς σέντερ της διοργάνωσης.",
-    "source": "Basketball Sphere – Fantasy"
-   },
-   {
-    "player": "WRIGHT, MOSES",
-    "stance": "pick",
-    "note": "Ευνοϊκό εντός έδρας παιχνίδι απέναντι στη Valencia Basket.",
-    "source": "EuroLeague Fantasy Tips (official)"
-   },
-   {
-    "player": "KOLOKO, CHRISTIAN",
-    "stance": "pick",
-    "note": "Εξαιρετική εμφάνιση και τεράστια αξία σε χαμηλή τιμή.",
-    "source": "EuroLeague Fantasy Tips (official)"
-   },
-   {
-    "player": "HAYES, KEVARRIUS",
-    "stance": "pick",
-    "note": "Βασική επιλογή στη θέση του σέντερ μετά τον τραυματισμό του Tonye Jekiri.",
-    "source": "EuroLeague Fantasy Tips (official)"
-   },
-   {
-    "player": "FAYE, MOUHAMED",
-    "stance": "pick",
-    "note": "Σταθερή απόδοση και χαμηλή τιμή ενόψει της αναμέτρησης με την Anadolu Efes Istanbul.",
-    "source": "EuroLeague Fantasy Tips (official)"
-   },
-   {
-    "player": "BACON, DWAYNE",
-    "stance": "pick",
-    "note": "Εξαιρετική φόρμα και σταθερότητα στις επιθετικές επιλογές.",
-    "source": "EuroLeague Fantasy Tips (official)"
-   },
-   {
-    "player": "JOKSIMOVIC, STEFAN",
-    "stance": "pick",
-    "note": "Πολύ φθηνή επιλογή με εξαιρετικές εμφανίσεις στο ισπανικό πρωτάθλημα.",
+    "stance": "avoid",
+    "note": "Χαμηλή απόδοση σε σχέση με την τιμή του.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "ABALDE, ALBERTO",
     "stance": "pick",
-    "note": "Εξαιρετική value for money επιλογή λόγω των πολλών απουσιών στην περιφέρεια της Real Madrid.",
+    "note": "Φανταστική εμφάνιση με εξαιρετική τιμή.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
-    "player": "MALCOLM, COLLIN",
-    "stance": "pick",
-    "note": "Συνεπής και οικονομικός, παίζει πάνω από 30 λεπτά.",
+    "player": "NUNN, KENDRICK",
+    "stance": "captain",
+    "note": "Ρεκόρ πόντων στην τέταρτη περίοδο και ιδανικός για αρχηγός.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
-    "player": "NORRIS, MILES",
+    "player": "HAYES-DAVIS, NIGEL",
+    "stance": "avoid",
+    "note": "Χωρίς πόντους και αρνητική επίδραση στην τιμή.",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "LUWAWU-CABARROT, TIMOTHE",
+    "stance": "avoid",
+    "note": "Συνεχόμενες αρνητικές εμφανίσεις.",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "BRYANT, ELIJAH",
     "stance": "pick",
-    "note": "Δυνατή εμφάνιση στη διαπίδυση και ευκαιρία απέναντι στην LDLC ASVEL Villeurbanne.",
+    "note": "Ευνοϊκό πρόγραμμα και εξαιρετική επιλογή για μακροπρόθεσμη επένδυση.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "JONES, CARLIK",
+    "stance": "pick",
+    "note": "Ευνοϊκό πρόγραμμα εντός έδρας για την Partizan.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "BALDWIN IV, WADE",
+    "stance": "pick",
+    "note": "Καλή επιλογή λόγω εύκολου προγράμματος της Fenerbahce.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "PAYNE, CAMERON",
+    "stance": "pick",
+    "note": "Αναβαθμισμένος ρόλος και γρήγορος ρυθμός αγώνα.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "FELIZ, ANDRES",
+    "stance": "captain",
+    "note": "Ιδανικός για αρχηγός λόγω πρώτης ημέρας αγώνα και απουσιών.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "SAINT-SUPERY, MARIO",
+    "stance": "pick",
+    "note": "Εξαιρετική επιλογή χαμηλού προϋπολογισμού για κέρδος.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "SARIC, DARIO",
+    "stance": "pick",
+    "note": "Ηγετικός ρόλος και πολλά ριμπάουντ.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "SHIELDS, SHAVON",
+    "stance": "pick",
+    "note": "Σταθερές εμφανίσεις και ευνοϊκό πρόγραμμα.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "TAYLOR, KAMERON",
+    "stance": "pick",
+    "note": "Αυξημένος ρόλος λόγω απουσιών.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "WARD, TYSON",
+    "stance": "pick",
+    "note": "Συνεχείς καλές εμφανίσεις με γεμάτη στατιστική.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "KEY, BRAXTON",
+    "stance": "pick",
+    "note": "Ευκαιρία απόκτησης σε χαμηλότερη τιμή.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "PAPANIKOLAOU, KOSTAS",
+    "stance": "pick",
+    "note": "Ασυναγώνιστη αξία για τον χρόνο συμμετοχής του.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "VALANCIUNAS, JONAS",
+    "stance": "pick",
+    "note": "Από τους πιο σταθερούς και αξιόπιστους σέντερ.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "WRIGHT, MOSES",
+    "stance": "pick",
+    "note": "Ευνοϊκός αγώνας απέναντι στη Valencia Basket.",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "KOLOKO, CHRISTIAN",
+    "stance": "pick",
+    "note": "Εξαιρετική τιμή και αμυνδική κυριαρχία.",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "HAYES, KEVARRIUS",
+    "stance": "pick",
+    "note": "Αυξημένος χρόνος και σταθερότητα μετά τον τραυματισμό του Jekiri.",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "FAYE, MOUHAMED",
+    "stance": "pick",
+    "note": "Σταθερή απόδοση και αυξανόμενη δημοτικότητα.",
     "source": "EuroLeague Fantasy Tips (official)"
    }
   ],
   "round": 10,
-  "summary_el": "- Η 10η αγωνιστική της EuroLeague σημαδεύτηκε από ιστορικό ρεκόρ με οχτώ εκτός έδρας νίκες.\n- Ο Nadir Hifi πραγματοποίησε εκπληκτική εμφάνιση με 28 πόντους και αναδείχθηκε MVP της αγωνιστικής για την Paris Basketball.\n- Ο Crvena Zvezda επικράτησε εκτός έδρας του Olympiacos με 62-57, χάρη στην εξαιρετική αμυντική του λειτουργία και τις εμφανίσεις των Jordan Nwora και Christian Koloko.\n- Ο Panathinaikos AKTOR παραμένει μόνος στην κορυφή της βαθμολογίας μετά τα αποτελέσματα της εβδομάδας.\n- Στο φανταστικό παιχνίδι, παίκτες όπως ο Alberto Abalde, ο Austin Wiley και ο Ousmane Diop πρόσφεραν τεράστια κέρδη στους managers.\n- Αντίθετα, οι Antonio Blakeney, Joel Parra και Wade Baldwin απογοήτευσαν με τις χαμηλές τους επιδόσεις.",
+  "summary_el": "- Η 10η αγωνιστική σημαδεύτηκε από ιστορικό ρεκόρ με οκτώ εκτός έδρας νίκες.\n- Ο Crvena Zvezda υπέταξε τον Olympiacos εκτός έδρας με εξαιρετική αμυντική λειτουργία.\n- Ο Nadir Hifi ξεχώρισε οδηγώντας την Paris Basketball σε σπουδαίο διπλό επί της Anadolu Efes.\n- Η Dubai Basketball πέρασε άνετα από την έδρα της Virtus Bologna.\n- Η Partizan επικράτησε εύκολα της Maccabi Tel Aviv στο Βελιγράδι.\n- Οι κορυφαίοι παίκτες της αγωνιστικής πρόσφεραν σημαντικές λύσεις στους managers του EuroLeague Fantasy Challenge.",
   "_model": "gemini-3.5-flash-lite",
-  "_seconds": 5.3
+  "_seconds": 5.9
  },
- "digest_at": "2026-11-06T23:07:05.792651+00:00",
+ "digest_at": "2026-11-07T05:07:28.101294+00:00",
  "failed": []
 }

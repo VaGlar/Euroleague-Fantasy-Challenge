@@ -1512,7 +1512,7 @@
      "team": "OLY",
      "role": "5άδα",
      "captain": false,
-     "x_now": 22.2
+     "x_now": 23.4
     },
     {
      "id": 11549,
@@ -1524,6 +1524,17 @@
      "role": "5άδα",
      "captain": false,
      "x_now": 20.5
+    },
+    {
+     "id": 7424,
+     "price": 10.0,
+     "position": "Center",
+     "person_id": "014108",
+     "name": "DIARRA, ALIOU",
+     "team": "VIR",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 14.8
     },
     {
      "id": 4255,
@@ -1546,17 +1557,6 @@
      "role": "πάγκος",
      "captain": false,
      "x_now": 14.3
-    },
-    {
-     "id": 7424,
-     "price": 10.0,
-     "position": "Center",
-     "person_id": "014108",
-     "name": "DIARRA, ALIOU",
-     "team": "VIR",
-     "role": "πάγκος",
-     "captain": false,
-     "x_now": 14.1
     },
     {
      "id": 11519,
@@ -1625,8 +1625,8 @@
      "x_now": 3.8
     }
    ],
-   "x_total": 123.0,
-   "decided_at": "2026-11-06T23:07+00:00"
+   "x_total": 124.4,
+   "decided_at": "2026-11-07T05:07+00:00"
   }
  ],
  "seed_id": "5a453a755a9b",
@@ -1637,5 +1637,5 @@
   "raw": 1105.4,
   "avg_raw": 946.6
  },
- "generated": "2026-11-06T23:07:07.580739+00:00"
+ "generated": "2026-11-07T05:07:30.112427+00:00"
 }
