@@ -1496,27 +1496,29 @@
    },
    "pts": 183.5,
    "raw": 158.7,
-   "avg_raw": 120.2
+   "avg_raw": 120.2,
+   "rank": 51686,
+   "teams": 442177
   },
   {
    "round": 11,
    "trades": 3,
-   "bank": 0.3,
+   "bank": 0.1,
    "squad": [
     {
      "id": 3766,
-     "price": 18.6,
+     "price": 18.9,
      "position": "Forward",
      "person_id": "003469",
      "name": "VEZENKOV, SASHA",
      "team": "OLY",
      "role": "5άδα",
      "captain": false,
-     "x_now": 23.4
+     "x_now": 22.2
     },
     {
      "id": 11549,
-     "price": 16.6,
+     "price": 16.9,
      "position": "Center",
      "person_id": "000898",
      "name": "VALANCIUNAS, JONAS",
@@ -1527,7 +1529,7 @@
     },
     {
      "id": 7424,
-     "price": 10.0,
+     "price": 10.8,
      "position": "Center",
      "person_id": "014108",
      "name": "DIARRA, ALIOU",
@@ -1538,7 +1540,7 @@
     },
     {
      "id": 4255,
-     "price": 7.7,
+     "price": 8.0,
      "position": "Head Coach",
      "person_id": "009154",
      "name": "ALBERT, XAVIER",
@@ -1549,18 +1551,18 @@
     },
     {
      "id": 8815,
-     "price": 9.5,
+     "price": 10.2,
      "position": "Guard",
      "person_id": "014213",
      "name": "PAYNE, CAMERON",
      "team": "IST",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 14.3
+     "x_now": 13.7
     },
     {
      "id": 11519,
-     "price": 9.8,
+     "price": 9.9,
      "position": "Guard",
      "person_id": "015164",
      "name": "BESSON, HUGO",
@@ -1571,29 +1573,18 @@
     },
     {
      "id": 3851,
-     "price": 8.5,
+     "price": 9.3,
      "position": "Guard",
      "person_id": "011247",
      "name": "FELIZ, ANDRES",
      "team": "MAD",
      "role": "5άδα",
      "captain": false,
-     "x_now": 13.0
-    },
-    {
-     "id": 3991,
-     "price": 5.4,
-     "position": "Forward",
-     "person_id": "003733",
-     "name": "ABALDE, ALBERTO",
-     "team": "MAD",
-     "role": "5άδα",
-     "captain": false,
-     "x_now": 8.8
+     "x_now": 12.1
     },
     {
      "id": 3975,
-     "price": 6.0,
+     "price": 5.9,
      "position": "Guard",
      "person_id": "012611",
      "name": "HERRERA, SEBASTIAN",
@@ -1604,7 +1595,7 @@
     },
     {
      "id": 4005,
-     "price": 4.2,
+     "price": 4.1,
      "position": "Forward",
      "person_id": "000229",
      "name": "JACKSON, EDWIN",
@@ -1614,19 +1605,30 @@
      "x_now": 5.5
     },
     {
+     "id": 3983,
+     "price": 4.7,
+     "position": "Forward",
+     "person_id": "007960",
+     "name": "DAVIDOVAC, DEJAN",
+     "team": "RED",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 4.6
+    },
+    {
      "id": 3867,
-     "price": 4.4,
+     "price": 4.2,
      "position": "Forward",
      "person_id": "001255",
      "name": "PAPANIKOLAOU, KOSTAS",
      "team": "OLY",
      "role": "6ος",
      "captain": false,
-     "x_now": 3.8
+     "x_now": 3.6
     }
    ],
-   "x_total": 124.4,
-   "decided_at": "2026-11-07T05:07+00:00"
+   "x_total": 117.7,
+   "decided_at": "2026-11-08T05:07+00:00"
   }
  ],
  "seed_id": "5a453a755a9b",
@@ -1637,5 +1639,5 @@
   "raw": 1105.4,
   "avg_raw": 946.6
  },
- "generated": "2026-11-07T05:07:30.112427+00:00"
+ "generated": "2026-11-08T05:07:40.858830+00:00"
 }
