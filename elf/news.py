@@ -276,7 +276,7 @@ ARTICLES:
 """
 
 
-REQUEST_TIMEOUT_S = 90    # one model's answer; a slow one gives way to the next
+REQUEST_TIMEOUT_S = 120   # one model's answer (flash took 77-82 s in Oct-Nov); a slower one gives way to the next
 DIGEST_BUDGET_S = 360     # no new model is asked after this (the update must not hang on Gemini)
 
 
