@@ -477,6 +477,8 @@ html body .pill .ic { vertical-align: -0.12em; }
 .tag.t-pick, .tag.t-up { background: var(--good); } .tag.t-down, .tag.t-out { background: var(--critical); }
 .tag.t-new { background: #2f6fd0; } .tag.t-back { background: #5b6472; } .tag.t-q { background: #e2a516; color: #1a1400; }
 .tag[data-info] { cursor: help; }
+.legend { display: grid; grid-template-columns: max-content 1fr; gap: 8px 12px; margin: 8px 0 0; align-items: baseline; }
+.legend dd { margin: 0; font-size: 14px; }
 .tag.t-pick { background: var(--good); } .tag.t-avoid { background: var(--critical); } .tag.t-cap { background: var(--accent); }
 html body h1 { font-family: var(--num-font); font-weight: 800; letter-spacing: .01em; text-transform: uppercase; }
 html body header { border-bottom: 3px solid var(--accent); }
@@ -705,6 +707,8 @@ html body #mCp .ic { width: 1.25em; height: 1.25em; }
         Οι προβλέψεις είναι εκτιμήσεις, όχι εγγυήσεις.</p>
       <p class="muted">Δεδομένα: αγώνες και στατιστικά από την EuroLeague· τιμές, POP και παίκτες από το παιχνίδι· από τα άρθρα
         μόνο ο τίτλος και ο σύνδεσμος στην πηγή. Η «Σύνοψη (AI)» γράφεται αυτόματα και μπορεί να έχει λάθη.</p></div>
+    <div class="card"><h2>Τα σημάδια</h2><p class="muted">Πάτα ένα σημάδι δίπλα σε παίκτη για να δεις τι σημαίνει.</p>
+      <dl class="legend" id="legend"></dl></div>
     <div class="card"><h2>Απόρρητο</h2>
       <ul class="about">
         <li><b>Χωρίς λογαριασμούς, χωρίς διαφημίσεις, χωρίς cookies παρακολούθησης.</b></li>
@@ -797,23 +801,23 @@ const gameOf = (r) => (r.actual != null && r.next_opp
   : r.opp ? `${r.home ? "vs" : "@"} ${esc(tc(r.opp))}` : "");
 // availability as a tag, as PICK / AVOID: OUT (red: out, or not on the EuroLeague roster), 50% (amber: doubtful)
 const inj = (r) => r.unregistered
-  ? ' <span class="tag t-out" title="στη λίστα του fantasy, αλλά όχι δηλωμένος στο ρόστερ της EuroLeague: δεν μπορεί να αγωνιστεί">OUT</span>'
+  ? ' <span class="tag t-out" data-info="roster" title="στη λίστα του fantasy, αλλά όχι δηλωμένος στο ρόστερ της EuroLeague: δεν μπορεί να αγωνιστεί">OUT</span>'
   : (r.avail_game != null && r.avail_game < 1
-  ? (r.avail_game === 0 ? ' <span class="tag t-out" title="εκτός αγώνα">OUT</span>'
-    : ` <span class="tag t-q" title="αμφίβολος">${Math.round(r.avail_game * 100)}%</span>`) : "");
+  ? (r.avail_game === 0 ? ' <span class="tag t-out" data-info="avail" title="εκτός αγώνα">OUT</span>'
+    : ` <span class="tag t-q" data-info="avail" title="αμφίβολος">${Math.round(r.avail_game * 100)}%</span>`) : "");
 // new to the EuroLeague (no last season) with few games: the prediction rests on 1-4 games (R&D 015)
 const fewGames = (r) => r.position !== "Head Coach" && r.prev_pir == null && r.games >= 1 && r.games <= 4;
 // info = false inside pick lists: the whole row picks the player, the mark is only a mark
 // NEW (blue: new to the EuroLeague, the prediction rests on 1–4 games) · BACK (back after missed games)
-const newb = (r, info = true) => (r.no_data && !r.prior ? ' <span class="tag t-new" title="νέος, χωρίς ματς ακόμα">NEW</span>'
+const newb = (r, info = true) => (r.no_data && !r.prior ? ` <span class="tag t-new"${info ? ' data-info="new0"' : ""} title="νέος, χωρίς ματς ακόμα">NEW</span>`
   : fewGames(r) ? ` <span class="tag t-new few"${info ? ' data-info="few"' : ""} title="νέος · ${r.games} ματς">NEW</span>`
   : r.returning ? ` <span class="tag t-back few"${info ? ' data-info="back"' : ""} title="επιστρέφει μετά από απουσίες">BACK</span>` : "");
 // the fantasy columns' word on a player, as tags (not arrows: those are the price's): PICK n · CAP · AVOID n
-const xtag = (kind, n = 1, title = "") => `<span class="tag t-${kind}"${title ? ` title="${title}"` : ""}>${kind.toUpperCase()}${n > 1 ? " " + n : ""}</span>`;
+const xtag = (kind, n = 1, title = "") => `<span class="tag t-${kind}" data-info="${kind}"${title ? ` title="${title}"` : ""}>${kind.toUpperCase()}${n > 1 ? " " + n : ""}</span>`;
 const exb = (r) => (r.expert_pick > 0 ? " " + xtag("pick", r.expert_pick, "στήλες fantasy που τον προτείνουν") : "")
   + (r.expert_cap ? " " + xtag("cap", 1, "στήλη που τον προτείνει για Captain") : "")
   + (r.expert_avoid > 0 ? " " + xtag("avoid", r.expert_avoid, "στήλες που προτείνουν να τον αποφύγεις") : "")
-  + (r.prior === "τιμή" ? ` <span class="tag t-back" title="χωρίς ιστορικό: εκτίμηση από το price">≈PRICE</span>` : "");
+  + (r.prior === "τιμή" ? ` <span class="tag t-back" data-info="est" title="χωρίς ιστορικό: εκτίμηση από το price">≈PRICE</span>` : "");
 const dol = (r) => (r.price_trend === "up"
   ? ` <span class="tag t-up" data-info="dollar" title="πιθανή άνοδος price μετά το Round${r.price_delta != null ? ` (~+${r.price_delta.toFixed(1)} cr)` : ""}">$▲</span>`
   : r.price_trend === "down" ? ` <span class="tag t-down" data-info="dollar" title="πιθανή πτώση price">$▼</span>` : "");
@@ -897,6 +901,12 @@ const INFO = {
   ptot: "Σύνολο: τα fantasy points του φέτος μέχρι τώρα (PIR, +10% στη νίκη· coach από τη διαφορά σκορ).",
   value: "Value: xFPT3 ανά credit, πόσα points δίνει κάθε credit του price του.",
   dollar: "$▲: πιθανή άνοδος price μετά το Round. $▼: πιθανή πτώση.",
+  pick: "PICK: τον προτείνουν στήλες fantasy αυτό το Round (ο αριθμός: πόσες στήλες).",
+  cap: "CAP: στήλη fantasy τον προτείνει για Captain αυτό το Round.",
+  avoid: "AVOID: στήλες fantasy προτείνουν να τον αποφύγεις αυτό το Round (ο αριθμός: πόσες στήλες).",
+  est: "≈PRICE: δεν έχει ματς ακόμα, ούτε φέτος ούτε πέρσι στη EuroLeague· η πρόβλεψη βγαίνει από το price του.",
+  roster: "OUT (ρόστερ): είναι στη λίστα του fantasy, αλλά η ομάδα του δεν τον έχει δηλώσει στη EuroLeague, οπότε δεν μπορεί να αγωνιστεί.",
+  new0: "NEW: νέος στη EuroLeague, χωρίς ματς ακόμα.",
   turn: "T1 / T2 / T3: σε ποιο Turn παίζει η ομάδα του. Ανάμεσα στα Turns κάνεις subs στο Starting five με όσους δεν έχουν παίξει.",
   matchup: "Ματσάρισμα: πόσο περισσότερο (▲) ή λιγότερο (▼) PIR δίνει ο αντίπαλος στη θέση του, σε σχέση με τον μέσο όρο της λίγκας.",
   avail: "Διαθεσιμότητα από το παιχνίδι και τα νέα: εκτός, ή η πιθανότητα να παίξει. Ανανεώνεται και 3 ώρες πριν τον πρώτο αγώνα.",
@@ -925,6 +935,14 @@ const INFO = {
   deftot: "Σύνολο: πόσο περισσότερο ή λιγότερο PIR από τον μέσο όρο δίνει η ομάδα σε όλους μαζί τους αντιπάλους της. Δεν μπαίνει στο μοντέλο: εκεί μετράει η θέση του παίκτη, και το σύνολο δεν προσθέτει κάτι (R&D 024).",
   pir: "PIR: η αξιολόγηση της EuroLeague (πόντοι, ριμπάουντ, ασίστ, κλεψίματα, κοψίματα, κερδισμένα φάουλ, μείον άστοχα, λάθη και φάουλ).",
 };
+// «Σχετικά»: every mark with the same text its tap shows
+const LEGEND = [[[["t-pick", "PICK"]], "pick"], [[["t-cap", "CAP"]], "cap"], [[["t-avoid", "AVOID"]], "avoid"],
+  [[["t-up", "$▲"], ["t-down", "$▼"]], "dollar"], [[["t-out", "OUT"], ["t-q", "50%"]], "avail"], [[["t-out", "OUT"]], "roster"],
+  [[["t-new", "NEW"]], "few"], [[["t-back", "BACK"]], "back"], [[["t-back", "≈PRICE"]], "est"]];
+function renderLegend() {
+  const el = document.getElementById("legend");
+  if (el) el.innerHTML = LEGEND.map(([tags, k]) => `<dt>${tags.map(([c, t]) => `<span class="tag ${c}">${esc(t)}</span>`).join(" ")}</dt><dd>${esc(INFO[k])}</dd>`).join("");
+}
 const pop = (r) => (r.popularity == null ? "" : `${f1(r.popularity)} %`);
 const ii = (k) => `<button type="button" class="ii" data-info="${k}" aria-label="Τι σημαίνει">ⓘ</button>`;
 // early in a season the top predictions run high (research/023): an ⓘ next to a team's xFPT until round 8
@@ -2195,6 +2213,7 @@ function moveBar() {
   $("#news").querySelectorAll("[data-pid]").forEach((el) => el.onclick = () => openPlayer(el.dataset.pid));
 
   renderModel(mp, trk, ap);
+  renderLegend();
 })();
 </script>
 <script src="opt.js"></script>
