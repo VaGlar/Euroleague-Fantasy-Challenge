@@ -1,6 +1,15 @@
 {
  "articles": [
   {
+   "title": "EuroLeague Fantasy Round 11: Who to hold, buy or sell",
+   "url": "https://basketballsphere.com/en/euroleague-fantasy-26-27-who-to-hold-buy-or-sell/",
+   "date": "2026-11-08T08:56:07+00:00",
+   "source": "Basketball Sphere – Fantasy",
+   "weight": 2,
+   "fantasy": true,
+   "report": false
+  },
+  {
    "title": "EuroLeague Fantasy winners and losers, Round 10: Friday",
    "url": "https://www.euroleaguebasketball.net/en/euroleague/news/euroleague-fantasy-winners-and-losers-round-10-friday/",
    "date": "2026-11-07T00:09:51.982000+00:00",
@@ -23,6 +32,15 @@
    "url": "https://www.euroleaguebasketball.net/en/euroleague/news/euroleague-fantasy-winners-and-losers-round-10-wednesday/",
    "date": "2026-11-04T23:56:39.185000+00:00",
    "source": "EuroLeague Fantasy Tips (official)",
+   "weight": 2,
+   "fantasy": true,
+   "report": false
+  },
+  {
+   "title": "EuroLeague Fantasy Round 10 Tips: Best Player Picks & Head Coaches",
+   "url": "https://basketballsphere.com/en/euroleague-fantasy-26-27-round-10-best-picks/",
+   "date": "2026-11-03T08:56:56+00:00",
+   "source": "Basketball Sphere – Fantasy",
    "weight": 2,
    "fantasy": true,
    "report": false
@@ -55,244 +73,811 @@
    "report": false
   },
   {
-   "title": "Παρί Σεν Ζερμέν – Τρουά 1-0: Δύσκολη νίκη με Ζάμπαρνι",
-   "url": "https://www.novasports.gr/sport/podosfairo/event/ligue-1/article/15219181/pari-sen-zermen-troua-1-0-dyskoli-niki-me-zamparni/",
-   "date": "2026-11-07T22:19:25+00:00",
+   "title": "Ολυμπιακός: Η πρώτη εικόνα για τον Έσε",
+   "url": "https://www.gazzetta.gr/football/superleague/2584956/olympiakos-i-proti-eikona-gia-ton-ese",
+   "date": "2026-11-09T03:54:47+02:00",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Ολυμπιακός: Η πρώτη εκτίμηση για Έσε",
+   "url": "https://www.novasports.gr/sport/podosfairo/event/super-league-1/article/15221806/olympiakos-i-proti-ektimisi-gia-ese/",
+   "date": "2026-11-08T22:51:17+00:00",
    "source": "Novasports",
    "weight": 1,
    "fantasy": false,
    "report": false
   },
   {
-   "title": "Βαλένθια – Ρεάλ Μαδρίτης 0-3: «Τρένο» και στη LaLiga",
-   "url": "https://www.novasports.gr/sport/podosfairo/event/laliga-division/article/15219131/valenthia-real-madritis-0-3-treno-kai-sti-laliga/",
-   "date": "2026-11-07T22:06:50+00:00",
+   "title": "Αλγουαθίλ: «Είχαμε τις περισσότερες ευκαιρίες – Χαρίσαμε ένα εύκολο γκολ στον αντίπαλο»",
+   "url": "https://www.novasports.gr/sport/podosfairo/event/super-league-1/article/15221722/algouathil-eixame-tis-perissoteres-eykairies-xarisame-ena-eykolo-gkol-ston-antipalo/",
+   "date": "2026-11-08T22:45:12+00:00",
    "source": "Novasports",
    "weight": 1,
    "fantasy": false,
    "report": false
   },
   {
-   "title": "Βαλένθια - Ρεάλ Μαδρίτης 0-3: Μπαλάρα στο «Μεστάγια» και κορυφή στη La Liga!",
-   "url": "https://www.gazzetta.gr/football/la-liga/2584633/balenthia-real-madritis-0-3-mpalara-sto-mestagia-kai-koryfi-sti-la-liga",
-   "date": "2026-11-07T23:58:40+02:00",
-   "source": "Gazzetta",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Ligue 1: Μόνη πρώτη η Παρί Σεν Ζερμέν στην κορυφή - Νίκη για την Παρί με 1-0 την Οσέρ",
-   "url": "https://www.gazzetta.gr/football/ligue-1/2584632/ligue-1-moni-proti-i-pari-sen-zermen-stin-koryfi-niki-gia-tin-pari-me-1-0",
-   "date": "2026-11-07T23:57:28+02:00",
-   "source": "Gazzetta",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Βιλερμπάν - Ορτέζ 106-97: Επιστροφή στις νίκες για την ομάδα του Πάρκερ",
-   "url": "https://www.gazzetta.gr/basketball/mpasket-gallia/2584628/bilermpan-ortez-106-97-epistrofi-stis-nikes-gia-tin-omada-toy",
-   "date": "2026-11-07T23:32:55+02:00",
-   "source": "Gazzetta",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Γουόκερ: «Θέλουμε να δείξουμε τις δυνατότητες μας κόντρα στον πρωταθλητή Ευρώπης»",
-   "url": "https://www.novasports.gr/sport/mpasket/event/basket-league/article/15218981/gouoker-theloume-na-deiksoume-tis-dynatotites-mas-kontra-ston-protathliti-eyropis/",
-   "date": "2026-11-07T21:32:00+00:00",
+   "title": "Κουτσιαύτης: «Αλλοίωση αποτελέσματος, δύο… κόκκινες στον Αντίνο και πέναλτι σε Ηρακλή, Λεβαδειακό» – Βαρούχας: «Πέναλτι στην ΑΕΚ, όχι στον Λεβαδειακό»",
+   "url": "https://www.novasports.gr/sport/podosfairo/event/super-league-1/article/15221464/koutsiaytis-alloiosi-apotelesmatos-dyo-kokkines-ston-antino-kai-penalti-se-irakli-levadeiako-varouxas-penalti-stin-aek-oxi-ston-levadeiako/",
+   "date": "2026-11-08T22:41:38+00:00",
    "source": "Novasports",
    "weight": 1,
    "fantasy": false,
    "report": false
   },
   {
-   "title": "Χάποελ Τελ Αβίβ: Κοντά στο να αποκτήσει μόνιμη άδεια στη EuroLeague ως franchise, σύμφωνα με τους Ισραηλινούς",
-   "url": "https://www.gazzetta.gr/basketball/euroleague/2584627/hapoel-tel-abib-konta-sto-na-apoktisei-monimi-adeia-franchise-symfona",
-   "date": "2026-11-07T23:20:24+02:00",
+   "title": "Ηρακλής - Παναθηναϊκός 1-2: Ο Κουτσιαύτης για τις επίμαχες φάσεις",
+   "url": "https://www.gazzetta.gr/football/superleague/2584950/iraklis-panathinaikos-1-2-o-koytsiatis-gia-tis-epimahes-faseis",
+   "date": "2026-11-09T00:04:54+02:00",
    "source": "Gazzetta",
    "weight": 1,
    "fantasy": false,
    "report": false
   },
   {
-   "title": "Βαλένθια - Ρεάλ Μαδρίτης: Έξαλλος στο ημίχρονο ο Πάμπλο Μαφέο",
-   "url": "https://www.gazzetta.gr/football/la-liga/2584626/balenthia-real-madritis-exallos-sto-imihrono-o-pamplo-mafeo",
-   "date": "2026-11-07T23:19:20+02:00",
+   "title": "Λίσι: «Είχαμε ευκαρίες να νικήσουμε, ήταν ένα ισορροπημένο παιχνίδι»",
+   "url": "https://www.gazzetta.gr/football/super-cup-elladas/2584949/lisi-eihame-eykaries-na-nikisoyme-itan-ena-isorropimeno-paihnidi",
+   "date": "2026-11-09T00:02:58+02:00",
    "source": "Gazzetta",
    "weight": 1,
    "fantasy": false,
    "report": false
   },
   {
-   "title": "Αθλητικός διευθυντής Παρτιζάν: “Η αποχώρηση Ομπράντοβιτς έπληξε τη φήμη του συλλόγου”",
-   "url": "https://www.eurohoops.net/el/euroleague-el-2/2032107/athlitikos-diefthintis-partizan-i-apochorisi-omprantovits-eplixe-ti-fimi-tou-sillogou/",
-   "date": "2026-11-07T21:17:50+00:00",
+   "title": "Ατλέτικο-Μπαρτσελόνα 1-2: Με πρωταγωνιστή τον Φερμίν Λόπεθ νίκη με ανατροπή και κορυφή",
+   "url": "https://www.novasports.gr/sport/podosfairo/event/laliga-division/article/15221562/atletiko-mpartselona-1-2-me-protagonisti-ton-fermin-lopeth-niki-me-anatropi-kai-koryfi/",
+   "date": "2026-11-08T22:02:39+00:00",
+   "source": "Novasports",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Αλγκουαθίλ για Έσε: «Θα περιμένουμε τις εξετάσεις, τα πράγματα δεν φαίνονται θετικά»",
+   "url": "https://www.gazzetta.gr/football/superleague/2584947/algkoyathil-gia-ese-tha-perimenoyme-tis-exetaseis-ta-pragmata-den",
+   "date": "2026-11-08T23:58:20+02:00",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Ατλέτικο Μαδρίτης - Μπαρτσελόνα 1-2: Οι Μπλαουγκράνα με τον Φερμίν άλωσαν το «Μετροπολιτάνο» και πήραν το ντέρμπι κορυφής",
+   "url": "https://www.gazzetta.gr/football/la-liga/2584946/atletiko-madritis-mpartselona-1-2-oi-mplaoygkrana-alosan-metropolitano-kai",
+   "date": "2026-11-08T23:57:07+02:00",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Ηχηρά «καμπανάκια» για όλους, τεράστιο όφελος για τον Παναθηναϊκό",
+   "url": "https://www.gazzetta.gr/football/superleague/2584945/ihira-kampanakia-gia-oloys-terastio-ofelos-gia-ton-panathinaiko",
+   "date": "2026-11-08T23:55:29+02:00",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Ολυμπιακός: Μία πολύ λάθος στιγμή έφερε ένα Χ που δεν τον ωφελεί",
+   "url": "https://www.gazzetta.gr/football/superleague/2584941/olympiakos-mia-poly-lathos-stigmi-poy-efere-ena-h-poy-den-ton-ofelei",
+   "date": "2026-11-08T23:52:50+02:00",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Αλγκουαθίλ: «Δεν είμαι καθόλου ευχαριστημένος με το αποτέλεσμα, θα δώσουμε μάχη ως το τέλος»",
+   "url": "https://www.gazzetta.gr/football/superleague/2584942/algkoyathil-den-eimai-katholoy-eyharistimenos-me-apotelesma-tha",
+   "date": "2026-11-08T23:46:58+02:00",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "ΠΑΟΚ: Κάκωση στον έσω πλάγιο ο Γιάκιτς",
+   "url": "https://www.novasports.gr/sport/podosfairo/event/super-league-1/article/15221508/paok-kakosi-ston-eso-plagio-o-giakits/",
+   "date": "2026-11-08T21:42:11+00:00",
+   "source": "Novasports",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Ολυμπιακός - ΠΑΟΚ 1-1: Τα highlights της αναμέτρησης",
+   "url": "https://www.gazzetta.gr/football/superleague/2584939/olympiakos-paok-1-1-ta-highlights-tis-anametrisis",
+   "date": "2026-11-08T23:41:02+02:00",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Αλγκουαθίλ: «Μας στοίχισε ένα λάθος»",
+   "url": "https://www.novasports.gr/sport/podosfairo/event/super-league-1/article/15221497/algkouathil-mas-stoixise-ena-lathos/",
+   "date": "2026-11-08T21:39:04+00:00",
+   "source": "Novasports",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Ολυμπιακός - ΠΑΟΚ 1-1: Μαρτίνεθ και τέταρτη ισοπαλία!",
+   "url": "https://www.gazzetta.gr/football/superleague/2584938/olympiakos-paok-1-1-martineth-kai-tetarti-isopalia",
+   "date": "2026-11-08T23:37:48+02:00",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Λίσι: «Είχαμε ευκαιρίες για να κερδίσουμε!»",
+   "url": "https://www.novasports.gr/sport/podosfairo/event/super-league-1/article/15221486/lisi-eixame-eykairies-gia-na-kerdisoume/",
+   "date": "2026-11-08T21:28:00+00:00",
+   "source": "Novasports",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Γκρεγκ Μπράουν: Χειρουργήθηκε άμεσα στον αχίλλειο και χάνει τη σεζόν",
+   "url": "https://www.eurohoops.net/el/heba-el/2032542/gkregk-braoun-chirourgithike-amesa-ston-achillio-ke-chani-ti-sezon/",
+   "date": "2026-11-08T21:24:29+00:00",
    "source": "Eurohoops (GR)",
    "weight": 1,
    "fantasy": false,
    "report": false
   },
   {
-   "title": "ΠΑΟΚ – Παρτιζάν: Αποκαταστάθηκε το πρόβλημα – Κανονικά η διάθεση των εισιτηρίων στους κατόχους διαρκείας",
-   "url": "https://www.novasports.gr/sport/podosfairo/event/super-league-1/article/15219075/paok-partizan-apokatastathike-to-provlima-kanonika-i-diathesi-ton-eisitirion-stous-katoxous-diarkeias/",
-   "date": "2026-11-07T20:45:49+00:00",
+   "title": "ΑΕΚ: Χειρουργήθηκε ο Μπράουν – Το διάστημα απουσίας του",
+   "url": "https://www.novasports.gr/sport/mpasket/event/basket-league/article/15221475/aek-xeirourgithike-o-mpraoun-to-diastima-apousias-tou/",
+   "date": "2026-11-08T21:23:04+00:00",
    "source": "Novasports",
    "weight": 1,
    "fantasy": false,
    "report": false
   },
   {
-   "title": "Ηρακλής: Έτοιμος για το ματς με τον Παναθηναϊκό",
-   "url": "https://www.novasports.gr/sport/podosfairo/event/super-league-1/article/15219065/iraklis-etoimos-gia-to-mats-me-ton-panathinaiko/",
-   "date": "2026-11-07T20:45:09+00:00",
+   "title": "ΑΕΚ: Χειρουργήθηκε ο Μπράουν, από έξι έως εννέα μήνες η αποκατάστασή του",
+   "url": "https://www.gazzetta.gr/basketball/basket-league/2584935/aek-heiroyrgithike-o-mpraoyn-apo-exi-eos-ennea-mines-i",
+   "date": "2026-11-08T23:14:41+02:00",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Λίσι: «Είχαμε ευκαιρίες για να κερδίσουμε, φαίνεται η ενότητα του γκρουπ»",
+   "url": "https://www.gazzetta.gr/football/superleague/2584934/lisi-eihame-eykairies-gia-na-kerdisoyme-kathe-mera-tha-eimaste",
+   "date": "2026-11-08T23:12:52+02:00",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Ολυμπιακός – ΠΑΟΚ: Χοσέ Μαρία Σάντσεθ Μαρτίνεθ, ο διαιτητής των ισοπαλιών",
+   "url": "https://www.novasports.gr/sport/podosfairo/event/super-league-1/article/15221443/olympiakos-paok-xose-maria-santseth-martineth-o-diaititis-ton-isopalion/",
+   "date": "2026-11-08T21:08:53+00:00",
    "source": "Novasports",
    "weight": 1,
    "fantasy": false,
    "report": false
   },
   {
-   "title": "Fenerbahçe wins comfortably on the road",
-   "url": "https://www.eurohoops.net/en/tbl/2032101/fenerbahce-wins-comfortably-on-the-road/",
-   "date": "2026-11-07T20:43:02+00:00",
+   "title": "Ολυμπιακός – ΠΑΟΚ 1-1: Ορθιος ο Δικέφαλος στο Φάληρο, έχασαν έδαφος οι Ερυθρόλευκοι",
+   "url": "https://www.gazzetta.gr/football/superleague/2584932/olympiakos-paok-1-1-orthios-o-dikefalos-sto-faliro-ehasan-edafos-oi",
+   "date": "2026-11-08T23:02:17+02:00",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Ολυμπιακός – ΠΑΟΚ 1-1: Ισορροπία σε κακό ντέρμπι. Χαμένη ευκαιρία των Πειραιωτών, ανάσα για τον δικέφαλο! (videos & highlights)",
+   "url": "https://www.novasports.gr/sport/podosfairo/event/super-league-1/article/15221145/olympiakos-paok-1-1-isorropia-se-kako-ntermpi-xameni-eykairia-ton-peiraioton-anasa-gia-ton-dikefalo-videos-amp-highlights/",
+   "date": "2026-11-08T20:57:40+00:00",
+   "source": "Novasports",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Stoiximan Super League: Η βαθμολογία μετά την ισοπαλία στο Ολυμπιακός-ΠΑΟΚ",
+   "url": "https://www.novasports.gr/sport/podosfairo/event/super-league-1/article/15220280/stoiximan-super-league-i-vathmologia-meta-tin-isopalia-sto-olympiakos-paok/",
+   "date": "2026-11-08T20:57:00+00:00",
+   "source": "Novasports",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Superleague, η βαθμολογία: Ανοιξε την... ψαλίδα ο Παναθηναϊκός, στο +4 από τον Ολυμπιακό!",
+   "url": "https://www.gazzetta.gr/football/superleague/2584931/superleague-i-bathmologia-anoixe-tin-psalida-o-panathinaikos-sto-4-apo",
+   "date": "2026-11-08T22:54:33+02:00",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Γκονζάλες: Το «μυρμήγκι» σκοράρει με τη μία!",
+   "url": "https://www.novasports.gr/sport/podosfairo/event/super-league-1/article/15221412/gkonzales-to-myrmigki-skorarei-me-ti-mia/",
+   "date": "2026-11-08T20:45:47+00:00",
+   "source": "Novasports",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Ζίβκοβιτς: Όταν βλέπει Ολυμπιακό αφηνιάζει, 9 γκολ και 10 ασίστ κόντρα στους Πειραιώτες",
+   "url": "https://www.gazzetta.gr/football/superleague/2584921/zibkobits-otan-blepei-olympiako-afiniazei-9-gkol-kai-10-asist-kontra",
+   "date": "2026-11-08T22:44:55+02:00",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Ολυμπιακός - ΠΑΟΚ: Ο Ζίβκοβιτς το 1-1 από γκάφα Ορτέγκα, Τικνιζιάν",
+   "url": "https://www.gazzetta.gr/football/superleague/2584918/olympiakos-paok-o-zibkobits-1-1-apo-gkafa-ortegka-tiknizian",
+   "date": "2026-11-08T22:42:29+02:00",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Ολυμπιακός – ΠΑΟΚ: Τραγικό λάθος των Πειραιωτών και 1-1 με Ζίβκοβιτς! (video)",
+   "url": "https://www.novasports.gr/sport/podosfairo/event/super-league-1/article/15221391/olympiakos-paok-tragiko-lathos-ton-peiraioton-kai-1-1-me-zivkovits-video/",
+   "date": "2026-11-08T20:32:44+00:00",
+   "source": "Novasports",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Ολυμπιακός - ΠΑΟΚ: Ο Γκονζάλες ήρθε από τον πάγκο, χρειάστηκε 2 λεπτά για το 1-0 και πανηγύρισε α λα... Κριστιάνο",
+   "url": "https://www.gazzetta.gr/football/superleague/2584903/olympiakos-paok-o-gkonzales-irthe-apo-ton-pagko-hreiastike-2-lepta-gia",
+   "date": "2026-11-08T22:28:45+02:00",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Ολυμπιακός - ΠΑΟΚ: Ο Έσε αποχώρησε τραυματίας",
+   "url": "https://www.gazzetta.gr/football/superleague/2584902/olympiakos-paok-o-ese-apohorise-traymatias",
+   "date": "2026-11-08T22:27:59+02:00",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Αγωνία στον Ολυμπιακό: Αναγκαστική αλλαγή ο Έσε",
+   "url": "https://www.novasports.gr/sport/podosfairo/event/super-league-1/article/15221335/agonia-ston-olympiako-anagkastiki-allagi-o-ese/",
+   "date": "2026-11-08T20:27:32+00:00",
+   "source": "Novasports",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Ολυμπιακός – ΠΑΟΚ: Γκολ στην πρώτη επαφή ο Γκονζάλες – Πανηγυρισμός α λα Κριστιάνο Ρονάλντο! (video)",
+   "url": "https://www.novasports.gr/sport/podosfairo/event/super-league-1/article/15221344/olympiakos-paok-gkol-stin-proti-epafi-o-gkonzales-panigyrismos-a-la-kristiano-ronalnto-video/",
+   "date": "2026-11-08T20:19:42+00:00",
+   "source": "Novasports",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Ολυμπιακός: Χάνει Ντουμπάι ο Παπανικολάου",
+   "url": "https://www.novasports.gr/sport/mpasket/event/euroleague/article/15221327/olympiakos-xanei-ntoumpai-o-papanikolaou/",
+   "date": "2026-11-08T20:14:49+00:00",
+   "source": "Novasports",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Ρεάλ - Μούρθια 90-71: Έβγαλε αντίδραση και διατήρησε το αήττητο στην ACB",
+   "url": "https://www.gazzetta.gr/basketball/mpasket-ispania/2584890/real-moyrthia-90-71-ebgale-antidrasi-kai-diatirise-aittito-stin",
+   "date": "2026-11-08T22:10:09+02:00",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Ρεάλ: Το πήρε από ‘κει που το άφησε στην ACB μετά την “παρένθεση” με Παναθηναϊκό",
+   "url": "https://www.eurohoops.net/el/acb-el/2032504/real-to-pire-apo-eki-pou-to-afise-stin-acb-meta-tin-parenthesi-me-panathinaiko/",
+   "date": "2026-11-08T20:05:10+00:00",
+   "source": "Eurohoops (GR)",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Παναθηναϊκός: Χόρτο... μαγικό και στο «Καυτανζόγλειο», ομάδα και κόσμος έγιναν ένα",
+   "url": "https://www.gazzetta.gr/football/superleague/2584879/panathinaikos-horto-magiko-kai-sto-kaytanzogleio-omada-kai-kosmos",
+   "date": "2026-11-08T21:59:07+02:00",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Παναθηναϊκός: Ομάδα και κόσμος του Παναθηναϊκού έσπασαν τις... απαγορεύσεις!",
+   "url": "https://www.gazzetta.gr/football/superleague/2584862/omada-kai-kosmos-toy-panathinaikoy-apo-atsali-espasan-tis-apagoreyseis",
+   "date": "2026-11-08T21:46:46+02:00",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Ολυμπιακός - ΠΑΟΚ: Ο Ζαφείρης αστόχησε σε τετ α τετ με τον Ορτέγκα!",
+   "url": "https://www.gazzetta.gr/football/superleague/2584868/olympiakos-paok-o-zafeiris-astohise-se-tet-tet-me-ton-ortegka",
+   "date": "2026-11-08T21:44:38+02:00",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "ΗΠΑ: Δάσκαλος-ράπερ παίρνει μισθό 171.500 ευρώ για σχολείο που δεν άνοιξε ποτέ",
+   "url": "https://www.gazzetta.gr/plus/2584799/ipa-daskalos-raper-pairnei-mistho-171500-eyro-gia-sholeio-poy-den-anoixe-pote",
+   "date": "2026-11-08T21:38:00+02:00",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Ερασιτέχνης Ηρακλής: «Δεν πρόκειται πλέον για ανθρώπινα λάθη, Λανουά και Βαλέρι καταδικάζουν συστηματικά την ομάδα»",
+   "url": "https://www.gazzetta.gr/football/superleague/2584865/erasitehnis-iraklis-den-prokeitai-pleon-gia-anthropina-lathi-lanoya",
+   "date": "2026-11-08T21:36:37+02:00",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Ολυμπιακός - ΠΑΟΚ: Η φάση που ζήτησε πέναλτι ο Δικέφαλος",
+   "url": "https://www.gazzetta.gr/football/superleague/2584864/olympiakos-paok-i-fasi-poy-zitise-penalti-o-dikefalos",
+   "date": "2026-11-08T21:36:24+02:00",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "La Liga: Νίκη για τη Βιγιαρεάλ, ισόπαλες Θέλτα και Λεβάντε",
+   "url": "https://www.novasports.gr/sport/podosfairo/event/laliga-division/article/15221264/la-liga-niki-gia-ti-vigiareal-isopales-thelta-kai-levante/",
+   "date": "2026-11-08T19:33:58+00:00",
+   "source": "Novasports",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Ολυμπιακός - ΠΑΟΚ: Τραυματίστηκε στο γόνατο και έφυγε υποβασταζόμενος ο Γιάκιτς",
+   "url": "https://www.gazzetta.gr/football/superleague/2584861/olympiakos-paok-traymatistike-sto-gonato-kai-efyge-ypobastazomenos-o",
+   "date": "2026-11-08T21:28:00+02:00",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Paris scores 107 points and easily beats JL Bourg",
+   "url": "https://www.eurohoops.net/en/proa/2032499/paris-scores-107-points-and-easily-beats-jl-bourg/",
+   "date": "2026-11-08T19:17:37+00:00",
    "source": "Eurohoops",
    "weight": 1,
    "fantasy": false,
    "report": false
   },
   {
-   "title": "Αθλητικός Διευθυντής Παρτίζαν: Όσα είπε για τον Ομπράντοβιτς και την αποχώρησή του από τον σύλλογο της Σερβίας",
-   "url": "https://www.gazzetta.gr/basketball/euroleague/2584619/athlitikos-dieythyntis-partizan-osa-eipe-gia-ton-omprantobits-kai-tin",
-   "date": "2026-11-07T22:40:05+02:00",
-   "source": "Gazzetta",
+   "title": "Γ.Σ.Ηρακλής κατά διαιτησίας: “Μέχρι πότε, κ. Λανουά και κ. Βαλερί;”",
+   "url": "https://www.novasports.gr/sport/podosfairo/event/super-league-1/article/15221197/g-s-iraklis-kata-diaitisias-mexri-pote-k-lanoua-kai-k-valeri/",
+   "date": "2026-11-08T19:09:16+00:00",
+   "source": "Novasports",
    "weight": 1,
    "fantasy": false,
    "report": false
   },
   {
-   "title": "ΠΑΟΚ: Κανονικά από αύριο το πρωί τα εισιτήρια για Παρτιζάν",
-   "url": "https://www.gazzetta.gr/football/2584617/paok-kanonika-apo-ayrio-proi-ta-eisitiria-gia-partizan",
-   "date": "2026-11-07T22:37:54+02:00",
-   "source": "Gazzetta",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Απολλώνιος – Ολυμπιακός 0-3: Περίπατος στο Κερατσίνι οι «ερυθρόλευκες»",
-   "url": "https://www.gazzetta.gr/volleyball/volley-league-gynaikon/2584611/apollonios-olympiakos-0-3-peripatos-sto-keratsini-oi",
-   "date": "2026-11-07T22:16:03+02:00",
-   "source": "Gazzetta",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Λεσόρ: “Περάσαμε μέσα από την καταιγίδα, τώρα χορεύουμε στη βροχή”",
-   "url": "https://www.eurohoops.net/el/euroleague-el-2/2032094/lesor-perasa-mesa-apo-tin-kategida-tora-chorevoume-sti-vrochi/",
-   "date": "2026-11-07T20:14:09+00:00",
+   "title": "Αρμάνι: Στην αναμονή για… Μπάνκι νίκησε στο καλάθι την Τρέντο",
+   "url": "https://www.eurohoops.net/el/legabasket-el/2032493/armani-stin-anamoni-gia-banki-nikise-dia-piros-ke-sidirou-tin-trento/",
+   "date": "2026-11-08T19:08:09+00:00",
    "source": "Eurohoops (GR)",
    "weight": 1,
    "fantasy": false,
    "report": false
   },
   {
-   "title": "Γρηγορίου: «Είχαμε όλη τη βδομάδα να διορθώσουμε τα κακώς κείμενα, αξίζαμε τη νίκη» (video)",
-   "url": "https://www.novasports.gr/sport/podosfairo/event/super-league-1/article/15218909/grigoriou-eixame-oli-ti-vdomada-na-diorthosoume-ta-kakos-keimena-aksizame-ti-niki-video/",
-   "date": "2026-11-07T20:02:50+00:00",
+   "title": "Luka Doncic out against the Pistons due to low back injury",
+   "url": "https://www.eurohoops.net/en/nba-news/2032492/luka-doncic-out-against-the-pistons-due-to-low-back-injury/",
+   "date": "2026-11-08T19:02:56+00:00",
+   "source": "Eurohoops",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Νίστρουπ: «Είμαι εντυπωσιασμένος από τη στήριξη του κόσμου»",
+   "url": "https://www.novasports.gr/sport/podosfairo/event/super-league-1/article/15221162/nistroup-eimai-entyposiasmenos-apo-ti-stiriksi-tou-kosmou/",
+   "date": "2026-11-08T19:01:58+00:00",
    "source": "Novasports",
    "weight": 1,
    "fantasy": false,
    "report": false
   },
   {
-   "title": "Μπούρσασπορ - Φενέρμπαχτσε 59-78: Εύκολο πέρασμα και τρίτη σερί νίκη",
-   "url": "https://www.gazzetta.gr/basketball/mpasket-ispania/2584600/mpoyrsaspor-fenermpahtse-59-78-eykolo-perasma-kai-triti-seri",
-   "date": "2026-11-07T21:37:58+02:00",
-   "source": "Gazzetta",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Ολυμπιακός: Πέντε γκαρντς που βρίσκονται στη λίστα του Μπαρτζώκα! (videos)",
-   "url": "https://www.novasports.gr/sport/mpasket/event/euroleague/article/15218815/olympiakos-pente-gkarnts-pou-vriskontai-sti-lista-tou-mpartzoka-videos/",
-   "date": "2026-11-07T19:28:07+00:00",
-   "source": "Novasports",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Ολυμπιακός – Φλοίσβος Παλαιού Φαλήρου 0-3: «Κυανόλευκος» περίπατος και πρώτο μεγάλο μπαμ στο πρωτάθλημα",
-   "url": "https://www.gazzetta.gr/volleyball/volley-league/2584597/olympiakos-floisbos-palaioy-faliroy-0-3-kyanoleykos-peripatos-kai",
-   "date": "2026-11-07T21:26:56+02:00",
-   "source": "Gazzetta",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Φενέρ: Άνετα την Μπούρσασπορ στο ντεμπούτο του Πάουελ στην Τουρκία",
-   "url": "https://www.eurohoops.net/el/tbl-el/2032071/fener-aneta-tin-boursaspor-sto-ntempouto-tou-paouel-stin-tourkia/",
-   "date": "2026-11-07T19:21:29+00:00",
+   "title": "Μπαρτζώκας: “Δύσκολα o Παπανικολάου με Ντουμπάι – Δεν θα πάρουμε εν θερμώ απόφαση για μεταγραφή”",
+   "url": "https://www.eurohoops.net/el/euroleague-el-2/2032489/bartzokas-gia-papanikolaou-diskola-me-ntoumpai-den-tha-paroume-en-thermo-apofasi-gia-metagrafi/",
+   "date": "2026-11-08T19:00:09+00:00",
    "source": "Eurohoops (GR)",
    "weight": 1,
    "fantasy": false,
    "report": false
   },
   {
-   "title": "Γουόκερ: «Να παρουσιάσουμε την καλύτερη εκδοχή μας»",
-   "url": "https://www.gazzetta.gr/basketball/basket-league/2584573/goyoker-na-paroysiasoyme-tin-kalyteri-ekdohi-mas",
-   "date": "2026-11-07T20:40:47+02:00",
-   "source": "Gazzetta",
+   "title": "Greg Brown suffers Achilles tendon injury and will undergo surgery",
+   "url": "https://www.eurohoops.net/en/fiba-champions-league/2032487/greg-brown-suffers-achilles-tendon-injury-and-will-undergo-surgery/",
+   "date": "2026-11-08T18:31:13+00:00",
+   "source": "Eurohoops",
    "weight": 1,
    "fantasy": false,
    "report": false
   },
   {
-   "title": "ΟΦΗ: Η αποστολή για το ματς με τον Ατρόμητο",
-   "url": "https://www.novasports.gr/sport/podosfairo/event/super-league-1/article/15218788/ofi-i-apostoli-gia-to-mats-me-ton-atromito/",
-   "date": "2026-11-07T18:29:41+00:00",
+   "title": "Νίκολιτς: «Υπήρξε πέναλτι που δεν δόθηκε στον Μουκουντί – Εξαιρετικό παράδειγμα ο Γκατσίνοβιτς»",
+   "url": "https://www.novasports.gr/sport/podosfairo/event/super-league-1/article/15220931/nikolits-ypirkse-penalti-pou-den-dothike-ston-moukounti-eksairetiko-paradeigma-o-gkatsinovits/",
+   "date": "2026-11-08T18:27:22+00:00",
    "source": "Novasports",
    "weight": 1,
    "fantasy": false,
    "report": false
   },
   {
-   "title": "Παναθηναϊκός: Σαρωτικός MVP Οκτωβρίου ο Ντέσερς",
-   "url": "https://www.novasports.gr/sport/podosfairo/event/super-league-1/article/15218750/panathinaikos-sarotikos-mvp-oktovriou-o-ntesers/",
-   "date": "2026-11-07T18:00:47+00:00",
+   "title": "Ρεάλ Σοσιεδάδ – Ράγιο Βαγιεκάνο 1-0: Λυτρωτής Όσκαρσον για την πεντάδα!",
+   "url": "https://www.novasports.gr/sport/podosfairo/event/laliga-division/article/15220967/real-sosiedad-ragio-vagiekano-1-0-lytrotis-oskarson-gia-tin-pentada/",
+   "date": "2026-11-08T18:24:07+00:00",
    "source": "Novasports",
    "weight": 1,
    "fantasy": false,
    "report": false
   },
   {
-   "title": "Stoiximan GBL: Η βαθμολογία μετά από το «κυρίως πιάτο» της 6ης αγωνιστικής",
-   "url": "https://www.novasports.gr/sport/mpasket/event/basket-league/article/15218717/stoiximan-gbl-i-vathmologia-meta-apo-to-kyrios-piato-tis-6is-agonistikis/",
-   "date": "2026-11-07T17:51:58+00:00",
+   "title": "Επιβεβαιώθηκαν οι φόβοι για Μπράουν: Ρήξη αχιλλείου και τέλος η σεζόν",
+   "url": "https://www.novasports.gr/sport/mpasket/event/basket-league/article/15220997/epivevaiothikan-oi-fovoi-gia-mpraoun-riksi-axilleiou-kai-telos-i-sezon/",
+   "date": "2026-11-08T18:22:51+00:00",
    "source": "Novasports",
    "weight": 1,
    "fantasy": false,
    "report": false
   },
   {
-   "title": "Βαθμολογία Stoiximan GBL: Μόνος πρώτος ο αήττητος ο ΠΑΟΚ, σε απόσταση αναπνοής ο Άρης",
-   "url": "https://www.eurohoops.net/el/heba-el/2032028/vathmologia-stoiximan-gbl-sinechizi-aittitos-o-paok-panta-se-apostasi-anapnois-o-aris/",
-   "date": "2026-11-07T17:39:42+00:00",
+   "title": "Milano defeats Trento in a nail-biter",
+   "url": "https://www.eurohoops.net/en/legabasket/2032474/milano-defeats-trento-in-a-nail-biter/",
+   "date": "2026-11-08T18:19:46+00:00",
+   "source": "Eurohoops",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Γουόρντ: «Δεν πίστεψα ποτέ ότι θα χάναμε»",
+   "url": "https://www.novasports.gr/sport/mpasket/event/basket-league/article/15220891/gouornt-den-pistepsa-pote-oti-tha-xaname/",
+   "date": "2026-11-08T18:18:45+00:00",
+   "source": "Novasports",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Ligue 1: Έχασε έδαφος η Λυόν, «ψυχρολουσία» στο 90′ για τη Μονακό!",
+   "url": "https://www.novasports.gr/sport/podosfairo/event/laliga-division/article/15220784/ligue-1-exase-edafos-i-lyon-psyxrolousia-sto-90-gia-ti-monako/",
+   "date": "2026-11-08T18:14:13+00:00",
+   "source": "Novasports",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "ΠΑΟΚ: Με σχηματισμό 3-5-2 για πρώτη φορά κόντρα στον Ολυμπιακό",
+   "url": "https://www.novasports.gr/sport/podosfairo/event/super-league-1/article/15220943/paok-me-sximatismo-3-5-2-gia-proti-fora-kontra-ston-olympiako/",
+   "date": "2026-11-08T18:13:03+00:00",
+   "source": "Novasports",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Καραπαπάς: «Δύο φορές κόκκινη στον Αντίνο – Νομοθετικό διάταγμα»",
+   "url": "https://www.novasports.gr/sport/podosfairo/event/super-league-1/article/15220924/karapapas-dyo-fores-kokkini-ston-antino-nomothetiko-diatagma/",
+   "date": "2026-11-08T18:07:34+00:00",
+   "source": "Novasports",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Ουόρντ ο λυτρωτής για τον Ολυμπιακό: “Δεν φοβήθηκα ότι θα χάναμε, εμπιστεύομαι τους συμπαίκτες μου”",
+   "url": "https://www.eurohoops.net/el/heba-el/2032461/ouornt-den-fovithika-oti-tha-chaname-empistevome-tous-simpektes-mou/",
+   "date": "2026-11-08T17:59:45+00:00",
    "source": "Eurohoops (GR)",
    "weight": 1,
    "fantasy": false,
    "report": false
   },
   {
-   "title": "Σπανούλης για Μπιρτς και Κώστα Αντετοκούνμπο: «Ακούω πολλά, ότι δεν παίζουν καλά αλλά παίζουν εξαιρετικά»!",
-   "url": "https://www.novasports.gr/sport/mpasket/event/basket-league/article/15218690/spanoulis-gia-mpirts-kai-kosta-antetokounmpo-akouo-polla-oti-den-paizoun-kala-alla-paizoun-eksairetika/",
-   "date": "2026-11-07T17:39:33+00:00",
-   "source": "Novasports",
+   "title": "Clutch Ουορντ: Το νικητήριο καλάθι για την απόδραση του Ολυμπιακού απ’ το Μαρούσι (video)",
+   "url": "https://www.eurohoops.net/el/heba-el/2032438/olimpiakos-to-nikitirio-kalathi-tou-ouornt-kontra-sto-marousi-video/",
+   "date": "2026-11-08T17:46:09+00:00",
+   "source": "Eurohoops (GR)",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Μπαρτζώκας: “Υποφέραμε πολύ, αντιμετωπίζουμε θέματα ενέργειας”",
+   "url": "https://www.eurohoops.net/el/heba-el/2032428/bartzokas-ipoferame-poli-antimetopizoume-themata-energias/",
+   "date": "2026-11-08T17:45:59+00:00",
+   "source": "Eurohoops (GR)",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Stoiximan GBL: H βαθμολογία μετά τις νίκες του Παναθηναϊκού και του Ολυμπιακού",
+   "url": "https://www.eurohoops.net/el/heba-el/2032444/stoiximan-gbl-h-vathmologia-meta-tis-nikes-tou-panathinaikou-ke-tou-olimpiakou/",
+   "date": "2026-11-08T17:43:42+00:00",
+   "source": "Eurohoops (GR)",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "ΑΕΚ: Ρήξη αχιλλείου ο Γκρεγκ Μπράουν",
+   "url": "https://www.eurohoops.net/el/heba-el/2032422/aek-rixi-achilliou-o-braoun/",
+   "date": "2026-11-08T17:36:44+00:00",
+   "source": "Eurohoops (GR)",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Μαρούσι – Ολυμπιακός 81-83: Με ήρωα Ουόρντ γλύτωσε το… σοκ",
+   "url": "https://www.eurohoops.net/el/heba-el/2032381/marousi-olimpiakos-81-83-ton-glitose-o-ouornt-sta-3/",
+   "date": "2026-11-08T17:32:28+00:00",
+   "source": "Eurohoops (GR)",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Μπαρτζώκας: Βραβεύτηκε από το Μαρούσι (video)",
+   "url": "https://www.eurohoops.net/el/heba-el/2032378/bartzokas-vraveftike-apo-to-marousi-video/",
+   "date": "2026-11-08T15:46:15+00:00",
+   "source": "Eurohoops (GR)",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Partizan erase 14-point deficit to stay unbeaten in ABA League",
+   "url": "https://www.eurohoops.net/en/aba/2032352/partizan-erase-14-point-deficit-to-stay-unbeaten-in-aba-league/",
+   "date": "2026-11-08T14:54:17+00:00",
+   "source": "Eurohoops",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Εφές: Εντός έδρας “ψυχρολουσία” από την Τόφας του Καντσελιέρι",
+   "url": "https://www.eurohoops.net/el/tbl-el/2032331/efes-entos-edras-psichrolousia-apo-tin-tofas-tou-kantselieri/",
+   "date": "2026-11-08T14:48:41+00:00",
+   "source": "Eurohoops (GR)",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Μπαρτσελόνα: Πύρρειος νίκη πριν το ΟΑΚΑ, αγωνία για Πάντερ & Εβμπουόμουαν",
+   "url": "https://www.eurohoops.net/el/acb-el/2032325/bartselona-diskoli-niki-prin-to-oaka-evdomi-seri-se-oles-tis-diorganosis/",
+   "date": "2026-11-08T14:14:05+00:00",
+   "source": "Eurohoops (GR)",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Σάκοτα για Μπράουν: “Σίγουρα θα είναι μεγάλη η απουσία” – Η διάγνωση για Φλιώνη",
+   "url": "https://www.eurohoops.net/el/heba-el/2032318/sakota-gia-braoun-sigoura-tha-ine-megali-i-apousia-se-kathe-agona-chanoume-enan-pekti/",
+   "date": "2026-11-08T14:01:48+00:00",
+   "source": "Eurohoops (GR)",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Stats review: Transition trends tell a tale for Virtus, Zvezda",
+   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/stats-review-transition-trends-tell-a-tale-for-virtus-zvezda/",
+   "date": "2026-11-08T14:00:00+00:00",
+   "source": "EuroLeague (official)",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "ΣΟΥΠΕΡ Μπάντιο στα Άνω Λιόσια: Το καλύτερο παιχνίδι στον Παναθηναϊκό (videos)",
+   "url": "https://www.eurohoops.net/el/heba-el/2032294/souper-bantio-sta-ano-liosia-to-kalitero-pechnidi-ston-panathinaiko-videos/",
+   "date": "2026-11-08T13:33:52+00:00",
+   "source": "Eurohoops (GR)",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Ολυμπιακός: Χωρίς Παπανικολάου και Χολ η 12άδα στο Μαρούσι",
+   "url": "https://www.eurohoops.net/el/heba-el/2032305/olimpiakos-choris-papanikolaou-ke-chol-i-12ada-sto-marousi/",
+   "date": "2026-11-08T13:33:40+00:00",
+   "source": "Eurohoops (GR)",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Ομπράντοβιτς: “Η ΑΕΚ έπαιξε πολύ καλά, ήταν δύσκολο”",
+   "url": "https://www.eurohoops.net/el/heba-el/2032293/omprantovits-i-aek-epexe-poli-kala-itan-diskolo/",
+   "date": "2026-11-08T13:18:47+00:00",
+   "source": "Eurohoops (GR)",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Ward wins it for Olympiacos, Badio hits six threes as Panathinaikos beat AEK",
+   "url": "https://www.eurohoops.net/en/heba/2032289/brancou-badio-hits-six-threes-as-panathinaikos-beat-aek/",
+   "date": "2026-11-08T13:18:46+00:00",
+   "source": "Eurohoops",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "ΑΕΚ – Παναθηναϊκός 74-83: Στον ΑΣΤΕΡΙΣΜΟ του Μπάντιο έφυγε με το “διπλό”",
+   "url": "https://www.eurohoops.net/el/heba-el/2032260/aek-panathinaikos-74-83-ston-asterismo-tou-bantio-efige-me-to-diplo/",
+   "date": "2026-11-08T13:05:26+00:00",
+   "source": "Eurohoops (GR)",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "ΑΕΚ – Παναθηναϊκός: ΤΡΟΜΕΡΟ buzzer beater του Μπάρτλεϊ πίσω από το κέντρο (video)",
+   "url": "https://www.eurohoops.net/el/heba-el/2032234/aek-panathinaikos-tromero-buzzer-beater-tou-bartlei-piso-apo-to-kentro-video/",
+   "date": "2026-11-08T12:07:19+00:00",
+   "source": "Eurohoops (GR)",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Milan appoints Luca Banchi as head coach",
+   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/milan-appoints-luca-banchi-head-coach-2026/",
+   "date": "2026-11-08T10:43:05.597000+00:00",
+   "source": "EuroLeague (official)",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Man arrested outside LeBron James’ Los Angeles home",
+   "url": "https://www.eurohoops.net/en/nba-news/2032193/man-arrested-outside-lebron-james-los-angeles-home/",
+   "date": "2026-11-08T10:38:31+00:00",
+   "source": "Eurohoops",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Luca Banchi officially returns to Olimpia Milano as head coach",
+   "url": "https://www.eurohoops.net/en/euroleague/2032190/luca-banchi-officially-returns-to-olimpia-milano-as-head-coach/",
+   "date": "2026-11-08T10:26:54+00:00",
+   "source": "Eurohoops",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Victor Wembanyama on the Spurs’ eight straight wins: “We’re in a great spot”",
+   "url": "https://www.eurohoops.net/en/nba-news/2032180/victor-wembanyama-on-the-spurs-eight-straight-wins-were-in-a-great-spot/",
+   "date": "2026-11-08T10:13:14+00:00",
+   "source": "Eurohoops",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Stephen Curry passes LeBron James: “I appreciate the longevity”",
+   "url": "https://www.eurohoops.net/en/nba-news/2032176/stephen-curry-passes-lebron-james-i-appreciate-the-longevity/",
+   "date": "2026-11-08T10:05:34+00:00",
+   "source": "Eurohoops",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Aday Mara matches Pau Gasol’s rookie block streak: “He’s evolving before our eyes”",
+   "url": "https://www.eurohoops.net/en/nba-news/2032168/aday-mara-matches-pau-gasols-rookie-block-streak-hes-evolving-before-our-eyes/",
+   "date": "2026-11-08T09:56:53+00:00",
+   "source": "Eurohoops",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Luka Doncic questionable against Detroit with back tightness",
+   "url": "https://www.eurohoops.net/en/nba-news/2032160/luka-doncic-questionable-against-detroit-with-back-tightness/",
+   "date": "2026-11-08T09:40:09+00:00",
+   "source": "Eurohoops",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Spoelstra on Rivers’ comments about coaching Giannis: “This is our business now”",
+   "url": "https://www.eurohoops.net/en/nba-news/2032158/spoelstra-on-rivers-comments-about-coaching-giannis-this-is-our-business-now/",
+   "date": "2026-11-08T09:38:45+00:00",
+   "source": "Eurohoops",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "NBA roundup: Wembanyama scores 29 in 24 minutes, Wagner posts 30 and 11",
+   "url": "https://www.eurohoops.net/en/nba-news/2032152/nba-roundup-wembanyama-scores-29-in-24-minutes-wagner-posts-30-and-11/",
+   "date": "2026-11-08T09:21:45+00:00",
+   "source": "Eurohoops",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Barcelona beats Breogán but loses Punter and Evbuomwan, victories for Real and Valencia",
+   "url": "https://www.eurohoops.net/en/acb/2032111/acb-roundup-manresa-secures-its-first-win-baskonia-gets-the-job-done-on-the-road/",
+   "date": "2026-11-07T22:15:40+00:00",
+   "source": "Eurohoops",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Maccabi signs Pierria Henry to trial deal",
+   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/maccabi-signs-pierria-henry-to-trial-deal/",
+   "date": "2026-11-07T22:00:00+00:00",
+   "source": "EuroLeague (official)",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Fenerbahçe wins comfortably, Payne ejected in Efes’ loss",
+   "url": "https://www.eurohoops.net/en/tbl/2032101/fenerbahce-wins-comfortably-on-the-road/",
+   "date": "2026-11-07T20:43:02+00:00",
+   "source": "Eurohoops",
    "weight": 1,
    "fantasy": false,
    "report": false
@@ -302,42 +887,6 @@
    "url": "https://www.eurohoops.net/en/fibawc/2031989/kendrick-nunn-travels-to-qatar-to-resolve-passport-issue/",
    "date": "2026-11-07T17:14:31+00:00",
    "source": "Eurohoops",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Ναν: Δεν παίζει με ΑΕΚ – Ταξίδι-«αστραπή» στο Καταρ για το διαβατήριο",
-   "url": "https://www.novasports.gr/sport/mpasket/event/basket-league/article/15218614/nan-den-paizei-me-aek-taksidi-astrapi-sto-katar-gia-to-diavatirio/",
-   "date": "2026-11-07T17:11:37+00:00",
-   "source": "Novasports",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Ναν: Στο Κατάρ για να τελειώσει το θέμα του διαβατηρίου, δεν παίζει με ΑΕΚ",
-   "url": "https://www.eurohoops.net/el/heba-el/2031962/nan-den-pezi-me-aek-taxidevi-sto-katar-gia-na-teliosi-to-thema-tou-diavatiriou/",
-   "date": "2026-11-07T16:54:38+00:00",
-   "source": "Eurohoops (GR)",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Σπανούλης: “Ο Κ. Αντετοκούνμπο παίζει πολύ καλά τον ρόλο του, από τους καλύτερους αμυντικούς στο ‘5’ ο Μπιρτς”",
-   "url": "https://www.eurohoops.net/el/heba-el/2031913/spanoulis-echoume-polla-perithoria-veltiosis-ti-ipe-gia-tin-apodosi-birts-k-antetokounmpo/",
-   "date": "2026-11-07T15:58:51+00:00",
-   "source": "Eurohoops (GR)",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Ντιμιτρίεβιτς: Άχαστος με 6/6 τρίποντα κι ανυπόμονος “για τα ντέρμπι με Ολυμπιακό & ΠΑΟΚ”",
-   "url": "https://www.eurohoops.net/el/heba-el/2031916/ntimitrievits-apolitos-me-6-6-triponta-anipomonos-gia-ta-ntermpi-me-olimpiako-paok/",
-   "date": "2026-11-07T15:36:42+00:00",
-   "source": "Eurohoops (GR)",
    "weight": 1,
    "fantasy": false,
    "report": false
@@ -361,45 +910,9 @@
    "report": false
   },
   {
-   "title": "ΑΕΚ: Νοκ-άουτ και ο Λεκαβίτσιους ενόψει Παναθηναϊκού",
-   "url": "https://www.eurohoops.net/el/heba-el/2031878/aek-nok-aout-ke-o-lekavitsious-enopsi-panathinaikou/",
-   "date": "2026-11-07T14:30:04+00:00",
-   "source": "Eurohoops (GR)",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Πιέρια Χένρι: Κοντά στη Μακάμπι, επιστρέφοντας μετά από τέσσερα χρόνια τιμωρίας",
-   "url": "https://www.eurohoops.net/el/euroleague-el-2/2031854/pieria-chenri-konta-sti-makampi-epistrefontas-meta-apo-tessera-chronia-timorias/",
-   "date": "2026-11-07T13:06:12+00:00",
-   "source": "Eurohoops (GR)",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
    "title": "Pierria Henry will have a trial period with Maccabi Tel Aviv",
    "url": "https://www.eurohoops.net/en/euroleague/2031845/pierria-henry-close-to-returning-to-the-euroleague-and-signing-with-maccabi/",
    "date": "2026-11-07T12:31:36+00:00",
-   "source": "Eurohoops",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Ολυμπιακός: “Μια δύσκολη νύχτα δεν θα μας σπάσει. Δεν σταματάμε ποτέ τον αγώνα” (παρακάμερα)",
-   "url": "https://www.eurohoops.net/el/euroleague-el-2/2031831/olimpiakos-mia-diskoli-nichta-den-tha-mas-spasi-den-stamatame-pote-ton-agona-parakamera/",
-   "date": "2026-11-07T11:51:16+00:00",
-   "source": "Eurohoops (GR)",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Nadir Hifi named MVP of EuroLeague Round 10",
-   "url": "https://www.eurohoops.net/en/euroleague/2031828/nadir-hifi-named-mvp-of-euroleague-round-10/",
-   "date": "2026-11-07T11:04:57+00:00",
    "source": "Eurohoops",
    "weight": 1,
    "fantasy": false,
@@ -415,46 +928,10 @@
    "report": false
   },
   {
-   "title": "Evan Fournier on playing in Sunel Arena and not SEF: “It’s like having your wife away for a little while”",
-   "url": "https://www.eurohoops.net/en/euroleague/2031790/evan-fournier-on-playing-in-sunel-arena-and-not-sef-its-like-having-your-wife-away-for-a-little-while/",
-   "date": "2026-11-07T09:28:45+00:00",
-   "source": "Eurohoops",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
    "title": "Zvezda lays down a marker to launch demanding road run",
    "url": "https://www.euroleaguebasketball.net/en/euroleague/news/zvezda-lays-down-a-marker-wins-at-olympiacos/",
    "date": "2026-11-07T09:00:00+00:00",
    "source": "EuroLeague (official)",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "NBA Roundup: Doncic scored 53 points, one more win for Wemby",
-   "url": "https://www.eurohoops.net/en/nba-news/2031774/nba-roundup-doncic-scored-53-points-one-more-win-for-wemby/",
-   "date": "2026-11-07T08:42:30+00:00",
-   "source": "Eurohoops",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "NBA’s global expansion finds perfect target at Mexico City",
-   "url": "https://www.eurohoops.net/en/nba-news/2031732/nikola-jokic-nba-mexico-city-game/",
-   "date": "2026-11-07T00:40:19+00:00",
-   "source": "Eurohoops",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Konchar debuts in the EuroLeague: “There is more physicality than in the NBA”",
-   "url": "https://www.eurohoops.net/en/euroleague/2031711/konchar-debuts-in-the-euroleague-there-is-more-physicality-than-in-the-nba/",
-   "date": "2026-11-06T23:01:52+00:00",
-   "source": "Eurohoops",
    "weight": 1,
    "fantasy": false,
    "report": false
@@ -496,33 +973,6 @@
    "report": false
   },
   {
-   "title": "Bartzokas after the defeat by Zvezda: “There is no excuse, we did not deserve to win”",
-   "url": "https://www.eurohoops.net/en/euroleague/2031679/bartzokas-after-the-defeat-by-zvezda-there-is-no-excuse-we-did-not-deserve-to-win/",
-   "date": "2026-11-06T22:22:48+00:00",
-   "source": "Eurohoops",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Kristaps Porzingis announces he’s stepping away from basketball",
-   "url": "https://www.eurohoops.net/en/nba-news/2031627/kristaps-porzingis-announces-hes-stepping-away-from-basketball/",
-   "date": "2026-11-06T21:44:37+00:00",
-   "source": "Eurohoops",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Alimpijevic cuts short timeout question after Besiktas defeat: “Next question, please?”",
-   "url": "https://www.eurohoops.net/en/euroleague/2031589/alimpijevic-cuts-short-timeout-question-after-besiktas-defeat-next-question-please/",
-   "date": "2026-11-06T21:19:43+00:00",
-   "source": "Eurohoops",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
    "title": "Zalgiris storms past Besiktas, extends win streak to 4",
    "url": "https://www.euroleaguebasketball.net/en/euroleague/news/zalgiris-storms-past-besiktas-extends-win-streak-to-4/",
    "date": "2026-11-06T20:50:34.369000+00:00",
@@ -532,46 +982,10 @@
    "report": false
   },
   {
-   "title": "Neftali Difuidi named BCL Player of the Week",
-   "url": "https://www.eurohoops.net/en/fiba-champions-league/2031555/neftali-difuidi-named-bcl-player-of-the-week/",
-   "date": "2026-11-06T20:28:50+00:00",
-   "source": "Eurohoops",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "EuroLeague roundup: Zvezda beats Olympiacos, wins for Zalgiris, Partizan, and Dubai",
-   "url": "https://www.eurohoops.net/en/euroleague/2031432/euroleague-roundup-zalgiris-dominates-besiktas-wins-fourth-in-a-row/",
-   "date": "2026-11-06T19:04:47+00:00",
-   "source": "Eurohoops",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
    "title": "Milan fires coach Giuseppe Poeta",
    "url": "https://www.euroleaguebasketball.net/en/euroleague/news/milan-fires-coach-giuseppe-poeta/",
    "date": "2026-11-06T18:36:27.014000+00:00",
    "source": "EuroLeague (official)",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "James Feldeine announces retirement: “Basketball was always my safe place”",
-   "url": "https://www.eurohoops.net/en/euroleague/2031467/james-feldeine-announces-retirement-basketball-was-always-my-safe-place/",
-   "date": "2026-11-06T18:16:22+00:00",
-   "source": "Eurohoops",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Olimpia Milano fires head coach Giuseppe Poeta, Luca Banchi is taking over",
-   "url": "https://www.eurohoops.net/en/euroleague/2031461/olimpia-milano-relieves-giuseppe-poeta-luca-banchi-is-taking-over/",
-   "date": "2026-11-06T18:09:46+00:00",
-   "source": "Eurohoops",
    "weight": 1,
    "fantasy": false,
    "report": false
@@ -656,172 +1070,120 @@
    "weight": 1,
    "fantasy": false,
    "report": false
-  },
-  {
-   "title": "Panathinaikos edges Real Madrid in classic behind Kendrick Nunn",
-   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/panathinaikos-outlasts-real-madrid-in-classic-behind-kendrick-nunn/",
-   "date": "2026-11-04T22:52:37.671000+00:00",
-   "source": "EuroLeague (official)",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "History Lesson: The night Sergio Llull returned and Madrid roared",
-   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/history-lesson-sergio-llull-return-real-madrid-panathinaikos/",
-   "date": "2026-11-04T10:30:00+00:00",
-   "source": "EuroLeague (official)",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Barkas Breakdown: Besiktas and the chance to step up",
-   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/barkas-breakdown-besiktas-and-the-chance-to-step-up/",
-   "date": "2026-11-04T09:00:00+00:00",
-   "source": "EuroLeague (official)",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
   }
  ],
  "digest": {
-  "availability": [],
+  "availability": [
+   {
+    "player": "PAPANIKOLAOU, KOSTAS",
+    "status": "out",
+    "note": "Τενοντίτιδα καταφυτικού τένοντα ορθού κοιλιακού, χάνει το ματς με την Ντουμπάι BC",
+    "source": "Novasports"
+   }
+  ],
   "expert": [
    {
-    "player": "DIARRA, ALIOU",
+    "player": "JONES, CARLIK",
     "stance": "pick",
-    "note": "Εξαιρετική εμφάνιση με 29 fantasy points",
-    "source": "EuroLeague Fantasy Tips (official)"
+    "note": "Ευνοϊκό πρόγραμμα με τρία συνεχόμενα εντός έδρας παιχνίδια",
+    "source": "Basketball Sphere"
    },
    {
-    "player": "STEVENS, LAMAR",
+    "player": "BRYANT, ELIJAH",
     "stance": "pick",
-    "note": "Αποδοτικός και οικονομικός με 24.2 fantasy points",
-    "source": "EuroLeague Fantasy Tips (official)"
+    "note": "Εξαιρετικό πρόγραμμα και καλή αγωνιστική κατάσταση",
+    "source": "Basketball Sphere"
    },
    {
-    "player": "TANASKOVIC, NIKOLA",
+    "player": "JOKSIMOVIC, STEFAN",
     "stance": "pick",
-    "note": "Εξαιρετική αξία σε χαμηλή τιμή",
-    "source": "EuroLeague Fantasy Tips (official)"
-   },
-   {
-    "player": "SORKIN, ROMAN",
-    "stance": "avoid",
-    "note": "Απογοητευτική εμφάνιση και αρνητικοί πόντοι",
-    "source": "EuroLeague Fantasy Tips (official)"
-   },
-   {
-    "player": "MONEKE, CHIMA",
-    "stance": "avoid",
-    "note": "Χαμηλή απόδοση σε παιχνίδι χαμηλού σκορ",
-    "source": "EuroLeague Fantasy Tips (official)"
-   },
-   {
-    "player": "WALKER IV, LONNIE",
-    "stance": "avoid",
-    "note": "Βασικό «bust» της αγωνιστικής",
-    "source": "EuroLeague Fantasy Tips (official)"
-   },
-   {
-    "player": "DIOP, OUSMANE",
-    "stance": "pick",
-    "note": "Εξαιρετική αξία και ατομικό ρεκόρ PIR",
-    "source": "EuroLeague Fantasy Tips (official)"
-   },
-   {
-    "player": "WILEY, AUSTIN",
-    "stance": "pick",
-    "note": "Εντυπωσιακή εμφάνιση με 35.2 fantasy points",
-    "source": "EuroLeague Fantasy Tips (official)"
-   },
-   {
-    "player": "HIFI, NADIR",
-    "stance": "pick",
-    "note": "Αναδεικνύεται σε κορυφαία επιλογή fantasy",
-    "source": "EuroLeague Fantasy Tips (official)"
-   },
-   {
-    "player": "BLAKENEY, ANTONIO",
-    "stance": "avoid",
-    "note": "Υψηλή τιμή αλλά αρνητική απόδοση",
-    "source": "EuroLeague Fantasy Tips (official)"
-   },
-   {
-    "player": "PARRA, JOEL",
-    "stance": "avoid",
-    "note": "Απογοήτευση και αρνητικό σκορ",
-    "source": "EuroLeague Fantasy Tips (official)"
-   },
-   {
-    "player": "BALDWIN IV, WADE",
-    "stance": "avoid",
-    "note": "Χαμηλή απόδοση σε σχέση με την τιμή του",
-    "source": "EuroLeague Fantasy Tips (official)"
-   },
-   {
-    "player": "ABALDE, ALBERTO",
-    "stance": "pick",
-    "note": "Εξαιρετική εμφάνιση με χαμηλό κόστος",
-    "source": "EuroLeague Fantasy Tips (official)"
-   },
-   {
-    "player": "NUNN, KENDRICK",
-    "stance": "captain",
-    "note": "Ιδανική επιλογή αρχηγού χάρη στην εντυπωσιακή του εμφάνιση",
-    "source": "EuroLeague Fantasy Tips (official)"
-   },
-   {
-    "player": "HAYES-DAVIS, NIGEL",
-    "stance": "avoid",
-    "note": "Χωρίς πόντους και με αρνητική επίδραση στην τιμή",
-    "source": "EuroLeague Fantasy Tips (official)"
-   },
-   {
-    "player": "LUWAWU-CABARROT, TIMOTHE",
-    "stance": "avoid",
-    "note": "Νέο αρνητικό PIR και συνεχιζόμενο ντεφορμάρισμα",
-    "source": "EuroLeague Fantasy Tips (official)"
-   },
-   {
-    "player": "WRIGHT, MOSES",
-    "stance": "pick",
-    "note": "Ευνοϊκή συγκυρία απέναντι στη Valencia Basket",
-    "source": "EuroLeague Fantasy Tips (official)"
-   },
-   {
-    "player": "KOLOKO, CHRISTIAN",
-    "stance": "pick",
-    "note": "Εξαιρετική τιμή και αμυνδική κυριαρχία",
-    "source": "EuroLeague Fantasy Tips (official)"
+    "note": "Προσιτή τιμή και αυξημένος χρόνος συμμετοχής λόγω τραυματισμών",
+    "source": "Basketball Sphere"
    },
    {
     "player": "VALANCIUNAS, JONAS",
     "stance": "pick",
-    "note": "Σταθερά κορυφαία επιλογή για το ρόστερ",
-    "source": "EuroLeague Fantasy Tips (official)"
+    "note": "Αυξημένος ρόλος και ευνοϊκό πρόγραμμα αγώνων",
+    "source": "Basketball Sphere"
    },
    {
-    "player": "HAYES, KEVARRIUS",
+    "player": "STRAZEL, MATTHEW",
     "stance": "pick",
-    "note": "Αυξημένος χρόνος συμμετοχής λόγω απουσιών",
-    "source": "EuroLeague Fantasy Tips (official)"
+    "note": "Ευνοϊκό πρόγραμμα και δυνατότητα για υψηλή απόδοση",
+    "source": "Basketball Sphere"
    },
    {
-    "player": "FAYE, MOUHAMED",
+    "player": "BALDWIN IV, WADE",
     "stance": "pick",
-    "note": "Σταθερή αξία και χαμηλή τιμή",
-    "source": "EuroLeague Fantasy Tips (official)"
+    "note": "Ευνοϊκό πρόγραμμα και ταιριάζει σε παιχνίδια γρήγορου ρυθμού",
+    "source": "Basketball Sphere"
+   },
+   {
+    "player": "DIARRA, ALIOU",
+    "stance": "avoid",
+    "note": "Δύσκολο πρόγραμμα αγώνων για τη Virtus Bologna",
+    "source": "Basketball Sphere"
+   },
+   {
+    "player": "HIFI, NADIR",
+    "stance": "avoid",
+    "note": "Δύσκολο πρόγραμμα απέναντι σε ισχυρές αμυντικά ομάδες",
+    "source": "Basketball Sphere"
+   },
+   {
+    "player": "PAYNE, CAMERON",
+    "stance": "pick",
+    "note": "Ηγετικός ρόλος μετά τον τραυματισμό του Mike James",
+    "source": "Basketball Sphere"
+   },
+   {
+    "player": "FELIZ, ANDRES",
+    "stance": "pick",
+    "note": "Αυξημένες ευθύνες και πιθανότητα επιλογής ως αρχηγός",
+    "source": "Basketball Sphere"
+   },
+   {
+    "player": "SARIC, DARIO",
+    "stance": "pick",
+    "note": "Πρωταγωνιστικός ρόλος και εξαιρετική παρουσία στα ριμπάουντ",
+    "source": "Basketball Sphere"
+   },
+   {
+    "player": "SHIELDS, SHAVON",
+    "stance": "pick",
+    "note": "Σταθερά υψηλή απόδοση και ευνοϊκό πρόγραμμα",
+    "source": "Basketball Sphere"
+   },
+   {
+    "player": "TAYLOR, KAMERON",
+    "stance": "pick",
+    "note": "Αναβαθμισμένος ρόλος λόγω απουσιών στην Valencia Basket",
+    "source": "Basketball Sphere"
+   },
+   {
+    "player": "WARD, TYSON",
+    "stance": "pick",
+    "note": "Σταθερές εμφανίσεις και αυξημένος χρόνος συμμετοχής",
+    "source": "Basketball Sphere"
+   },
+   {
+    "player": "KEY, BRAXTON",
+    "stance": "pick",
+    "note": "Ευκαιρία απόκτησης σε χαμηλότερη τιμή λόγω ντεφορμαρίσματος",
+    "source": "Basketball Sphere"
+   },
+   {
+    "player": "PAPANIKOLAOU, KOSTAS",
+    "stance": "pick",
+    "note": "Πολύτιμη επιλογή χαμηλού κόστους με σταθερό χρόνο συμμετοχής",
+    "source": "Basketball Sphere"
    }
   ],
-  "round": 10,
-  "summary_el": "• O Nadir Hifi αναδείχθηκε MVP της 10ης αγωνιστικής στη EuroLeague, πραγματοποιώντας εξαιρετική εμφάνιση με τη φανέλα της Paris Basketball κόντρα στην Anadolu Efes Istanbul.\n• Η Crvena Zvezda πέτυχε σπουδαία εκτός έδρας νίκη απέναντι στην Olympiacos Piraeus, περιορίζοντας τους γηπεδούχους σε χαμηλή επιθετική παραγωγίδα.\n• Ο Kendrick Nunn πραγματοποιήθηκε καθοριστικός για τον Panathinaikos AKTOR Athens στο συναρπαστικό παιχνίδι κόντρα στη Real Madrid.\n• Η Olimpia Milano προχώρησε σε αλλαγή στην τεχνική ηγεσία, απολύοντας τον Giuseppe Poeta και αναθέτοντας τα ηνία στον Luca Banchi.\n• Ο Zalgiris Kaunas συνέχισε το νικηφόρο σερί του στη EuroLeague επικρατώντας εκτός έδρας της Besiktas Istanbul.",
+  "round": 11,
+  "summary_el": "- Η 11η αγωνιστική της EuroLeague πλησιάζει, με τις ομάδες να προετοιμάζονται για τη φάση πριν από τις επόμενες απεριόριστες αλλαγές.\n- Ο Carlik Jones προτείνεται για παραμονή χάρη στο ευνοϊκό πρόγραμμα της Partizan με τρία διαδοχικά εντός έδρας παιχνίδια.\n- Ο Elijah Bryant αποτελεί εξαιρετική επιλογή αγοράς επειδή η Hapoel Tel Aviv έχει βατό πρόγραμμα.\n- Ο Jonas Valanciunas προτείνεται ως λύση υψηλς αξίας για τη θέση των σέντερ στη Zalgiris.\n- Ο Kostas Papanikolaou θα απουσιάσει από την αναμέτρηση της Olympiacos απέναντι στην Dubai λόγω τενοντίτιδας.\n- Σημαντικές ανακατατάξεις και ευκαιρίες προκύπτουν από τις τιμές των παικτών ενόψει της συνέχειας στο Fantasy.",
   "_model": "gemini-3.5-flash-lite",
-  "_seconds": 10.4
+  "_seconds": 5.6
  },
- "digest_at": "2026-11-08T05:07:24.105606+00:00",
- "failed": [
-  "Basketball Sphere – Fantasy: HTTPError direct 415"
- ]
+ "digest_at": "2026-11-09T05:07:15.379101+00:00",
+ "failed": []
 }

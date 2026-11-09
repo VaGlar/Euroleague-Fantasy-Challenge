@@ -1502,7 +1502,7 @@
   },
   {
    "round": 11,
-   "trades": 3,
+   "trades": 4,
    "bank": 0.1,
    "squad": [
     {
@@ -1528,17 +1528,6 @@
      "x_now": 20.5
     },
     {
-     "id": 7424,
-     "price": 10.8,
-     "position": "Center",
-     "person_id": "014108",
-     "name": "DIARRA, ALIOU",
-     "team": "VIR",
-     "role": "πάγκος",
-     "captain": false,
-     "x_now": 14.8
-    },
-    {
      "id": 4255,
      "price": 8.0,
      "position": "Head Coach",
@@ -1558,7 +1547,7 @@
      "team": "IST",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 13.7
+     "x_now": 14.3
     },
     {
      "id": 11519,
@@ -1572,6 +1561,17 @@
      "x_now": 13.4
     },
     {
+     "id": 7424,
+     "price": 10.8,
+     "position": "Center",
+     "person_id": "014108",
+     "name": "DIARRA, ALIOU",
+     "team": "VIR",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 13.0
+    },
+    {
      "id": 3851,
      "price": 9.3,
      "position": "Guard",
@@ -1580,7 +1580,7 @@
      "team": "MAD",
      "role": "5άδα",
      "captain": false,
-     "x_now": 12.1
+     "x_now": 12.7
     },
     {
      "id": 3975,
@@ -1602,7 +1602,7 @@
      "team": "ASV",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 5.5
+     "x_now": 5.4
     },
     {
      "id": 3983,
@@ -1616,19 +1616,19 @@
      "x_now": 4.6
     },
     {
-     "id": 3867,
+     "id": 3933,
      "price": 4.2,
      "position": "Forward",
-     "person_id": "001255",
-     "name": "PAPANIKOLAOU, KOSTAS",
-     "team": "OLY",
+     "person_id": "013373",
+     "name": "CAVALIERE, LEOPOLD",
+     "team": "PRS",
      "role": "6ος",
      "captain": false,
      "x_now": 3.6
     }
    ],
-   "x_total": 117.7,
-   "decided_at": "2026-11-08T05:07+00:00"
+   "x_total": 117.6,
+   "decided_at": "2026-11-09T05:07+00:00"
   }
  ],
  "seed_id": "5a453a755a9b",
@@ -1639,5 +1639,5 @@
   "raw": 1105.4,
   "avg_raw": 946.6
  },
- "generated": "2026-11-08T05:07:40.858830+00:00"
+ "generated": "2026-11-09T05:07:17.630162+00:00"
 }
