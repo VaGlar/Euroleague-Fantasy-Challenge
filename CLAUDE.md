@@ -8,7 +8,7 @@ How the project works is in `README.md`; this file is only about roles and rules
 | Role | Branch | Owns (writes) | Does not touch |
 |------|--------|---------------|----------------|
 | **Developer** | `claude/vibrant-cannon-u7rds6` | product code: `elf/`, `web/`, `worker/`, `functions/`, `sources.yaml`, `preferences.yaml`, `README.md` | `tests/` beyond the tests of its own change |
-| **Tester** | `claude/festive-babbage-gota28` | `tests/`, `.github/workflows/tests.yml`, `.coveragerc`, `docs/test-reports/` | product code: bugs go in a report or the PR, the developer fixes them (unless the owner asks the tester to) |
+| **Tester** | `claude/festive-babbage-gota28-ci` | `tests/`, `.github/workflows/tests.yml`, `.coveragerc`, `docs/test-reports/` | product code: bugs go in a report or the PR, the developer fixes them (unless the owner asks the tester to) |
 | **Owner** | — | merges, GitHub settings (rulesets, secrets, variables), Cloudflare, Patreon | — |
 
 **Shared, owner's approval needed:** `.github/workflows/update.yml`, `lineup.yml`, `deploy-bot.yml`,
