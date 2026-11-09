@@ -252,3 +252,12 @@ test("«Καθαρισμός» clears the panel's filters but leaves ★ Watchli
   await expect(page.locator("#fsearch")).toHaveValue("a");
   await expect(page.locator("#fchips")).toBeEmpty();
 });
+
+test("a tag explains itself on a tap; «Σχετικά» lists every tag with the same text", async ({ page }, testInfo) => {
+  await open(page, "public", { tab: "players" });
+  await page.locator("#players .tag.t-pick[data-info]:visible").first().click();
+  await expect(page.locator("#tip")).toContainText("PICK: τον προτείνουν στήλες fantasy");
+  await goTab(page, testInfo, "about");
+  await expect(page.locator("#legend dt")).toHaveCount(9);
+  await expect(page.locator("#legend")).toContainText("δεν μπορεί να αγωνιστεί");
+});
