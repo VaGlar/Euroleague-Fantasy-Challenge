@@ -358,19 +358,32 @@ round,source,stance,person_id,name,team,model_xpts
 10,EuroLeague Fantasy Tips (official),pick,003733,"ABALDE, ALBERTO",MAD,8.21
 10,EuroLeague Fantasy Tips (official),pick,012609,"MALCOLM, COLLIN",IST,14.09
 10,EuroLeague Fantasy Tips (official),pick,014134,"NORRIS, MILES",MUN,5.67
-11,Basketball Sphere,pick,013369,"JONES, CARLIK",PAR,15.39
-11,Basketball Sphere,pick,009846,"BRYANT, ELIJAH",HTA,21.2
-11,Basketball Sphere,pick,014107,"JOKSIMOVIC, STEFAN",BAS,2.06
-11,Basketball Sphere,pick,000898,"VALANCIUNAS, JONAS",ZAL,19.54
-11,Basketball Sphere,pick,008099,"STRAZEL, MATTHEW",IST,11.6
-11,Basketball Sphere,pick,009863,"BALDWIN IV, WADE",ULK,13.88
-11,Basketball Sphere,avoid,014108,"DIARRA, ALIOU",VIR,14.12
-11,Basketball Sphere,avoid,012640,"HIFI, NADIR",PRS,19.64
-11,Basketball Sphere,pick,014213,"PAYNE, CAMERON",IST,13.68
-11,Basketball Sphere,pick,011247,"FELIZ, ANDRES",MAD,12.08
-11,Basketball Sphere,pick,003112,"SARIC, DARIO",IST,15.16
-11,Basketball Sphere,pick,007831,"SHIELDS, SHAVON",ULK,13.31
-11,Basketball Sphere,pick,011217,"TAYLOR, KAMERON",PAM,13.58
-11,Basketball Sphere,pick,012610,"WARD, TYSON",OLY,8.7
-11,Basketball Sphere,pick,014168,"KEY, BRAXTON",ULK,7.46
-11,Basketball Sphere,pick,001255,"PAPANIKOLAOU, KOSTAS",OLY,0.0
+11,EuroLeague Fantasy Tips (official),pick,014108,"DIARRA, ALIOU",VIR,14.12
+11,EuroLeague Fantasy Tips (official),pick,013385,"DIOP, OUSMANE",MIL,3.37
+11,EuroLeague Fantasy Tips (official),pick,011284,"FARIED, KENNETH",BAS,12.01
+11,EuroLeague Fantasy Tips (official),pick,012788,"OTURU, DAN",HTA,15.47
+11,EuroLeague Fantasy Tips (official),pick,000898,"VALANCIUNAS, JONAS",ZAL,19.54
+11,EuroLeague Fantasy Tips (official),pick,003733,"ABALDE, ALBERTO",MAD,8.37
+11,EuroLeague Fantasy Tips (official),pick,013900,"GACH, BOTH",ASV,11.04
+11,EuroLeague Fantasy Tips (official),pick,001288,"LUCIC, VLADIMIR",MUN,10.15
+11,EuroLeague Fantasy Tips (official),pick,012609,"MALCOLM, COLLIN",IST,13.67
+11,EuroLeague Fantasy Tips (official),pick,008192,"TUBELIS, AZUOLAS",ZAL,15.18
+11,EuroLeague Fantasy Tips (official),pick,009992,"BRIZUELA, DARIO",BAR,5.05
+11,EuroLeague Fantasy Tips (official),pick,011247,"FELIZ, ANDRES",MAD,12.08
+11,EuroLeague Fantasy Tips (official),pick,012640,"HIFI, NADIR",PRS,19.64
+11,EuroLeague Fantasy Tips (official),pick,012774,"NUNN, KENDRICK",PAN,19.08
+11,EuroLeague Fantasy Tips (official),pick,011706,"SAINT-SUPERY, MARIO",PAM,1.87
+11,Basketball Sphere – Fantasy,pick,013369,"JONES, CARLIK",PAR,15.39
+11,Basketball Sphere – Fantasy,pick,009846,"BRYANT, ELIJAH",HTA,21.2
+11,Basketball Sphere – Fantasy,pick,014107,"JOKSIMOVIC, STEFAN",BAS,2.06
+11,Basketball Sphere – Fantasy,pick,008099,"STRAZEL, MATTHEW",IST,11.6
+11,Basketball Sphere – Fantasy,pick,009863,"BALDWIN IV, WADE",ULK,13.88
+11,Basketball Sphere – Fantasy,avoid,014108,"DIARRA, ALIOU",VIR,14.12
+11,Basketball Sphere – Fantasy,avoid,012640,"HIFI, NADIR",PRS,19.64
+11,Basketball Sphere – Fantasy,avoid,011247,"FELIZ, ANDRES",MAD,12.08
+11,Basketball Sphere – Fantasy,pick,003112,"SARIC, DARIO",IST,15.16
+11,Basketball Sphere – Fantasy,pick,007831,"SHIELDS, SHAVON",ULK,13.31
+11,Basketball Sphere – Fantasy,pick,011217,"TAYLOR, KAMERON",PAM,13.58
+11,Basketball Sphere – Fantasy,pick,012610,"WARD, TYSON",OLY,8.7
+11,Basketball Sphere – Fantasy,pick,014168,"KEY, BRAXTON",ULK,7.46
+11,Basketball Sphere – Fantasy,pick,001255,"PAPANIKOLAOU, KOSTAS",OLY,3.6
