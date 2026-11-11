@@ -31,7 +31,7 @@ test("navigation bars: top tabs on PC, bottom bar on phones", async ({ page }, t
     await expect(page.locator("#modal")).not.toHaveClass(/\bon\b/);
     await open(page, "personal");                                         // no «Σχετικά» in the personal edition
     await page.locator('#bnav button[data-t="more"]').click();
-    await expect(page.locator("#sheet [data-go]")).toHaveCount(4);
+    await expect(page.locator("#sheet [data-go]")).toHaveCount(2);          // compare, model
     await expect(page.locator('#sheet [data-go="about"]')).toHaveCount(0);
   } else {
     await expect(page.locator("#tabs")).toBeVisible();
