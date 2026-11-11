@@ -17,7 +17,11 @@ test("table on PC, cards on phones; cards don't overlap", async ({ page }, testI
   } else {
     await expect(page.locator("#ptable tbody tr").first()).toBeVisible();
     await expect(page.locator("#ptable thead")).toContainText("xFPT");
-    await expect(page.locator("#ptable thead")).toContainText("POP");
+    // the simple view by default: xFPT, total, opponent, matchup, price, POP; the rest with «Περισσότερα στοιχεία»
+    await expect(page.locator('#ptable th[data-k="popularity"]')).toBeVisible();
+    await expect(page.locator('#ptable th[data-k="value"]')).toBeHidden();
+    await page.locator("#fmore").check();
+    await expect(page.locator('#ptable th[data-k="value"]')).toBeVisible();
   }
   await checkLayout(page, "players");
 });
@@ -62,7 +66,7 @@ test("filters: search on the page, the rest in the «Φίλτρα» panel; posit
 test("sort by POP puts the most owned first", async ({ page }, testInfo) => {
   await open(page, "public", { tab: "players" });
   if (isPhone(testInfo)) await page.locator("#fsort").selectOption("popularity");
-  else await page.locator('#ptable th[data-k="popularity"]').click();      // PC: the table's headers sort
+  else await page.locator('#ptable th[data-k="popularity"]').click();   // PC: the headers sort
   const pops = isPhone(testInfo)
     ? await page.locator("#plist .pcard").evaluateAll((els) => els.slice(0, 6).map((e) => parseFloat((e.textContent.match(/POP ([\d.]+)/) || [])[1])))
     : await page.evaluate(() => {        // the POP column of the table
@@ -260,4 +264,21 @@ test("a tag explains itself on a tap; «Σχετικά» lists every tag with th
   await goTab(page, testInfo, "about");
   await expect(page.locator("#legend dt")).toHaveCount(9);
   await expect(page.locator("#legend")).toContainText("δεν μπορεί να αγωνιστεί");
+});
+
+test("«Παίκτες»: the simple view shows xFPT, total, opponent, matchup, price and POP; «Περισσότερα στοιχεία» adds the rest, remembered", async ({ page }, testInfo) => {
+  test.skip(isPhone(testInfo), "the table is the PC's view");
+  await open(page, "public", { tab: "players" });
+  const shown = () => page.locator("#ptable thead th:visible").evaluateAll((ths) => ths.map((th) => th.dataset.k));
+  const simple = await shown();
+  for (const k of ["name", "x_now", "fpt_total", "opp", "pos_dev", "popularity"]) expect(simple).toContain(k);
+  for (const k of ["x3", "season_pir", "price_chg", "value"]) expect(simple).not.toContain(k);
+  if (page.viewportSize().width > 1100) expect(simple).toContain("price");     // narrower: the price is under the name
+  await page.locator("#fmore").check();
+  for (const k of ["x3", "value"]) expect(await shown()).toContain(k);
+  await page.reload();
+  await expect(page.locator("#fmore")).toBeChecked();
+  await page.locator("#fmore").uncheck();
+  expect(await shown()).not.toContain("value");
+  expect(await shown()).toContain("popularity");
 });

@@ -477,6 +477,16 @@ html body .pill .ic { vertical-align: -0.12em; }
 .tag.t-pick, .tag.t-up { background: var(--good); } .tag.t-down, .tag.t-out { background: var(--critical); }
 .tag.t-new { background: #2f6fd0; } .tag.t-back { background: #5b6472; } .tag.t-q { background: #e2a516; color: #1a1400; }
 .tag[data-info] { cursor: help; }
+.tm-start { text-align: center; margin: 4px 0 10px; }
+.tm-start .tm-or { margin: 8px 0 0; font-size: 13px; }
+.tm-next-h { margin: 0 0 4px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--accent); }
+.tm-all { margin-top: 6px; }
+.tm-all > summary { cursor: pointer; padding: 8px 0; font-size: 14px; color: var(--text-muted); }
+.tm-tcount { white-space: nowrap; }
+/* «Παίκτες»: the simple view by default (xFPT, Points, total, opponent, matchup, price); «Περισσότερα στοιχεία» adds the rest */
+#players:not(.more) #ptable :is(.c-x3, .c-season_pir, .c-price_chg, .c-value),
+#players:not(.more) .pcard .more { display: none; }
+.fmore { display: inline-flex; gap: 6px; align-items: center; font-size: 14px; margin-left: auto; margin-right: 8px; cursor: pointer; }
 .legend { display: grid; grid-template-columns: max-content 1fr; gap: 8px 12px; margin: 8px 0 0; align-items: baseline; }
 .legend dd { margin: 0; font-size: 14px; }
 .td-fold > summary { list-style: none; cursor: pointer; }
@@ -597,7 +607,7 @@ html body #mCp .ic { width: 1.25em; height: 1.25em; }
   #ptable th, #ptable td { padding: 6px 4px; }
   #ptable td:first-child { white-space: normal; min-width: 150px; }
   #ptable .bar { display: none; }
-  #ptable .c-price, #ptable .c-season_pir, #ptable .c-price_chg { display: none; }
+  #players.more #ptable .c-price, #ptable .c-season_pir, #ptable .c-price_chg { display: none; }
   main { padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); }
 }
 @media (min-width: 641px) and (max-width: 760px) {
@@ -666,7 +676,7 @@ html body #mCp .ic { width: 1.25em; height: 1.25em; }
       <button id="fopen" class="fbtn" type="button" aria-haspopup="dialog">Φίλτρα<b id="fn"></b></button>
     </div>
     <div class="fchips" id="fchips"></div>
-    <div class="fcountrow"><span class="muted" id="fcount"></span><button id="freset" class="linkbtn" type="button">Clear</button></div>
+    <div class="fcountrow"><span class="muted" id="fcount"></span><label class="fmore"><input id="fmore" type="checkbox"> Περισσότερα στοιχεία</label><button id="freset" class="linkbtn" type="button">Clear</button></div>
     <div class="fpanel" id="fpanel" hidden>
       <div class="fsheet" role="dialog" aria-modal="true" aria-labelledby="fttl">
         <div class="fhead"><h2 id="fttl">Φίλτρα</h2><button class="x" id="fclose" type="button" aria-label="Κλείσιμο">×</button></div>
@@ -1054,6 +1064,13 @@ function filtersOpen(on) {
   document.body.classList.toggle("noscroll", on);
   if (on) $("#fclose").focus();
 }
+// «Περισσότερα στοιχεία»: the full table, remembered on this device
+function playersMore(on) {
+  if (on === undefined) { try { on = localStorage.getItem("pmore") === "1"; } catch (e) { on = false; } }
+  else { try { localStorage.setItem("pmore", on ? "1" : "0"); } catch (e) {} }
+  $("#players").classList.toggle("more", on);
+  $("#fmore").checked = on;
+}
 function renderPlayers() {
   const pos = posSel(), team = $("#fteam").value, turn = $("#fturn").value, q = $("#fsearch").value.toLowerCase();
   const healthy = $("#fhealthy").checked, watch = $("#fwatch").checked;
@@ -1087,15 +1104,15 @@ function renderPlayers() {
       ${anyPlayed ? `<td class="num">${r.actual == null ? "–" : `<b class="${r.actual >= (r.x_now ?? 0) ? "up" : "down"}">${f1(r.actual)}</b>`}</td>` : ""}
       <td class="num">${r.fpt_total == null ? "–" : f1(r.fpt_total)}</td>
       <td class="c-opp">${gameOf(r)}</td><td class="num c-pos_dev">${matchup(r.pos_dev)}</td>
-      <td class="num">${f1(xf3(r))}</td><td class="num c-season_pir">${f1(r.season_pir)}</td>
-      ${hasPrice ? `<td class="num c-price">${f1(r.price)}</td><td class="num c-price_chg">${chg(r.price_chg) || "–"}</td><td class="num">${pop(r) || "–"}</td><td class="num">${r.value == null ? "–" : r.value.toFixed(2)}</td>` : ""}</tr>`).join("") + "</tbody>";
+      <td class="num c-x3">${f1(xf3(r))}</td><td class="num c-season_pir">${f1(r.season_pir)}</td>
+      ${hasPrice ? `<td class="num c-price">${f1(r.price)}</td><td class="num c-price_chg">${chg(r.price_chg) || "–"}</td><td class="num c-popularity">${pop(r) || "–"}</td><td class="num c-value">${r.value == null ? "–" : r.value.toFixed(2)}</td>` : ""}</tr>`).join("") + "</tbody>";
   $("#ptable").querySelectorAll("th").forEach((th) => th.onclick = () => {
     const k = th.dataset.k; sortDir = sortKey === k ? -sortDir : -1; sortKey = k; renderPlayers();
   });
   $("#plist").innerHTML = rows.slice(0, 150).map((r) => `<div class="pcard" data-pid="${esc(r.person_id)}" style="${tcol(r.team)}">
     <div class="pn">${cbox(r)}${wstar(r)}${esc(nm(r.name))}${avb(r)}${newb(r)}${exb(r)}${dol(r)}</div>
-    <div class="px"><b>${f1(r.x_now)}</b><small>xFPT${ii("xpts")}</small>${r.actual != null ? `<span class="h"><b class="${r.actual >= (r.x_now ?? 0) ? "up" : "down"}">${f1(r.actual)}</b> <small>points</small></span>` : ""}<span class="h">${f1(xf3(r))} <small>xFPT3</small></span></div>
-    <div class="pm">${esc(tc(r.team))} · ${esc((r.position || "")[0] || "")}${r.price != null ? ` · <b>${f1(r.price)}cr</b>${chg(r.price_chg)}` : ""}${pop(r) ? ` · POP ${pop(r)}` : ""}${r.fpt_total != null ? ` · Σύνολο <b>${f1(r.fpt_total)}</b>` : ""} · ${gameOf(r)} ${matchup(r.pos_dev)}</div>
+    <div class="px"><b>${f1(r.x_now)}</b><small>xFPT${ii("xpts")}</small>${r.actual != null ? `<span class="h"><b class="${r.actual >= (r.x_now ?? 0) ? "up" : "down"}">${f1(r.actual)}</b> <small>points</small></span>` : ""}<span class="h more">${f1(xf3(r))} <small>xFPT3</small></span></div>
+    <div class="pm">${esc(tc(r.team))} · ${esc((r.position || "")[0] || "")}${r.price != null ? ` · <b>${f1(r.price)}cr</b><span class="more">${chg(r.price_chg)}</span>` : ""}${pop(r) ? ` · POP ${pop(r)}` : ""}${r.fpt_total != null ? ` · Σύνολο <b>${f1(r.fpt_total)}</b>` : ""} · ${gameOf(r)} ${matchup(r.pos_dev)}</div>
     ${watch ? `<div class="pm">${wsince(r, "")}</div>` : ""}
   </div>`).join("") + (rows.length > 150 ? `<p class="muted">…και ${rows.length - 150} ακόμα — στένεψε τα φίλτρα.</p>` : "");
   $("#fsort").value = sortKey;
@@ -2213,6 +2230,8 @@ const MOVE_WAIT_MS = 4000;
     if (b) { b.dataset.clear.split(",").forEach(clearFilter); renderPlayers(); }
   });
   $("#fclear").onclick = () => { FILTERS.filter((id) => !ON_PAGE.includes(id)).forEach(clearFilter); renderPlayers(); };
+  playersMore();
+  $("#fmore").onchange = (e) => playersMore(e.target.checked);
   $("#freset").onclick = () => {
     FILTERS.forEach(clearFilter);
     sortKey = "x_now"; sortDir = -1; renderPlayers();
