@@ -1513,7 +1513,7 @@
      "name": "VEZENKOV, SASHA",
      "team": "OLY",
      "role": "5άδα",
-     "captain": false,
+     "captain": true,
      "x_now": 23.4
     },
     {
@@ -1590,7 +1590,7 @@
      "name": "HERRERA, SEBASTIAN",
      "team": "PRS",
      "role": "5άδα",
-     "captain": true,
+     "captain": false,
      "x_now": 6.8
     },
     {
@@ -1628,7 +1628,145 @@
     }
    ],
    "x_total": 120.6,
-   "decided_at": "2026-11-11T16:11+00:00"
+   "decided_at": "2026-11-11T16:11+00:00",
+   "moves": {
+    "2": {
+     "in": [],
+     "out": [],
+     "captain": 3766,
+     "at": "2026-11-11T23:10+00:00"
+    }
+   }
+  },
+  {
+   "round": 12,
+   "trades": 4,
+   "bank": 0.0,
+   "squad": [
+    {
+     "id": 3766,
+     "price": 18.9,
+     "position": "Forward",
+     "person_id": "003469",
+     "name": "VEZENKOV, SASHA",
+     "team": "OLY",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 23.4
+    },
+    {
+     "id": 11549,
+     "price": 16.9,
+     "position": "Center",
+     "person_id": "000898",
+     "name": "VALANCIUNAS, JONAS",
+     "team": "ZAL",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 20.5
+    },
+    {
+     "id": 8567,
+     "price": 12.3,
+     "position": "Guard",
+     "person_id": "014124",
+     "name": "HORTON TUCKER, TALEN",
+     "team": "ULK",
+     "role": "5άδα",
+     "captain": true,
+     "x_now": 16.9
+    },
+    {
+     "id": 7424,
+     "price": 10.8,
+     "position": "Center",
+     "person_id": "014108",
+     "name": "DIARRA, ALIOU",
+     "team": "VIR",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 13.0
+    },
+    {
+     "id": 3851,
+     "price": 9.3,
+     "position": "Guard",
+     "person_id": "011247",
+     "name": "FELIZ, ANDRES",
+     "team": "MAD",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 11.7
+    },
+    {
+     "id": 13936,
+     "price": 7.9,
+     "position": "Forward",
+     "person_id": "015400",
+     "name": "FRANKS, ROBERT",
+     "team": "PAR",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 9.7
+    },
+    {
+     "id": 3975,
+     "price": 5.9,
+     "position": "Guard",
+     "person_id": "012611",
+     "name": "HERRERA, SEBASTIAN",
+     "team": "PRS",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 7.4
+    },
+    {
+     "id": 3897,
+     "price": 8.6,
+     "position": "Head Coach",
+     "person_id": "ADG",
+     "name": "JASIKEVICIUS, SARAS",
+     "team": "ULK",
+     "role": "coach",
+     "captain": false,
+     "x_now": 6.2
+    },
+    {
+     "id": 4005,
+     "price": 4.1,
+     "position": "Forward",
+     "person_id": "000229",
+     "name": "JACKSON, EDWIN",
+     "team": "ASV",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 5.4
+    },
+    {
+     "id": 3867,
+     "price": 4.2,
+     "position": "Forward",
+     "person_id": "001255",
+     "name": "PAPANIKOLAOU, KOSTAS",
+     "team": "OLY",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 3.6
+    },
+    {
+     "id": 3971,
+     "price": 4.1,
+     "position": "Guard",
+     "person_id": "004761",
+     "name": "MARINKOVIC, VANJA",
+     "team": "PAR",
+     "role": "6ος",
+     "captain": false,
+     "x_now": 3.5
+    }
+   ],
+   "x_total": 123.0,
+   "decided_at": "2026-11-11T23:10+00:00"
   }
  ],
  "seed_id": "5a453a755a9b",
@@ -1639,5 +1777,5 @@
   "raw": 1105.4,
   "avg_raw": 946.6
  },
- "generated": "2026-11-11T16:11:46.214235+00:00"
+ "generated": "2026-11-11T23:10:12.721521+00:00"
 }

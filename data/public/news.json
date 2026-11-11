@@ -73,10 +73,343 @@
    "report": false
   },
   {
-   "title": "Ερυθρός Αστέρας: Πρόβλημα με Κολόκο στην ομάδα του Βελιγραδίου",
-   "url": "https://www.gazzetta.gr/basketball/euroleague/2585677/erythros-asteras-problima-me-koloko-stin-omada-toy-beligradioy",
-   "date": "2026-11-11T18:03:13+02:00",
+   "title": "Η ΑΕΚ κοντά σε συμφωνία με τον Σέρβο διεθνή Νίκολα Τσρνογκλάβατ",
+   "url": "https://www.gazzetta.gr/handball/a1-andron/2585754/i-aek-konta-se-symfonia-me-ton-serbo-diethni-nikola-tsrnogklabat",
+   "date": "2026-11-12T01:01:12+02:00",
    "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Tonye Jekiri jolts Partizan past Baskonia",
+   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/tonye-jekiri-jolts-partizan-past-baskonia/",
+   "date": "2026-11-11T22:52:07.137000+00:00",
+   "source": "EuroLeague (official)",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Μπαρτσελόνα: Εξετάζει Αλγερινό!",
+   "url": "https://www.novasports.gr/sport/podosfairo/event/laliga-division/article/15225668/mpartselona-eksetazei-algerino/",
+   "date": "2026-11-11T22:49:00+00:00",
+   "source": "Novasports",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Nadir Hifi went from zero to hero in one second",
+   "url": "https://www.eurohoops.net/en/euroleague/2033773/nadir-hifi-went-from-zero-to-hero-in-one-second/",
+   "date": "2026-11-11T22:37:11+00:00",
+   "source": "Eurohoops",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Παρί – Φενέρ 111-109: Μπασκετική ονείρωξη στο Παρίσι! (highlights)",
+   "url": "https://www.novasports.gr/sport/mpasket/event/euroleague/article/15226182/pari-fener-111-109-mpasketiki-oneiroksi-sto-parisi-highlights/",
+   "date": "2026-11-11T22:36:11+00:00",
+   "source": "Novasports",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Χίφι με το δεξί & Ντιλικίνα καριέρας έβγαλαν νοκ-άουτ τη Φενέρ στο Παρίσι",
+   "url": "https://www.eurohoops.net/el/euroleague-el-2/2033768/chifi-me-to-dexi-ntilikina-karieras-evgalan-nok-aout-ti-fener-sto-parisi/",
+   "date": "2026-11-11T22:20:44+00:00",
+   "source": "Eurohoops (GR)",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "EuroLeague: Η βαθμολογία μετά την επική νίκη της Παρί κόντρα στη Φενέρ",
+   "url": "https://www.gazzetta.gr/basketball/euroleague/2585753/euroleague-i-bathmologia-meta-tin-epiki-niki-tis-pari-kontra-sti",
+   "date": "2026-11-12T00:16:19+02:00",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Παρί - Φενέρμπαχτσε 111-109 : Ο Ιφί... ξέρανε τους Τούρκους",
+   "url": "https://www.gazzetta.gr/basketball/euroleague/2585752/pari-fenermpahtse-111-109-o-ifi-xerane-toys-toyrkoys",
+   "date": "2026-11-12T00:14:02+02:00",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "EuroLeague: Η βαθμολογία μετά την ήττα της Φενέρμπαχτσε",
+   "url": "https://www.novasports.gr/sport/mpasket/event/euroleague/article/15225959/euroleague-i-vathmologia-meta-tin-itta-tis-fenermpaxtse-2/",
+   "date": "2026-11-11T22:12:52+00:00",
+   "source": "Novasports",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Παρτίζαν – Μπασκόνια 80-66: Στο τελευταίο πεντάλεπτο έβγαλε ποιότητα (highlights)",
+   "url": "https://www.novasports.gr/sport/mpasket/event/euroleague/article/15225977/partizan-mpaskonia-80-66-sto-teleytaio-pentalepto-evgale-poiotita-highlights/",
+   "date": "2026-11-11T21:54:20+00:00",
+   "source": "Novasports",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "EuroCup: Ακάθεκτες Χάποελ Ιερουσαλήμ & Άρης, μπορεί και χωρίς Χουέρτας η Τενερίφη",
+   "url": "https://www.eurohoops.net/el/eurocup-el/2033700/eurocup-akathektes-chapoel-ierousalim-aris-bori-ke-choris-chouertas-i-tenerifi/",
+   "date": "2026-11-11T21:42:42+00:00",
+   "source": "Eurohoops (GR)",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Ντερτόνα – Χάποελ Ιερουσαλήμ 77-91: Πέρασαν και από την Ιταλία οι Ισραηλινοί! (highlights)",
+   "url": "https://www.novasports.gr/sport/mpasket/event/diethneis-eurocup-mpasket/article/15225962/ntertona-xapoel-ierousalim-77-91-perasan-kai-apo-tin-italia-oi-israilinoi-highlights/",
+   "date": "2026-11-11T21:42:06+00:00",
+   "source": "Novasports",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Παρτίζαν - Μπασκόνια 80-66: Νίκη με τρομερούς Τζεκίρι και Τζόουνς",
+   "url": "https://www.gazzetta.gr/basketball/euroleague/2585749/partizan-mpaskonia-80-66-niki-me-tromeroys-tzekiri-kai-tzooyns",
+   "date": "2026-11-11T23:41:32+02:00",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "EuroLeague roundup: Hifi sinks Fenerbahce with last-second winner, Jekiri leads Partizan past Baskonia",
+   "url": "https://www.eurohoops.net/en/euroleague/2033678/euroleague-roundup-jekiri-leads-partizan-past-baskonia/",
+   "date": "2026-11-11T21:41:13+00:00",
+   "source": "Eurohoops",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Παρτιζάν: “Έπνιξε” τη Μπασκόνια στο τέλος κι ανέβηκε σε θετικό ρεκόρ",
+   "url": "https://www.eurohoops.net/el/euroleague-el-2/2033713/partizan-me-odigous-tous-psilous-tis-nikise-tin-baskonia/",
+   "date": "2026-11-11T21:38:00+00:00",
+   "source": "Eurohoops (GR)",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Λιντέλ: «Σαν να παίζαμε σε... πρεμιέρα - Ανυπομονώ για το ματς κόντρα στον Ολυμπιακό»",
+   "url": "https://www.gazzetta.gr/basketball/eurocup/2585744/lintel-san-na-paizame-se-premiera-anypomono-gia-mats-kontra-ston",
+   "date": "2026-11-11T23:14:13+02:00",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Η Μαρσέιγ «έσβησε» τα χαμόγελα στον Παναθηναϊκό στο Champions League",
+   "url": "https://www.gazzetta.gr/polo/len-champions-league/2585742/i-marseig-esbise-ta-hamogela-ston-panathinaiko-sto-champions",
+   "date": "2026-11-11T23:07:23+02:00",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "ΠΑΟΚ: Ο Ερασιτέχνης είναι αντίθετος στην παραχώρηση του Nick Galis Hall στον Άρη",
+   "url": "https://www.gazzetta.gr/basketball/basket-league/2585739/paok-o-erasitehnis-einai-antithetos-stin-parahorisi-toy-nick-galis",
+   "date": "2026-11-11T22:50:55+02:00",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Θ. Αντετοκούνμπο: “Συνεχίζουμε να χτίζουμε, να βάζουμε τούβλα” (video)",
+   "url": "https://www.novasports.gr/sport/mpasket/event/diethneis-eurocup-mpasket/article/15225863/th-antetokounmpo-synexizoume-na-xtizoume-na-vazoume-touvla-video/",
+   "date": "2026-11-11T20:44:08+00:00",
+   "source": "Novasports",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Μόργκαν: “Ανυπομονώ να παίξω απέναντι στον Ολυμπιακό” (video)",
+   "url": "https://www.novasports.gr/sport/mpasket/event/diethneis-eurocup-mpasket/article/15225858/morgkan-anypomono-na-paikso-apenanti-ston-olympiako-video/",
+   "date": "2026-11-11T20:33:50+00:00",
+   "source": "Novasports",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Μόργκαν, η επιστροφή: Πρώτος σκόρερ με 5 τρίποντα σε ούτε 17 λεπτά",
+   "url": "https://www.eurohoops.net/el/eurocup-el/2033665/morgkan-i-epistrofi-protos-skorer-me-5-triponta-se-oute-17-lepta-simmetochis/",
+   "date": "2026-11-11T20:09:57+00:00",
+   "source": "Eurohoops (GR)",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Κοντραταβίτσιους: «Απόλαυσα το παιχνίδι ως θεατής, όχι ως προπονητής»",
+   "url": "https://www.gazzetta.gr/basketball/eurocup/2585731/kontratabitsioys-apolaysa-paihnidi-os-theatis-ohi-os-proponitis",
+   "date": "2026-11-11T22:08:59+02:00",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Άρης: «Παγιώθηκε» στην κορυφαία δυάδα – Η βαθμολογία του ομίλου",
+   "url": "https://www.novasports.gr/sport/mpasket/event/diethneis-eurocup-mpasket/article/15225786/aris-pagiothike-stin-koryfaia-dyada-i-vathmologia-tou-omilou/",
+   "date": "2026-11-11T20:00:07+00:00",
+   "source": "Novasports",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Άρης: «100στάρα» επί… τρία! (videos)",
+   "url": "https://www.novasports.gr/sport/mpasket/event/diethneis-eurocup-mpasket/article/15225747/aris-100stara-epi-tria-videos/",
+   "date": "2026-11-11T19:53:33+00:00",
+   "source": "Novasports",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Παναθηναϊκός – Στεάουα 25 – 14: Ιστορική νίκη!",
+   "url": "https://www.novasports.gr/sport/alla-spor/event/europi-alla-spor/article/15225728/panathinaikos-steaoua-25-14-istoriki-niki/",
+   "date": "2026-11-11T19:15:39+00:00",
+   "source": "Novasports",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Lauri Markkanen will be out for at least one month with a fracture in his right hand",
+   "url": "https://www.eurohoops.net/en/nba-news/2033621/lauri-markkanen-will-be-out-for-at-least-one-month-with-a-fracture-in-his-right-hand/",
+   "date": "2026-11-11T19:13:23+00:00",
+   "source": "Eurohoops",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "BCL roundup: Dominant wins by Rytas and Murcia, Stefanovic lifts Igokea",
+   "url": "https://www.eurohoops.net/en/fiba-champions-league/2033533/bcl-roundup-stefanovic-lifts-igokea-over-slavia-prague/",
+   "date": "2026-11-11T19:03:05+00:00",
+   "source": "Eurohoops",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "«Αφηνιασμένος» Άρης – Ρεκόρ από… ημίχρονο! (videos)",
+   "url": "https://www.novasports.gr/sport/mpasket/event/diethneis-eurocup-mpasket/article/15225688/afiniasmenos-aris-rekor-apo-imixrono-videos/",
+   "date": "2026-11-11T18:58:56+00:00",
+   "source": "Novasports",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Παναθηναϊκός - Στεάουα Βουκουρεστίου 25-14: Με άνεση η πρώτη νίκη στον όμιλο του Champions League",
+   "url": "https://www.gazzetta.gr/polo/len-champions-league/2585710/panathinaikos-steaoya-boykoyrestioy-25-14-me-anesi-i-proti-niki",
+   "date": "2026-11-11T20:53:32+02:00",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Ντόρσεϊ: «Προτιμώ να με μισείς για αυτό που είμαι, παρά…»",
+   "url": "https://www.novasports.gr/sport/mpasket/event/euroleague/article/15225587/ntorsei-protimo-na-me-miseis-gia-ayto-pou-eimai-para/",
+   "date": "2026-11-11T17:44:52+00:00",
+   "source": "Novasports",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "ΠΑΟΚ: Τα αποτελέσματα της μαγνητικής του Γιάκιτς",
+   "url": "https://www.novasports.gr/sport/podosfairo/event/super-league-1/article/15225582/paok-ta-apotelesmata-tis-magnitikis-tou-giakits/",
+   "date": "2026-11-11T17:44:36+00:00",
+   "source": "Novasports",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Αινιγματικός Ντόρσεϊ: “Προτιμώ να…”",
+   "url": "https://www.eurohoops.net/el/euroleague-el-2/2033556/enigmatikos-ntorsei-protimo-na/",
+   "date": "2026-11-11T17:31:25+00:00",
+   "source": "Eurohoops (GR)",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Crvena zvezda traveled to Madrid without Christian Koloko due to visa issues",
+   "url": "https://www.eurohoops.net/en/euroleague/2033551/crvena-zvezda-traveled-to-madrid-without-christian-koloko-due-to-visa-issues/",
+   "date": "2026-11-11T17:15:59+00:00",
+   "source": "Eurohoops",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Eurobasket: ΑΠΙΘΑΝΗ η Χρίστοβα του Αθηναϊκού, πήρε από το… χέρι την Βουλγαρία στο 91-74 επί της Κροατίας!",
+   "url": "https://www.novasports.gr/sport/mpasket/event/euroleague-women/article/15225545/eurobasket-apithani-i-xristova-tou-athinaikou-pire-apo-to-xeri-tin-voulgaria-sto-91-74-epi-tis-kroatias/",
+   "date": "2026-11-11T17:12:36+00:00",
+   "source": "Novasports",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "“Μικρός” ο 43χρονος Χουέρτας: Δύο χρόνια μεγαλύτερος ο γηραιότερος στην ιστορία της Ευρωλίγκας",
+   "url": "https://www.eurohoops.net/el/euroleague-el-2/2033480/mikros-o-43chronos-chouertas-dio-chronia-megaliteros-o-gireoteros-stin-istoria-tis-evroligkas/",
+   "date": "2026-11-11T16:47:29+00:00",
+   "source": "Eurohoops (GR)",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Injury report, Round 11: Nicolo Melli out for Fenerbahce; No Allman or Stevens for Partizan",
+   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/euroleague-injury-report-round-11-fantasy/",
+   "date": "2026-11-11T16:42:54.464000+00:00",
+   "source": "EuroLeague (official)",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Πασκουάλ: “Ο Ολυμπιακός διαθέτει τεράστια μπασκετική γνώση, την οποία επιδεικνύει κάθε χρόνο”",
+   "url": "https://www.eurohoops.net/el/euroleague-el-2/2033513/paskoual-o-olimpiakos-diatheti-terastia-basketiki-gnosi-tin-opia-epidiknii-kathe-chrono/",
+   "date": "2026-11-11T16:29:04+00:00",
+   "source": "Eurohoops (GR)",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Game Center: Hifi wins it for Paris at the buzzer",
+   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/euroleague-game-center-round-11-el2627/",
+   "date": "2026-11-11T16:17:03.532000+00:00",
+   "source": "EuroLeague (official)",
    "weight": 1,
    "fantasy": false,
    "report": false
@@ -91,73 +424,10 @@
    "report": false
   },
   {
-   "title": "O Απόλλων Σμύρνης δοκιμάζεται στην έδρα της Μπαρτσελόνα για το Euro Cup",
-   "url": "https://www.gazzetta.gr/polo/len-euro-cup/2585676/o-apollon-smyrnis-dokimazetai-stin-edra-tis-mpartselona-gia-euro-cup",
-   "date": "2026-11-11T18:01:22+02:00",
-   "source": "Gazzetta",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Λιβάι Γκαρσία: Ο προπονητής της εθνικής του άφησε ανοιχτό παράθυρο",
-   "url": "https://www.gazzetta.gr/football/superleague/2585671/libai-gkarsia-o-proponitis-tis-ethnikis-toy-afise-anoihto-parathyro",
-   "date": "2026-11-11T17:53:40+02:00",
-   "source": "Gazzetta",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
    "title": "Λεσόρ: “Πράσινος” Round Mound of Rebound και κυρίαρχος των επιθετικών ριμπάουντ (video)",
    "url": "https://www.eurohoops.net/el/trademarks-el/2033475/lesor-prasinos-round-mound-of-rebound-ke-kiriarchos-ton-epithetikon-rimpaount-video/",
    "date": "2026-11-11T15:50:04+00:00",
    "source": "Eurohoops (GR)",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Μπαρτσελόνα για πάντα: Οι Καταλανοί δημιουργούν μνημείο στο Καμπ Νου για τους φιλάθλους που θέλουν να μείνουν... αιώνια δίπλα στην ομάδα",
-   "url": "https://www.gazzetta.gr/football/la-liga/2585667/mpartselona-gia-panta-oi-katalanoi-dimioyrgoyn-mnimeio-sto-kamp-noy-gia",
-   "date": "2026-11-11T17:46:13+02:00",
-   "source": "Gazzetta",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Τίτλοι τέλους για Κάουτ και Φενερμπαχτσέ!",
-   "url": "https://www.novasports.gr/sport/podosfairo/event/super-lig/article/15225461/titloi-telous-gia-kaout-kai-fenermpaxtse/",
-   "date": "2026-11-11T15:42:27+00:00",
-   "source": "Novasports",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Κόμο: Διέλυσε τη Ferrari του στο Νίρμπουργκρινγκ ενόψει ΑΕΚ ο Σάντσεθ",
-   "url": "https://www.gazzetta.gr/football/champions-league/2585663/komo-dielyse-ti-ferrari-toy-sto-nirmpoyrgkringk-enopsei-aek-o",
-   "date": "2026-11-11T17:39:11+02:00",
-   "source": "Gazzetta",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Injury report, Round 11: Barcelona loses Kevin Punter, Tosan Evbuomwa; Partizan without Kevarrius Hayes",
-   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/injury-report-round-11-fantasy/",
-   "date": "2026-11-11T15:23:47.624000+00:00",
-   "source": "EuroLeague (official)",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Ολυμπιακός: Τα επόμενα βήματα για το νέο «Γ. Καραϊσκάκης»",
-   "url": "https://www.gazzetta.gr/football/superleague/2585655/olympiakos-ta-epomena-bimata-gia-neo-karaiskaki",
-   "date": "2026-11-11T17:23:12+02:00",
-   "source": "Gazzetta",
    "weight": 1,
    "fantasy": false,
    "report": false
@@ -172,100 +442,10 @@
    "report": false
   },
   {
-   "title": "Φράνσις Αντετοκούνμπο: «Πάω και βλέπω αγώνες του Παναθηναϊκού»",
-   "url": "https://www.gazzetta.gr/basketball/2585650/fransis-antetokoynmpo-pao-kai-blepo-agones-toy-panathinaikoy",
-   "date": "2026-11-11T17:11:30+02:00",
-   "source": "Gazzetta",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Euroleague X Panini: Συνεχίζουν μαζί έως το 2029",
-   "url": "https://www.novasports.gr/sport/mpasket/event/euroleague/article/15225407/euroleague-x-panini-synexizoun-mazi-eos-to-2029/",
-   "date": "2026-11-11T15:03:00+00:00",
-   "source": "Novasports",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Ολυμπιακός: Η UEFA αποθέωσε τον Φορτούνη (video)",
-   "url": "https://www.novasports.gr/sport/podosfairo/event/uefa-europa-league/article/15225406/olympiakos-i-uefa-apotheose-ton-fortouni-video/",
-   "date": "2026-11-11T14:54:40+00:00",
-   "source": "Novasports",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Τενερίφη: Αποχαιρέτησε τον Χουέρτας",
-   "url": "https://www.gazzetta.gr/basketball/euroleague/2585640/tenerifi-apohairetise-ton-hoyertas",
-   "date": "2026-11-11T16:52:18+02:00",
-   "source": "Gazzetta",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Παρτίζαν: «Πάτησε» Βελιγράδι ο Κρις Σίλβα – Περνάει ιατρικά και υπογράφει! (pic)",
-   "url": "https://www.novasports.gr/sport/mpasket/event/euroleague/article/15225390/partizan-patise-veligradi-o-kris-silva-pernaei-iatrika-kai-ypografei-pic/",
-   "date": "2026-11-11T14:50:45+00:00",
-   "source": "Novasports",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Παρτίζαν: Προανήγγειλε τον Κρις Σίλβα",
-   "url": "https://www.gazzetta.gr/basketball/euroleague/2585639/partizan-proaniggeile-ton-kris-silba",
-   "date": "2026-11-11T16:45:12+02:00",
-   "source": "Gazzetta",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Μπασκόνια: Μετά τον Σμιτς, «χτύπησε» ξανά με δανεισμό του Καμένιας (pic)",
-   "url": "https://www.novasports.gr/sport/mpasket/event/euroleague/article/15225377/mpaskonia-meta-ton-smits-xtypise-ksana-me-daneismo-tou-kamenias-pic/",
-   "date": "2026-11-11T14:40:44+00:00",
-   "source": "Novasports",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Super League: Πρόστιμα σε ΑΕΚ, Ολυμπιακό και Παναθηναϊκό",
-   "url": "https://www.gazzetta.gr/football/superleague/2585635/super-league-prostima-se-aek-olympiako-kai-panathinaiko",
-   "date": "2026-11-11T16:36:06+02:00",
-   "source": "Gazzetta",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
    "title": "Partizan welcomes Chris Silva for medicals to complete transfer from Fenerbahce",
    "url": "https://www.eurohoops.net/en/euroleague/2033461/chris-silva-to-partizan-euroleague/",
    "date": "2026-11-11T14:35:00+00:00",
    "source": "Eurohoops",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "«Οριστική η συμφωνία Μάντσεστερ Γιουνάιτεντ – Ποτσετίνο»!",
-   "url": "https://www.novasports.gr/sport/podosfairo/event/premier-league/article/15225374/oristiki-i-symfonia-mantsester-giounaitent-potsetino/",
-   "date": "2026-11-11T14:33:52+00:00",
-   "source": "Novasports",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Μπασκόνια: Πήρε δανεικό τον Καμένιας από την Ντουμπάι BC",
-   "url": "https://www.gazzetta.gr/basketball/euroleague/2585631/mpaskonia-pire-daneiko-ton-kamenias-apo-tin-ntoympai-bc",
-   "date": "2026-11-11T16:27:50+02:00",
-   "source": "Gazzetta",
    "weight": 1,
    "fantasy": false,
    "report": false
@@ -280,15 +460,6 @@
    "report": false
   },
   {
-   "title": "Μάντσεστερ Γιουνάιτεντ: «Μυστική» συνάντηση με στόχο την… πεντάδα και την πρόσληψη του Ποτσετίνο",
-   "url": "https://www.novasports.gr/sport/podosfairo/event/premier-league/article/15225361/mantsester-giounaitent-mystiki-synantisi-me-stoxo-tin-pentada-kai-tin-proslipsi-tou-potsetino/",
-   "date": "2026-11-11T14:21:59+00:00",
-   "source": "Novasports",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
    "title": "Euroleague Basketball and Panini renew multi-year trading-card and collectibles partnership",
    "url": "https://www.euroleaguebasketball.net/en/euroleague/news/euroleague-basketball-panini-renew-multi-year-trading-card-collectibles-partnership/",
    "date": "2026-11-11T14:00:00+00:00",
@@ -298,64 +469,10 @@
    "report": false
   },
   {
-   "title": "Εθνική Γαλλίας: Εκτός με Ιταλία ο Εμπαπέ",
-   "url": "https://www.novasports.gr/sport/podosfairo/event/nations-league/article/15225308/ethniki-gallias-ektos-me-italia-o-empape/",
-   "date": "2026-11-11T13:46:00+00:00",
-   "source": "Novasports",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
    "title": "EuroLeague three-year licenses reportedly cost €1.5m per season",
    "url": "https://www.eurohoops.net/en/euroleague/2033433/crvena-zvezda-partizan-napoli-virtus-bologna-euroleague-license-update/",
    "date": "2026-11-11T13:29:52+00:00",
    "source": "Eurohoops",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Ο αποχαιρετισμός της Τενερίφης στον Χουέρτας: «Ευχαριστούμε για όλα, θρύλε»",
-   "url": "https://www.novasports.gr/sport/mpasket/event/euroleague/article/15225302/o-apoxairetismos-tis-tenerifis-ston-xouertas-eyxaristoume-gia-ola-thryle/",
-   "date": "2026-11-11T13:25:04+00:00",
-   "source": "Novasports",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Ολυμπιακός: Καθοριστική εξέλιξη για το νέο “Καραϊσκάκης”",
-   "url": "https://www.novasports.gr/sport/podosfairo/event/super-league-1/article/15225293/olympiakos-kathoristiki-ekseliksi-gia-to-neo-karaiskakis/",
-   "date": "2026-11-11T13:13:47+00:00",
-   "source": "Novasports",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Ολυμπιακός: Ψηφίστηκε η ρύθμιση για το νέο «Γ. Καραϊσκάκης»",
-   "url": "https://www.gazzetta.gr/football/superleague/2585621/olympiakos-psifistike-i-rythmisi-gia-neo-g-karaiskakis",
-   "date": "2026-11-11T15:06:00+02:00",
-   "source": "Gazzetta",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Πλώρη για μετάλλιο στους Ολυμπιακούς Αγώνες Νέων του Ντακάρ βάζει ο Κυριαζάκος",
-   "url": "https://www.novasports.gr/istioploia/article/15225273/plori-gia-metallio-stous-olympiakous-agones-neon-tou-ntakar-vazei-o-kyriazakos/",
-   "date": "2026-11-11T13:05:00+00:00",
-   "source": "Novasports",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Μπαρτσελόνα: Ο Κρόος εξήγησε τι της λείπει για να πάρει το Champions League",
-   "url": "https://www.gazzetta.gr/football/champions-league/2585619/mpartselona-o-kroos-exigise-ti-tis-leipei-gia-na-parei-champions",
-   "date": "2026-11-11T15:02:05+02:00",
-   "source": "Gazzetta",
    "weight": 1,
    "fantasy": false,
    "report": false
@@ -379,73 +496,10 @@
    "report": false
   },
   {
-   "title": "Μπασκόνια: Ανακοίνωσε τον Ρόλαντ Σμιτς έως το τέλος της φετινής σεζόν λόγω του τραυματία Σάντος",
-   "url": "https://www.novasports.gr/sport/mpasket/event/euroleague/article/15225264/mpaskonia-anakoinose-ton-rolant-smits-eos-to-telos-tis-fetinis-sezon-logo-tou-traymatia-santos/",
-   "date": "2026-11-11T12:44:58+00:00",
-   "source": "Novasports",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Κόμπελ: Στα «ραντάρ» της Παρί Σεν Ζερμέν",
-   "url": "https://www.gazzetta.gr/football/2585616/kompel-sta-rantar-tis-pari-sen-zermen-gia-tin-thesi-toy-basikoy-termatofylaka",
-   "date": "2026-11-11T14:40:27+02:00",
-   "source": "Gazzetta",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Η Τενερίφη αποχαιρέτησε τον Χουέρτας που πάει Ντουμπάι: “Η κληρονομία σου θα είναι αιώνια”",
+   "title": "Χουέρτας: Η Τενερίφη τον αποχαιρέτησε και πάει Ντουμπάι: “Η κληρονομία σου θα είναι αιώνια”",
    "url": "https://www.eurohoops.net/el/euroleague-el-2/2033421/i-tenerifi-apocheretise-ton-chouertas-pou-pai-ntoumpai-i-klironomia-sou-tha-ine-eonia/",
    "date": "2026-11-11T12:35:42+00:00",
    "source": "Eurohoops (GR)",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Μπόρνμουθ: «Μπάσιμο» και από τη Μπαρτσελόνα για Κρουπί",
-   "url": "https://www.novasports.gr/sport/podosfairo/event/laliga-division/article/15225261/mpornmouth-mpasimo-kai-apo-ti-mpartselona-gia-kroupi/",
-   "date": "2026-11-11T12:32:10+00:00",
-   "source": "Novasports",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Μπαρκολά: «Δεν είμαι ο νέος Σαλάχ»",
-   "url": "https://www.novasports.gr/sport/podosfairo/event/premier-league/article/15225254/mparkola-den-eimai-o-neos-salax/",
-   "date": "2026-11-11T12:22:00+00:00",
-   "source": "Novasports",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Παναθηναϊκός: «Απόβαση» σε Δανία και Γερμανία ετοιμάζουν οι οπαδοί του",
-   "url": "https://www.novasports.gr/sport/podosfairo/event/uefa-europa-conference-league/article/15225242/panathinaikos-apovasi-se-dania-kai-germania-etoimazoun-oi-opadoi-tou/",
-   "date": "2026-11-11T12:11:00+00:00",
-   "source": "Novasports",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Ολυμπιακός: Έτσι θα είναι το νέο ΣΕΦ!",
-   "url": "https://www.novasports.gr/sport/mpasket/event/euroleague/article/15221304/olympiakos-etsi-tha-einai-to-neo-sef/",
-   "date": "2026-11-11T12:00:00+00:00",
-   "source": "Novasports",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Ολυμπιακός: Οι δομικές αλλαγές απ’ τον Μεντιλίμπαρ στον Ιμανόλ",
-   "url": "https://www.novasports.gr/category/the-experts/article/15225219/olympiakos-oi-domikes-allages-ap-ton-mentilimpar-ston-imanol/",
-   "date": "2026-11-11T11:30:47+00:00",
-   "source": "Novasports",
    "weight": 1,
    "fantasy": false,
    "report": false
@@ -478,60 +532,6 @@
    "report": false
   },
   {
-   "title": "Μπαρτζώκας: “Περιορισμένη η αγορά, οι καλοί παίκτες δεν φεύγουν από τις ομάδες τους” – Τι είπε για Ντόρσεϊ",
-   "url": "https://www.eurohoops.net/el/euroleague-el-2/2033370/bartzokas-i-agora-ine-periorismeni-i-kali-pektes-den-fevgoun-apo-tis-omades-tous/",
-   "date": "2026-11-11T10:54:09+00:00",
-   "source": "Eurohoops (GR)",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Φενέρμπαχτσε: Παρελθόν ο Κάουτ",
-   "url": "https://www.novasports.gr/sport/podosfairo/event/super-lig/article/15225172/fenermpaxtse-parelthon-o-kaout/",
-   "date": "2026-11-11T10:54:00+00:00",
-   "source": "Novasports",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Μιλουτίνοβ: «Η Ντουμπάι έχει πολλούς αξιόλογους παίκτες»",
-   "url": "https://www.novasports.gr/sport/mpasket/event/euroleague/article/15225223/miloutinov-i-ntoumpai-exei-pollous-aksiologous-paiktes/",
-   "date": "2026-11-11T10:44:00+00:00",
-   "source": "Novasports",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Ισκιέρδο: «Φτιαγμένος για το Final Four ο Παναθηναϊκός – Εντυπωσιακή η δομή που έφτιαξε ο Γιαννακόπουλος»",
-   "url": "https://www.novasports.gr/sport/mpasket/event/euroleague/article/15225186/iskierdo-ftiagmenos-gia-to-final-four-o-panathinaikos-entyposiaki-i-domi-pou-eftiakse-o-giannakopoulos/",
-   "date": "2026-11-11T10:43:00+00:00",
-   "source": "Novasports",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Μπαρτζώκας: «Η αγορά είναι περιορισμένη» (video)",
-   "url": "https://www.novasports.gr/sport/mpasket/event/euroleague/article/15225200/mpartzokas-i-agora-einai-periorismeni-video/",
-   "date": "2026-11-11T10:40:00+00:00",
-   "source": "Novasports",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Μπασκόνια: Ανακοίνωσε Σμιτς & Καμένιας ως το τέλος της σεζόν",
-   "url": "https://www.eurohoops.net/el/euroleague-el-2/2033361/baskonia-anakinose-smits-os-to-telos-tis-sezon/",
-   "date": "2026-11-11T10:27:21+00:00",
-   "source": "Eurohoops (GR)",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
    "title": "Rolands Smits and Kenan Kamenjas sign with struggling Baskonia",
    "url": "https://www.eurohoops.net/en/euroleague/2033357/rolands-smits-to-baskonia-euroleague/",
    "date": "2026-11-11T10:15:02+00:00",
@@ -541,37 +541,10 @@
    "report": false
   },
   {
-   "title": "Το κρίσιμο μονοπάτι του Σιλβέν Φρανσίσκο",
-   "url": "https://www.novasports.gr/category/the-experts/article/15225069/to-krisimo-monopati-tou-silven-fransisko/",
-   "date": "2026-11-11T10:00:00+00:00",
-   "source": "Novasports",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Η απουσία του Ουναΐ αλλάζει τα δεδομένα",
-   "url": "https://www.novasports.gr/sport/podosfairo/event/super-league-1/article/15225158/i-apousia-tou-ounai-allazei-ta-dedomena/",
-   "date": "2026-11-11T09:51:00+00:00",
-   "source": "Novasports",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
    "title": "Nunn leads EuroLeague Fantasy picks, value plays with Abalde and Brizuela",
    "url": "https://www.eurohoops.net/en/trademarks/2033338/kendrick-nunn-alberto-abalde-dario-brizuela-euroleague-fantasy-tips/",
    "date": "2026-11-11T09:06:53+00:00",
    "source": "Eurohoops",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Euroleague Fantasy: Πάμε με Κέντρικ Ναν, επιμένουμε σε “φθηνούς” παίκτες όπως οι Αμπάλδε & Μπριθουέλα",
-   "url": "https://www.eurohoops.net/el/euroleague-el-2/2033325/euroleague-fantasy-pame-me-kentrik-nan-epimenoume-se-fthinous-pektes-opos-o-ampalde-ke-o-brithouela/",
-   "date": "2026-11-11T09:05:11+00:00",
-   "source": "Eurohoops (GR)",
    "weight": 1,
    "fantasy": false,
    "report": false
@@ -595,33 +568,6 @@
    "report": false
   },
   {
-   "title": "Ολυμπιακός-Ντουμπάι BC: Οι διαιτητές του αγώνα",
-   "url": "https://www.novasports.gr/sport/mpasket/event/euroleague/article/15225125/olympiakos-ntoumpai-bc-oi-diaitites-tou-agona/",
-   "date": "2026-11-11T08:57:00+00:00",
-   "source": "Novasports",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Με Άρη και EuroLeague οι αθλητικές μεταδόσεις της ημέρας",
-   "url": "https://www.novasports.gr/sport/mpasket/event/diethneis-eurocup-mpasket/article/15224496/me-ari-kai-euroleague-oi-athlitikes-metadoseis-tis-imeras/",
-   "date": "2026-11-11T08:30:00+00:00",
-   "source": "Novasports",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Άρης: Με Ρίγα στο “Παλέ” για την επιστροφή στις ευρωπαϊκές νίκες πριν το ντέρμπι με Ολυμπιακό",
-   "url": "https://www.eurohoops.net/el/eurocup-el/2033297/aris-me-riga-sto-pale-gia-tin-epistrofi-stis-evropaikes-nikes-prin-to-ntermpi-me-olimpiako/",
-   "date": "2026-11-11T07:32:02+00:00",
-   "source": "Eurohoops (GR)",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
    "title": "Giannis Antetokounmpo waves off Doc Rivers apology: “That’s private”",
    "url": "https://www.eurohoops.net/en/nba-news/2033298/giannis-antetokounmpo-reacts-to-doc-rivers-apology-miami-heat-nba/",
    "date": "2026-11-11T07:21:18+00:00",
@@ -631,45 +577,9 @@
    "report": false
   },
   {
-   "title": "Δ. Γιαννακόπουλος για το σκάνδαλο στο μπάσκετ: “Τα τηλέφωνα θα ανοίξουν;”",
-   "url": "https://www.eurohoops.net/el/ellada/2033277/d-giannakopoulos-gia-to-skandalo-sto-basket-ta-tilefona-tha-anixoun/",
-   "date": "2026-11-11T06:35:34+00:00",
-   "source": "Eurohoops (GR)",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
    "title": "Paul George flashes finger to fan, Jaylen Brown ignores Jayson Tatum",
    "url": "https://www.eurohoops.net/en/nba-news/2033254/paul-george-flashes-finger-to-fan-jaylen-brown-ignores-jayson-tatum-boston-celtics-beat-philadelphia-76ers-nba/",
    "date": "2026-11-11T05:31:34+00:00",
-   "source": "Eurohoops",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Η χειρότερη άστοχη βολή που έχετε δει ΣΤΗ ΖΩΗ ΣΑΣ (video)",
-   "url": "https://www.eurohoops.net/el/fiba-champions-league-el/2033208/i-chiroteri-astochi-voli-pou-echete-di-sti-zoi-sas-video/",
-   "date": "2026-11-10T22:24:56+00:00",
-   "source": "Eurohoops (GR)",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Kawhi Leonard will miss at least one more week",
-   "url": "https://www.eurohoops.net/en/nba-news/2033151/kawhi-leonard-will-miss-at-least-one-more-week/",
-   "date": "2026-11-10T19:26:49+00:00",
-   "source": "Eurohoops",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
-   "title": "Maccabi Tel Aviv lands Kamar Baldwin",
-   "url": "https://www.eurohoops.net/en/euroleague/2033105/maccabi-tel-aviv-lands-kamar-baldwin/",
-   "date": "2026-11-10T16:45:54+00:00",
    "source": "Eurohoops",
    "weight": 1,
    "fantasy": false,
@@ -755,201 +665,308 @@
    "weight": 1,
    "fantasy": false,
    "report": false
-  },
-  {
-   "title": "Maccabi signs Pierria Henry to trial deal",
-   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/maccabi-signs-pierria-henry-to-trial-deal/",
-   "date": "2026-11-07T22:00:00+00:00",
-   "source": "EuroLeague (official)",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
   }
  ],
  "digest": {
   "availability": [
    {
+    "player": "MELLI, NICOLO",
+    "status": "out",
+    "note": "Εκτός μάχης για τη Φενέρμπαχτσε.",
+    "note_en": "Out for Fenerbahce.",
+    "source": "EuroLeague (official)"
+   },
+   {
+    "player": "ALLMAN, KYLE",
+    "status": "out",
+    "note": "Εκτός για την Παρτιζάν.",
+    "note_en": "Out for Partizan.",
+    "source": "EuroLeague (official)"
+   },
+   {
+    "player": "STEVENS, LAMAR",
+    "status": "out",
+    "note": "Εκτός για την Παρτιζάν.",
+    "note_en": "Out for Partizan.",
+    "source": "EuroLeague (official)"
+   },
+   {
     "player": "KOLOKO, CHRISTIAN",
     "status": "out",
-    "note": "Πρόβλημα με ταξιδιωτικά έγγραφα",
-    "source": "Gazzetta"
+    "note": "Εκτός αποστολής για τη Μαδρίτη λόγω προβλημάτων βίζας.",
+    "note_en": "Out of the trip to Madrid due to visa issues.",
+    "source": "Eurohoops"
    },
    {
-    "player": "PUNTER, KEVIN",
+    "player": "MILJENOVIC, STEFAN",
     "status": "out",
-    "note": "Τραυματισμός",
+    "note": "Εκτός δράσης μετά από εγχείρηση στον αστράγαλο.",
+    "note_en": "Out after ankle surgery.",
     "source": "EuroLeague (official)"
    },
    {
-    "player": "EVBUOMWAN, TOSAN",
+    "player": "CAMPAZZO, FACUNDO",
     "status": "out",
-    "note": "Τραυματισμός",
-    "source": "EuroLeague (official)"
+    "note": "Τραυματίας, εκτός για τη Ρεάλ Μαδρίτης.",
+    "note_en": "Injured, out for Real Madrid.",
+    "source": "Eurohoops"
    },
    {
-    "player": "HAYES, KEVARRIUS",
+    "player": "DECK, GABRIEL",
     "status": "out",
-    "note": "Τραυματισμός",
-    "source": "EuroLeague (official)"
+    "note": "Τραυματίας, εκτός για τη Ρεάλ Μαδρίτης.",
+    "note_en": "Injured, out for Real Madrid.",
+    "source": "Eurohoops"
+   },
+   {
+    "player": "GARUBA, USMAN",
+    "status": "out",
+    "note": "Τραυματίας, εκτός για τη Ρεάλ Μαδρίτης.",
+    "note_en": "Injured, out for Real Madrid.",
+    "source": "Eurohoops"
+   },
+   {
+    "player": "JANTUNEN, MIKAEL",
+    "status": "out",
+    "note": "Τραυματίας, εκτός για τη Ρεάλ Μαδρίτης.",
+    "note_en": "Injured, out for Real Madrid.",
+    "source": "Eurohoops"
+   },
+   {
+    "player": "MALEDON, THEO",
+    "status": "out",
+    "note": "Τραυματίας, εκτός για τη Ρεάλ Μαδρίτης.",
+    "note_en": "Injured, out for Real Madrid.",
+    "source": "Eurohoops"
+   },
+   {
+    "player": "DORSEY, TYLER",
+    "status": "out",
+    "note": "Εκτός ομάδας λόγω πειθαρχικής ποινής.",
+    "note_en": "Out of the team due to a disciplinary penalty.",
+    "source": "Novasports"
+   },
+   {
+    "player": "LUNDBERG, IFFE",
+    "status": "out",
+    "note": "Μη διαθέσιμος για τη Μακάμπι Τελ Αβίβ.",
+    "note_en": "Unavailable for Maccabi Tel Aviv.",
+    "source": "Basketball Sphere – Fantasy"
    }
   ],
   "expert": [
    {
     "player": "BRYANT, ELIJAH",
     "stance": "pick",
-    "note": "Εξαιρετική φόρμα και ευνοϊκό πρόγραμμα",
+    "note": "Εξαιρετική επιλογή για τη 11η αγωνιστική χάρη στο ευνοϊκό πρόγραμμα της Hapoel Tel Aviv.",
+    "note_en": "Great option for Round 11 thanks to Hapoel Tel Aviv's favorable schedule.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "JONES, CARLIK",
     "stance": "pick",
-    "note": "Ευνοϊκό πρόγραμμα εντός έδρας",
+    "note": "Προτείνεται παρά το ντεφορμέ, λόγω των συνεχόμενων εντός έδρας αγώνων της Partizan.",
+    "note_en": "Recommended despite poor form due to Partizan's consecutive home games.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "HORTON TUCKER, TALEN",
     "stance": "pick",
-    "note": "Καλή επιλογή για captain",
+    "note": "Ενδιαφέρουσα επιλογή και πιθανός αρχηγός για τη Fenerbahce.",
+    "note_en": "Interesting pick and potential captain option for Fenerbahce.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "WATERS, TREMONT",
     "stance": "pick",
-    "note": "Ενδιαφέρουσα επιλογή για το ματς με Besiktas",
+    "note": "Οικονομική και ενδιαφέρουσα επιλογή για την ASVEL σε παιχνίδι με υψηλό σκορ.",
+    "note_en": "Affordable and interesting option for ASVEL in a high-scoring game.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "CLARK III, JIMMY",
     "stance": "pick",
-    "note": "Αυξημένος ρόλος στο ντέρμπι",
+    "note": "Αξιόλογη επιλογή λόγω αυξημένου ρόλου στη Maccabi Tel Aviv.",
+    "note_en": "Notable option due to an increased role at Maccabi Tel Aviv.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "SAINT-SUPERY, MARIO",
     "stance": "pick",
-    "note": "Value επιλογή",
+    "note": "Εξαιρετική value for money επιλογή στη χαμηλότερη τιμή για τη Valencia Basket.",
+    "note_en": "Excellent budget value option at minimum price for Valencia Basket.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "VEZENKOV, SASHA",
     "stance": "pick",
-    "note": "Σταθερή αξία",
+    "note": "Παραμένει σταθερή αξία και κορυφαία επιλογή για το ρόστερ.",
+    "note_en": "Remains a consistent asset and top pick for the roster.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "TUBELIS, AZUOLAS",
     "stance": "pick",
-    "note": "Αξιόλογη επιλογή",
+    "note": "Ανεβασμένος και αποδοτικός παίκτης για τη Zalgiris Kaunas.",
+    "note_en": "In-form and efficient player for Zalgiris Kaunas.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "BRISSETT, O'SHAE J",
     "stance": "pick",
-    "note": "Σταθερός ρόλος",
+    "note": "Σταθερός χρόνος συμμετοχής και προοπτική για τη Maccabi Tel Aviv.",
+    "note_en": "Stable playing time and upside for Maccabi Tel Aviv.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "STEVENS, LAMAR",
     "stance": "pick",
-    "note": "Εξαιρετική προσθήκη",
+    "note": "Εξαιρετική προσθήκη για την Partizan με εξαιρετική πρόσφατη εμφάνιση.",
+    "note_en": "Excellent addition for Partizan following a great recent performance.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "DIARRA, ALIOU",
     "stance": "avoid",
-    "note": "Δύσκολο πρόγραμμα, ώρα για πώληση",
+    "note": "Προτείνεται πώληση λόγω δύσκολου προγράμματος για τη Virtus Bologna.",
+    "note_en": "Recommended to sell due to a tough upcoming schedule for Virtus Bologna.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "HIFI, NADIR",
+    "stance": "avoid",
+    "note": "Προτείνεται πώληση παρά τη φόρμα του, λόγω δύσκολου προγράμματος της Paris Basketball.",
+    "note_en": "Recommended to sell despite his form due to Paris Basketball's tough schedule.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "FELIZ, ANDRES",
+    "stance": "avoid",
+    "note": "Προτείνεται πώληση από τους αναλυτές της Basketball Sphere.",
+    "note_en": "Recommended to sell by Basketball Sphere analysts.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "DIOP, OUSMANE",
     "stance": "pick",
-    "note": "Φθηνή επιλογή με προοπτική",
+    "note": "Εξαιρετικά φθηνή και χαμηλού ρίσκου επιλογή σέντερ για την Armani Olimpia Milan.",
+    "note_en": "Extremely cheap and low-risk center option for Armani Olimpia Milan.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "FARIED, KENNETH",
     "stance": "pick",
-    "note": "X-factor",
+    "note": "Αξιόπιστος παίκτης και X-factor για τη Kosner Baskonia Vitoria-Gasteiz.",
+    "note_en": "Reliable player and X-factor for Kosner Baskonia Vitoria-Gasteiz.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "OTURU, DAN",
     "stance": "pick",
-    "note": "Σταθερή επιλογή",
+    "note": "Σταθερά βελτιωμένος και συμπαγής σέντερ για την Hapoel Tel Aviv.",
+    "note_en": "Consistently improving and solid center for Hapoel Tel Aviv.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "VALANCIUNAS, JONAS",
     "stance": "pick",
-    "note": "Απαραίτητος για κάθε ομάδα",
+    "note": "Απαραίτητος σέντερ για κάθε καλή ομάδα, με εξαιρετική φόρμα στη Zalgiris Kaunas.",
+    "note_en": "Essential center for any good team, in great form for Zalgiris Kaunas.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "ABALDE, ALBERTO",
     "stance": "pick",
-    "note": "Essential επιλογή",
+    "note": "Απαραίτητος value παίκτης για τη Real Madrid λόγω απουσιών.",
+    "note_en": "Essential value player for Real Madrid due to absences.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "GACH, BOTH",
     "stance": "pick",
-    "note": "Χαμηλό ownership",
+    "note": "Επιλογή με χαμηλή ιδιοκτησία και αυξημένα κίνητρα για την LDLC ASVEL Villeurbanne.",
+    "note_en": "Low-ownership option with extra motivation for LDLC ASVEL Villeurbanne.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "LUCIC, VLADIMIR",
     "stance": "pick",
-    "note": "Σε εξαιρετική κατάσταση",
+    "note": "Εξαιρετική φόρμα και χαμηλή ιδιοκτησία για τον παίκτη της FC Bayern Munich.",
+    "note_en": "Great form and low ownership for the FC Bayern Munich player.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "MALCOLM, COLLIN",
     "stance": "pick",
-    "note": "Value επιλογή",
+    "note": "«Λαβράκι» σε τιμή ευκαιρίας για την Anadolu Efes Istanbul.",
+    "note_en": "Steal at a bargain price for Anadolu Efes Istanbul.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "BRIZUELA, DARIO",
     "stance": "pick",
-    "note": "Bargain επιλογή",
+    "note": "Εξαιρετική τιμή και δυνατές εμφανίσεις για την FC Barcelona.",
+    "note_en": "Great price and strong performances for FC Barcelona.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "FELIZ, ANDRES",
     "stance": "pick",
-    "note": "Κυρίαρχος λόγω απουσιών",
+    "note": "Ο πιο δημοφιλής γκαρντ με τεράστια προσφορά στη Real Madrid.",
+    "note_en": "The most popular guard with huge value for Real Madrid.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "HIFI, NADIR",
-    "stance": "avoid",
-    "note": "Δύσκολο πρόγραμμα, ώρα για πώληση",
-    "source": "Basketball Sphere – Fantasy"
+    "stance": "pick",
+    "note": "Ασταμάτητος στα τελευταία παιχνίδια για την Paris Basketball.",
+    "note_en": "Unstoppable in recent games for Paris Basketball.",
+    "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "NUNN, KENDRICK",
     "stance": "pick",
-    "note": "Home Nunn is the best Nunn",
+    "note": "Κορυφαία επιλογή, ειδικά στα εντός έδρας παιχνίδια του Panathinaikos AKTOR Athens.",
+    "note_en": "Top choice, especially in home games for Panathinaikos AKTOR Athens.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "STRAZEL, MATTHEW",
     "stance": "pick",
-    "note": "Εξαιρετικό differential",
+    "note": "Εξαιρετική επιλογή διαφοροποίησης (differential) για την Anadolu Efes Istanbul.",
+    "note_en": "Great differential option for Anadolu Efes Istanbul.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "BALDWIN IV, WADE",
     "stance": "pick",
-    "note": "Ευνοϊκό πρόγραμμα",
+    "note": "Ιδανικός παίκτης για γρήγορο ρυθμό με τη φανέλα της Fenerbahce.",
+    "note_en": "Ideal player for a fast pace with Fenerbahce.",
     "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "JOKSIMOVIC, STEFAN",
+    "stance": "pick",
+    "note": "Εξαιρετικά φθηνή επιλογή λόγω των τραυματισμών στη Kosner Baskonia Vitoria-Gasteiz.",
+    "note_en": "Extremely cheap option due to injuries at Kosner Baskonia Vitoria-Gasteiz.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "TANASKOVIC, NIKOLA",
+    "stance": "pick",
+    "note": "Εξαιρετική απόδοση σε χαμηλή τιμή για την Partizan.",
+    "note_en": "Great performance at a low price for Partizan.",
+    "source": "EuroLeague Fantasy Challenge"
    }
   ],
   "round": 11,
-  "summary_el": "• Ο Kendrick Nunn παραμένει η κορυφαία επιλογή για το Round 11, ειδικά εντός έδρας με την FC Barcelona.\n• Οι Alberto Abalde και Dario Brizuela αποτελούν εξαιρετικές value επιλογές λόγω των απουσιών στις ομάδες τους.\n• Ο Jonas Valanciunas είναι πλέον απαραίτητος για κάθε ρόστερ λόγω της αυξημένης συμμετοχής του.\n• Προσοχή στις πωλήσεις των Aliou Diarra και Nadir Hifi λόγω του δύσκολου προγράμματος που ακολουθεί.\n• Η Baskonia ενισχύθηκε με τους Rolands Smits και Kenan Kamenjas για να καλύψει τα κενά στο ρόστερ.\n• Ο Christian Koloko είναι εκτός αποστολής για την Crvena Zvezda λόγω ταξιδιωτικών εγγράφων.\n• Η Partizan ολοκληρώνει τη μεταγραφή του Chris Silva από την Fenerbahce Tarfin.",
-  "_model": "gemini-3.1-flash-lite",
-  "_seconds": 6.0
+  "summary_el": "• Η 11η αγωνιστική της EuroLeague προσφέρει τρεις αγωνιστικές ημέρες και πολλές ευκαιρίες για αλλαγές στο EuroLeague Fantasy Challenge.\n• Η Hapoel Tel Aviv, η Partizan και η Fenerbahce διαθέτουν εξαιρετικά ευνοϊκό πρόγραμμα για τα επόμενα τρία παιχνίδια.\n• Αρκετές ομάδες, όπως η Real Madrid και η Kosner Baskonia Vitoria-Gasteiz, αντιμετωπίζουν σοβαρά προβλήματα τραυματισμών που επηρεάζουν τα πλάνα τους.\n• Οι Elijah Bryant, Carlik Jones και Jonas Valanciunas προτείνονται ως βασικοί πυλώνες για τις ομάδες Fantasy.\n• Παίκτες όπως ο Ousmane Diop, ο Mario Saint-Supery και ο Stefan Joksimovic αποτελούν ιδανικές επιλογές χαμηλού προϋπολογισμού (budget options).\n• Σημαντικές απουσίες περιλαμβάνουν τους Nicolo Melli, Facundo Campazzo, Theo Maledon και Tyler Dorsey λόγω τιμωριών ή τραυματισμών.\n• Οι μεταγραφικές εξελίξεις φέρνουν νέους παίκτες, όπως η άφιξη του Chris Silva στην Partizan και του Rolands Smits στη Kosner Baskonia Vitoria-Gasteiz.",
+  "summary_en": "• Round 11 of the EuroLeague features three game days and plenty of opportunities for roster changes in the EuroLeague Fantasy Challenge.\n• Hapoel Tel Aviv, Partizan, and Fenerbahce have an extremely favorable schedule for the next three games.\n• Several teams, such as Real Madrid and Kosner Baskonia Vitoria-Gasteiz, are dealing with severe injury problems affecting their rotations.\n• Elijah Bryant, Carlik Jones, and Jonas Valanciunas are recommended as core pillars for Fantasy teams.\n• Players like Ousmane Diop, Mario Saint-Supery, and Stefan Joksimovic represent ideal low-budget options.\n• Important absences include Nicolo Melli, Facundo Campazzo, Theo Maledon, and Tyler Dorsey due to suspensions or injuries.\n• Transfer updates bring new players, such as Chris Silva arriving at Partizan and Rolands Smits joining Kosner Baskonia Vitoria-Gasteiz.",
+  "_model": "gemini-3.5-flash-lite",
+  "_seconds": 18.1
  },
- "digest_at": "2026-11-11T16:11:44.695357+00:00",
- "failed": []
+ "digest_at": "2026-11-11T23:10:09.883647+00:00",
+ "failed": [
+  "EuroBallin (Substack): HTTPError direct 403, proxy 429; api 403 Client Error: Forbidden for url: https://euroball"
+ ]
 }
