@@ -72,6 +72,13 @@ flowchart LR
 | `worker/` | Cloudflare Workers | hourly cron (update 07:05, report 10:05, update 3 hours and check 2 hours before the first game, update after the games) + bot commands; deploys itself on every change to `worker/` on `main` |
 | `sources.yaml` | — | news sources: RSS feeds, the EuroLeague CMS and pages updated in place (e.g. BasketNews' injury report) |
 
+**Languages (ΕΛ / EN):** the site is in Greek or English; the button next to the theme switches and
+remembers it (`localStorage.lang`), and a first visit follows the browser (Greek browser → Greek). Every
+text in `web/` is written as `L("ελληνικά", "English")`; the fixed markup of `index.html` is translated by
+`STATIC_EN`. The Gemini summary and the columns' notes come in both languages from the same call
+(`summary_el` / `summary_en`, `note` / `note_en`); a digest from before English shows the Greek summary
+and no notes. The report, Telegram and the bot stay in Greek.
+
 **Club codes:** the data keep the EuroLeague API's codes (IST, MUN, MAD, PAM…); whatever a user reads (site, report, Telegram) shows the game's codes (EFS, BAY, RMB, VBC…), i.e. the «TV codes» of `clubs.json` (`tc()` in `web/`, `tv()` in `elf/run.py`).
 
 ## Model

@@ -10,6 +10,17 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@600;700;800&display=swap">
 <script>
+// the language: the one chosen in the header (ΕΛ/EN), else the browser's (Greek for a Greek browser, English otherwise).
+// Every text has both: L("ελληνικά", "English"); the page reloads to switch.
+var LANG = (function () {
+  try { var l = localStorage.getItem("lang"); if (l === "en" || l === "el") return l; } catch (e) {}
+  return /^el\b/i.test(navigator.language || "") ? "el" : "en";
+})();
+document.documentElement.lang = LANG;
+function L(el, en) { return LANG === "en" ? en : el; }
+var LOC = LANG === "en" ? "en-GB" : "el-GR";   // dates and numbers
+</script>
+<script>
 // opened from the Home Screen (iPhone/Android app): the page is the screen's width and stays so — no pinch,
 // no double-tap zoom, no zoom into a field. In the browser zoom stays free (people may need it).
 (() => {
@@ -28,7 +39,7 @@
 // code also goes in a cookie: iOS copies the browser's cookies into a web app added to the Home Screen, and
 // team.js (adoptMove) links that app to the same copy. A different team already here is replaced only if the
 // user says so (also for a crafted link).
-const MOVE_KEYS = ["myteam_v1", "tm_keep", "tm_avoid", "watch", "filters", "theme", "teamsView2", "cmp", "earlyOff", "tab"];
+const MOVE_KEYS = ["myteam_v1", "tm_keep", "tm_avoid", "watch", "filters", "theme", "lang", "teamsView2", "cmp", "earlyOff", "tab"];
 (function () {
   const sync = location.hash.match(/[#&]sync=([A-Z0-9]{12})(?![A-Za-z0-9])/);
   if (sync) try {
@@ -45,7 +56,7 @@ const MOVE_KEYS = ["myteam_v1", "tm_keep", "tm_avoid", "watch", "filters", "them
     if (!keys.length) return;
     const here = localStorage.getItem("myteam_v1");
     if (here && data.myteam_v1 && here !== data.myteam_v1
-        && !confirm("Υπάρχει ήδη ομάδα εδώ. Να την αντικαταστήσω με αυτή από την παλιά διεύθυνση;")) return;
+        && !confirm(L("Υπάρχει ήδη ομάδα εδώ. Να την αντικαταστήσω με αυτή από την παλιά διεύθυνση;", "There is already a team here. Replace it with the one from the old address?"))) return;
     keys.forEach((k) => localStorage.setItem(k, data[k]));
     sessionStorage.setItem("moved", "1");
   } catch (e) {}
@@ -414,7 +425,7 @@ ul.news li { padding: 8px 0; border-bottom: 1px solid var(--border); }
 /* ---- theme: navy + orange (light «Parquet», dark «Arena»); the numbers in a condensed face */
 body > header { background: var(--bar); border-bottom: 0; color: var(--bar-fg); }
 body > header h1, body > header h1 small, body > header h1 .muted { color: var(--bar-fg) !important; }
-body > header h1 { padding-right: 44px; }
+body > header h1 { padding-right: 88px; }
 body > header .sub { color: var(--bar-muted); }
 body > header nav button { color: var(--bar-muted); }
 body > header nav button.on { color: var(--bar-fg); border-color: var(--bar-line); }
@@ -427,6 +438,7 @@ body > header nav button.on { color: var(--bar-fg); border-color: var(--bar-line
   border: 1px solid rgba(255,255,255,.35); background: rgba(255,255,255,.1); color: var(--bar-fg); font: 16px/1 system-ui; cursor: pointer;
   display: grid; place-items: center; padding: 0; }
 .themebtn:hover { background: rgba(255,255,255,.2); }
+.langbtn { right: 54px; font: 700 12px/1 system-ui; letter-spacing: .3px; }
 @media (max-width: 700px) {
   .bnav { background: var(--surface-1); box-shadow: 0 -2px 14px rgba(0,0,0,.08); }
   :root[data-theme="dark"] .bnav { background: #08090b; }
@@ -648,6 +660,7 @@ html body #mCp .ic { width: 1.25em; height: 1.25em; }
 </svg>
 <header>
   <h1><svg class="logo" aria-hidden="true"><use href="#i-court"/></svg> EuroLeague Fantasy — <span id="round">…</span></h1>
+  <button id="langBtn" class="themebtn langbtn" type="button"></button>
   <button id="themeBtn" class="themebtn" type="button" aria-label="Θέμα" title="Θέμα"></button>
   <div class="sub" id="updated">Φόρτωση…</div>
   <nav id="tabs">
@@ -817,26 +830,26 @@ const gameOf = (r) => (r.actual != null && r.next_opp
   : r.opp ? `${r.home ? "vs" : "@"} ${esc(tc(r.opp))}` : "");
 // availability as a tag, as PICK / AVOID: OUT (red: out, or not on the EuroLeague roster), 50% (amber: doubtful)
 const inj = (r) => r.unregistered
-  ? ' <span class="tag t-out" data-info="roster" title="στη λίστα του fantasy, αλλά όχι δηλωμένος στο ρόστερ της EuroLeague: δεν μπορεί να αγωνιστεί">OUT</span>'
+  ? ` <span class="tag t-out" data-info="roster" title="${L("στη λίστα του fantasy, αλλά όχι δηλωμένος στο ρόστερ της EuroLeague: δεν μπορεί να αγωνιστεί", "in the fantasy list but not registered on the EuroLeague roster: he cannot play")}">OUT</span>`
   : (r.avail_game != null && r.avail_game < 1
-  ? (r.avail_game === 0 ? ' <span class="tag t-out" data-info="avail" title="εκτός αγώνα">OUT</span>'
-    : ` <span class="tag t-q" data-info="avail" title="αμφίβολος">${Math.round(r.avail_game * 100)}%</span>`) : "");
+  ? (r.avail_game === 0 ? ` <span class="tag t-out" data-info="avail" title="${L("εκτός αγώνα", "out of the game")}">OUT</span>`
+    : ` <span class="tag t-q" data-info="avail" title="${L("αμφίβολος", "doubtful")}">${Math.round(r.avail_game * 100)}%</span>`) : "");
 // new to the EuroLeague (no last season) with few games: the prediction rests on 1-4 games (R&D 015)
 const fewGames = (r) => r.position !== "Head Coach" && r.prev_pir == null && r.games >= 1 && r.games <= 4;
 // info = false inside pick lists: the whole row picks the player, the mark is only a mark
 // NEW (blue: new to the EuroLeague, the prediction rests on 1–4 games) · BACK (back after missed games)
-const newb = (r, info = true) => (r.no_data && !r.prior ? ` <span class="tag t-new"${info ? ' data-info="new0"' : ""} title="νέος, χωρίς ματς ακόμα">NEW</span>`
-  : fewGames(r) ? ` <span class="tag t-new few"${info ? ' data-info="few"' : ""} title="νέος · ${r.games} ματς">NEW</span>`
-  : r.returning ? ` <span class="tag t-back few"${info ? ' data-info="back"' : ""} title="επιστρέφει μετά από απουσίες">BACK</span>` : "");
+const newb = (r, info = true) => (r.no_data && !r.prior ? ` <span class="tag t-new"${info ? ' data-info="new0"' : ""} title="${L("νέος, χωρίς ματς ακόμα", "new, no games yet")}">NEW</span>`
+  : fewGames(r) ? ` <span class="tag t-new few"${info ? ' data-info="few"' : ""} title="${L(`νέος · ${r.games} ματς`, `new · ${r.games} games`)}">NEW</span>`
+  : r.returning ? ` <span class="tag t-back few"${info ? ' data-info="back"' : ""} title="${L("επιστρέφει μετά από απουσίες", "returning after absences")}">BACK</span>` : "");
 // the fantasy columns' word on a player, as tags (not arrows: those are the price's): PICK n · CAP · AVOID n
 const xtag = (kind, n = 1, title = "") => `<span class="tag t-${kind}" data-info="${kind}"${title ? ` title="${title}"` : ""}>${kind.toUpperCase()}${n > 1 ? " " + n : ""}</span>`;
-const exb = (r) => (r.expert_pick > 0 ? " " + xtag("pick", r.expert_pick, "στήλες fantasy που τον προτείνουν") : "")
-  + (r.expert_cap ? " " + xtag("cap", 1, "στήλη που τον προτείνει για Captain") : "")
-  + (r.expert_avoid > 0 ? " " + xtag("avoid", r.expert_avoid, "στήλες που προτείνουν να τον αποφύγεις") : "")
-  + (r.prior === "τιμή" ? ` <span class="tag t-back" data-info="est" title="χωρίς ιστορικό: εκτίμηση από το price">≈PRICE</span>` : "");
+const exb = (r) => (r.expert_pick > 0 ? " " + xtag("pick", r.expert_pick, L("στήλες fantasy που τον προτείνουν", "fantasy columns recommending him")) : "")
+  + (r.expert_cap ? " " + xtag("cap", 1, L("στήλη που τον προτείνει για Captain", "column recommending him as Captain")) : "")
+  + (r.expert_avoid > 0 ? " " + xtag("avoid", r.expert_avoid, L("στήλες που προτείνουν να τον αποφύγεις", "columns recommending you avoid him")) : "")
+  + (r.prior === "τιμή" ? ` <span class="tag t-back" data-info="est" title="${L("χωρίς ιστορικό: εκτίμηση από το price", "no history: estimate from the price")}">≈PRICE</span>` : "");
 const dol = (r) => (r.price_trend === "up"
-  ? ` <span class="tag t-up" data-info="dollar" title="πιθανή άνοδος price μετά το Round${r.price_delta != null ? ` (~+${r.price_delta.toFixed(1)} cr)` : ""}">$▲</span>`
-  : r.price_trend === "down" ? ` <span class="tag t-down" data-info="dollar" title="πιθανή πτώση price">$▼</span>` : "");
+  ? ` <span class="tag t-up" data-info="dollar" title="${L("πιθανή άνοδος price μετά το Round", "likely price rise after the Round")}${r.price_delta != null ? ` (~+${r.price_delta.toFixed(1)} cr)` : ""}">$▲</span>`
+  : r.price_trend === "down" ? ` <span class="tag t-down" data-info="dollar" title="${L("πιθανή πτώση price", "likely price drop")}">$▼</span>` : "");
 // club colours (a thin stripe on the player cards)
 const TEAMC = { OLY: "#c8102e", PAN: "#00843d", MAD: "#5b2d8e", BAR: "#a50044", IST: "#0b2d6b", ULK: "#f2c200",
   ZAL: "#00843d", MUN: "#dc052d", MIL: "#e2001a", TEL: "#f5c800", PAR: "#222", RED: "#d6001c", VIR: "#222",
@@ -876,16 +889,40 @@ function setTheme(t, keep) {
   document.documentElement.dataset.theme = t;
   if (keep) try { localStorage.setItem("theme", t); } catch (e) {}
   const b = document.getElementById("themeBtn");
-  if (b) { b.textContent = t === "dark" ? "☀" : "☾"; b.title = t === "dark" ? "Φωτεινό θέμα" : "Σκούρο θέμα";
+  if (b) { b.textContent = t === "dark" ? "☀" : "☾"; b.title = t === "dark" ? L("Φωτεινό θέμα", "Light theme") : L("Σκούρο θέμα", "Dark theme");
     b.setAttribute("aria-label", b.title); }
 }
+// an AI note in the page's language (an English page shows no Greek note: an older digest has none in English)
+const noteOf = (it) => (LANG === "en" ? it?.note_en : it?.note) || "";
+// ---------- English: the page's fixed text (the markup above); the rest goes through L()
+const STATIC_EN = {"Θέμα": "Theme","Φόρτωση…": "Loading…","Η ομάδα μου": "My team","Παίκτες": "Players","Βαθμολογία": "Standings","Σύγκριση": "Compare","Μοντέλο": "Model","Σχετικά": "About","Βάλ' το στην οθόνη σου": "Add it to your home screen","— ανοίγει σαν εφαρμογή και κρατά την ομάδα σου. Κάν' το": "— it opens like an app and keeps your team. Do it","πριν": "before","στήσεις την ομάδα.": "you set up your team.","Πώς;": "How?","Αναζήτηση παίκτη": "Search player","Ταξινόμηση": "Sort","Points σεζόν": "Season points","Άνοδος price": "Price rise","Τελευταία αλλαγή price": "Last price change","POP (πόσοι τον έχουν)": "POP (how many own him)","Ματσάρισμα": "Matchup","PIR φέτος": "Season PIR","Μόνο η watchlist σου": "Only your watchlist","Φίλτρα": "Filters","Περισσότερα στοιχεία": "More stats","Κλείσιμο": "Close","Θέση": "Position","Ομάδα": "Team","Όλες": "All","Όλα": "All","Ειδικοί · Τιμή": "Experts · Price","Ειδικοί και τιμή": "Experts and price","Εύρος": "Range","από": "from","έως": "to","Price από": "Price from","Price έως": "Price to","Total points από": "Total points from","Total points έως": "Total points to","Points/credit από": "Points/credit from","Points/credit έως": "Points/credit to","Value από": "Value from","Value έως": "Value to","POP % από": "POP % from","POP % έως": "POP % to","xFPT από": "xFPT from","xFPT έως": "xFPT to","xFPT3 από": "xFPT3 from","xFPT3 έως": "xFPT3 to","Διαθεσιμότητα": "Availability","Χωρίς τραυματίες": "No injured players","Καθαρισμός": "Clear all","Δες τους παίκτες": "Show players","xFPT: αναμενόμενα points του Round (PIR +10% αν κερδίσει η ομάδα· coach: βαθμολογία από τη διαφορά σκορ). xFPT3: άθροισμα xFPT των επόμενων 3 αγώνων του. Σύνολο: τα points του φέτος. Ματσάρισμα: πόσο περισσότερο/λιγότερο PIR δίνει ο αντίπαλος στη θέση (▲ ευνοϊκό).": "xFPT: expected points for the Round (PIR +10% if his team wins; coach: score from the point margin). xFPT3: sum of xFPT over his next 3 games. Total: this season's points. Matchup: how much more/less PIR the opponent gives up at the position (▲ favourable).",": πιθανή άνοδος price μετά το Round ($▼ πτώση).": ": likely price rise after the Round ($▼ drop).","Τι είναι": "What it is","Ανεξάρτητο, δωρεάν εργαλείο για το EuroLeague Fantasy Challenge. Δεν έχει σχέση με την EuroLeague ούτε με το Dunkest. Οι προβλέψεις είναι εκτιμήσεις, όχι εγγυήσεις.": "An independent, free tool for the EuroLeague Fantasy Challenge. Not affiliated with EuroLeague or Dunkest. Predictions are estimates, not guarantees.","Δεδομένα: αγώνες και στατιστικά από την EuroLeague· τιμές, POP και παίκτες από το παιχνίδι· από τα άρθρα μόνο ο τίτλος και ο σύνδεσμος στην πηγή. Η «Σύνοψη (AI)» γράφεται αυτόματα και μπορεί να έχει λάθη.": "Data: games and stats from EuroLeague; prices, POP and players from the game; from articles only the title and the link to the source. The “Summary (AI)” is written automatically and may contain mistakes.","Τα σημάδια": "The tags","Πάτα ένα σημάδι δίπλα σε παίκτη για να δεις τι σημαίνει.": "Tap a tag next to a player to see what it means.","Απόρρητο": "Privacy","Χωρίς λογαριασμούς, χωρίς διαφημίσεις, χωρίς cookies παρακολούθησης.": "No accounts, no ads, no tracking cookies.","Στη συσκευή σου": "On your device","μένουν η ομάδα, η watchlist και οι ρυθμίσεις. Σβήνουν με «Διαγραφή ομάδας» ή με τον καθαρισμό των δεδομένων του browser.": "stay your team, watchlist and settings. They are erased with “Delete team” or by clearing the browser's data.","Συγχρονισμός": "Sync","(μόνο αν τον ενεργοποιήσεις): η ομάδα και η watchlist κρατιούνται στον server κάτω από τον κωδικό σου, χωρίς τίποτα προσωπικό (παίκτες, credits, θέσεις). Όποιος έχει τον κωδικό τα βλέπει. Τα σβήνεις με «Διαγραφή από τον server».": "(only if you turn it on): your team and watchlist are kept on the server under your code, with nothing personal (players, credits, positions). Anyone with the code can see them. Erase them with “Delete from the server”.","Προστασία από κατάχρηση:": "Abuse protection:","για μία ώρα κρατάμε ένα κρυπτογραφημένο αποτύπωμα της IP σου (όχι την ίδια) για να μετράμε τα αιτήματα· μετά σβήνεται.": "for one hour we keep an encrypted fingerprint of your IP (not the IP itself) to count requests; then it is erased.","Σφάλματα της σελίδας:": "Page errors:","αν κάτι χαλάσει, στέλνεται αυτόματα το μήνυμα του σφάλματος, το αρχείο και το tab, χωρίς τίποτα δικό σου.": "if something breaks, the error message, the file and the tab are sent automatically, with nothing of yours.","Επισκεψιμότητα:": "Traffic:","Cloudflare Web Analytics, χωρίς cookies και χωρίς στοιχεία που σε ταυτοποιούν (επισκέψεις, χώρα, συσκευή).": "Cloudflare Web Analytics, without cookies and without anything that identifies you (visits, country, device).","Φιλοξενία:": "Hosting:","Επικοινωνία": "Contact","Λάθη, ιδέες, ερωτήσεις:": "Bugs, ideas, questions:","Ανάφερε πρόβλημα": "Report a problem","Επικοινωνία:": "Contact:","Κύρια πλοήγηση": "Main navigation","Περισσότερα": "More","Σύγκριση →": "Compare →"};
+function translateStatic(root) {
+  if (LANG !== "en") return;
+  const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  for (let n; (n = w.nextNode());) {
+    const k = n.nodeValue.replace(/\s+/g, " ").trim();
+    if (k && STATIC_EN[k]) n.nodeValue = n.nodeValue.replace(/\S[\s\S]*\S|\S/, STATIC_EN[k]);
+  }
+  root.querySelectorAll("[placeholder],[aria-label],[title]").forEach((el) => {
+    for (const a of ["placeholder", "aria-label", "title"]) { const v = el.getAttribute(a); if (v && STATIC_EN[v]) el.setAttribute(a, STATIC_EN[v]); }
+  });
+}
+translateStatic(document.body);
+// ---------- language: ΕΛ ⇄ EN next to the theme; the page reloads in the other language
+(function () {
+  const b = document.getElementById("langBtn");
+  b.textContent = LANG === "en" ? "ΕΛ" : "EN";
+  b.title = LANG === "en" ? "Ελληνικά" : "English";
+  b.setAttribute("aria-label", b.title);
+  b.onclick = () => { try { localStorage.setItem("lang", LANG === "en" ? "el" : "en"); } catch (e) {} location.reload(); };
+})();
 document.getElementById("themeBtn").onclick = () => setTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark", true);
 setTheme(document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"));
 
 // tabs: the top bar (wide screens), the bottom bar (phones) and «Περισσότερα» all go through here
-const MORE_TABS = [["compare", "Σύγκριση", "Παίκτες δίπλα-δίπλα"],
-  ["model", "Μοντέλο", "Πόσο πέφτει έξω το μοντέλο, φέτος και πέρσι"],
-  ["about", "Σχετικά", "Τι είναι, απόρρητο, επικοινωνία", true]];
+const MORE_TABS = [["compare", L("Σύγκριση", "Compare"), L("Παίκτες δίπλα-δίπλα", "Players side by side")],
+  ["model", L("Μοντέλο", "Model"), L("Πόσο πέφτει έξω το μοντέλο, φέτος και πέρσι", "How far off the model is, this season and last")],
+  ["about", L("Σχετικά", "About"), L("Τι είναι, απόρρητο, επικοινωνία", "What it is, privacy, contact"), true]];
 function showTab(t) {
   if (t === "more") { moreSheet(); return; }
   if (!document.getElementById(t)) t = "today";
@@ -902,7 +939,7 @@ function showTab(t) {
 }
 document.querySelectorAll("nav button[data-t]").forEach((b) => b.onclick = () => showTab(b.dataset.t));
 function moreSheet() {
-  $("#sheet").innerHTML = `<div class="sh"><h2>Περισσότερα</h2><button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
+  $("#sheet").innerHTML = `<div class="sh"><h2>${L("Περισσότερα", "More")}</h2><button class="x" aria-label="${L("Κλείσιμο", "Close")}" onclick="closePlayer()">×</button></div>
     <div class="more-list">${MORE_TABS.filter((m) => !m[3] || P?.edition === "public").map(([k, l, d]) => `<button data-go="${k}"><div>${l}<small>${d}</small></div>${
       k === "compare" && CMP.length ? `<span class="cnt">${CMP.length}</span>` : ""}</button>`).join("")}</div>`;
   $("#modal").classList.add("on"); document.body.classList.add("noscroll");
@@ -911,45 +948,45 @@ function moreSheet() {
 
 // ---------- ⓘ: one-line explanations of the fantasy terms
 const INFO = {
-  early: "Αρχή σεζόν: στα πρώτα ~8 Rounds οι προβλέψεις για τους κορυφαίους παίκτες βγαίνουν ~15% ψηλά: όποιος ξεκίνησε δυνατά συνήθως πέφτει λίγο (έτσι και τις προηγούμενες σεζόν). Μια διόρθωση δεν έβγαζε καλύτερες επιλογές, γι' αυτό δεν γίνεται.",
-  xpts: "xFPT: αναμενόμενα points στο Round (PIR, +10% αν κερδίσει η ομάδα· για τον coach, από τη διαφορά σκορ).",
-  xpts3: "xFPT3: αναμενόμενα points των επόμενων 3 αγώνων του, άθροισμα (όπως στα «Επόμενα 3 παιχνίδια»).",
-  ptot: "Σύνολο: τα fantasy points του φέτος μέχρι τώρα (PIR, +10% στη νίκη· coach από τη διαφορά σκορ).",
-  value: "Value: xFPT3 ανά credit, πόσα points δίνει κάθε credit του price του.",
-  dollar: "$▲: πιθανή άνοδος price μετά το Round. $▼: πιθανή πτώση.",
-  pick: "PICK: τον προτείνουν στήλες fantasy αυτό το Round (ο αριθμός: πόσες στήλες).",
-  cap: "CAP: στήλη fantasy τον προτείνει για Captain αυτό το Round.",
-  avoid: "AVOID: στήλες fantasy προτείνουν να τον αποφύγεις αυτό το Round (ο αριθμός: πόσες στήλες).",
-  est: "≈PRICE: δεν έχει ματς ακόμα, ούτε φέτος ούτε πέρσι στη EuroLeague· η πρόβλεψη βγαίνει από το price του.",
-  roster: "OUT (ρόστερ): είναι στη λίστα του fantasy, αλλά η ομάδα του δεν τον έχει δηλώσει στη EuroLeague, οπότε δεν μπορεί να αγωνιστεί.",
-  new0: "NEW: νέος στη EuroLeague, χωρίς ματς ακόμα.",
-  turn: "T1 / T2 / T3: σε ποιο Turn παίζει η ομάδα του. Ανάμεσα στα Turns κάνεις subs στο Starting five με όσους δεν έχουν παίξει.",
-  matchup: "Ματσάρισμα: πόσο περισσότερο (▲) ή λιγότερο (▼) PIR δίνει ο αντίπαλος στη θέση του, σε σχέση με τον μέσο όρο της λίγκας.",
-  avail: "Διαθεσιμότητα από το παιχνίδι και τα νέα: εκτός, ή η πιθανότητα να παίξει. Ανανεώνεται και 3 ώρες πριν τον πρώτο αγώνα.",
-  back: "Επιστρέφει μετά από απουσία: δεν έπαιξε σε κανένα από τα 3 τελευταία ματς της ομάδας του (τραυματισμός ή εκτός ροτάσιον). Όσοι γυρίζουν έτσι παίζουν συνήθως λιγότερα λεπτά: σε δύο σεζόν έφεραν 25–30% λιγότερα από τη φόρμα τους. Γι' αυτό η πρόβλεψή του είναι ήδη μειωμένη κατά 20%.",
-  few: "Νέος στη EuroLeague: δεν έχει περσινή σεζόν εδώ, οπότε η πρόβλεψη στηρίζεται μόνο στα λίγα φετινά του ματς και είναι αβέβαιη. Ένα καλό ματς δεν είναι επίπεδο: σε παλιότερες σεζόν, τέτοιοι παίκτες με υψηλή πρόβλεψη έφεραν συχνά αρκετά λιγότερα. Η εικόνα καθαρίζει μετά από 4–5 ματς.",
-  pts: "Points: τα πραγματικά points του στο τρέχον Round (πράσινα αν ξεπέρασε το xFPT). «–»: δεν έχει παίξει ακόμα.",
-  pop: "POP: τι ποσοστό των managers του παιχνιδιού τον έχει στην ομάδα του.",
-  pchg: "Δ price: πόσο έχει αλλάξει το price του από το πρώτο Round της σεζόν.",
-  ap: "Autopilot: μια ομάδα που ξεκίνησε με 100 credits και κάνει μόνο ό,τι προτείνει η εφαρμογή (Trades, Starting five, Captain, η τελευταία πρόταση πριν το τζάμπολ), με τους κανόνες του παιχνιδιού. Δείχνει τι αξίζουν οι προτάσεις, χωρίς τις δικές σου επιλογές. Ένα Round δεν λέει τίποτα· κρίνεται σε 5–10.",
-  ap_x: "xFPT: τι περίμενε το μοντέλο από την ομάδα εκείνου του Round (Bench 50%, Captain ×2). Τα Points είναι πράσινα όταν το ξεπέρασαν. Στα πρώτα ~8 Rounds κάθε σεζόν οι κορυφαίες προβλέψεις βγαίνουν ~15% ψηλά (παίκτες που ξεκίνησαν δυνατά επιστρέφουν προς τον μέσο όρο τους), οπότε μια ομάδα από τους καλύτερους μένει συνήθως κάτω από το xFPT της (R&D 023).",
-  ap_pts: "Points: όπως τα μετράει το παιχνίδι (Bench 50%, Captain ×2, Coach).",
-  ap_raw: "11 παίκτες: τα points όλης της ομάδας χωρίς Bench 50% και Captain, για να συγκρίνεται με τον μέσο manager.",
-  ap_avg: "Μέσος manager: εκτίμηση από το POP (πόσοι έχουν κάθε παίκτη). Ακριβής για το ποιους έχουν οι managers, όχι για το ποιον βάζουν Captain, γι' αυτό η σύγκριση γίνεται στους 11 παίκτες.",
-  ap_rank: "Θέση: όπου θα ήταν με το σύνολο των points του στο General League του παιχνιδιού, μετά από εκείνο το Round.",
-  acc_n: "Προβλέψεις: παίκτες με πρόβλεψη 5+ xFPT σε αγώνες που έχουν παιχτεί. Κάθε update καταγράφει πρόβλεψη μόνο για αγώνες που δεν έχουν αρχίσει, οπότε για κάθε αγώνα μετράει η τελευταία πριν το τζάμπολ· τίποτα δεν γράφεται αφού ξεκινήσει.",
-  acc_mae: "Μέσο σφάλμα: πόσα points πέφτει έξω κατά μέσο όρο η πρόβλεψη για έναν παίκτη σε έναν αγώνα (όποιος δεν έπαιξε μετράει 0).",
-  acc_naive: "Χωρίς μοντέλο: το ίδιο σφάλμα, αν προβλέπαμε απλώς τον μέσο όρο PIR του παίκτη (φέτος, αλλιώς πέρσι). Αν το μοντέλο δεν το κερδίζει σταθερά, κάτι πάει στραβά.",
-  acc_gain: "Βελτίωση: πόσο μικρότερο είναι το σφάλμα του μοντέλου από το «χωρίς μοντέλο».",
-  acc_sp: "Spearman: πόσο σωστά βάζει τους παίκτες σε σειρά, από 0 (τυχαία) έως 1 (τέλεια). Στο fantasy μετράει περισσότερο από το σφάλμα: διαλέγεις τους καλύτερους, όχι το ακριβές νούμερο.",
-  acc_top: "Top-20: από τους 20 που το μοντέλο έβλεπε καλύτερους σε ένα Round, πόσοι βγήκαν πράγματι στους 20 καλύτερους. Στο σύνολο, ο μέσος όρος των Rounds.",
-  lu_vs: "Και οι δύο με τα πραγματικά points (Bench 50%, Captain ×2, Coach). Θετικό: οι δικές σου αλλαγές (π.χ. στο T2) κέρδισαν points σε σχέση με την πρόταση πριν το Round.",
-  experts: "Μέσα points των παικτών που πρότεινε κάθε στήλη, έναντι του xFPT που τους έδινε το μοντέλο. Σταθερά θετικό: η στήλη βλέπει κάτι που το μοντέλο δεν βλέπει. Με λίγες επιλογές, αγνόησέ το.",
-  bt: "Κάθε Round, η καλύτερη ομάδα με 100 credits κατά την πρόβλεψη και τα πραγματικά της points (δεύτερο μισό της σεζόν, R&D 004). «Τέλεια γνώση»: αν ξέραμε από πριν τα αποτελέσματα.",
-  learned: "Οι συντελεστές του μοντέλου, από την περσινή σεζόν. Τα φετινά παιχνίδια μπαίνουν στη φόρμα κάθε παίκτη (μέσος όρος σεζόν, τελευταία 3), όχι εδώ. Π.χ. ματσάρισμα ×0.5: αν μια άμυνα δίνει +20% PIR σε μια θέση, ο παίκτης απέναντί της παίρνει ~+10%.",
-  defense: "Πόσο PIR δίνει η ομάδα στους αντιπάλους της, σε σχέση με τον μέσο όρο της λίγκας. Πράσινο: δίνει περισσότερο, καλό ματς για τους παίκτες απέναντί της. Κόκκινο: δίνει λιγότερο.",
-  deftot: "Σύνολο: πόσο περισσότερο ή λιγότερο PIR από τον μέσο όρο δίνει η ομάδα σε όλους μαζί τους αντιπάλους της. Δεν μπαίνει στο μοντέλο: εκεί μετράει η θέση του παίκτη, και το σύνολο δεν προσθέτει κάτι (R&D 024).",
-  pir: "PIR: η αξιολόγηση της EuroLeague (πόντοι, ριμπάουντ, ασίστ, κλεψίματα, κοψίματα, κερδισμένα φάουλ, μείον άστοχα, λάθη και φάουλ).",
+  early: L("Αρχή σεζόν: στα πρώτα ~8 Rounds οι προβλέψεις για τους κορυφαίους παίκτες βγαίνουν ~15% ψηλά: όποιος ξεκίνησε δυνατά συνήθως πέφτει λίγο (έτσι και τις προηγούμενες σεζόν). Μια διόρθωση δεν έβγαζε καλύτερες επιλογές, γι' αυτό δεν γίνεται.", "Early season: in the first ~8 Rounds the predictions for the top players come out ~15% high: whoever started strong usually drops a little (as in previous seasons too). A correction did not give better picks, so none is applied."),
+  xpts: L("xFPT: αναμενόμενα points στο Round (PIR, +10% αν κερδίσει η ομάδα· για τον coach, από τη διαφορά σκορ).", "xFPT: expected points in the Round (PIR, +10% if his team wins; for a coach, from the point margin)."),
+  xpts3: L("xFPT3: αναμενόμενα points των επόμενων 3 αγώνων του, άθροισμα (όπως στα «Επόμενα 3 παιχνίδια»).", "xFPT3: expected points over his next 3 games, summed (as in “Next 3 games”)."),
+  ptot: L("Σύνολο: τα fantasy points του φέτος μέχρι τώρα (PIR, +10% στη νίκη· coach από τη διαφορά σκορ).", "Total: his fantasy points this season so far (PIR, +10% on a win; coach from the point margin)."),
+  value: L("Value: xFPT3 ανά credit, πόσα points δίνει κάθε credit του price του.", "Value: xFPT3 per credit, how many points each credit of his price gives."),
+  dollar: L("$▲: πιθανή άνοδος price μετά το Round. $▼: πιθανή πτώση.", "$▲: likely price rise after the Round. $▼: likely drop."),
+  pick: L("PICK: τον προτείνουν στήλες fantasy αυτό το Round (ο αριθμός: πόσες στήλες).", "PICK: fantasy columns recommend him this Round (the number: how many columns)."),
+  cap: L("CAP: στήλη fantasy τον προτείνει για Captain αυτό το Round.", "CAP: a fantasy column recommends him as Captain this Round."),
+  avoid: L("AVOID: στήλες fantasy προτείνουν να τον αποφύγεις αυτό το Round (ο αριθμός: πόσες στήλες).", "AVOID: fantasy columns recommend avoiding him this Round (the number: how many columns)."),
+  est: L("≈PRICE: δεν έχει ματς ακόμα, ούτε φέτος ούτε πέρσι στη EuroLeague· η πρόβλεψη βγαίνει από το price του.", "≈PRICE: no games yet, neither this season nor last in the EuroLeague; the prediction comes from his price."),
+  roster: L("OUT (ρόστερ): είναι στη λίστα του fantasy, αλλά η ομάδα του δεν τον έχει δηλώσει στη EuroLeague, οπότε δεν μπορεί να αγωνιστεί.", "OUT (roster): he is in the fantasy list, but his club has not registered him with the EuroLeague, so he cannot play."),
+  new0: L("NEW: νέος στη EuroLeague, χωρίς ματς ακόμα.", "NEW: new to the EuroLeague, no games yet."),
+  turn: L("T1 / T2 / T3: σε ποιο Turn παίζει η ομάδα του. Ανάμεσα στα Turns κάνεις subs στο Starting five με όσους δεν έχουν παίξει.", "T1 / T2 / T3: which Turn his team plays in. Between Turns you sub players who haven't played into the Starting five."),
+  matchup: L("Ματσάρισμα: πόσο περισσότερο (▲) ή λιγότερο (▼) PIR δίνει ο αντίπαλος στη θέση του, σε σχέση με τον μέσο όρο της λίγκας.", "Matchup: how much more (▲) or less (▼) PIR the opponent gives up at his position, compared with the league average."),
+  avail: L("Διαθεσιμότητα από το παιχνίδι και τα νέα: εκτός, ή η πιθανότητα να παίξει. Ανανεώνεται και 3 ώρες πριν τον πρώτο αγώνα.", "Availability from the game and the news: out, or the chance he plays. Also refreshed 3 hours before the first game."),
+  back: L("Επιστρέφει μετά από απουσία: δεν έπαιξε σε κανένα από τα 3 τελευταία ματς της ομάδας του (τραυματισμός ή εκτός ροτάσιον). Όσοι γυρίζουν έτσι παίζουν συνήθως λιγότερα λεπτά: σε δύο σεζόν έφεραν 25–30% λιγότερα από τη φόρμα τους. Γι' αυτό η πρόβλεψή του είναι ήδη μειωμένη κατά 20%.", "Returning after an absence: he didn't play in any of his team's last 3 games (injury or out of the rotation). Players returning like this usually play fewer minutes: over two seasons they scored 25–30% below their form. That is why his prediction is already cut by 20%."),
+  few: L("Νέος στη EuroLeague: δεν έχει περσινή σεζόν εδώ, οπότε η πρόβλεψη στηρίζεται μόνο στα λίγα φετινά του ματς και είναι αβέβαιη. Ένα καλό ματς δεν είναι επίπεδο: σε παλιότερες σεζόν, τέτοιοι παίκτες με υψηλή πρόβλεψη έφεραν συχνά αρκετά λιγότερα. Η εικόνα καθαρίζει μετά από 4–5 ματς.", "New to the EuroLeague: no previous season here, so the prediction rests only on his few games this season and is uncertain. One good game is not a level: in past seasons such players with a high prediction often scored quite a bit less. The picture clears after 4–5 games."),
+  pts: L("Points: τα πραγματικά points του στο τρέχον Round (πράσινα αν ξεπέρασε το xFPT). «–»: δεν έχει παίξει ακόμα.", "Points: his actual points in the current Round (green if above his xFPT). “–”: hasn't played yet."),
+  pop: L("POP: τι ποσοστό των managers του παιχνιδιού τον έχει στην ομάδα του.", "POP: the share of the game's managers who have him in their team."),
+  pchg: L("Δ price: πόσο έχει αλλάξει το price του από το πρώτο Round της σεζόν.", "Δ price: how much his price has changed since the season's first Round."),
+  ap: L("Autopilot: μια ομάδα που ξεκίνησε με 100 credits και κάνει μόνο ό,τι προτείνει η εφαρμογή (Trades, Starting five, Captain, η τελευταία πρόταση πριν το τζάμπολ), με τους κανόνες του παιχνιδιού. Δείχνει τι αξίζουν οι προτάσεις, χωρίς τις δικές σου επιλογές. Ένα Round δεν λέει τίποτα· κρίνεται σε 5–10.", "Autopilot: a team that started with 100 credits and does only what the app proposes (Trades, Starting five, Captain, the last proposal before tip-off), under the game's rules. It shows what the proposals are worth, without your own choices. One Round says nothing; judge it over 5–10."),
+  ap_x: L("xFPT: τι περίμενε το μοντέλο από την ομάδα εκείνου του Round (Bench 50%, Captain ×2). Τα Points είναι πράσινα όταν το ξεπέρασαν. Στα πρώτα ~8 Rounds κάθε σεζόν οι κορυφαίες προβλέψεις βγαίνουν ~15% ψηλά (παίκτες που ξεκίνησαν δυνατά επιστρέφουν προς τον μέσο όρο τους), οπότε μια ομάδα από τους καλύτερους μένει συνήθως κάτω από το xFPT της (R&D 023).", "xFPT: what the model expected from that Round's team (Bench 50%, Captain ×2). Points are green when they beat it. In the first ~8 Rounds of each season the top predictions come out ~15% high (players who started strong drift back to their average), so a team of the best usually stays below its xFPT (R&D 023)."),
+  ap_pts: L("Points: όπως τα μετράει το παιχνίδι (Bench 50%, Captain ×2, Coach).", "Points: as the game counts them (Bench 50%, Captain ×2, Coach)."),
+  ap_raw: L("11 παίκτες: τα points όλης της ομάδας χωρίς Bench 50% και Captain, για να συγκρίνεται με τον μέσο manager.", "11 players: the whole team's points without Bench 50% and Captain, to compare with the average manager."),
+  ap_avg: L("Μέσος manager: εκτίμηση από το POP (πόσοι έχουν κάθε παίκτη). Ακριβής για το ποιους έχουν οι managers, όχι για το ποιον βάζουν Captain, γι' αυτό η σύγκριση γίνεται στους 11 παίκτες.", "Average manager: an estimate from POP (how many own each player). Accurate for whom managers own, not for whom they make Captain, so the comparison uses the 11 players."),
+  ap_rank: L("Θέση: όπου θα ήταν με το σύνολο των points του στο General League του παιχνιδιού, μετά από εκείνο το Round.", "Rank: where it would be with its total points in the game's General League, after that Round."),
+  acc_n: L("Προβλέψεις: παίκτες με πρόβλεψη 5+ xFPT σε αγώνες που έχουν παιχτεί. Κάθε update καταγράφει πρόβλεψη μόνο για αγώνες που δεν έχουν αρχίσει, οπότε για κάθε αγώνα μετράει η τελευταία πριν το τζάμπολ· τίποτα δεν γράφεται αφού ξεκινήσει.", "Predictions: players predicted at 5+ xFPT in games already played. Each update records predictions only for games that haven't started, so for each game the last one before tip-off counts; nothing is written after it starts."),
+  acc_mae: L("Μέσο σφάλμα: πόσα points πέφτει έξω κατά μέσο όρο η πρόβλεψη για έναν παίκτη σε έναν αγώνα (όποιος δεν έπαιξε μετράει 0).", "Mean error: how many points the prediction for one player in one game is off on average (a player who didn't play counts as 0)."),
+  acc_naive: L("Χωρίς μοντέλο: το ίδιο σφάλμα, αν προβλέπαμε απλώς τον μέσο όρο PIR του παίκτη (φέτος, αλλιώς πέρσι). Αν το μοντέλο δεν το κερδίζει σταθερά, κάτι πάει στραβά.", "No model: the same error if we simply predicted the player's PIR average (this season, else last). If the model doesn't beat it consistently, something is wrong."),
+  acc_gain: L("Βελτίωση: πόσο μικρότερο είναι το σφάλμα του μοντέλου από το «χωρίς μοντέλο».", "Improvement: how much smaller the model's error is than “no model”."),
+  acc_sp: L("Spearman: πόσο σωστά βάζει τους παίκτες σε σειρά, από 0 (τυχαία) έως 1 (τέλεια). Στο fantasy μετράει περισσότερο από το σφάλμα: διαλέγεις τους καλύτερους, όχι το ακριβές νούμερο.", "Spearman: how well it ranks the players, from 0 (random) to 1 (perfect). In fantasy it matters more than the error: you pick the best, not the exact number."),
+  acc_top: L("Top-20: από τους 20 που το μοντέλο έβλεπε καλύτερους σε ένα Round, πόσοι βγήκαν πράγματι στους 20 καλύτερους. Στο σύνολο, ο μέσος όρος των Rounds.", "Top-20: of the 20 the model saw as best in a Round, how many actually finished in the top 20. In the total, the average over Rounds."),
+  lu_vs: L("Και οι δύο με τα πραγματικά points (Bench 50%, Captain ×2, Coach). Θετικό: οι δικές σου αλλαγές (π.χ. στο T2) κέρδισαν points σε σχέση με την πρόταση πριν το Round.", "Both with actual points (Bench 50%, Captain ×2, Coach). Positive: your own changes (e.g. at T2) gained points over the proposal before the Round."),
+  experts: L("Μέσα points των παικτών που πρότεινε κάθε στήλη, έναντι του xFPT που τους έδινε το μοντέλο. Σταθερά θετικό: η στήλη βλέπει κάτι που το μοντέλο δεν βλέπει. Με λίγες επιλογές, αγνόησέ το.", "Average points of the players each column recommended, against the xFPT the model gave them. Consistently positive: the column sees something the model doesn't. With few picks, ignore it."),
+  bt: L("Κάθε Round, η καλύτερη ομάδα με 100 credits κατά την πρόβλεψη και τα πραγματικά της points (δεύτερο μισό της σεζόν, R&D 004). «Τέλεια γνώση»: αν ξέραμε από πριν τα αποτελέσματα.", "Each Round, the best 100-credit team by the prediction and its actual points (second half of the season, R&D 004). “Perfect knowledge”: if we knew the results in advance."),
+  learned: L("Οι συντελεστές του μοντέλου, από την περσινή σεζόν. Τα φετινά παιχνίδια μπαίνουν στη φόρμα κάθε παίκτη (μέσος όρος σεζόν, τελευταία 3), όχι εδώ. Π.χ. ματσάρισμα ×0.5: αν μια άμυνα δίνει +20% PIR σε μια θέση, ο παίκτης απέναντί της παίρνει ~+10%.", "The model's coefficients, from last season. This season's games go into each player's form (season average, last 3), not here. E.g. matchup ×0.5: if a defence gives up +20% PIR at a position, the player facing it gets ~+10%."),
+  defense: L("Πόσο PIR δίνει η ομάδα στους αντιπάλους της, σε σχέση με τον μέσο όρο της λίγκας. Πράσινο: δίνει περισσότερο, καλό ματς για τους παίκτες απέναντί της. Κόκκινο: δίνει λιγότερο.", "How much PIR the team gives up to its opponents, compared with the league average. Green: gives up more, a good matchup for the players facing it. Red: gives up less."),
+  deftot: L("Σύνολο: πόσο περισσότερο ή λιγότερο PIR από τον μέσο όρο δίνει η ομάδα σε όλους μαζί τους αντιπάλους της. Δεν μπαίνει στο μοντέλο: εκεί μετράει η θέση του παίκτη, και το σύνολο δεν προσθέτει κάτι (R&D 024).", "Total: how much more or less PIR than average the team gives up to all its opponents together. Not used in the model: there the player's position counts, and the total adds nothing (R&D 024)."),
+  pir: L("PIR: η αξιολόγηση της EuroLeague (πόντοι, ριμπάουντ, ασίστ, κλεψίματα, κοψίματα, κερδισμένα φάουλ, μείον άστοχα, λάθη και φάουλ).", "PIR: the EuroLeague's rating (points, rebounds, assists, steals, blocks, fouls drawn, minus missed shots, turnovers and fouls)."),
 };
 // «Σχετικά»: every mark with the same text its tap shows
 const LEGEND = [[[["t-pick", "PICK"]], "pick"], [[["t-cap", "CAP"]], "cap"], [[["t-avoid", "AVOID"]], "avoid"],
@@ -960,7 +997,7 @@ function renderLegend() {
   if (el) el.innerHTML = LEGEND.map(([tags, k]) => `<dt>${tags.map(([c, t]) => `<span class="tag ${c}">${esc(t)}</span>`).join(" ")}</dt><dd>${esc(INFO[k])}</dd>`).join("");
 }
 const pop = (r) => (r.popularity == null ? "" : `${f1(r.popularity)} %`);
-const ii = (k) => `<button type="button" class="ii" data-info="${k}" aria-label="Τι σημαίνει">ⓘ</button>`;
+const ii = (k) => `<button type="button" class="ii" data-info="${k}" aria-label="${L("Τι σημαίνει", "What it means")}">ⓘ</button>`;
 // early in a season the top predictions run high (research/023): an ⓘ next to a team's xFPT until round 8
 const EARLY_ROUNDS = 8;
 const earlyII = () => (P && P.round <= EARLY_ROUNDS ? ii("early") : "");
@@ -989,7 +1026,7 @@ function matchup(dev) {
 }
 
 let P, sortKey = "x_now", sortDir = -1;
-const STANCE = { pick: "προτείνει", captain: "Captain", avoid: "αποφυγή" };
+const STANCE = { pick: L("προτείνει", "pick"), captain: "Captain", avoid: L("αποφυγή", "avoid") };
 const pkey = (s) => String(s || "").split(" (")[0].normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
 function findPlayer(name) {
   if (!P) return null;
@@ -1048,10 +1085,10 @@ function filterChips(n) {
     if (lo || hi) chips.push([lo && hi ? `${label} ${lo}–${hi}` : lo ? `${label} ≥ ${lo}` : `${label} ≤ ${hi}`, [a, b]]);
   }
   for (const [id, label] of [...XFIL, ...PFIL]) if ($("#" + id).checked) chips.push([label, [id]]);
-  if ($("#fhealthy").checked) chips.push(["Χωρίς τραυματίες", ["fhealthy"]]);
+  if ($("#fhealthy").checked) chips.push([L("Χωρίς τραυματίες", "No injured"), ["fhealthy"]]);
   $("#fchips").innerHTML = chips.map(([l, ids]) => `<button type="button" class="fchip" data-clear="${ids.join(",")}">${esc(l)} <span aria-hidden="true">✕</span></button>`).join("");
   $("#fn").textContent = chips.length ? ` (${chips.length})` : "";
-  $("#fapply").textContent = n ? `Δες ${n} ${n === 1 ? "παίκτη" : "παίκτες"}` : "Κανένας παίκτης";
+  $("#fapply").textContent = n ? L(`Δες ${n} ${n === 1 ? "παίκτη" : "παίκτες"}`, `Show ${n} ${n === 1 ? "player" : "players"}`) : L("Κανένας παίκτης", "No players");
 }
 function clearFilter(id) {
   const el = $("#" + id);
@@ -1086,15 +1123,15 @@ function renderPlayers() {
     && (!xs.length || xs.some((f) => f(p))) && (!ps.length || ps.some((f) => f(p))));
   saveFilters();
   filterChips(rows.length);
-  $("#fcount").textContent = watch && !rows.length ? "Η watchlist είναι άδεια: πάτα ☆ δίπλα σε έναν παίκτη"
-    : `${rows.length} ${rows.length === 1 ? "παίκτης" : "παίκτες"}`;
+  $("#fcount").textContent = watch && !rows.length ? L("Η watchlist είναι άδεια: πάτα ☆ δίπλα σε έναν παίκτη", "Your watchlist is empty: tap ☆ next to a player")
+    : `${rows.length} ${rows.length === 1 ? L("παίκτης", "player") : L("παίκτες", "players")}`;
   rows.sort((a, b) => ((a[sortKey] ?? -1e9) > (b[sortKey] ?? -1e9) ? 1 : -1) * sortDir);
   const max = Math.max(...rows.map((r) => r.x_now || 0), 1);
   const hasPrice = P.fantasy_ok;
   const anyPlayed = P.players.some((r) => r.actual != null);
-  const cols = [["name", "Παίκτης"], ["x_now", "xFPT" + ii("xpts"), 1]].concat(anyPlayed ? [["actual", "Points" + ii("pts"), 1]] : [])
-    .concat([["fpt_total", "Σύνολο" + ii("ptot"), 1], ["opp", "Αντ."], ["pos_dev", "Ματσάρ." + ii("matchup"), 1],
-    ["x3", "xFPT3" + ii("xpts3"), 1], ["season_pir", "PIR φέτος" + ii("pir"), 1]])
+  const cols = [["name", L("Παίκτης", "Player")], ["x_now", "xFPT" + ii("xpts"), 1]].concat(anyPlayed ? [["actual", "Points" + ii("pts"), 1]] : [])
+    .concat([["fpt_total", L("Σύνολο", "Total") + ii("ptot"), 1], ["opp", L("Αντ.", "Opp.")], ["pos_dev", L("Ματσάρ.", "Matchup") + ii("matchup"), 1],
+    ["x3", "xFPT3" + ii("xpts3"), 1], ["season_pir", L("PIR φέτος", "Season PIR") + ii("pir"), 1]])
     .concat(hasPrice ? [["price", "Price", 1], ["price_chg", "Δ price" + ii("pchg"), 1], ["popularity", "POP" + ii("pop"), 1], ["value", "Value" + ii("value"), 1]] : []);
   $("#ptable").innerHTML = "<thead><tr>" + cols.map(([k, l, n]) =>
     `<th data-k="${k}" class="${n ? "num " : ""}c-${k}">${l}${sortKey === k ? (sortDir < 0 ? " ↓" : " ↑") : ""}</th>`).join("") + "</tr></thead><tbody>"
@@ -1112,9 +1149,9 @@ function renderPlayers() {
   $("#plist").innerHTML = rows.slice(0, 150).map((r) => `<div class="pcard" data-pid="${esc(r.person_id)}" style="${tcol(r.team)}">
     <div class="pn">${cbox(r)}${wstar(r)}${esc(nm(r.name))}${avb(r)}${newb(r)}${exb(r)}${dol(r)}</div>
     <div class="px"><b>${f1(r.x_now)}</b><small>xFPT${ii("xpts")}</small>${r.actual != null ? `<span class="h"><b class="${r.actual >= (r.x_now ?? 0) ? "up" : "down"}">${f1(r.actual)}</b> <small>points</small></span>` : ""}<span class="h more">${f1(xf3(r))} <small>xFPT3</small></span></div>
-    <div class="pm">${esc(tc(r.team))} · ${esc((r.position || "")[0] || "")}${r.price != null ? ` · <b>${f1(r.price)}cr</b><span class="more">${chg(r.price_chg)}</span>` : ""}${pop(r) ? ` · POP ${pop(r)}` : ""}${r.fpt_total != null ? ` · Σύνολο <b>${f1(r.fpt_total)}</b>` : ""} · ${gameOf(r)} ${matchup(r.pos_dev)}</div>
+    <div class="pm">${esc(tc(r.team))} · ${esc((r.position || "")[0] || "")}${r.price != null ? ` · <b>${f1(r.price)}cr</b><span class="more">${chg(r.price_chg)}</span>` : ""}${pop(r) ? ` · POP ${pop(r)}` : ""}${r.fpt_total != null ? ` · ${L("Σύνολο", "Total")} <b>${f1(r.fpt_total)}</b>` : ""} · ${gameOf(r)} ${matchup(r.pos_dev)}</div>
     ${watch ? `<div class="pm">${wsince(r, "")}</div>` : ""}
-  </div>`).join("") + (rows.length > 150 ? `<p class="muted">…και ${rows.length - 150} ακόμα — στένεψε τα φίλτρα.</p>` : "");
+  </div>`).join("") + (rows.length > 150 ? `<p class="muted">${L(`…και ${rows.length - 150} ακόμα — στένεψε τα φίλτρα.`, `…and ${rows.length - 150} more — narrow the filters.`)}</p>` : "");
   $("#fsort").value = sortKey;
 }
 
@@ -1156,16 +1193,16 @@ function expertsHtml(list, track, bare = false) {
   const li = (e) => { const r = findPlayer(e.player);
     return `<li${r ? ` data-pid="${esc(r.person_id)}"` : ""}><span class="st">${STANCE_ICON[e.stance] || "•"}</span><div>
       <b>${esc(nm(r ? r.name : String(e.player).split(" (")[0]))}</b>${r ? ` <span class="muted">${esc(tc(r.team))} · ${esc((r.position || "")[0] || "")}${r.price != null ? " · " + f1(r.price) + "cr" : ""}${r.x_now != null ? " · xFPT " + f1(r.x_now) : ""}</span>${dol(r)}` : ""}
-      ${e.note ? `<div class="muted nt">${esc(e.note)}</div>` : ""}</div></li>`; };
+      ${noteOf(e) ? `<div class="muted nt">${esc(noteOf(e))}</div>` : ""}</div></li>`; };
   const block = (src, i) => { const es = by.get(src), sc = score[src];
-    const head = `${esc(src)} <span class="muted">· ${es.length}${sc != null ? ` · ${sc >= 0 ? "+" : ""}${f1(sc)} vs μοντέλο` : ""}</span>`;
+    const head = `${esc(src)} <span class="muted">· ${es.length}${sc != null ? ` · ${sc >= 0 ? "+" : ""}${f1(sc)} ${L("vs μοντέλο", "vs model")}` : ""}</span>`;
     const ul = (xs) => `<ul class="xp">${xs.map(li).join("")}</ul>`;
     return i === 0
-      ? `<h3>${head}</h3>${ul(es.slice(0, 6))}${es.length > 6 ? `<details class="td-more"><summary>+${es.length - 6} ακόμα</summary>${ul(es.slice(6))}</details>` : ""}`
+      ? `<h3>${head}</h3>${ul(es.slice(0, 6))}${es.length > 6 ? `<details class="td-more"><summary>+${es.length - 6} ${L("ακόμα", "more")}</summary>${ul(es.slice(6))}</details>` : ""}`
       : `<details class="xp-src"><summary>${head}</summary>${ul(es)}</details>`; };
-  const order = track.length ? `<small class="muted">πρώτη η στήλη με τις καλύτερες προτάσεις ως τώρα</small>` : "";
+  const order = track.length ? `<small class="muted">${L("πρώτη η στήλη με τις καλύτερες προτάσεις ως τώρα", "the column with the best picks so far first")}</small>` : "";
   return bare ? `<div class="card">${order ? `<p style="margin:0 0 6px">${order}</p>` : ""}${srcs.map(block).join("")}</div>`
-    : `<div class="card"><h2>Ειδικοί ${order}</h2>${srcs.map(block).join("")}</div>`;
+    : `<div class="card"><h2>${L("Ειδικοί", "Experts")} ${order}</h2>${srcs.map(block).join("")}</div>`;
 }
 // the summary's players (Jean Montero, as the roster in Latin letters) and clubs open their card when tapped;
 // no quotation marks around them
@@ -1188,10 +1225,10 @@ function linkNames(html) {
   });
 }
 function articlesHtml(arts) {
-  const li = (a) => `<li><a href="${safeUrl(a.url)}" target="_blank" rel="noopener noreferrer">${esc(a.title)}</a><br><span class="muted">${esc(a.source)} · ${a.date ? new Date(a.date).toLocaleString("el-GR") : ""}</span></li>`;
+  const li = (a) => `<li><a href="${safeUrl(a.url)}" target="_blank" rel="noopener noreferrer">${esc(a.title)}</a><br><span class="muted">${esc(a.source)} · ${a.date ? new Date(a.date).toLocaleString(LOC) : ""}</span></li>`;
   const fan = arts.filter((a) => a.fantasy), rest = arts.filter((a) => !a.fantasy).slice(0, 60);
-  return `<div class="card"><h2>Άρθρα fantasy</h2>${fan.length ? `<ul class="news">${fan.map(li).join("")}</ul>` : `<p class="muted">Κανένα αυτή τη στιγμή.</p>`}
-    ${rest.length ? `<details class="td-more"><summary>Όλα τα άρθρα (${rest.length})</summary><ul class="news">${rest.map(li).join("")}</ul></details>` : ""}</div>`;
+  return `<div class="card"><h2>${L("Άρθρα fantasy", "Fantasy articles")}</h2>${fan.length ? `<ul class="news">${fan.map(li).join("")}</ul>` : `<p class="muted">${L("Κανένα αυτή τη στιγμή.", "None right now.")}</p>`}
+    ${rest.length ? `<details class="td-more"><summary>${L("Όλα τα άρθρα", "All articles")} (${rest.length})</summary><ul class="news">${rest.map(li).join("")}</ul></details>` : ""}</div>`;
 }
 // «Η ομάδα μου»: web/team.js draws it for both editions
 function renderTeam(my, best) { if (window.TEAM) TEAM.render(best); }
@@ -1220,51 +1257,52 @@ function upcoming(team, n = 4) {
       return { round: f.round, opp, home, utc: f.utc, m: margin(team, opp, home) }; });
 }
 const dots = (team) => `<span class="dots">${((P.team_form || {})[team] || []).slice().reverse()
-  .map((g) => `<b class="${g.won ? "w" : "l"}" title="R${g.round} ${g.home ? "vs" : "@"} ${esc(tc(g.opp))} ${esc(g.score)}">${g.won ? "Ν" : "Η"}</b>`).join("") || '<span class="muted">–</span>'}</span>`;
+  .map((g) => `<b class="${g.won ? "w" : "l"}" title="R${g.round} ${g.home ? "vs" : "@"} ${esc(tc(g.opp))} ${esc(g.score)}">${g.won ? L("Ν", "W") : L("Η", "L")}</b>`).join("") || '<span class="muted">–</span>'}</span>`;
 function renderTeams() {
-  const seg = `<div class="seg">${[["standings", "Βαθμολογία"], ["power", "Δύναμη"], ["fixtures", "Πρόγραμμα"], ["defense", "Άμυνες"]]
+  const seg = `<div class="seg">${[["standings", L("Βαθμολογία", "Standings")], ["power", L("Δύναμη", "Power")], ["fixtures", L("Πρόγραμμα", "Schedule")], ["defense", L("Άμυνες", "Defences")]]
     .map(([k, l]) => `<button data-tv="${k}" class="${teamsView === k ? "on" : ""}">${l}</button>`).join("")}</div>`;
   let body = "";
   if (teamsView === "standings") {
     const st = P.standings || [];
     const played = st.some((r) => r.gp);
-    body = st.length ? `<div class="card tablewrap"><table id="stable" class="fit"><thead><tr><th>#</th><th>Ομάδα</th>
-      <th class="num">Αγ</th><th class="num">Ν</th><th class="num">Η</th><th class="num">+/−</th><th>Φόρμα</th></tr></thead><tbody>
+    body = st.length ? `<div class="card tablewrap"><table id="stable" class="fit"><thead><tr><th>#</th><th>${L("Ομάδα", "Team")}</th>
+      <th class="num">${L("Αγ", "GP")}</th><th class="num">${L("Ν", "W")}</th><th class="num">${L("Η", "L")}</th><th class="num">+/−</th><th>${L("Φόρμα", "Form")}</th></tr></thead><tbody>
       ${st.map((r) => `<tr data-team="${esc(r.team)}"><td>${r.pos}</td>
         <td><b>${esc(tc(r.team))}</b> <span class="muted st-club">${esc((P.clubs || {})[r.team] || "")}</span></td>
         <td class="num">${r.gp}</td><td class="num"><b>${r.w}</b></td><td class="num">${r.l}</td>
         <td class="num ${r.diff > 0 ? "up" : r.diff < 0 ? "down" : ""}">${r.diff > 0 ? "+" : ""}${r.diff}</td><td>${dots(r.team)}</td></tr>`).join("")}
       </tbody></table></div>
-      <p class="muted">Κανονική περίοδος. Σειρά: νίκες και μετά διαφορά πόντων (η επίσημη ισοβαθμία κρίνεται από τα μεταξύ τους παιχνίδια).
-      ${played ? "" : "Δεν έχει παιχτεί ακόμα αγώνας."} Πάτα μια ομάδα για λεπτομέρειες.</p>`
-      : `<div class="card"><p>Η βαθμολογία θα εμφανιστεί μετά το επόμενο update.</p></div>`;
+      <p class="muted">${L("Κανονική περίοδος. Σειρά: νίκες και μετά διαφορά πόντων (η επίσημη ισοβαθμία κρίνεται από τα μεταξύ τους παιχνίδια).", "Regular season. Order: wins, then point difference (the official tiebreak uses head-to-head games).")}
+      ${played ? "" : L("Δεν έχει παιχτεί ακόμα αγώνας.", "No game played yet.")} ${L("Πάτα μια ομάδα για λεπτομέρειες.", "Tap a team for details.")}</p>`
+      : `<div class="card"><p>${L("Η βαθμολογία θα εμφανιστεί μετά το επόμενο update.", "The standings will appear after the next update.")}</p></div>`;
   } else if (teamsView === "power") {
-    body = `<div class="card tablewrap"><table id="rtable"><thead><tr><th>#</th><th>Ομάδα</th><th class="num">Net</th>
-      <th class="num">Pace</th><th class="num">Έδρα</th><th>Φόρμα</th></tr></thead><tbody>
+    body = `<div class="card tablewrap"><table id="rtable"><thead><tr><th>#</th><th>${L("Ομάδα", "Team")}</th><th class="num">Net</th>
+      <th class="num">Pace</th><th class="num">${L("Έδρα", "Home")}</th><th>${L("Φόρμα", "Form")}</th></tr></thead><tbody>
       ${P.team_ratings.map((t, i) => `<tr data-team="${esc(t.team)}"><td>${i + 1}</td><td><b>${esc(tc(t.team))}</b></td>
         <td class="num ${t.net >= 0 ? "up" : "down"}">${t.net >= 0 ? "+" : ""}${f1(t.net)}</td>
         <td class="num">${f1(t.pace)}</td><td class="num">+${f1(t.hca)}</td><td>${dots(t.team)}</td></tr>`).join("")}</tbody></table></div>
-      <p class="muted">Net: πόσους πόντους περισσότερους βάζει απ' όσους δέχεται ανά 100 κατοχές (φέτος + πέρσι, με το φετινό να βαραίνει όσο παίζονται αγώνες).
-      Pace: κατοχές ανά αγώνα (γρήγορο παιχνίδι = περισσότερο PIR). Έδρα: πλεονέκτημα έδρας της ομάδας. Πάτα μια ομάδα για λεπτομέρειες.</p>`;
+      <p class="muted">${L(`Net: πόσους πόντους περισσότερους βάζει απ' όσους δέχεται ανά 100 κατοχές (φέτος + πέρσι, με το φετινό να βαραίνει όσο παίζονται αγώνες).
+      Pace: κατοχές ανά αγώνα (γρήγορο παιχνίδι = περισσότερο PIR). Έδρα: πλεονέκτημα έδρας της ομάδας. Πάτα μια ομάδα για λεπτομέρειες.`, `Net: points scored minus points allowed per 100 possessions (this season + last, with this season weighing more as games are played).
+      Pace: possessions per game (a fast game = more PIR). Home: the team's home advantage. Tap a team for details.`)}</p>`;
   } else if (teamsView === "fixtures") {
     const rows = P.team_ratings.map((t) => { const u = upcoming(t.team);
       const w = [1, 0.6, 0.35, 0.2], ms = u.map((g) => g.m ?? 0);
       const score = ms.reduce((a, m, i) => a + m * (w[i] ?? 0), 0) / (ms.length ? w.slice(0, ms.length).reduce((a, b) => a + b, 0) : 1);
       return { team: t.team, u, score }; }).sort((a, b) => b.score - a.score);
     const rounds = [...new Set(rows.flatMap((r) => r.u.map((g) => g.round)))].sort((a, b) => a - b).slice(0, 4);
-    body = `<div class="card"><h2>Δυσκολία προγράμματος</h2>
-      <p class="muted" style="margin-top:0">Ταξινόμηση από το ευκολότερο πρόγραμμα (το επόμενο Round βαραίνει περισσότερο). Σε κάθε κουτί: αντίπαλος και πιθανότητα νίκης.</p>
+    body = `<div class="card"><h2>${L("Δυσκολία προγράμματος", "Schedule difficulty")}</h2>
+      <p class="muted" style="margin-top:0">${L("Ταξινόμηση από το ευκολότερο πρόγραμμα (το επόμενο Round βαραίνει περισσότερο). Σε κάθε κουτί: αντίπαλος και πιθανότητα νίκης.", "Sorted from the easiest schedule (the next Round weighs more). In each box: opponent and win probability.")}</p>
       <table class="tk"><thead><tr><th></th>${rounds.map((r) => `<th>R${r}</th>`).join("")}</tr></thead><tbody>
       ${rows.map((r) => `<tr><td class="tn" data-team="${esc(r.team)}">${esc(tc(r.team))}<small>${r.score >= 0 ? "+" : ""}${f1(r.score)}</small></td>${rounds.map((rd) => {
         const g = r.u.find((x) => x.round === rd);
         return g ? `<td class="fx" style="${tint(g.m)}">${g.home ? "vs" : "@"} ${esc(tc(g.opp))}<small>${winp(g.m)}%</small></td>` : `<td class="none">–</td>`; }).join("")}</tr>`).join("")}
       </tbody></table>
-      <div class="legend">δύσκολο <i style="${tint(-12)}"></i><i style="${tint(-5)}"></i><i style="${tint(0)}"></i><i style="${tint(5)}"></i><i style="${tint(12)}"></i> εύκολο
-        · ο αριθμός κάτω από την ομάδα = σταθμισμένη αναμενόμενη διαφορά σκορ</div></div>`;
+      <div class="legend">${L("δύσκολο", "hard")} <i style="${tint(-12)}"></i><i style="${tint(-5)}"></i><i style="${tint(0)}"></i><i style="${tint(5)}"></i><i style="${tint(12)}"></i> ${L("εύκολο", "easy")}
+        · ${L("ο αριθμός κάτω από την ομάδα = σταθμισμένη αναμενόμενη διαφορά σκορ", "the number under the team = weighted expected point margin")}</div></div>`;
   } else {
     const pa = P.pos_allowed || [];
-    body = `<div class="card tablewrap"><h2>PIR που δίνει η άμυνα ${ii("defense")}</h2>
-      <table id="dtable"><thead><tr><th>Ομάδα</th>${DEF_COLS.map(([k, l]) =>
+    body = `<div class="card tablewrap"><h2>${L("PIR που δίνει η άμυνα", "PIR the defence gives up")} ${ii("defense")}</h2>
+      <table id="dtable"><thead><tr><th>${L("Ομάδα", "Team")}</th>${DEF_COLS.map(([k, l]) =>
         `<th class="num" data-dk="${k}">${l}${k === "Total" ? ii("deftot") : ""}${defSort === k ? (defDir < 0 ? " ↓" : " ↑") : ""}</th>`).join("")}</tr></thead><tbody>
       ${[...pa].sort((a, b) => defDir * ((a[defSort] ?? 0) - (b[defSort] ?? 0))).map((t) => `<tr data-team="${esc(t.team)}"><td><b>${esc(tc(t.team))}</b></td>${
         DEF_COLS.map(([k]) => `<td class="num" style="${tint((t[k] ?? 0) * 60)}">${(t[k] ?? 0) >= 0 ? "+" : ""}${Math.round((t[k] ?? 0) * 100)}%</td>`).join("")}</tr>`).join("")}
@@ -1282,7 +1320,7 @@ function renderTeams() {
     defDir = defSort === th.dataset.dk ? -defDir : -1; defSort = th.dataset.dk; renderTeams(); });
 }
 let defSort = "Center", defDir = -1;
-const DEF_COLS = [["Guard", "Guard"], ["Forward", "Forward"], ["Center", "Center"], ["Total", "Σύνολο"]];
+const DEF_COLS = [["Guard", "Guard"], ["Forward", "Forward"], ["Center", "Center"], ["Total", L("Σύνολο", "Total")]];
 function openTeam(team) {
   const t = TR()[team];
   if (!t) return;
@@ -1294,17 +1332,17 @@ function openTeam(team) {
   const coach = players.find((x) => x.position === "Head Coach");
   const top = players.filter((x) => x.position !== "Head Coach").slice(0, 6);
   $("#sheet").innerHTML = `<div class="sh"><div><h2>${esc((P.clubs || {})[team] || team)}</h2>
-      <div class="muted">${esc(tc(team))} · #${rank} σε δύναμη${turn ? ` · Round ${P.round}: Turn ${turn.turn} (${esc(turn.date.slice(8))}/${esc(turn.date.slice(5, 7))})` : ""}${coach ? ` · coach ${esc(nm(coach.name))}` : ""}</div></div>
-      <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
+      <div class="muted">${esc(tc(team))} · #${rank} ${L("σε δύναμη", "in power")}${turn ? ` · Round ${P.round}: Turn ${turn.turn} (${esc(turn.date.slice(8))}/${esc(turn.date.slice(5, 7))})` : ""}${coach ? ` · coach ${esc(nm(coach.name))}` : ""}</div></div>
+      <button class="x" aria-label="${L("Κλείσιμο", "Close")}" onclick="closePlayer()">×</button></div>
     <div class="kpis"><div class="kpi"><b class="${t.net >= 0 ? "up" : "down"}">${t.net >= 0 ? "+" : ""}${f1(t.net)}</b><span>Net /100</span></div>
-      <div class="kpi"><b>${f1(t.pace)}</b><span>Pace</span></div><div class="kpi"><b>+${f1(t.hca)}</b><span>Έδρα</span></div></div>
-    <h3>Φόρμα φέτος</h3>${form.length ? `<div class="games">${form.map((g) => `<div class="game"><div>R${g.round} · ${g.home ? "vs" : "@"} <b>${esc(tc(g.opp))}</b> <span class="${g.won ? "W" : "L"}">${g.won ? "Ν" : "Η"}</span> ${esc(g.score)}</div></div>`).join("")}</div>` : `<p class="muted">Κανένας αγώνας ακόμα.</p>`}
-    <h3>Επόμενοι αγώνες</h3><div class="games">${upcoming(team).map((g) => `<div class="game" style="${tint(g.m)}">
-      <div>R${g.round} · ${g.home ? "vs" : "@"} <b>${esc(tc(g.opp))}</b></div><div class="gv"><b>${winp(g.m)}%</b><small>νίκη</small></div>
-      <div class="gs">${new Date(g.utc).toLocaleString("el-GR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Europe/Athens" })} · διαφορά ${g.m >= 0 ? "+" : ""}${f1(g.m)}</div></div>`).join("") || '<p class="muted">–</p>'}</div>
-    <h3>Άμυνα: PIR που δίνει ανά θέση</h3><ul class="why">${["Guard", "Forward", "Center"].map((pos) =>
+      <div class="kpi"><b>${f1(t.pace)}</b><span>Pace</span></div><div class="kpi"><b>+${f1(t.hca)}</b><span>${L("Έδρα", "Home")}</span></div></div>
+    <h3>${L("Φόρμα φέτος", "Form this season")}</h3>${form.length ? `<div class="games">${form.map((g) => `<div class="game"><div>R${g.round} · ${g.home ? "vs" : "@"} <b>${esc(tc(g.opp))}</b> <span class="${g.won ? "W" : "L"}">${g.won ? L("Ν", "W") : L("Η", "L")}</span> ${esc(g.score)}</div></div>`).join("")}</div>` : `<p class="muted">${L("Κανένας αγώνας ακόμα.", "No games yet.")}</p>`}
+    <h3>${L("Επόμενοι αγώνες", "Next games")}</h3><div class="games">${upcoming(team).map((g) => `<div class="game" style="${tint(g.m)}">
+      <div>R${g.round} · ${g.home ? "vs" : "@"} <b>${esc(tc(g.opp))}</b></div><div class="gv"><b>${winp(g.m)}%</b><small>${L("νίκη", "win")}</small></div>
+      <div class="gs">${new Date(g.utc).toLocaleString(LOC, { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Europe/Athens" })} · ${L("διαφορά", "margin")} ${g.m >= 0 ? "+" : ""}${f1(g.m)}</div></div>`).join("") || '<p class="muted">–</p>'}</div>
+    <h3>${L("Άμυνα: PIR που δίνει ανά θέση", "Defence: PIR given up by position")}</h3><ul class="why">${["Guard", "Forward", "Center"].map((pos) =>
       `<li><span>${pos}</span><span>${matchup(pa[pos]) || "≈ 0%"}</span></li>`).join("")}</ul>
-    <h3>Κορυφαίοι παίκτες (xFPT του Round)</h3><div class="games">${top.map((x) => `<div class="game" data-pid="${esc(x.person_id)}" style="cursor:pointer">
+    <h3>${L("Κορυφαίοι παίκτες (xFPT του Round)", "Top players (Round xFPT)")}</h3><div class="games">${top.map((x) => `<div class="game" data-pid="${esc(x.person_id)}" style="cursor:pointer">
       <div><b>${esc(nm(x.name))}</b>${inj(x)}${dol(x)}</div><div class="gv"><b>${f1(x.actual ?? x.x_now)}</b><small>${x.actual != null ? "points" : "xFPT"}</small></div>
       <div class="gs">${esc(x.position || "")}${x.price != null ? ` · ${f1(x.price)} cr` : ""} · xFPT3 ${f1(xf3(x))}</div></div>`).join("")}</div>`;
   $("#modal").classList.add("on");
@@ -1318,7 +1356,7 @@ function openTeam(team) {
 let WATCH = {};
 try { WATCH = JSON.parse(localStorage.getItem("watch") || "{}") || {}; } catch (e) {}
 const wstar = (r) => r.person_id ? `<button type="button" class="wstar${WATCH[r.person_id] ? " on" : ""}" data-watch="${esc(r.person_id)}"
-  aria-pressed="${WATCH[r.person_id] ? "true" : "false"}" aria-label="watchlist" title="${WATCH[r.person_id] ? "Βγάλ' τον από τη watchlist" : "Βάλ' τον στη watchlist"}">${WATCH[r.person_id] ? "★" : "☆"}</button>` : "";
+  aria-pressed="${WATCH[r.person_id] ? "true" : "false"}" aria-label="watchlist" title="${WATCH[r.person_id] ? L("Βγάλ' τον από τη watchlist", "Remove from watchlist") : L("Βάλ' τον στη watchlist", "Add to watchlist")}">${WATCH[r.person_id] ? "★" : "☆"}</button>` : "";
 const isWatched = (pid) => !!WATCH[pid];
 function wsince(r, sep) {
   const w = WATCH[r.person_id];
@@ -1326,10 +1364,10 @@ function wsince(r, sep) {
   const d = (a, b) => (a == null || b == null ? null : Math.round((a - b) * 10) / 10);
   const sg = (v, unit) => `${v > 0 ? "+" : "−"}${f1(Math.abs(v))}${unit}`;
   const dp = d(r.price, w.price), dx = d(xf3(r), w.x3);    // only what moved
-  const day = w.at ? new Date(w.at).toLocaleDateString("el-GR", { day: "numeric", month: "numeric" }) : "";
+  const day = w.at ? new Date(w.at).toLocaleDateString(LOC, { day: "numeric", month: "numeric" }) : "";
   const bits = [dp ? `price ${sg(dp, " cr")}` : "", dx ? `xFPT3 ${sg(dx, "")}` : "",
-    inj(r) ? ico("medic") + " εκτός/αμφίβολος" : w.inj && !inj(r) ? ico("check") + " διαθέσιμος ξανά" : ""].filter(Boolean);
-  return `${sep}<span class="muted wsince">από ${esc(day)}: ${bits.join(" · ") || "χωρίς αλλαγές"}</span>`;
+    inj(r) ? ico("medic") + L(" εκτός/αμφίβολος", " out/doubtful") : w.inj && !inj(r) ? ico("check") + L(" διαθέσιμος ξανά", " available again") : ""].filter(Boolean);
+  return `${sep}<span class="muted wsince">${L("από", "since")} ${esc(day)}: ${bits.join(" · ") || L("χωρίς αλλαγές", "no changes")}</span>`;
 }
 function setWatch(pid, on) {
   const r = P.players.find((x) => x.person_id === pid);
@@ -1341,7 +1379,7 @@ function setWatch(pid, on) {
   watchPush();
   document.querySelectorAll(`.wstar[data-watch="${CSS.escape(pid)}"]`).forEach((b) => {
     b.classList.toggle("on", on); b.textContent = on ? "★" : "☆"; b.setAttribute("aria-pressed", on ? "true" : "false");
-    b.title = on ? "Βγάλ' τον από τη watchlist" : "Βάλ' τον στη watchlist"; });
+    b.title = on ? L("Βγάλ' τον από τη watchlist", "Remove from watchlist") : L("Βάλ' τον στη watchlist", "Add to watchlist"); });
   if ($("#fwatch").checked) renderPlayers();
 }
 // personal edition: the list also goes to the update (Telegram alerts) through the personal site's
@@ -1390,13 +1428,13 @@ document.addEventListener("click", (e) => {
 const CMP_MAX = 4;
 let CMP = [];
 try { CMP = JSON.parse(localStorage.getItem("cmp") || "[]"); } catch (e) {}
-const cbox = (r) => r.person_id ? `<input type="checkbox" class="cmp" data-cmp="${esc(r.person_id)}" aria-label="σύγκριση"${CMP.includes(r.person_id) ? " checked" : ""}>` : "";
+const cbox = (r) => r.person_id ? `<input type="checkbox" class="cmp" data-cmp="${esc(r.person_id)}" aria-label="${L("σύγκριση", "compare")}"${CMP.includes(r.person_id) ? " checked" : ""}>` : "";
 function setCmp(list) {
   CMP = list;
   try { localStorage.setItem("cmp", JSON.stringify(CMP)); } catch (e) {}
   document.querySelectorAll("input.cmp").forEach((el) => { el.checked = CMP.includes(el.dataset.cmp); });
   for (const c of [$("#cmpcnt"), $("#cmpcnt2")]) { c.hidden = !CMP.length; c.textContent = CMP.length; }
-  $("#cmptxt").textContent = `${CMP.length} για σύγκριση`;
+  $("#cmptxt").textContent = L(`${CMP.length} για σύγκριση`, `${CMP.length} to compare`);
   $("#cmpbar").classList.toggle("on", CMP.length > 0 && $("#players").classList.contains("on"));
   if ($("#compare").classList.contains("on")) renderCompare();
 }
@@ -1405,7 +1443,7 @@ document.addEventListener("change", (e) => {
   if (!el) return;
   const id = el.dataset.cmp;
   if (el.checked && !CMP.includes(id)) {
-    if (CMP.length >= CMP_MAX) { el.checked = false; alert(`Έως ${CMP_MAX} παίκτες στη σύγκριση.`); return; }
+    if (CMP.length >= CMP_MAX) { el.checked = false; alert(L(`Έως ${CMP_MAX} παίκτες στη σύγκριση.`, `Up to ${CMP_MAX} players in a comparison.`)); return; }
     setCmp([...CMP, id]);
   } else if (!el.checked) setCmp(CMP.filter((x) => x !== id));
 });
@@ -1413,15 +1451,15 @@ async function renderCompare() {
   const box = $("#compare");
   const rows = CMP.map((id) => P.players.find((x) => x.person_id === id)).filter(Boolean);
   // add a player right here: type a few letters of the name
-  const add = CMP.length < CMP_MAX ? `<div class="cmp-add"><input id="cmpSearch" placeholder="Πρόσθεσε παίκτη: γράψε όνομα" autocomplete="off">
+  const add = CMP.length < CMP_MAX ? `<div class="cmp-add"><input id="cmpSearch" placeholder="${L("Πρόσθεσε παίκτη: γράψε όνομα", "Add a player: type a name")}" autocomplete="off">
     <ul class="cmp-res" id="cmpRes"></ul></div>` : "";
   if (rows.length < 2) {
-    box.innerHTML = `<div class="card"><h2>Σύγκριση head-to-head</h2>${add}<p class="muted">Ή διάλεξε με το ☐ στο tab «Παίκτες» (2 έως 4).</p>
-      ${rows.length ? `<p>Επιλεγμένος: <b>${esc(nm(rows[0].name))}</b>
-        <button class="linkbtn" type="button" id="cmpClear" onclick="setCmp([])">✕ αφαίρεση</button></p>` : ""}</div>`;
+    box.innerHTML = `<div class="card"><h2>${L("Σύγκριση head-to-head", "Head-to-head comparison")}</h2>${add}<p class="muted">${L("Ή διάλεξε με το ☐ στο tab «Παίκτες» (2 έως 4).", "Or pick with ☐ in the “Players” tab (2 to 4).")}</p>
+      ${rows.length ? `<p>${L("Επιλεγμένος", "Selected")}: <b>${esc(nm(rows[0].name))}</b>
+        <button class="linkbtn" type="button" id="cmpClear" onclick="setCmp([])">✕ ${L("αφαίρεση", "remove")}</button></p>` : ""}</div>`;
   } else {
-    box.innerHTML = `<div class="card"><h2>Σύγκριση head-to-head</h2>${add}
-      <p class="muted">Πράσινο = καλύτερη τιμή της γραμμής. Πάτα το όνομα για την καρτέλα του παίκτη.</p>${await compareTable(rows, true)}</div>`;
+    box.innerHTML = `<div class="card"><h2>${L("Σύγκριση head-to-head", "Head-to-head comparison")}</h2>${add}
+      <p class="muted">${L("Πράσινο = καλύτερη τιμή της γραμμής. Πάτα το όνομα για την καρτέλα του παίκτη.", "Green = the row's best value. Tap a name for the player's card.")}</p>${await compareTable(rows, true)}</div>`;
   }
   const inp = $("#cmpSearch");
   if (!inp) return;
@@ -1452,42 +1490,42 @@ async function compareTable(rows, removable = false) {
   return `<div class="tablewrap"><table class="h2h"><thead><tr><th></th>${rows.map((r) => `<th>
       <div data-pid="${esc(r.person_id)}" style="cursor:pointer">${esc(nm(r.name))}${inj(r)}${dol(r)}</div>
       <div class="muted" style="font-weight:400;font-size:12px">${esc(tc(r.team))} · ${esc((r.position || "")[0] || "")}${
-        r.turn && (P.turns || []).length > 1 ? ` · <span class="tb t${Math.min(r.turn, 3)}" title="Παίζει στο Turn ${r.turn} του Round">T${r.turn}</span>` : ""}</div>
-      ${removable ? `<button class="rm" type="button" title="αφαίρεση" onclick="setCmp(CMP.filter((x) => x !== '${esc(r.person_id)}'))">✕</button>` : ""}</th>`).join("")}</tr></thead><tbody>
+        r.turn && (P.turns || []).length > 1 ? ` · <span class="tb t${Math.min(r.turn, 3)}" title="${L(`Παίζει στο Turn ${r.turn} του Round`, `Plays in Turn ${r.turn} of the Round`)}">T${r.turn}</span>` : ""}</div>
+      ${removable ? `<button class="rm" type="button" title="${L("αφαίρεση", "remove")}" onclick="setCmp(CMP.filter((x) => x !== '${esc(r.person_id)}'))">✕</button>` : ""}</th>`).join("")}</tr></thead><tbody>
     ${sec("Fantasy")}
     ${line("Price (cr)", rows.map((r) => r.price), "lo")}
-    ${line("xFPT του Round", rows.map((r) => r.actual ?? r.x_now), "hi")}
+    ${line(L("xFPT του Round", "Round xFPT"), rows.map((r) => r.actual ?? r.x_now), "hi")}
     ${line("xFPT3", rows.map(xf3), "hi")}
-    ${line("Points σεζόν", rows.map((r) => r.fpt_total), "hi")}
+    ${line(L("Points σεζόν", "Season points"), rows.map((r) => r.fpt_total), "hi")}
     ${line("Value (xFPT3/cr)", rows.map((r) => r.value), "hi", (v) => v.toFixed(2))}
-    ${line("Τάση price", rows.map((r) => (r.price_trend === "up" ? "$▲ άνοδος" : r.price_trend === "down" ? "$▼ πτώση" : "σταθερή")), null, (v) => v)}
-    ${sec("Επόμενα 3 παιχνίδια")}
-    ${line("Άθροισμα xFPT", nextSum, "hi")}
-    <tr><td>Αγώνες</td>${det.map((d) => `<td class="ng">${d.next.map((g) => `R${g.round} ${g.home ? "vs" : "@"} ${esc(tc(g.opp))} <b>${f1(g.x)}</b>`).join("<br>") || "–"}</td>`).join("")}</tr>
-    ${line("Ματσάρισμα (επόμενος)", det.map((d) => d.next[0]?.pos_dev), "hi", (v) => `${v >= 0 ? "+" : ""}${Math.round(v * 100)}%`)}
-    ${line("Πιθ. νίκης (επόμενος)", det.map((d) => d.next[0]?.win), "hi", pct0)}
-    ${sec("Φόρμα (PIR)")}
-    ${line("Τελευταία 3", det.map((d) => d.form?.last3_pir), "hi")}
-    ${line("Σεζόν", det.map((d) => d.form?.season_pir), "hi")}
-    ${line("Πέρσι", det.map((d) => d.form?.prev_pir), "hi")}
-    ${line("Βάση μοντέλου", det.map((d, i) => d.form?.base ?? rows[i].base), "hi")}
-    ${line("Διαθεσιμότητα", rows.map((r) => (r.avail_game == null ? null : r.avail_game * 100)), "hi", pct0)}
-    ${sec(`Φέτος · μ.ό. ανά αγώνα`)}
-    ${line("Αγώνες", cur.map((s) => s.g), "hi", (v) => v)}
-    ${line("Λεπτά", cur.map((s) => s.min), "hi")}
+    ${line(L("Τάση price", "Price trend"), rows.map((r) => (r.price_trend === "up" ? L("$▲ άνοδος", "$▲ rise") : r.price_trend === "down" ? L("$▼ πτώση", "$▼ drop") : L("σταθερή", "steady"))), null, (v) => v)}
+    ${sec(L("Επόμενα 3 παιχνίδια", "Next 3 games"))}
+    ${line(L("Άθροισμα xFPT", "xFPT sum"), nextSum, "hi")}
+    <tr><td>${L("Αγώνες", "Games")}</td>${det.map((d) => `<td class="ng">${d.next.map((g) => `R${g.round} ${g.home ? "vs" : "@"} ${esc(tc(g.opp))} <b>${f1(g.x)}</b>`).join("<br>") || "–"}</td>`).join("")}</tr>
+    ${line(L("Ματσάρισμα (επόμενος)", "Matchup (next)"), det.map((d) => d.next[0]?.pos_dev), "hi", (v) => `${v >= 0 ? "+" : ""}${Math.round(v * 100)}%`)}
+    ${line(L("Πιθ. νίκης (επόμενος)", "Win prob. (next)"), det.map((d) => d.next[0]?.win), "hi", pct0)}
+    ${sec(L("Φόρμα (PIR)", "Form (PIR)"))}
+    ${line(L("Τελευταία 3", "Last 3"), det.map((d) => d.form?.last3_pir), "hi")}
+    ${line(L("Σεζόν", "Season"), det.map((d) => d.form?.season_pir), "hi")}
+    ${line(L("Πέρσι", "Last season"), det.map((d) => d.form?.prev_pir), "hi")}
+    ${line(L("Βάση μοντέλου", "Model base"), det.map((d, i) => d.form?.base ?? rows[i].base), "hi")}
+    ${line(L("Διαθεσιμότητα", "Availability"), rows.map((r) => (r.avail_game == null ? null : r.avail_game * 100)), "hi", pct0)}
+    ${sec(L("Φέτος · μ.ό. ανά αγώνα", "This season · avg per game"))}
+    ${line(L("Αγώνες", "Games"), cur.map((s) => s.g), "hi", (v) => v)}
+    ${line(L("Λεπτά", "Minutes"), cur.map((s) => s.min), "hi")}
     ${line("PIR", cur.map((s) => s.pir), "hi")}
     ${line("Points", cur.map((s) => s.pts), "hi")}
-    ${line("Ριμπάουντ", cur.map((s) => s.reb), "hi")}
-    ${line("Ασίστ", cur.map((s) => s.ast), "hi")}
-    ${line("Κλεψίματα", cur.map((s) => s.stl), "hi")}
-    ${line("Κοψίματα", cur.map((s) => s.blk), "hi")}
-    ${line("Λάθη", cur.map((s) => s.tov), "lo")}
-    ${line("2Π%", cur.map((s) => s.fg2), "hi", pct0)}
-    ${line("3Π%", cur.map((s) => s.fg3), "hi", pct0)}
-    ${line("ΒΛ%", cur.map((s) => s.ft), "hi", pct0)}
-    ${sec(`Πέρσι · μ.ό. ανά αγώνα`)}
-    ${line("Αγώνες", prev.map((s) => s.g), "hi", (v) => v)}
-    ${line("Λεπτά", prev.map((s) => s.min), "hi")}
+    ${line(L("Ριμπάουντ", "Rebounds"), cur.map((s) => s.reb), "hi")}
+    ${line(L("Ασίστ", "Assists"), cur.map((s) => s.ast), "hi")}
+    ${line(L("Κλεψίματα", "Steals"), cur.map((s) => s.stl), "hi")}
+    ${line(L("Κοψίματα", "Blocks"), cur.map((s) => s.blk), "hi")}
+    ${line(L("Λάθη", "Turnovers"), cur.map((s) => s.tov), "lo")}
+    ${line(L("2Π%", "2P%"), cur.map((s) => s.fg2), "hi", pct0)}
+    ${line(L("3Π%", "3P%"), cur.map((s) => s.fg3), "hi", pct0)}
+    ${line(L("ΒΛ%", "FT%"), cur.map((s) => s.ft), "hi", pct0)}
+    ${sec(L("Πέρσι · μ.ό. ανά αγώνα", "Last season · avg per game"))}
+    ${line(L("Αγώνες", "Games"), prev.map((s) => s.g), "hi", (v) => v)}
+    ${line(L("Λεπτά", "Minutes"), prev.map((s) => s.min), "hi")}
     ${line("PIR", prev.map((s) => s.pir), "hi")}
     ${line("Points", prev.map((s) => s.pts), "hi")}
     </tbody></table></div>`;
@@ -1497,7 +1535,7 @@ async function compareSheet(pids, title) {
   const rows = pids.map((id) => P.players.find((x) => x.person_id === id)).filter(Boolean);
   if (rows.length < 2) return;
   $("#sheet").innerHTML = `<div class="sh"><h2>${esc(title || rows.map((r) => surname(r.name)).join(" vs "))}</h2>
-    <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>${await compareTable(rows)}`;
+    <button class="x" aria-label="${L("Κλείσιμο", "Close")}" onclick="closePlayer()">×</button></div>${await compareTable(rows)}`;
   $("#modal").classList.add("on");
   document.body.classList.add("noscroll");
   $("#sheet").scrollTop = 0;
@@ -1520,7 +1558,7 @@ function a2hsBar() {
   const bar = document.getElementById("a2hsBar");
   if (!bar) return;
   bar.hidden = standalone || !(ios || android);
-  document.getElementById("a2hsGo").textContent = INSTALL_PROMPT ? "Εγκατάσταση" : "Πώς;";
+  document.getElementById("a2hsGo").textContent = INSTALL_PROMPT ? L("Εγκατάσταση", "Install") : L("Πώς;", "How?");
 }
 async function installNow() {
   if (!INSTALL_PROMPT) return false;
@@ -1540,26 +1578,28 @@ function installGuide(force) {
   }
   const safari = ios && !/CriOS|FxiOS|EdgiOS/.test(ua);
   const steps = ios ? [
-      safari ? `Πάτα το κουμπί <b>Κοινοποίηση</b> ${SHARE_ICON} στη μπάρα του Safari (κάτω στο iPhone).`
-             : `Πάτα το κουμπί <b>Κοινοποίηση</b> ${SHARE_ICON} του browser (αν δεν το βρίσκεις, άνοιξε τη σελίδα στο <b>Safari</b>).`,
-      `Κύλησε προς τα κάτω και πάτα <b>«Προσθήκη στην οθόνη Αφετηρίας»</b>.`,
-      `Πάτα <b>«Προσθήκη»</b> πάνω δεξιά.`,
-      `Άνοιγε την εφαρμογή από το εικονίδιο της εφαρμογής στην οθόνη σου.`]
-    : [`Πάτα το μενού <b>⋮</b> πάνω δεξιά στον browser.`,
-      `Πάτα <b>«Εγκατάσταση εφαρμογής»</b> ή <b>«Προσθήκη στην αρχική οθόνη»</b>.`,
-      `Επιβεβαίωσε με <b>«Εγκατάσταση»</b> / <b>«Προσθήκη»</b>.`,
-      `Άνοιγε την εφαρμογή από το εικονίδιο της εφαρμογής στην οθόνη σου.`];
-  $("#sheet").innerHTML = `<div class="sh"><div><h2>${ico("phone")} Βάλ' το στην οθόνη σου</h2>
-      <div class="muted">Ανοίγει σαν εφαρμογή, σε πλήρη οθόνη — και η ομάδα σου δεν χάνεται.</div></div>
-      <button class="x" aria-label="Κλείσιμο" onclick="dismissGuide(false)">×</button></div>
+      safari ? L(`Πάτα το κουμπί <b>Κοινοποίηση</b> ${SHARE_ICON} στη μπάρα του Safari (κάτω στο iPhone).`, `Tap the <b>Share</b> button ${SHARE_ICON} in Safari's bar (at the bottom on iPhone).`)
+             : L(`Πάτα το κουμπί <b>Κοινοποίηση</b> ${SHARE_ICON} του browser (αν δεν το βρίσκεις, άνοιξε τη σελίδα στο <b>Safari</b>).`, `Tap the browser's <b>Share</b> button ${SHARE_ICON} (if you can't find it, open the page in <b>Safari</b>).`),
+      L(`Κύλησε προς τα κάτω και πάτα <b>«Προσθήκη στην οθόνη Αφετηρίας»</b>.`, `Scroll down and tap <b>“Add to Home Screen”</b>.`),
+      L(`Πάτα <b>«Προσθήκη»</b> πάνω δεξιά.`, `Tap <b>“Add”</b> at the top right.`),
+      L(`Άνοιγε την εφαρμογή από το εικονίδιο της εφαρμογής στην οθόνη σου.`, `Open the app from its icon on your screen.`)]
+    : [L(`Πάτα το μενού <b>⋮</b> πάνω δεξιά στον browser.`, `Tap the <b>⋮</b> menu at the top right of the browser.`),
+      L(`Πάτα <b>«Εγκατάσταση εφαρμογής»</b> ή <b>«Προσθήκη στην αρχική οθόνη»</b>.`, `Tap <b>“Install app”</b> or <b>“Add to Home screen”</b>.`),
+      L(`Επιβεβαίωσε με <b>«Εγκατάσταση»</b> / <b>«Προσθήκη»</b>.`, `Confirm with <b>“Install”</b> / <b>“Add”</b>.`),
+      L(`Άνοιγε την εφαρμογή από το εικονίδιο της εφαρμογής στην οθόνη σου.`, `Open the app from its icon on your screen.`)];
+  $("#sheet").innerHTML = `<div class="sh"><div><h2>${ico("phone")} ${L("Βάλ' το στην οθόνη σου", "Add it to your home screen")}</h2>
+      <div class="muted">${L("Ανοίγει σαν εφαρμογή, σε πλήρη οθόνη — και η ομάδα σου δεν χάνεται.", "It opens like an app, full screen — and your team isn't lost.")}</div></div>
+      <button class="x" aria-label="${L("Κλείσιμο", "Close")}" onclick="dismissGuide(false)">×</button></div>
     <ol class="steps">${steps.map((x) => `<li><span>${x}</span></li>`).join("")}</ol>
-    ${P && P.edition === "public" ? `<p class="note">${ico("warn")} <b>Στήσε την ομάδα σου μέσα από την εφαρμογή</b>, αφού την ανοίξεις από το εικονίδιο. Η εφαρμογή κρατά τα δικά της δεδομένα,
+    ${P && P.edition === "public" ? `<p class="note">${ico("warn")} ${L(`<b>Στήσε την ομάδα σου μέσα από την εφαρμογή</b>, αφού την ανοίξεις από το εικονίδιο. Η εφαρμογή κρατά τα δικά της δεδομένα,
       χωριστά από τον browser· αν έχεις ήδη στήσει ομάδα εδώ, πάρε πρώτα <b>Επιλογές → Αντίγραφο ασφαλείας</b> και επικόλλησέ το στην εφαρμογή
-      («Έχεις σύνδεσμο αντιγράφου;»).</p>` : ""}
-    ${ios ? `<p class="muted">Γιατί; Στο iPhone, αν η σελίδα δεν είναι στην οθόνη Αφετηρίας, το Safari σβήνει την αποθηκευμένη ομάδα σου μετά από 7 μέρες χωρίς χρήση.</p>` : ""}
-    ${INSTALL_PROMPT ? `<button class="a2hs-now" type="button" onclick="closePlayer(); installNow()">${ico("download")} Εγκατάσταση τώρα</button>` : ""}
-    <div class="filters" style="margin-top:12px"><button class="seg" style="padding:8px 14px" onclick="dismissGuide(false)">Κατάλαβα</button>
-      <button class="linkbtn" onclick="dismissGuide(true)">Να μην ξαναεμφανιστεί</button></div>`;
+      («Έχεις σύνδεσμο αντιγράφου;»).`, `<b>Set up your team inside the app</b>, after opening it from the icon. The app keeps its own data,
+      separate from the browser; if you already set up a team here, first take <b>Options → Backup</b> and paste it into the app
+      (“Backup link”).`)}</p>` : ""}
+    ${ios ? `<p class="muted">${L("Γιατί; Στο iPhone, αν η σελίδα δεν είναι στην οθόνη Αφετηρίας, το Safari σβήνει την αποθηκευμένη ομάδα σου μετά από 7 μέρες χωρίς χρήση.", "Why? On iPhone, if the page isn't on the Home Screen, Safari erases your saved team after 7 days without use.")}</p>` : ""}
+    ${INSTALL_PROMPT ? `<button class="a2hs-now" type="button" onclick="closePlayer(); installNow()">${ico("download")} ${L("Εγκατάσταση τώρα", "Install now")}</button>` : ""}
+    <div class="filters" style="margin-top:12px"><button class="seg" style="padding:8px 14px" onclick="dismissGuide(false)">${L("Κατάλαβα", "Got it")}</button>
+      <button class="linkbtn" onclick="dismissGuide(true)">${L("Να μην ξαναεμφανιστεί", "Don't show again")}</button></div>`;
   $("#modal").classList.add("on");
   document.body.classList.add("noscroll");
 }
@@ -1611,87 +1651,87 @@ async function playerParts(r) {
   const done = nx ? nx.round !== P.round : r.actual != null;
   const g = done && nx
     ? { opp: nx.opp, home: nx.home, pos_dev: nx.pos_dev, margin: nx.margin, win: nx.win, x: nx.x,
-        label: `επόμενου αγώνα · R${nx.round} ${nx.home ? "vs" : "@"} ${esc(tc(nx.opp))} (${esc((nx.date || "").slice(0, 5))})` }
+        label: `${L("επόμενου αγώνα", "next game")} · R${nx.round} ${nx.home ? "vs" : "@"} ${esc(tc(nx.opp))} (${esc((nx.date || "").slice(0, 5))})` }
     : { opp: r.opp, home: r.home, pos_dev: r.pos_dev, margin: r.margin, x: r.x_now,
         win: r.margin != null ? Math.round(100 / (1 + Math.exp(-r.margin / 6.45))) : null,
         label: r.opp ? `${r.home ? "vs" : "@"} ${esc(tc(r.opp))}` : "" };
   const wp = g.win;
   const turn = P.turns.find((t) => t.teams.includes(r.team));
-  const marg = g.margin != null ? `${g.margin >= 0 ? "+" : ""}${f1(g.margin)} (${wp}% νίκη)` : "–";
+  const marg = g.margin != null ? `${g.margin >= 0 ? "+" : ""}${f1(g.margin)} (${wp}% ${L("νίκη", "win")})` : "–";
   const why = coach ? [
-      ["Αναμενόμενη διαφορά σκορ", marg],
+      [L("Αναμενόμενη διαφορά σκορ", "Expected point margin"), marg],
       ["xFPT", `<b>${f1(g.x)}</b>`],
-      ["Βαθμολογία coach", "+10/+20/+25 νίκη · −5/−10/−20 ήττα"]]
+      [L("Βαθμολογία coach", "Coach scoring"), L("+10/+20/+25 νίκη · −5/−10/−20 ήττα", "+10/+20/+25 win · −5/−10/−20 loss")]]
     : [
-      ["Φόρμα: τελευταία 3 / σεζόν / πέρσι (PIR)", `${f1(f.last3_pir)} / ${f1(f.season_pir)} / ${f1(f.prev_pir)}`],
-      ["Βάση μοντέλου (blend)", `<b>${f1(f.base ?? r.base)}</b> PIR`],
-      ["Ματσάρισμα θέσης vs " + esc(tc(g.opp)), matchup(g.pos_dev) || "–"],
-      ["Έδρα", g.home ? "εντός" : "εκτός"],
-      ["Αναμενόμενη διαφορά σκορ", g.margin != null ? `${marg.replace(")", " → +10%)")}` : "–"],
-      ["Διαθεσιμότητα (παιχνίδι / νέα)", `${r.avail_game == null ? "–" : Math.round(r.avail_game * 100) + "%"} / ${d.news_avail == null ? "–" : Math.round(d.news_avail * 100) + "%"}`],
-      ...(done ? [] : [["Στήλες fantasy", r.expert_pick || r.expert_avoid ? exb(r).trim() : "–"]]),
+      [L("Φόρμα: τελευταία 3 / σεζόν / πέρσι (PIR)", "Form: last 3 / season / last season (PIR)"), `${f1(f.last3_pir)} / ${f1(f.season_pir)} / ${f1(f.prev_pir)}`],
+      [L("Βάση μοντέλου (blend)", "Model base (blend)"), `<b>${f1(f.base ?? r.base)}</b> PIR`],
+      [L("Ματσάρισμα θέσης vs ", "Position matchup vs ") + esc(tc(g.opp)), matchup(g.pos_dev) || "–"],
+      [L("Έδρα", "Venue"), g.home ? L("εντός", "home") : L("εκτός", "away")],
+      [L("Αναμενόμενη διαφορά σκορ", "Expected point margin"), g.margin != null ? `${marg.replace(")", " → +10%)")}` : "–"],
+      [L("Διαθεσιμότητα (παιχνίδι / νέα)", "Availability (game / news)"), `${r.avail_game == null ? "–" : Math.round(r.avail_game * 100) + "%"} / ${d.news_avail == null ? "–" : Math.round(d.news_avail * 100) + "%"}`],
+      ...(done ? [] : [[L("Στήλες fantasy", "Fantasy columns"), r.expert_pick || r.expert_avoid ? exb(r).trim() : "–"]]),
       ["xFPT", `<b>${f1(g.x)}</b>`],
-      ["Price", r.price_trend === "up" ? "$▲ πιθανή άνοδος" : r.price_trend === "down" ? "$▼ πιθανή πτώση" : "σταθερή"]];
-  const stats = d.stats.length ? `<div class="tablewrap"><table><thead><tr><th>Σεζόν</th><th class="num">Αγ</th><th class="num">Λεπ</th><th class="num">PIR</th>
-      <th class="num">Πόν</th><th class="num">Ριμ</th><th class="num">Ασ</th><th class="num">Κλ</th><th class="num">Κοψ</th>
-      <th class="num">Λαθ</th><th class="num">2Π%</th><th class="num">3Π%</th><th class="num">ΒΛ%</th></tr></thead><tbody>
+      ["Price", r.price_trend === "up" ? L("$▲ πιθανή άνοδος", "$▲ likely rise") : r.price_trend === "down" ? L("$▼ πιθανή πτώση", "$▼ likely drop") : L("σταθερή", "steady")]];
+  const stats = d.stats.length ? `<div class="tablewrap"><table><thead><tr><th>${L("Σεζόν", "Season")}</th><th class="num">${L("Αγ", "GP")}</th><th class="num">${L("Λεπ", "Min")}</th><th class="num">PIR</th>
+      <th class="num">${L("Πόν", "Pts")}</th><th class="num">${L("Ριμ", "Reb")}</th><th class="num">${L("Ασ", "Ast")}</th><th class="num">${L("Κλ", "Stl")}</th><th class="num">${L("Κοψ", "Blk")}</th>
+      <th class="num">${L("Λαθ", "TO")}</th><th class="num">${L("2Π%", "2P%")}</th><th class="num">${L("3Π%", "3P%")}</th><th class="num">${L("ΒΛ%", "FT%")}</th></tr></thead><tbody>
       ${[...d.stats].reverse().map((s) => `<tr><td>${seasonLbl(s.season)}</td><td class="num">${s.g}</td><td class="num">${f1(s.min)}</td><td class="num"><b>${f1(s.pir)}</b></td>
         <td class="num">${f1(s.pts)}</td><td class="num">${f1(s.reb)}</td><td class="num">${f1(s.ast)}</td><td class="num">${f1(s.stl)}</td>
         <td class="num">${f1(s.blk)}</td><td class="num">${f1(s.tov)}</td>
         <td class="num">${pct(s.fg2)}</td><td class="num">${pct(s.fg3)}</td><td class="num">${pct(s.ft)}</td></tr>`).join("")}
-      </tbody></table></div>` : `<p class="muted">Χωρίς αγώνες EuroLeague στα δεδομένα${r.prior ? " — εκτίμηση από το price του" : ""}.</p>`;
+      </tbody></table></div>` : `<p class="muted">${L("Χωρίς αγώνες EuroLeague στα δεδομένα", "No EuroLeague games in the data")}${r.prior ? L(" — εκτίμηση από το price του", " — estimate from his price") : ""}.</p>`;
   const last = d.last.length ? `<div class="games">${d.last.map((g) => `<div class="game">
-      <div>${g.home ? "vs" : "@"} <b>${esc(tc(g.opp))}</b> <span class="${g.won ? "W" : "L"}">${g.won ? "Ν" : "Η"}</span> ${esc(g.score)}</div>
+      <div>${g.home ? "vs" : "@"} <b>${esc(tc(g.opp))}</b> <span class="${g.won ? "W" : "L"}">${g.won ? L("Ν", "W") : L("Η", "L")}</span> ${esc(g.score)}</div>
       <div class="gv"><b>${f1(g.fp)}</b><small>points</small></div>
-      <div class="gs">R${g.round} · ${esc(g.date || "")} · ${g.min}' · ${g.pts}π ${g.reb}ρ ${g.ast}α · PIR ${g.pir}</div></div>`).join("")}</div>`
-    : `<p class="muted">Κανένας αγώνας φέτος ακόμα.</p>`;
+      <div class="gs">R${g.round} · ${esc(g.date || "")} · ${g.min}' · ${g.pts}${L("π", "p")} ${g.reb}${L("ρ", "r")} ${g.ast}${L("α", "a")} · PIR ${g.pir}</div></div>`).join("")}</div>`
+    : `<p class="muted">${L("Κανένας αγώνας φέτος ακόμα.", "No games this season yet.")}</p>`;
   const next = d.next.length ? `<div class="games">${d.next.map((g) => `<div class="game">
       <div>R${g.round} · ${g.home ? "vs" : "@"} <b>${esc(tc(g.opp))}</b></div>
       <div class="gv"><b>${f1(g.x)}</b><small>xFPT</small></div>
-      <div class="gs">${esc(g.date || "")} · ${g.win}% πιθανότητα νίκης</div></div>`).join("")}</div>`
-    : `<p class="muted">${missing ? "Δεν φορτώθηκαν τα στοιχεία — έλεγξε τη σύνδεση και άνοιξε ξανά τον παίκτη." : "Δεν υπάρχουν προγραμματισμένοι αγώνες στα δεδομένα."}</p>`;
+      <div class="gs">${esc(g.date || "")} · ${g.win}% ${L("πιθανότητα νίκης", "win probability")}</div></div>`).join("")}</div>`
+    : `<p class="muted">${missing ? L("Δεν φορτώθηκαν τα στοιχεία — έλεγξε τη σύνδεση και άνοιξε ξανά τον παίκτη.", "The details didn't load — check your connection and open the player again.") : L("Δεν υπάρχουν προγραμματισμένοι αγώνες στα δεδομένα.", "No scheduled games in the data.")}</p>`;
   const head = `<div class="sh"><div><h2>${wstar(r)}${esc(nm(r.name))}${inj(r)}${exb(r)}${dol(r)}</h2>
       <div class="muted">${esc(tc(r.team))} · ${esc(r.position || "")}${r.price != null ? ` · <b>${f1(r.price)} cr</b>` : ""}${pop(r) ? ` · POP ${pop(r)}` : ""}${newb(r)}${turn ? ` · Turn ${turn.turn} (${esc(turn.date.slice(8))}/${esc(turn.date.slice(5, 7))})` : ""}</div></div>
-      <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
-    <div class="kpis"><div class="kpi"><b>${r.actual != null ? f1(r.actual) : f1(r.x_now)}</b><span>${r.actual != null ? "points (έπαιξε)" : "xFPT του Round"}</span></div>
+      <button class="x" aria-label="${L("Κλείσιμο", "Close")}" onclick="closePlayer()">×</button></div>
+    <div class="kpis"><div class="kpi"><b>${r.actual != null ? f1(r.actual) : f1(r.x_now)}</b><span>${r.actual != null ? L("points (έπαιξε)", "points (played)") : L("xFPT του Round", "Round xFPT")}</span></div>
       <div class="kpi"><b>${f1(xf3(r))}</b><span>xFPT3</span></div>
-      <div class="kpi"><b>${r.fpt_total == null ? "–" : f1(r.fpt_total)}</b><span>points σεζόν</span></div>
+      <div class="kpi"><b>${r.fpt_total == null ? "–" : f1(r.fpt_total)}</b><span>${L("points σεζόν", "season points")}</span></div>
       <div class="kpi"><b>${r.value == null ? "–" : r.value.toFixed(2)}</b><span>xFPT3 / cr</span></div></div>
     ${WATCH[pid] ? `<p class="muted wsince">★ ${wsince(r, "")}</p>` : ""}`;
-  const body = `<h3>${done ? "Αγώνας" : "Επόμενος αγώνας"}${g.label ? ` ${done ? "" : "· "}${g.label}` : ""}</h3>
+  const body = `<h3>${done ? L("Αγώνας", "Game") : L("Επόμενος αγώνας", "Next game")}${g.label ? ` ${done ? "" : "· "}${g.label}` : ""}</h3>
     <ul class="why">${why.map(([k, v]) => `<li><span>${k}</span><span>${v}</span></li>`).join("")}</ul>
-    ${coach ? "" : `<h3>Στατιστικά (μ.ό. ανά αγώνα)</h3>${stats}`}
-    ${coach ? "" : `<h3>Τελευταία 3 παιχνίδια</h3>${last}`}
-    <h3>Επόμενα 3 παιχνίδια</h3>${next}
+    ${coach ? "" : `<h3>${L("Στατιστικά (μ.ό. ανά αγώνα)", "Stats (avg per game)")}</h3>${stats}`}
+    ${coach ? "" : `<h3>${L("Τελευταία 3 παιχνίδια", "Last 3 games")}</h3>${last}`}
+    <h3>${L("Επόμενα 3 παιχνίδια", "Next 3 games")}</h3>${next}
     ${r.price != null ? `<h3>Price</h3>${(d.prices || []).length >= 2
-      ? `<div class="pchart-sum"><span>Τώρα <b>${f1(r.price)} cr</b></span><span>Από την αρχή${chg(r.price_chg) || " 0.0"}</span><span>Τελευταία αλλαγή${chg(r.price_last_chg) || " 0.0"}</span>${dol(r)}</div>${priceChart(d.prices)}`
-      : `<p class="muted">${f1(r.price)} cr. Το γράφημα εμφανίζεται από το 2ο Round με prices.</p>`}` : ""}`;
+      ? `<div class="pchart-sum"><span>${L("Τώρα", "Now")} <b>${f1(r.price)} cr</b></span><span>${L("Από την αρχή", "Since the start")}${chg(r.price_chg) || " 0.0"}</span><span>${L("Τελευταία αλλαγή", "Last change")}${chg(r.price_last_chg) || " 0.0"}</span>${dol(r)}</div>${priceChart(d.prices)}`
+      : `<p class="muted">${f1(r.price)} cr. ${L("Το γράφημα εμφανίζεται από το 2ο Round με prices.", "The chart appears from the 2nd Round with prices.")}</p>`}` : ""}`;
   return { head, body };
 }
 // price over the season: a step line (a price holds until the next matchday), one point per snapshot
 function priceChart(h) {
-  const W = 320, H = 116, L = 34, R = 14, T = 14, B = 22;
+  const W = 320, H = 116, PL = 34, R = 14, T = 14, B = 22;
   const ys = h.map((x) => x[1]), lo0 = Math.min(...ys), hi0 = Math.max(...ys);
   const pad = Math.max(0.2, (1.0 - (hi0 - lo0)) / 2);           // at least a 1-credit window
   const lo = Math.floor((lo0 - pad) * 2) / 2, hi = Math.ceil((hi0 + pad) * 2) / 2;
-  const x = (i) => L + (h.length === 1 ? (W - L - R) / 2 : i * (W - L - R) / (h.length - 1));
+  const x = (i) => PL + (h.length === 1 ? (W - PL - R) / 2 : i * (W - PL - R) / (h.length - 1));
   const y = (v) => T + (hi - v) * (H - T - B) / (hi - lo);
   let d = `M${x(0)},${y(ys[0])}`;
   for (let i = 1; i < h.length; i++) d += `H${x(i)}V${y(ys[i])}`;
   const mid = (lo + hi) / 2, ticks = Number.isInteger(mid * 2) ? [lo, mid, hi] : [lo, hi];   // only labels the line really sits on
-  const grid = ticks.map((v) => `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--border)" stroke-width="1"/>
-    <text x="${L - 6}" y="${y(v) + 4}" text-anchor="end" font-size="11" fill="var(--text-muted)">${v.toFixed(1)}</text>`).join("");
+  const grid = ticks.map((v) => `<line x1="${PL}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--border)" stroke-width="1"/>
+    <text x="${PL - 6}" y="${y(v) + 4}" text-anchor="end" font-size="11" fill="var(--text-muted)">${v.toFixed(1)}</text>`).join("");
   const dots = h.length <= 24 ? h.map((p, i) => `<circle cx="${x(i)}" cy="${y(p[1])}" r="${i === h.length - 1 ? 5 : 3.5}"
     fill="${i === h.length - 1 ? "var(--series-1)" : "var(--surface-1)"}" stroke="var(--series-1)" stroke-width="2"/>`).join("") : "";
   const last = h[h.length - 1];
-  return `<div class="pchart" data-h='${JSON.stringify(h)}' data-geo='${JSON.stringify({ W, L, R, n: h.length })}'>
-    <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Price ανά Round: ${h.map((p) => `Round ${p[0]} ${p[1].toFixed(1)}`).join(", ")}">
+  return `<div class="pchart" data-h='${JSON.stringify(h)}' data-geo='${JSON.stringify({ W, L: PL, R, n: h.length })}'>
+    <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${L("Price ανά Round", "Price by Round")}: ${h.map((p) => `Round ${p[0]} ${p[1].toFixed(1)}`).join(", ")}">
       ${grid}
       <path d="${d}" fill="none" stroke="var(--series-1)" stroke-width="2" stroke-linejoin="round"/>
       ${dots}
       <text x="${Math.min(x(h.length - 1), W - R)}" y="${y(last[1]) - 10}" text-anchor="${h.length > 1 ? "end" : "middle"}" font-size="12" font-weight="700" fill="var(--text-primary)">${last[1].toFixed(1)}</text>
-      <text x="${x(0)}" y="${H - 4}" text-anchor="${h.length > 1 ? "start" : "middle"}" font-size="11" fill="var(--text-muted)">Αγ. ${h[0][0]}</text>
-      ${h.length > 1 ? `<text x="${x(h.length - 1)}" y="${H - 4}" text-anchor="end" font-size="11" fill="var(--text-muted)">Αγ. ${last[0]}</text>` : ""}
+      <text x="${x(0)}" y="${H - 4}" text-anchor="${h.length > 1 ? "start" : "middle"}" font-size="11" fill="var(--text-muted)">${L("Αγ.", "R")} ${h[0][0]}</text>
+      ${h.length > 1 ? `<text x="${x(h.length - 1)}" y="${H - 4}" text-anchor="end" font-size="11" fill="var(--text-muted)">${L("Αγ.", "R")} ${last[0]}</text>` : ""}
     </svg><div class="ptip" hidden></div></div>`;
 }
 function bindPriceChart(root) {
@@ -1703,7 +1743,7 @@ function bindPriceChart(root) {
     const i = g.n === 1 ? 0 : Math.max(0, Math.min(g.n - 1, Math.round((vx - g.L) / ((g.W - g.L - g.R) / (g.n - 1)))));
     const px = g.n === 1 ? r.width / 2 : (g.L + i * (g.W - g.L - g.R) / (g.n - 1)) * r.width / g.W;
     const ch = i > 0 ? h[i][1] - h[i - 1][1] : 0;
-    tip.textContent = `Αγ. ${h[i][0]} · ${h[i][1].toFixed(1)} cr${ch ? ` (${ch > 0 ? "+" : ""}${ch.toFixed(1)})` : ""}`;
+    tip.textContent = `${L("Αγ.", "R")} ${h[i][0]} · ${h[i][1].toFixed(1)} cr${ch ? ` (${ch > 0 ? "+" : ""}${ch.toFixed(1)})` : ""}`;
     tip.style.left = px + "px"; tip.hidden = false;
   };
   svg.addEventListener("pointermove", show); svg.addEventListener("pointerdown", show);
@@ -1748,22 +1788,22 @@ function mailTap(a) {
 // iPhone mail apps may open the email without its body: the same text is also shown in a sheet to copy
 function problemText() {
   const tab = document.querySelector("main > section.on")?.id || "";
-  const lines = ["Τι έγινε:", "", "Τι περίμενες:", "", "---",
-    `Tab: ${tab}`, `Round: ${P?.round ?? ""}`, `Δεδομένα: ${P?.generated ?? ""}`,
-    `Οθόνη: ${window.innerWidth}×${window.innerHeight}`, `Browser: ${navigator.userAgent}`];
-  if (LAST_ERR) lines.push(`Σφάλμα: ${LAST_ERR}`);
+  const lines = [L("Τι έγινε:", "What happened:"), "", L("Τι περίμενες:", "What you expected:"), "", "---",
+    `Tab: ${tab}`, `Round: ${P?.round ?? ""}`, `${L("Δεδομένα", "Data")}: ${P?.generated ?? ""}`,
+    `${L("Οθόνη", "Screen")}: ${window.innerWidth}×${window.innerHeight}`, `Browser: ${navigator.userAgent}`];
+  if (LAST_ERR) lines.push(`${L("Σφάλμα", "Error")}: ${LAST_ERR}`);
   return lines.join("\n");
 }
 const problemMail = (text = problemText()) =>
-  `mailto:${FEEDBACK_MAIL}?subject=${encodeURIComponent("Coach Dime beta — πρόβλημα")}&body=${encodeURIComponent(text)}`;
+  `mailto:${FEEDBACK_MAIL}?subject=${encodeURIComponent(L("Coach Dime beta — πρόβλημα", "Coach Dime beta — problem"))}&body=${encodeURIComponent(text)}`;
 function reportProblem() {
   const text = problemText();
-  $("#sheet").innerHTML = `<div class="sh"><h2>${ico("bug")} Ανάφερε πρόβλημα</h2><button class="x" onclick="closePlayer()">×</button></div>
-    <p class="muted">Αν το email ανοίξει άδειο, αντίγραψε αυτό το κείμενο και κόλλησέ το εκεί.</p>
+  $("#sheet").innerHTML = `<div class="sh"><h2>${ico("bug")} ${L("Ανάφερε πρόβλημα", "Report a problem")}</h2><button class="x" onclick="closePlayer()">×</button></div>
+    <p class="muted">${L("Αν το email ανοίξει άδειο, αντίγραψε αυτό το κείμενο και κόλλησέ το εκεί.", "If the email opens empty, copy this text and paste it there.")}</p>
     <textarea class="tm-input" id="pbText" rows="8" readonly>${esc(text)}</textarea>
-    <p><a class="fbcopy" id="pbMail" href="${esc(problemMail(text))}">${ico("mail")} Άνοιγμα email</a>
-      <button class="fbcopy" type="button" id="pbCopy">${ico("copy")} Αντιγραφή</button></p>`;
-  $("#pbCopy").onclick = async () => { $("#pbCopy").textContent = (await copyText(text)) ? "✓ Αντιγράφηκε" : "Πάτα παρατεταμένα το κείμενο"; };
+    <p><a class="fbcopy" id="pbMail" href="${esc(problemMail(text))}">${ico("mail")} ${L("Άνοιγμα email", "Open email")}</a>
+      <button class="fbcopy" type="button" id="pbCopy">${ico("copy")} ${L("Αντιγραφή", "Copy")}</button></p>`;
+  $("#pbCopy").onclick = async () => { $("#pbCopy").textContent = (await copyText(text)) ? L("✓ Αντιγράφηκε", "✓ Copied") : L("Πάτα παρατεταμένα το κείμενο", "Long-press the text"); };
   $("#modal").classList.add("on"); document.body.classList.add("noscroll");
 }
 function closePlayer() { $("#modal").classList.remove("on"); document.body.classList.remove("noscroll"); }
@@ -1798,7 +1838,7 @@ function autopilotCard(ap) {
   const vs = done.filter((r) => r.avg_raw != null);
   const diff = vs.reduce((a, r) => a + (r.raw - r.avg_raw), 0);
   const sgn = (x) => `${x >= 0 ? "+" : "−"}${f1(Math.abs(x))}`;
-  const num = (x) => Number(x).toLocaleString("el-GR");
+  const num = (x) => Number(x).toLocaleString(LOC);
   const top = (r, n) => { const x = (100 * r) / n; return x < 1 ? x.toFixed(2) : x < 10 ? x.toFixed(1) : Math.round(x); };
   const ranked = done.filter((r) => r.rank != null).slice(-1)[0];
   // ▲ green: up the standings since the last ranked round, ▼ red: down (a smaller rank is better)
@@ -1806,17 +1846,17 @@ function autopilotCard(ap) {
     const prev = before.filter((x) => x.rank != null).slice(-1)[0];
     if (!prev || prev.rank === r.rank) return "";
     const up = r.rank < prev.rank;
-    return ` <span class="${up ? "up" : "down"}" title="${up ? "άνοδος" : "πτώση"} ${num(Math.abs(prev.rank - r.rank))} θέσεων">${up ? "▲" : "▼"}</span>`;
+    return ` <span class="${up ? "up" : "down"}" title="${up ? L("άνοδος", "up") : L("πτώση", "down")} ${num(Math.abs(prev.rank - r.rank))} ${L("θέσεων", "places")}">${up ? "▲" : "▼"}</span>`;
   };
   const ranks = done.some((r) => r.rank != null);
-  let h = `<div class="card"><h2>Autopilot: μια ομάδα που κάνει μόνο ό,τι προτείνουμε ${ii("ap")}</h2>`;
+  let h = `<div class="card"><h2>${L("Autopilot: μια ομάδα που κάνει μόνο ό,τι προτείνουμε", "Autopilot: a team that does only what we propose")} ${ii("ap")}</h2>`;
   if (done.length) {
-    h += `<div class="kpis"><div class="kpi"><b>${f1(ap.total.pts)}</b><span>points σε ${done.length} ${done.length === 1 ? "Round" : "Rounds"}</span></div>
-      ${ranked ? `<div class="kpi"><b>#${num(ranked.rank)}</b><span>θέση μετά το R${ranked.round} (top ${top(ranked.rank, ranked.teams)}% από ${num(ranked.teams)})${mine && ranked.my_rank ? ` · εσύ #${num(ranked.my_rank)}` : ""} ${ii("ap_rank")}</span></div>` : ""}
-      ${vs.length ? `<div class="kpi"><b class="${diff >= 0 ? "up" : "down"}">${sgn(diff / vs.length)}</b><span>ανά Round vs μέσο manager</span></div>` : ""}
-      ${mine ? `<div class="kpi"><b>${f1(done.reduce((a, r) => a + (r.my_pts ?? 0), 0))}</b><span>η ομάδα σου</span></div>` : ""}</div>
-      <div class="tablewrap"><table class="fit"><thead><tr><th>Αγων.</th><th class="num">xFPT${ii("ap_x")}</th><th class="num">Points${ii("ap_pts")}</th><th class="num">11 παίκτες${ii("ap_raw")}</th>
-        <th class="num">Μέσος manager${ii("ap_avg")}</th><th class="num">Διαφορά</th>${ranks ? `<th class="num">Θέση${ii("ap_rank")}</th>` : ""}${mine ? '<th class="num">Εσύ</th>' : ""}</tr></thead><tbody>
+    h += `<div class="kpis"><div class="kpi"><b>${f1(ap.total.pts)}</b><span>${L("points σε", "points in")} ${done.length} ${done.length === 1 ? "Round" : "Rounds"}</span></div>
+      ${ranked ? `<div class="kpi"><b>#${num(ranked.rank)}</b><span>${L(`θέση μετά το R${ranked.round} (top ${top(ranked.rank, ranked.teams)}% από ${num(ranked.teams)})`, `rank after R${ranked.round} (top ${top(ranked.rank, ranked.teams)}% of ${num(ranked.teams)})`)}${mine && ranked.my_rank ? ` · ${L("εσύ", "you")} #${num(ranked.my_rank)}` : ""} ${ii("ap_rank")}</span></div>` : ""}
+      ${vs.length ? `<div class="kpi"><b class="${diff >= 0 ? "up" : "down"}">${sgn(diff / vs.length)}</b><span>${L("ανά Round vs μέσο manager", "per Round vs average manager")}</span></div>` : ""}
+      ${mine ? `<div class="kpi"><b>${f1(done.reduce((a, r) => a + (r.my_pts ?? 0), 0))}</b><span>${L("η ομάδα σου", "your team")}</span></div>` : ""}</div>
+      <div class="tablewrap"><table class="fit"><thead><tr><th>${L("Αγων.", "Round")}</th><th class="num">xFPT${ii("ap_x")}</th><th class="num">Points${ii("ap_pts")}</th><th class="num">${L("11 παίκτες", "11 players")}${ii("ap_raw")}</th>
+        <th class="num">${L("Μέσος manager", "Avg manager")}${ii("ap_avg")}</th><th class="num">${L("Διαφορά", "Diff")}</th>${ranks ? `<th class="num">${L("Θέση", "Rank")}${ii("ap_rank")}</th>` : ""}${mine ? `<th class="num">${L("Εσύ", "You")}</th>` : ""}</tr></thead><tbody>
       ${done.map((r, i) => `<tr><td>R${r.round}</td><td class="num">${r.x_total != null ? f1(r.x_total) : "–"}</td>
         <td class="num"><b class="${r.x_total == null ? "" : r.pts >= r.x_total ? "up" : "down"}">${f1(r.pts)}</b></td><td class="num">${f1(r.raw)}</td>
         <td class="num">${r.avg_raw != null ? f1(r.avg_raw) : "–"}</td>
@@ -1825,7 +1865,7 @@ function autopilotCard(ap) {
         ${mine ? `<td class="num">${r.my_pts != null ? f1(r.my_pts) : "–"}</td>` : ""}</tr>`).join("")}</tbody></table></div>
       `;
   } else {
-    h += `<p class="muted">Το πρώτο του Round βαθμολογείται μόλις ολοκληρωθεί.</p>`;
+    h += `<p class="muted">${L("Το πρώτο του Round βαθμολογείται μόλις ολοκληρωθεί.", "Its first Round is scored once it is complete.")}</p>`;
   }
   // the round's team on the court, as «Η ομάδα μου»: this round's live data (turn, opponent, real points)
   const cur = rounds.find((r) => r.round === P.round) || next;
@@ -1843,9 +1883,9 @@ function autopilotCard(ap) {
     });
     const playedN = list.filter((p) => p.actual != null).length;
     const soFar = list.reduce((a, p) => a + (p.actual ?? 0), 0);
-    h += `<p><b>Για το Round ${cur.round}</b>: ${cur.trades ? `${cur.trades} ${cur.trades === 1 ? "Trade" : "Trades"}` : "κανένα Trade"}
-      · υπόλοιπο ${f1(cur.bank)} cr · xFPT ${f1(cur.x_total)}${earlyII()}${cur.pts != null ? ` · <b>points ${f1(cur.pts)}</b>`
-        : playedN ? ` · <b>μέχρι τώρα ${f1(soFar)}</b> <span class="muted">(${playedN} από ${list.length} έπαιξαν)</span>` : ""}</p>
+    h += `<p><b>${L("Για το Round", "For Round")} ${cur.round}</b>: ${cur.trades ? `${cur.trades} ${cur.trades === 1 ? "Trade" : "Trades"}` : L("κανένα Trade", "no Trades")}
+      · ${L("υπόλοιπο", "credits left")} ${f1(cur.bank)} cr · xFPT ${f1(cur.x_total)}${earlyII()}${cur.pts != null ? ` · <b>points ${f1(cur.pts)}</b>`
+        : playedN ? ` · <b>${L("μέχρι τώρα", "so far")} ${f1(soFar)}</b> <span class="muted">(${L(`${playedN} από ${list.length} έπαιξαν`, `${playedN} of ${list.length} played`)})</span>` : ""}</p>
       <div class="ap-split"><div class="tm-sideline">${courtView(list, null)}</div>${apMovesHtml(rounds)}</div>`;
   }
   return h + (cur ? "" : apMovesHtml(rounds)) + "</div>";
@@ -1864,85 +1904,85 @@ function apMovesHtml(rounds) {
     const pairs = outs.map((o) => { const k = ins.findIndex((n) => n.position === o.position); const n = k >= 0 ? ins.splice(k, 1)[0] : null;
       return `<li><b>${esc(nm(o.name || ""))}</b> → <b>${n ? esc(nm(n.name || "")) : "–"}</b> <span class="muted">${o.position === "Head Coach" ? "HC" : esc((o.position || "")[0])}${n ? ` · ${f1(o.price)} → ${f1(n.price)} cr` : ""}</span></li>`; });
     const name = (id) => esc(nm(cur.squad.find((p) => p.id === id)?.name || ""));
-    const turns = Object.entries(cur.moves || {}).map(([t, m]) => `<li class="muted">Πριν το T${t}: ${m.in.length
-      ? `μπήκαν ${m.in.map(name).join(", ")}, βγήκαν ${m.out.map(name).join(", ")}` : "ίδιο Starting five"}${m.captain ? ` · Captain ο ${name(m.captain)}` : ""}</li>`).join("");
+    const turns = Object.entries(cur.moves || {}).map(([t, m]) => `<li class="muted">${L("Πριν το", "Before")} T${t}: ${m.in.length
+      ? L(`μπήκαν ${m.in.map(name).join(", ")}, βγήκαν ${m.out.map(name).join(", ")}`, `in ${m.in.map(name).join(", ")}, out ${m.out.map(name).join(", ")}`) : L("ίδιο Starting five", "same Starting five")}${m.captain ? ` · Captain ${L("ο ", "")}${name(m.captain)}` : ""}</li>`).join("");
     const open = cur.round >= frozenBelow;
     items.push(`<details class="ap-mv"${i === rounds.length - 1 ? " open" : ""}><summary><b>Round ${cur.round}</b> · ${pairs.length
-      ? `${pairs.length} ${pairs.length === 1 ? "Trade" : "Trades"}` : prev ? "κανένα Trade" : "η αρχική ομάδα"}${open ? ' <span class="muted">· πρόταση, οριστική πριν το τζάμπολ</span>' : ""}</summary>
+      ? `${pairs.length} ${pairs.length === 1 ? "Trade" : "Trades"}` : prev ? L("κανένα Trade", "no Trades") : L("η αρχική ομάδα", "the starting team")}${open ? ` <span class="muted">· ${L("πρόταση, οριστική πριν το τζάμπολ", "proposal, final before tip-off")}</span>` : ""}</summary>
       ${pairs.length || turns ? `<ul class="news">${pairs.join("")}${turns}</ul>` : ""}</details>`);
   }
   // the latest 3 rounds; the rest folded (38 rounds in a season). On a PC the list sits right of the
   // court and never gets taller than it (scrolls inside)
   const SHOWN = 3;
-  return `<div class="ap-moves"><h3>Κινήσεις του autopilot</h3>${items.slice(0, SHOWN).join("")}${items.length > SHOWN
-    ? `<details class="ap-old"><summary class="muted">Παλαιότερα Rounds (${items.length - SHOWN})</summary>${items.slice(SHOWN).join("")}</details>` : ""}</div>`;
+  return `<div class="ap-moves"><h3>${L("Κινήσεις του autopilot", "Autopilot moves")}</h3>${items.slice(0, SHOWN).join("")}${items.length > SHOWN
+    ? `<details class="ap-old"><summary class="muted">${L("Παλαιότερα Rounds", "Earlier Rounds")} (${items.length - SHOWN})</summary>${items.slice(SHOWN).join("")}</details>` : ""}</div>`;
 }
 // squad points per round in past seasons (research/004_metric_choice/result.json: fixed, past data)
 const BT_SQUAD = { seasons: ["2025-26", "2024-25"], rows: [
-  ["Μοντέλο", [149.9, 161.1], true], ["Μέσος όρος σεζόν", [145.4, 157.1]], ["Τέλεια γνώση", [281.9, 276.9]]] };
+  [L("Μοντέλο", "Model"), [149.9, 161.1], true], [L("Μέσος όρος σεζόν", "Season average"), [145.4, 157.1]], [L("Τέλεια γνώση", "Perfect knowledge"), [281.9, 276.9]]] };
 function renderModel(mp, trk, ap) {
   const pctd = (a, b) => (a && b ? Math.round((1 - a / b) * 100) : null);
   let html = autopilotCard(ap);
   // 1. this season
   const tot = trk?.total;
-  html += `<div class="card"><h2>Φέτος: πρόβλεψη vs πραγματικότητα</h2>`;
+  html += `<div class="card"><h2>${L("Φέτος: πρόβλεψη vs πραγματικότητα", "This season: prediction vs reality")}</h2>`;
   if (tot) {
     const gain = pctd(tot.mae_model, tot.mae_naive);
     const kpi = (v, label, k, cls = "") => `<div class="kpi"><b class="${cls}">${v}</b><span>${label} ${ii(k)}</span></div>`;
-    html += `<div class="kpis">${kpi(f1(tot.mae_model), "μέσο σφάλμα", "acc_mae")}${kpi(f1(tot.mae_naive), "χωρίς μοντέλο", "acc_naive")}
-        ${kpi(`${gain > 0 ? "+" : ""}${gain}%`, "βελτίωση", "acc_gain", gain > 0 ? "up" : "down")}
+    html += `<div class="kpis">${kpi(f1(tot.mae_model), L("μέσο σφάλμα", "mean error"), "acc_mae")}${kpi(f1(tot.mae_naive), L("χωρίς μοντέλο", "no model"), "acc_naive")}
+        ${kpi(`${gain > 0 ? "+" : ""}${gain}%`, L("βελτίωση", "improvement"), "acc_gain", gain > 0 ? "up" : "down")}
         ${kpi(tot.spearman ?? "–", "Spearman", "acc_sp")}${kpi(tot.top20 != null ? Math.round(tot.top20 * 100) + "%" : "–", "top-20", "acc_top")}
-        ${kpi(tot.n, "προβλέψεις", "acc_n")}</div>
-      <div class="tablewrap"><table class="fit"><thead><tr><th>Αγων.</th><th class="num">Παίκτες${ii("acc_n")}</th><th class="num">Σφάλμα${ii("acc_mae")}</th>
-        <th class="num">Χωρίς μοντέλο${ii("acc_naive")}</th><th class="num">Top-20${ii("acc_top")}</th></tr></thead><tbody>
+        ${kpi(tot.n, L("προβλέψεις", "predictions"), "acc_n")}</div>
+      <div class="tablewrap"><table class="fit"><thead><tr><th>${L("Αγων.", "Round")}</th><th class="num">${L("Παίκτες", "Players")}${ii("acc_n")}</th><th class="num">${L("Σφάλμα", "Error")}${ii("acc_mae")}</th>
+        <th class="num">${L("Χωρίς μοντέλο", "No model")}${ii("acc_naive")}</th><th class="num">Top-20${ii("acc_top")}</th></tr></thead><tbody>
       ${trk.rounds.map((r) => `<tr><td>R${r.round}</td><td class="num">${r.n}</td>
         <td class="num ${r.mae_model <= r.mae_naive ? "up" : "down"}"><b>${f1(r.mae_model)}</b></td><td class="num">${f1(r.mae_naive)}</td>
         <td class="num">${r.top20 != null ? Math.round(r.top20 * 100) + "%" : "–"}</td></tr>`).join("")}</tbody></table></div>`;
   } else {
-    html += `<p class="muted">Τα πρώτα αποτελέσματα εμφανίζονται μόλις παιχτούν οι αγώνες με καταγεγραμμένη πρόβλεψη ${ii("acc_n")}</p>`;
+    html += `<p class="muted">${L("Τα πρώτα αποτελέσματα εμφανίζονται μόλις παιχτούν οι αγώνες με καταγεγραμμένη πρόβλεψη", "The first results appear once games with a recorded prediction are played")} ${ii("acc_n")}</p>`;
   }
   html += `</div>`;
   // 2. my lineup (personal edition only)
   const lu = trk?.lineups || [];
   if (P.edition !== "public") {
-  html += `<div class="card"><h2>Το Starting five σου vs η πρόταση ${ii("lu_vs")}</h2>`;
+  html += `<div class="card"><h2>${L("Το Starting five σου vs η πρόταση", "Your Starting five vs the proposal")} ${ii("lu_vs")}</h2>`;
   if (lu.length) {
     const s = lu.reduce((a, r) => a + r.diff, 0);
-    html += `<div class="tablewrap"><table class="fit"><thead><tr><th>Αγων.</th><th class="num">Πρόταση</th><th class="num">Έπαιξες</th><th class="num">Διαφορά</th></tr></thead><tbody>
+    html += `<div class="tablewrap"><table class="fit"><thead><tr><th>${L("Αγων.", "Round")}</th><th class="num">${L("Πρόταση", "Proposal")}</th><th class="num">${L("Έπαιξες", "You played")}</th><th class="num">${L("Διαφορά", "Diff")}</th></tr></thead><tbody>
       ${lu.map((r) => `<tr><td>R${r.round}</td><td class="num">${f1(r.suggested)}</td><td class="num">${f1(r.actual)}</td>
         <td class="num ${r.diff >= 0 ? "up" : "down"}"><b>${r.diff >= 0 ? "+" : ""}${f1(r.diff)}</b></td></tr>`).join("")}
-      <tr><td><b>Σύνολο</b></td><td></td><td></td><td class="num ${s >= 0 ? "up" : "down"}"><b>${s >= 0 ? "+" : ""}${f1(s)}</b></td></tr></tbody></table></div>`;
+      <tr><td><b>${L("Σύνολο", "Total")}</b></td><td></td><td></td><td class="num ${s >= 0 ? "up" : "down"}"><b>${s >= 0 ? "+" : ""}${f1(s)}</b></td></tr></tbody></table></div>`;
   } else {
-    html += `<p class="muted">Εμφανίζεται μόλις ολοκληρωθεί ένα Round για το οποίο κρατήθηκε η πρόταση πριν ξεκινήσει.</p>`;
+    html += `<p class="muted">${L("Εμφανίζεται μόλις ολοκληρωθεί ένα Round για το οποίο κρατήθηκε η πρόταση πριν ξεκινήσει.", "Appears once a Round is complete whose proposal was kept before it started.")}</p>`;
   }
   html += `</div>`;
   }
   // 3. fantasy columns
   const ex = trk?.experts || [];
-  html += `<div class="card"><h2>Στήλες ειδικών ${ii("experts")}</h2>`;
-  html += ex.length ? `<div class="tablewrap"><table class="fit"><thead><tr><th>Στήλη</th><th class="num">Επιλογές</th><th class="num">Έφεραν</th><th class="num">Μοντέλο έλεγε</th><th class="num">Διαφορά</th></tr></thead><tbody>
+  html += `<div class="card"><h2>${L("Στήλες ειδικών", "Expert columns")} ${ii("experts")}</h2>`;
+  html += ex.length ? `<div class="tablewrap"><table class="fit"><thead><tr><th>${L("Στήλη", "Column")}</th><th class="num">${L("Επιλογές", "Picks")}</th><th class="num">${L("Έφεραν", "Scored")}</th><th class="num">${L("Μοντέλο έλεγε", "Model said")}</th><th class="num">${L("Διαφορά", "Diff")}</th></tr></thead><tbody>
       ${ex.map((e) => `<tr><td>${esc(e.source)}</td><td class="num">${e.n}</td><td class="num">${f1(e.actual)}</td><td class="num">${f1(e.model)}</td>
         <td class="num ${e.diff >= 0 ? "up" : "down"}"><b>${e.diff >= 0 ? "+" : ""}${f1(e.diff)}</b></td></tr>`).join("")}</tbody></table></div>`
-    : `<p class="muted">Εμφανίζεται μόλις ολοκληρωθεί ένα Round με καταγεγραμμένες προτάσεις στηλών.</p>`;
+    : `<p class="muted">${L("Εμφανίζεται μόλις ολοκληρωθεί ένα Round με καταγεγραμμένες προτάσεις στηλών.", "Appears once a Round with recorded column picks is complete.")}</p>`;
   html += `</div>`;
   // 4. last season's backtest
   if (mp) {
     const c = mp.params?.coef || {}, w = mp.params || {};
     const pc = (x, sgn) => `${sgn && x >= 0 ? "+" : ""}${(x * 100).toFixed(1)}%`;
-    html += `<details class="card"><summary><b>Για προχωρημένους</b></summary>
-      <h3 style="font-size:13px;margin:12px 0 6px">Points ομάδας ανά Round ${ii("bt")}</h3>
+    html += `<details class="card"><summary><b>${L("Για προχωρημένους", "Advanced")}</b></summary>
+      <h3 style="font-size:13px;margin:12px 0 6px">${L("Points ομάδας ανά Round", "Team points per Round")} ${ii("bt")}</h3>
       <div class="tablewrap"><table class="fit"><thead><tr><th></th>${BT_SQUAD.seasons.map((x) => `<th class="num">${x}</th>`).join("")}</tr></thead><tbody>
       ${BT_SQUAD.rows.map(([l, v, me]) => `<tr${me ? ' style="font-weight:700"' : ""}><td>${l}</td>${v.map((x) => `<td class="num">${f1(x)}</td>`).join("")}</tr>`).join("")}
       </tbody></table></div>
-      <h3 style="font-size:13px;margin:12px 0 6px">Τι έμαθε το μοντέλο ${ii("learned")}</h3>
+      <h3 style="font-size:13px;margin:12px 0 6px">${L("Τι έμαθε το μοντέλο", "What the model learned")} ${ii("learned")}</h3>
       <ul class="why">
-        <li><span>Φόρμα: τελευταία 3 / φετινή σεζόν / περσινή</span><span>${Math.round(w.w_last3 * 100)}% / ${Math.round(w.w_season * 100)}% / ${Math.round(w.w_prev * 100)}%</span></li>
-        <li><span>Ματσάρισμα θέσης</span><span>×${(c.pos ?? 0).toFixed(2)}</span></li>
-        <li><span>Pace (ρυθμός αγώνα)</span><span>×${(c.pace ?? 0).toFixed(2)}</span></li>
-        <li><span>Έδρα</span><span>${pc(c.home ?? 0, true)}</span></li>
-        <li><span>Αναμενόμενη διαφορά σκορ, ανά 10 πόντους</span><span>${pc(c.margin ?? 0, true)}</span></li>
-        <li><span>Blowout (λιγότερα λεπτά), ανά 10 πόντους διαφοράς</span><span>${pc(c.blowout ?? 0, true)}</span></li>
-        <li><span>Βαθμονόμηση</span><span>${pc(c.calib ?? 0, true)}</span></li>
+        <li><span>${L("Φόρμα: τελευταία 3 / φετινή σεζόν / περσινή", "Form: last 3 / this season / last season")}</span><span>${Math.round(w.w_last3 * 100)}% / ${Math.round(w.w_season * 100)}% / ${Math.round(w.w_prev * 100)}%</span></li>
+        <li><span>${L("Ματσάρισμα θέσης", "Position matchup")}</span><span>×${(c.pos ?? 0).toFixed(2)}</span></li>
+        <li><span>${L("Pace (ρυθμός αγώνα)", "Pace (game tempo)")}</span><span>×${(c.pace ?? 0).toFixed(2)}</span></li>
+        <li><span>${L("Έδρα", "Home court")}</span><span>${pc(c.home ?? 0, true)}</span></li>
+        <li><span>${L("Αναμενόμενη διαφορά σκορ, ανά 10 πόντους", "Expected point margin, per 10 points")}</span><span>${pc(c.margin ?? 0, true)}</span></li>
+        <li><span>${L("Blowout (λιγότερα λεπτά), ανά 10 πόντους διαφοράς", "Blowout (fewer minutes), per 10-point margin")}</span><span>${pc(c.blowout ?? 0, true)}</span></li>
+        <li><span>${L("Βαθμονόμηση", "Calibration")}</span><span>${pc(c.calib ?? 0, true)}</span></li>
       </ul></details>`;
   }
   $("#model").innerHTML = html;
@@ -1951,7 +1991,7 @@ function renderModel(mp, trk, ap) {
 
 // ---------------------------------------------------------------- «Round» (section #today)
 let NW = null, REP = null, TRK = null;   // news.json, report.json
-const DAYS_GR = ["Κυριακή", "Δευτέρα", "Τρίτη", "Τετάρτη", "Πέμπτη", "Παρασκευή", "Σάββατο"];
+const DAYS_GR = L(["Κυριακή", "Δευτέρα", "Τρίτη", "Τετάρτη", "Πέμπτη", "Παρασκευή", "Σάββατο"], ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]);
 // Athens wall-clock time -> epoch ms (DST-proof, as the bot)
 // The offset is Athens' wall clock at that moment minus the moment, from formatToParts: no
 // timeZoneName "shortOffset", which older browsers reject («Value shortOffset out of range»). NaN, not
@@ -1971,27 +2011,27 @@ const ATHENS_YMD = new Intl.DateTimeFormat("en-US", { timeZone: "Europe/Athens",
 const athensDate = (ms) => { const p = Object.fromEntries(ATHENS_YMD.formatToParts(new Date(ms)).map((x) => [x.type, x.value]));
   return `${p.year}-${p.month}-${p.day}`; };
 const athensHM = (ms) => Number.isFinite(ms)
-  ? new Intl.DateTimeFormat("el-GR", { timeZone: "Europe/Athens", hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date(ms)) : "";
+  ? new Intl.DateTimeFormat(LOC, { timeZone: "Europe/Athens", hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date(ms)) : "";
 function dayWord(ms) {
   if (!Number.isFinite(ms)) return "";
   const today = athensDate(Date.now()), d = athensDate(ms);
-  if (d === today) return "σήμερα";
-  if (d === athensDate(Date.now() + 864e5)) return "αύριο";
+  if (d === today) return L("σήμερα", "today");
+  if (d === athensDate(Date.now() + 864e5)) return L("αύριο", "tomorrow");
   return DAYS_GR[new Date(d + "T12:00:00Z").getUTCDay()];
 }
 function span(ms) {
   const m = Math.max(0, Math.round(ms / 60000)), d = Math.floor(m / 1440), h = Math.floor((m % 1440) / 60), mm = m % 60;
-  const hw = (x) => `${x} ${x === 1 ? "ώρα" : "ώρες"}`;
-  return d ? `${d} ${d === 1 ? "μέρα" : "μέρες"}${h ? ` ${hw(h)}` : ""}` : h ? `${hw(h)} ${mm}′` : `${mm}′`;
+  const hw = (x) => `${x} ${x === 1 ? L("ώρα", "hour") : L("ώρες", "hours")}`;
+  return d ? `${d} ${d === 1 ? L("μέρα", "day") : L("μέρες", "days")}${h ? ` ${hw(h)}` : ""}` : h ? `${hw(h)} ${mm}′` : `${mm}′`;
 }
 function ago(ms) {
   const m = Math.round(ms / 60000);
-  if (m < 1) return "μόλις τώρα";
-  if (m < 60) return `πριν ${m}′`;
+  if (m < 1) return L("μόλις τώρα", "just now");
+  if (m < 60) return L(`πριν ${m}′`, `${m}′ ago`);
   const h = Math.round(m / 60);
-  if (h < 24) return `πριν ${h} ${h === 1 ? "ώρα" : "ώρες"}`;
+  if (h < 24) return L(`πριν ${h} ${h === 1 ? "ώρα" : "ώρες"}`, `${h} ${h === 1 ? "hour" : "hours"} ago`);
   const d = Math.round(h / 24);
-  return `πριν ${d} ${d === 1 ? "μέρα" : "μέρες"}`;
+  return L(`πριν ${d} ${d === 1 ? "μέρα" : "μέρες"}`, `${d} ${d === 1 ? "day" : "days"} ago`);
 }
 const tips = (t) => (t.games || []).map((g) => String(g).split(" ").pop()).filter((x) => /^\d{1,2}:\d{2}$/.test(x));
 // when the bot updates next: 07:05 every day, 3h before a game day's first tip-off, ~2.5h after its last one
@@ -2010,7 +2050,7 @@ function nextUpdate(now = Date.now()) {
 function freshness() {
   if (!P) return;
   const nx = nextUpdate(), a = ago(Date.now() - new Date(P.generated).getTime());
-  $("#updated").textContent = `Ενημερώθηκε ${a} · επόμενη ενημέρωση ${dayWord(nx)} ${athensHM(nx)}` + (P.fantasy_ok ? "" : " · χωρίς prices fantasy");
+  $("#updated").textContent = L(`Ενημερώθηκε ${a} · επόμενη ενημέρωση ${dayWord(nx)} ${athensHM(nx)}`, `Updated ${a} · next update ${dayWord(nx)} ${athensHM(nx)}`) + (P.fantasy_ok ? "" : L(" · χωρίς prices fantasy", " · no fantasy prices"));
 }
 function roundState(now = Date.now()) {
   const ts = (P.turns || []).map((t) => ({ t, start: athensMs(t.date, t.first_tip) })).sort((a, b) => a.start - b.start);
@@ -2022,13 +2062,13 @@ function roundState(now = Date.now()) {
 function heroHtml() {
   const st = roundState();
   const when = (ms) => `${dayWord(ms)} ${athensHM(ms)}`;
-  if (st.kind === "before") return `<div class="td-hero"><span class="muted">Round ${P.round} · κλείνει ${when(st.at)}</span>
-      <span class="big" id="tdCount">κλείνει σε ${span(st.at - Date.now())}</span></div>`;
-  if (st.kind === "between") return `<div class="td-hero"><span class="muted">Round ${P.round} σε εξέλιξη</span>
-      <span class="big" id="tdCount">Turn ${st.turn.turn} σε ${span(st.at - Date.now())}</span>
-      <span class="muted">Subs στο Starting five ως ${when(st.at)}, μόνο με όσους δεν έχουν παίξει.</span></div>`;
-  return `<div class="td-hero"><span class="muted">Round ${P.round}</span><span class="big">Σε εξέλιξη · τελευταίοι αγώνες</span>
-    <span class="muted">Τα Trades για το επόμενο Round εμφανίζονται στο «Η ομάδα μου».</span></div>`;
+  if (st.kind === "before") return `<div class="td-hero"><span class="muted">Round ${P.round} · ${L("κλείνει", "locks")} ${when(st.at)}</span>
+      <span class="big" id="tdCount">${L("κλείνει σε", "locks in")} ${span(st.at - Date.now())}</span></div>`;
+  if (st.kind === "between") return `<div class="td-hero"><span class="muted">Round ${P.round} ${L("σε εξέλιξη", "in progress")}</span>
+      <span class="big" id="tdCount">Turn ${st.turn.turn} ${L("σε", "in")} ${span(st.at - Date.now())}</span>
+      <span class="muted">${L(`Subs στο Starting five ως ${when(st.at)}, μόνο με όσους δεν έχουν παίξει.`, `Subs into the Starting five until ${when(st.at)}, only with players who haven't played.`)}</span></div>`;
+  return `<div class="td-hero"><span class="muted">Round ${P.round}</span><span class="big">${L("Σε εξέλιξη · τελευταίοι αγώνες", "In progress · last games")}</span>
+    <span class="muted">${L("Τα Trades για το επόμενο Round εμφανίζονται στο «Η ομάδα μου».", "Trades for the next Round appear in “My team”.")}</span></div>`;
 }
 function renderToday() {
   if (!P) return;
@@ -2043,19 +2083,19 @@ function renderToday() {
   const fewN = P.players.filter(fewGames).length;
   let earlyOff = false;
   try { earlyOff = localStorage.getItem("earlyOff") === "1"; } catch (e) {}
-  const early = P.round <= 5 && fewN && !earlyOff ? `<div class="card wide note-early"><span><span class="tag t-new">NEW</span> <b>Αρχή σεζόν:</b> ${fewN} νέοι παίκτες με 1–${
-    Math.max(...P.players.filter(fewGames).map((r) => r.games))} ματς ${ii("few")}</span>
-    <button class="x" id="earlyOff" type="button" aria-label="Κλείσιμο">×</button></div>` : "";
+  const early = P.round <= 5 && fewN && !earlyOff ? `<div class="card wide note-early"><span><span class="tag t-new">NEW</span> <b>${L("Αρχή σεζόν:", "Early season:")}</b> ${fewN} ${L("νέοι παίκτες με", "new players with")} 1–${
+    Math.max(...P.players.filter(fewGames).map((r) => r.games))} ${L("ματς", "games")} ${ii("few")}</span>
+    <button class="x" id="earlyOff" type="button" aria-label="${L("Κλείσιμο", "Close")}">×</button></div>` : "";
 
   // my team
   const sm = window.TEAM && TEAM.summary ? TEAM.summary() : null;
   const team = P.edition === "public" && !sm
-    ? `<div class="td-team"><div><b>Δεν έχεις στήσει ομάδα ακόμα</b><div class="muted">Βάλε τους 11 σου για προτάσεις σε Trades, Starting five και Captain.</div></div>
-        <button class="td-btn" data-tab="team">Φτιάξ' την</button></div>`
-    : !sm ? `<div class="muted">Η ομάδα δεν διαβάστηκε από το παιχνίδι.</div>`
-    : `<div class="td-team"><div><b>${sm.steps == null ? "Έλεγξε την ομάδα σου" : sm.steps ? `${sm.steps} ${sm.steps === 1 ? "βήμα εκκρεμεί" : "βήματα εκκρεμούν"}` : ico("check") + " Έτοιμος για το Round"}</b>
+    ? `<div class="td-team"><div><b>${L("Δεν έχεις στήσει ομάδα ακόμα", "You haven't set up a team yet")}</b><div class="muted">${L("Βάλε τους 11 σου για προτάσεις σε Trades, Starting five και Captain.", "Add your 11 to get proposals for Trades, Starting five and Captain.")}</div></div>
+        <button class="td-btn" data-tab="team">${L("Φτιάξ' την", "Set it up")}</button></div>`
+    : !sm ? `<div class="muted">${L("Η ομάδα δεν διαβάστηκε από το παιχνίδι.", "The team wasn't read from the game.")}</div>`
+    : `<div class="td-team"><div><b>${sm.steps == null ? L("Έλεγξε την ομάδα σου", "Check your team") : sm.steps ? `${sm.steps} ${sm.steps === 1 ? L("βήμα εκκρεμεί", "step to do") : L("βήματα εκκρεμούν", "steps to do")}` : ico("check") + L(" Έτοιμος για το Round", " Ready for the Round")}</b>
         <div class="muted">${sm.trades ? `${sm.trades} ${sm.trades === 1 ? "trade" : "trades"} · ` : ""}${sm.captain ? `CAP: ${esc(sm.captain)} · ` : ""}Credits ${f1(sm.bank)}</div></div>
-        <button class="td-btn" data-tab="team">Άνοιγμα</button></div>`;
+        <button class="td-btn" data-tab="team">${L("Άνοιγμα", "Open")}</button></div>`;
 
   // availability: the game's flags plus what the news say
   const out = new Map();
@@ -2065,30 +2105,30 @@ function renderToday() {
     const r = findPlayer(a.player);
     if (!r) continue;
     const e = out.get(r.person_id) || { r, note: "" };
-    e.note = a.note || ""; e.status = a.status; out.set(r.person_id, e);
+    e.note = noteOf(a); e.status = a.status; out.set(r.person_id, e);
   }
-  const SL = { out: "εκτός (νέα)", doubtful: "αμφίβολος (νέα)", questionable: "αμφίβολος (νέα)" };
+  const SL = { out: L("εκτός (νέα)", "out (news)"), doubtful: L("αμφίβολος (νέα)", "doubtful (news)"), questionable: L("αμφίβολος (νέα)", "doubtful (news)") };
   // the most valuable first (the ones that matter for a squad); on the right what he misses, not a number
   const avail = [...out.values()].sort((a, b) => (xf3(b.r) ?? 0) - (xf3(a.r) ?? 0)).slice(0, 8);
   const misses = ({ r, status }) => {
     const rnd = r.actual != null && r.next_round ? r.next_round : P.round;
     const sure = status === "out" || (r.avail_game != null && r.avail_game <= 0);
-    return `${sure ? "χάνει" : "αμφίβολος"} R${rnd}`;
+    return `${sure ? L("χάνει", "misses") : L("αμφίβολος", "doubtful")} R${rnd}`;
   };
   const availLi = (e) => `<li data-pid="${esc(e.r.person_id)}">
       <span class="n">${esc(nm(e.r.name))}${avb(e.r) || (e.status ? ` <span class="tag ${e.status === "out" ? "t-out" : "t-q"}" data-info="avail" title="${esc(SL[e.status] || e.status)}">${e.status === "out" ? "OUT" : "?"}</span>` : "")}</span>
       <span class="v"><small>${misses(e)}</small></span>
       <span class="m">${esc(tc(e.r.team))} · ${esc((e.r.position || "")[0] || "")}${e.note ? ` · ${esc(e.note)}` : ""}</span></li>`;
   const availHtml = avail.length ? `<ul class="td-list">${avail.slice(0, 3).map(availLi).join("")}</ul>${avail.length > 3
-      ? `<details class="td-more"><summary>+${avail.length - 3} ακόμα</summary><ul class="td-list">${avail.slice(3).map(availLi).join("")}</ul></details>` : ""}`
-    : `<p class="muted" style="margin:0">Κανένας γνωστός τραυματίας ή αμφίβολος.</p>`;
+      ? `<details class="td-more"><summary>+${avail.length - 3} ${L("ακόμα", "more")}</summary><ul class="td-list">${avail.slice(3).map(availLi).join("")}</ul></details>` : ""}`
+    : `<p class="muted" style="margin:0">${L("Κανένας γνωστός τραυματίας ή αμφίβολος.", "No known injured or doubtful players.")}</p>`;
 
   // best picks per price tier (the budget forces a mix of stars and cheap fillers)
-  const tiers = [["Φτηνοί · έως 6 cr", (p) => p <= 6], ["Μεσαίοι · 6–10 cr", (p) => p > 6 && p <= 10], ["Ακριβοί · πάνω από 10 cr", (p) => p > 10]];
+  const tiers = [[L("Φτηνοί · έως 6 cr", "Cheap · up to 6 cr"), (p) => p <= 6], [L("Μεσαίοι · 6–10 cr", "Mid · 6–10 cr"), (p) => p > 6 && p <= 10], [L("Ακριβοί · πάνω από 10 cr", "Premium · over 10 cr"), (p) => p > 10]];
   const tierHtml = P.fantasy_ok ? tiers.map(([l, f]) => {
     const top = court.filter((r) => healthy(r) && r.price != null && f(r.price)).sort((a, b) => (xf3(b) ?? 0) - (xf3(a) ?? 0)).slice(0, 3);
     return `<div><h3>${l}</h3><ul class="td-list">${top.map((r) => li(r, [xf3(r), "xFPT3"], where(r))).join("")}</ul></div>`;
-  }).join("") : `<p class="muted">Χωρίς prices fantasy αυτή τη στιγμή.</p>`;
+  }).join("") : `<p class="muted">${L("Χωρίς prices fantasy αυτή τη στιγμή.", "No fantasy prices right now.")}</p>`;
 
   const games = (P.turns || []).map((t) => `<div class="td-turn"><b>Turn ${t.turn}</b> <span class="muted">· ${DAYS_GR[new Date(t.date + "T12:00:00Z").getUTCDay()]} ${t.date.slice(8)}/${t.date.slice(5, 7)}</span>
       <div class="td-games">${(t.games || []).slice().sort((a, b) => String(a).split(" ").pop().localeCompare(String(b).split(" ").pop()))
@@ -2102,24 +2142,24 @@ function renderToday() {
   const top5 = court.filter(healthy).sort(byX).slice(0, 5);
   const capList = (xs) => `<ul class="td-list">${xs.map(capRow).join("")}</ul>`;
   const capTurns = capList(top5.slice(0, 3))
-    + (top5.length > 3 ? `<details class="td-more"><summary>+${top5.length - 3} ακόμα</summary>${capList(top5.slice(3))}</details>` : "")
+    + (top5.length > 3 ? `<details class="td-more"><summary>+${top5.length - 3} ${L("ακόμα", "more")}</summary>${capList(top5.slice(3))}</details>` : "")
     + (coach ? `<div class="cap-turn"><h3>Coach</h3>${capList([coach])}</div>` : "");
   // the AI summary (open), the columns' picks and the articles (folded): what the «Νέα» tab had before PR 65
   const d = NW?.digest;
-  const summaryHtml = `<div class="card wide td-ai"><h2>Σύνοψη (AI) <small class="muted">${NW?.digest_at ? ago(Date.now() - new Date(NW.digest_at).getTime()) : ""}</small></h2>${d ? `<div class="msg">${linkNames(esc(d.summary_el))}</div>` : `<p class="muted">Η σύνοψη AI δεν βγήκε σε αυτή την ενημέρωση· θα ξαναδοκιμάσει στην επόμενη.</p>`}
-    <details class="td-more"><summary>Αγώνες του Round</summary>${games}</details></div>`;
-  const expertsFold = d?.expert?.length ? `<details class="td-fold td-fold-x"><summary class="card"><h2>Προτάσεις ειδικών <small class="muted">${d.expert.length}</small></h2></summary>${expertsHtml(d.expert, TRK?.experts || [], true)}</details>` : "";
-  const reportFold = P.edition !== "public" && REP?.messages?.length ? `<details class="wide td-fold td-fold-x"><summary class="card"><h2>Report σε κείμενο <small class="muted">όπως στο Telegram</small></h2></summary>${
+  const summaryHtml = `<div class="card wide td-ai"><h2>${L("Σύνοψη (AI)", "Summary (AI)")} <small class="muted">${NW?.digest_at ? ago(Date.now() - new Date(NW.digest_at).getTime()) : ""}</small></h2>${d ? `<div class="msg">${linkNames(esc(LANG === "en" && d.summary_en ? d.summary_en : d.summary_el))}</div>` : `<p class="muted">${L("Η σύνοψη AI δεν βγήκε σε αυτή την ενημέρωση· θα ξαναδοκιμάσει στην επόμενη.", "The AI summary didn't come out in this update; it will try again in the next one.")}</p>`}
+    <details class="td-more"><summary>${L("Αγώνες του Round", "Round games")}</summary>${games}</details></div>`;
+  const expertsFold = d?.expert?.length ? `<details class="td-fold td-fold-x"><summary class="card"><h2>${L("Προτάσεις ειδικών", "Expert picks")} <small class="muted">${d.expert.length}</small></h2></summary>${expertsHtml(d.expert, TRK?.experts || [], true)}</details>` : "";
+  const reportFold = P.edition !== "public" && REP?.messages?.length ? `<details class="wide td-fold td-fold-x"><summary class="card"><h2>${L("Report σε κείμενο", "Text report")} <small class="muted">${L("όπως στο Telegram", "as on Telegram")}</small></h2></summary>${
       REP.messages.map((m) => `<div class="card"><div class="msg">${m.text.replace(/\n/g, "<br>")}</div></div>`).join("")}</details>` : "";
-  const articlesFold = `<details class="wide td-fold td-fold-x"><summary class="card"><h2>Άρθρα <small class="muted">${(NW?.articles || []).length}</small></h2></summary>${articlesHtml(NW?.articles || [])}</details>`;
-  const health = (P.health || []).length ? `<div class="card warn wide"><h2>${ico("warn")} Κατάσταση</h2>${P.health.map(esc).join("<br>")}</div>` : "";
+  const articlesFold = `<details class="wide td-fold td-fold-x"><summary class="card"><h2>${L("Άρθρα", "Articles")} <small class="muted">${(NW?.articles || []).length}</small></h2></summary>${articlesHtml(NW?.articles || [])}</details>`;
+  const health = (P.health || []).length ? `<div class="card warn wide health"><h2>${ico("warn")} ${L("Κατάσταση", "Status")}</h2>${P.health.map(esc).join("<br>")}</div>` : "";
   $("#today").innerHTML = `<div class="td-grid">${health}
     <div class="card">${heroHtml()}</div>
-    <div class="card"><h2>${P.edition === "public" ? "Η ομάδα μου" : esc(P.my_team?.name || "Η ομάδα μου")}</h2>${team}</div>${early}
+    <div class="card"><h2>${P.edition === "public" ? L("Η ομάδα μου", "My team") : esc(P.my_team?.name || L("Η ομάδα μου", "My team"))}</h2>${team}</div>${early}
     ${summaryHtml}
-    <div class="td-col"><div class="card"><h2>Για Captain ${ii("xpts")}</h2>${capTurns}</div>${expertsFold}</div>
-    <div class="card td-avail"><h2>Τραυματίες & αμφίβολοι ${ii("avail")}</h2>${availHtml}</div>
-    <div class="card wide td-best"><h2>Καλύτερες επιλογές ανά price ${ii("xpts3")}</h2><div class="td-tiers">${tierHtml}</div></div>
+    <div class="td-col"><div class="card"><h2>${L("Για Captain", "For Captain")} ${ii("xpts")}</h2>${capTurns}</div>${expertsFold}</div>
+    <div class="card td-avail"><h2>${L("Τραυματίες & αμφίβολοι", "Injured & doubtful")} ${ii("avail")}</h2>${availHtml}</div>
+    <div class="card wide td-best"><h2>${L("Καλύτερες επιλογές ανά price", "Best picks by price")} ${ii("xpts3")}</h2><div class="td-tiers">${tierHtml}</div></div>
     ${movesHtml(court)}
     ${articlesFold}${reportFold}</div>`;
   const eo = $("#earlyOff");
@@ -2131,12 +2171,12 @@ function movesHtml(court) {
   if (!mv.length) return "";
   const row = (r) => `<li data-pid="${esc(r.person_id)}"><span class="n">${esc(nm(r.name))}${avb(r)}</span>
       <span class="v"><b>${f1(r.price)}</b><small>cr${chg(r.price_last_chg)}</small></span>
-      <span class="m">${esc(tc(r.team))} · ${esc((r.position || "")[0] || "")} · σεζόν${chg(r.price_chg) || " 0.0"}</span></li>`;
+      <span class="m">${esc(tc(r.team))} · ${esc((r.position || "")[0] || "")} · ${L("σεζόν", "season")}${chg(r.price_chg) || " 0.0"}</span></li>`;
   const up = mv.filter((r) => r.price_last_chg > 0).sort((a, b) => b.price_last_chg - a.price_last_chg).slice(0, 3);
   const dn = mv.filter((r) => r.price_last_chg < 0).sort((a, b) => a.price_last_chg - b.price_last_chg).slice(0, 3);
-  return `<div class="card wide"><h2>Price changes · τελευταίο Round ${ii("pchg")}</h2><div class="td-tiers" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr))">
-    <div><h3>Ανέβηκαν</h3><ul class="td-list">${up.map(row).join("") || '<li class="muted">—</li>'}</ul></div>
-    <div><h3>Έπεσαν</h3><ul class="td-list">${dn.map(row).join("") || '<li class="muted">—</li>'}</ul></div></div></div>`;
+  return `<div class="card wide"><h2>${L("Price changes · τελευταίο Round", "Price changes · last Round")} ${ii("pchg")}</h2><div class="td-tiers" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr))">
+    <div><h3>${L("Ανέβηκαν", "Rose")}</h3><ul class="td-list">${up.map(row).join("") || '<li class="muted">—</li>'}</ul></div>
+    <div><h3>${L("Έπεσαν", "Fell")}</h3><ul class="td-list">${dn.map(row).join("") || '<li class="muted">—</li>'}</ul></div></div></div>`;
 }
 // back to the app after a while (tab, phone): if newer data is out, reload so no device shows old numbers.
 // A HEAD and its tag first (no body: predictions.json is ~450 KB); the whole file only when the tag changed.
@@ -2159,7 +2199,7 @@ document.addEventListener("visibilitychange", async () => {
 setInterval(() => {
   freshness();
   const c = document.getElementById("tdCount");
-  if (c && $("#today").classList.contains("on")) { const st = roundState(); if (st.at) c.textContent = (st.kind === "before" ? "κλείνει σε " : `Turn ${st.turn.turn} σε `) + span(st.at - Date.now()); }
+  if (c && $("#today").classList.contains("on")) { const st = roundState(); if (st.at) c.textContent = (st.kind === "before" ? L("κλείνει σε ", "locks in ") : `Turn ${st.turn.turn} ${L("σε", "in")} `) + span(st.at - Date.now()); }
 }, 30000);
 
 // the public site moved to coachdime.com: its old address (<project>.pages.dev; not the previews, not the
@@ -2180,14 +2220,14 @@ function moveLink(code) {
 function moveBar() {
   const h = location.hostname;
   if (P.edition !== "public" || !h.endsWith(".pages.dev") || h.split(".").length !== 3) return;
-  document.body.insertAdjacentHTML("afterbegin", `<div class="movebar" role="status"><span><b>Το Coach Dime μετακόμισε στο coachdime.com</b>
-    <span class="muted">Σε μεταφέρουμε τώρα, μαζί με την ομάδα, τη watchlist και τις επιλογές σου. Αν το έχεις στην αρχική οθόνη, πρόσθεσέ το ξανά από τη νέα διεύθυνση.</span>
+  document.body.insertAdjacentHTML("afterbegin", `<div class="movebar" role="status"><span><b>${L("Το Coach Dime μετακόμισε στο coachdime.com", "Coach Dime moved to coachdime.com")}</b>
+    <span class="muted">${L("Σε μεταφέρουμε τώρα, μαζί με την ομάδα, τη watchlist και τις επιλογές σου. Αν το έχεις στην αρχική οθόνη, πρόσθεσέ το ξανά από τη νέα διεύθυνση.", "We're taking you there now, with your team, watchlist and settings. If it's on your home screen, add it again from the new address.")}</span>
     <span class="muted" id="moveCode"></span></span>
-    <button type="button" id="moveGo">Μεταφορά ➜</button></div>`);
+    <button type="button" id="moveGo">${L("Μεταφορά ➜", "Move ➜")}</button></div>`);
   // the team's backup on the server, made now: the new address (and the Home Screen app made from it) links to it
   const ready = window.TEAM && TEAM.backup ? TEAM.backup().catch(() => null) : Promise.resolve(null);
   ready.then((code) => { if (code) $("#moveCode").textContent =
-    `Κωδικός αντιγράφου: ${code.replace(/(....)(?=.)/g, "$1-")} · αν η ομάδα δεν φανεί, βάλ' τον στο ⋯ Επιλογές → Συγχρονισμός συσκευών.`; });
+    L(`Κωδικός αντιγράφου: ${code.replace(/(....)(?=.)/g, "$1-")} · αν η ομάδα δεν φανεί, βάλ' τον στο ⋯ Επιλογές → Συγχρονισμός συσκευών.`, `Backup code: ${code.replace(/(....)(?=.)/g, "$1-")} · if your team doesn't show, enter it in ⋯ Options → Sync devices.`); });
   const go = async () => { $("#moveGo").disabled = true; location.replace(moveLink(await ready)); };
   $("#moveGo").onclick = go;
   // since 11/11 the old address moves on by itself: the backup first (at most MOVE_WAIT_MS), then the new
@@ -2201,7 +2241,7 @@ const MOVE_WAIT_MS = 4000;
     get("model_params.json"), get("tracking.json"), get("clubs.json"), get("autopilot.json")]);
   if (Array.isArray(cl)) TV = Object.fromEntries(cl.filter((c) => c.tv).map((c) => [c.code, c.tv]));
   if (Array.isArray(cl)) CLUB_BY_NAME = Object.fromEntries(cl.flatMap((c) => [[c.short, c.code], [c.name, c.code]]).filter(([n]) => n));
-  if (!p) { $("#updated").textContent = "Δεν υπάρχουν δεδομένα ακόμα."; return; }
+  if (!p) { $("#updated").textContent = L("Δεν υπάρχουν δεδομένα ακόμα.", "No data yet."); return; }
   P = p; NW = nw;
   moveBar();
   // points/credit (the season's points over today's price): a field, so the sort and the filter read it alike
