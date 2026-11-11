@@ -1,0 +1,14 @@
+tests/test_round_page.py: does it fail when it should? (web/index.html swapped by hand, then restored)
+
+1) web/index.html of main before PR 65 (tabs «Νέα», «Report» still there):
+E       AssertionError: assert ['news', 'com...ort', 'about'] == ['compare', 'model', 'about']
+E       AssertionError: assert not ({'news', 'report'} & {'about', 'compare', 'model', 'news', 'players', 'report', ...})
+2 failed, 2 passed
+
+2) PR 65 + one «Περισσότερα» entry put back: ["news", "Νέα", "x"]
+3 failed, 1 passed      (no-way-into-news, every-way-leads-to-a-section, MORE_TABS list)
+
+3) PR 65 as is:
+4 passed
+
+tests/ui/round.spec.mjs: not run here (UI tests run in CI only); `node --check` ok.

@@ -131,13 +131,14 @@ jobs:
         working-directory: tests/ui
         env:
           CACHED: ${{ steps.pw-cache.outputs.cache-hit }}
+        # The browser comes from Playwright's CDN (or the cache); the system libraries from Ubuntu's apt
+        # mirrors. The ubuntu-24.04 image already has every library Chromium needs; apt only adds extra
+        # fonts (CJK, Thai; no screenshot comparisons here). When the mirrors fail (DNS on 11/11, twice),
+        # give up after 3 minutes and carry on with a warning: a library that is really missing still fails the tests at launch.
         run: |
           npm ci
-          if [ "$CACHED" = true ]; then
-            npx playwright install-deps chromium      # system libraries only; browser from cache
-          else
-            npx playwright install --with-deps chromium
-          fi
+          if [ "$CACHED" != true ]; then npx playwright install chromium; fi
+          timeout 180 npx playwright install-deps chromium || echo "::warning::apt mirrors unreachable; Playwright system packages not refreshed"
       - name: UI tests
         working-directory: tests/ui
         run: npx playwright test
