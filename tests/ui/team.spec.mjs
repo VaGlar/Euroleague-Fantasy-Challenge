@@ -784,7 +784,7 @@ test("a change doesn't throw you back to the top of the page", async ({ page }, 
   await page.mouse.wheel(0, 150);
   await page.waitForTimeout(300);
   const chip = page.locator("#team .tm-courtcard .court .chip:not(.cap)").last();   // mid-screen: at an edge Playwright scrolls by itself
-  await chip.scrollIntoViewIfNeeded();
+  await chip.evaluate((el) => el.scrollIntoView({ block: "center" }));    // at an edge the click would scroll by itself
   const y = await page.evaluate(() => scrollY);
   expect(y).toBeGreaterThan(100);
   await chip.click();
