@@ -335,7 +335,7 @@ ul.news li { padding: 8px 0; border-bottom: 1px solid var(--border); }
 .tip { position: absolute; z-index: 20; max-width: min(300px, calc(100vw - 32px)); background: var(--text-primary); color: var(--surface-1);
   font-size: 13px; line-height: 1.4; padding: 8px 10px; border-radius: 10px; box-shadow: 0 6px 18px rgba(0,0,0,.25); }
 
-/* ---- «Σήμερα» */
+/* ---- «Round» (section #today) */
 .td-hero { display: grid; gap: 4px; }
 .td-hero .big { font-size: 22px; font-weight: 800; font-variant-numeric: tabular-nums; }
 .td-grid { display: grid; gap: 12px; }
@@ -1128,7 +1128,7 @@ function courtView(list, ref) {
     <div class="lanes"><div class="pair">${lane("six", "Sixth man", by("6ος"))}${lane("coach", "Head Coach", by("coach"))}</div>
       ${lane("bench", "Bench (50% FPT)", by("πάγκος").sort((a, b) => (b.x_now ?? 0) - (a.x_now ?? 0)))}</div></div>`;
 }
-// «Νέα»: the columns' picks grouped by column, the one whose picks did best (tab «Μοντέλο») first and open,
+// «Round» → «Προτάσεις ειδικών»: the columns' picks grouped by column, the one whose picks did best (tab «Μοντέλο») first and open,
 // the others folded; per player PICK / CAP / AVOID, the note on a second line
 const STANCE_ICON = { pick: xtag("pick"), captain: xtag("cap"), avoid: xtag("avoid") };
 function expertsHtml(list, track, bare = false) {
@@ -1932,7 +1932,7 @@ function renderModel(mp, trk, ap) {
 }
 
 
-// ---------------------------------------------------------------- «Σήμερα»
+// ---------------------------------------------------------------- «Round» (section #today)
 let NW = null, REP = null, TRK = null;   // news.json, report.json
 const DAYS_GR = ["Κυριακή", "Δευτέρα", "Τρίτη", "Τετάρτη", "Πέμπτη", "Παρασκευή", "Σάββατο"];
 // Athens wall-clock time -> epoch ms (DST-proof, as the bot)
@@ -1949,7 +1949,7 @@ function athensMs(date, hm) {
   return guess - (Date.UTC(p.year, p.month - 1, p.day, p.hour % 24, p.minute) - guess);
 }
 // "YYYY-MM-DD" in Athens, from the parts: a locale's own date format isn't fixed (en-CA has been M/D/Y in
-// some browser versions, and a date athensMs can't read throws «Invalid time value» on the «Σήμερα» screen)
+// some browser versions, and a date athensMs can't read throws «Invalid time value» on the «Round» page)
 const ATHENS_YMD = new Intl.DateTimeFormat("en-US", { timeZone: "Europe/Athens", year: "numeric", month: "2-digit", day: "2-digit" });
 const athensDate = (ms) => { const p = Object.fromEntries(ATHENS_YMD.formatToParts(new Date(ms)).map((x) => [x.type, x.value]));
   return `${p.year}-${p.month}-${p.day}`; };
@@ -2087,7 +2087,7 @@ function renderToday() {
   const capTurns = capList(top5.slice(0, 3))
     + (top5.length > 3 ? `<details class="td-more"><summary>+${top5.length - 3} ακόμα</summary>${capList(top5.slice(3))}</details>` : "")
     + (coach ? `<div class="cap-turn"><h3>Coach</h3>${capList([coach])}</div>` : "");
-  // what the news page had: the AI summary, the columns' picks and the articles, folded
+  // the AI summary (open), the columns' picks and the articles (folded): what the «Νέα» tab had before PR 65
   const d = NW?.digest;
   const summaryHtml = `<div class="card wide td-ai"><h2>Σύνοψη (AI) <small class="muted">${NW?.digest_at ? ago(Date.now() - new Date(NW.digest_at).getTime()) : ""}</small></h2>${d ? `<div class="msg">${linkNames(esc(d.summary_el))}</div>` : `<p class="muted">Η σύνοψη AI δεν βγήκε σε αυτή την ενημέρωση· θα ξαναδοκιμάσει στην επόμενη.</p>`}
     <details class="td-more"><summary>Αγώνες του Round</summary>${games}</details></div>`;
@@ -2164,21 +2164,23 @@ function moveBar() {
   const h = location.hostname;
   if (P.edition !== "public" || !h.endsWith(".pages.dev") || h.split(".").length !== 3) return;
   document.body.insertAdjacentHTML("afterbegin", `<div class="movebar" role="status"><span><b>Το Coach Dime μετακόμισε στο coachdime.com</b>
-    <span class="muted">Η ομάδα, η watchlist και οι επιλογές σου έρχονται μαζί. Αν το έχεις στην αρχική οθόνη, πρόσθεσέ το ξανά από τη νέα διεύθυνση.</span>
+    <span class="muted">Σε μεταφέρουμε τώρα, μαζί με την ομάδα, τη watchlist και τις επιλογές σου. Αν το έχεις στην αρχική οθόνη, πρόσθεσέ το ξανά από τη νέα διεύθυνση.</span>
     <span class="muted" id="moveCode"></span></span>
     <button type="button" id="moveGo">Μεταφορά ➜</button></div>`);
   // the team's backup on the server, made now: the new address (and the Home Screen app made from it) links to it
   const ready = window.TEAM && TEAM.backup ? TEAM.backup().catch(() => null) : Promise.resolve(null);
   ready.then((code) => { if (code) $("#moveCode").textContent =
     `Κωδικός αντιγράφου: ${code.replace(/(....)(?=.)/g, "$1-")} · αν η ομάδα δεν φανεί, βάλ' τον στο ⋯ Επιλογές → Συγχρονισμός συσκευών.`; });
-  $("#moveGo").onclick = async () => {
-    $("#moveGo").disabled = true;
-    location.href = moveLink(await ready);
-  };
+  const go = async () => { $("#moveGo").disabled = true; location.replace(moveLink(await ready)); };
+  $("#moveGo").onclick = go;
+  // since 11/11 the old address moves on by itself: the backup first (at most MOVE_WAIT_MS), then the new
+  // address with the data; the bar and its button stay for a browser that blocks the redirect
+  Promise.race([ready, new Promise((r) => setTimeout(r, MOVE_WAIT_MS))]).then(go);
 }
+const MOVE_WAIT_MS = 4000;
 
 (async () => {
-  const [p, rep, nw, mp, trk, cl, ap] = await Promise.all([get("predictions.json"), get("report.json"), get("news.json"),
+  const [p, nw, mp, trk, cl, ap] = await Promise.all([get("predictions.json"), get("news.json"),
     get("model_params.json"), get("tracking.json"), get("clubs.json"), get("autopilot.json")]);
   if (Array.isArray(cl)) TV = Object.fromEntries(cl.filter((c) => c.tv).map((c) => [c.code, c.tv]));
   if (Array.isArray(cl)) CLUB_BY_NAME = Object.fromEntries(cl.flatMap((c) => [[c.short, c.code], [c.name, c.code]]).filter(([n]) => n));
@@ -2190,7 +2192,9 @@ function moveBar() {
   $("#round").textContent = `Round ${p.round}`;
   freshness();
 
-  REP = rep; TRK = trk;
+  // the report in text: only the personal edition shows it (the public site doesn't publish one)
+  REP = p.edition !== "public" ? await get("report.json") : null;
+  TRK = trk;
 
   [...new Set(p.players.map((x) => x.team))].sort((a, b) => tc(a).localeCompare(tc(b)))
     .forEach((t) => $("#fteam").insertAdjacentHTML("beforeend", `<option value="${esc(t)}">${esc(tc(t))}</option>`));

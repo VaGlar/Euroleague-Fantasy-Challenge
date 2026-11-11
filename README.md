@@ -10,7 +10,7 @@ and a Telegram report at 10:05 on every game day. Running cost: €0.
 > bar whose «Μεταφορά» button carries the device's data over in a `#move=` fragment (`moveBar` / `MOVE_KEYS` in
 > `web/index.html`). The bar also backs the team up on the server (a sync code, `TEAM.backup`) and sends the code as
 > `&sync=`: the new address links to it by itself, and keeps it in a `cd_sync` cookie, because on iPhone the Home
-> Screen app has its own storage and gets only the browser's cookies when it is added (`adoptMove` in `web/team.js`). Once its visits are near zero, the bar becomes a redirect. The product plan (two editions from one engine, subscriptions, security) is in [`docs/PRODUCT.md`](docs/PRODUCT.md).
+> Screen app has its own storage and gets only the browser's cookies when it is added (`adoptMove` in `web/team.js`). Since 11/11 the old address moves on by itself: it backs the team up (at most 4 s), then opens the new one with the data; the bar and its button stay for a browser that blocks the redirect. The public site has no report in text (only the personal edition shows one, in «Round»). The product plan (two editions from one engine, subscriptions, security) is in [`docs/PRODUCT.md`](docs/PRODUCT.md).
 >
 > **R&D:** experiments to improve the model, including the ones that failed, and the ideas on hold are in [`research/`](research/README.md).
 >

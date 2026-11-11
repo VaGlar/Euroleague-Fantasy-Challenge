@@ -1457,7 +1457,7 @@
     importFromHash(); setup = null; mode = null;
     if (typeof P !== "undefined" && P) { render(); if (typeof showTab === "function") showTab("team"); }
   });
-  // a short status for the «Σήμερα» screen: null = no team yet (public edition)
+  // a short status for the «Round» page: null = no team yet (public edition)
   function summary() {
     try {
       const t = GAME() ? gameTeam() : load();
