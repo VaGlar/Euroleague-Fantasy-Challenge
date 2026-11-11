@@ -184,10 +184,7 @@ def test_public_edition_has_nothing_personal(pipeline, tmp_path):
     pred = json.loads(files["predictions.json"])
     assert pred["my_team"] is None and pred["health"] == []
     assert all('"TEST"' not in txt for txt in files.values()), "το όνομα της ομάδας διέρρευσε"
-    report = json.loads(files["report.json"])
-    text = "\n".join(m["text"] for m in report["messages"])
-    assert report["messages"] and "Προτεινόμενο Starting five" not in text and "Προτεινόμενες αλλαγές" not in text
-    assert "⚠️" not in text, "λειτουργικές σημειώσεις (token κ.λπ.) δεν πάνε στο κοινό"
+    assert "report.json" not in files, "the report in text is the personal edition's only (PR 65)"
     if "tracking.json" in files:
         assert json.loads(files["tracking.json"])["lineups"] == []
 

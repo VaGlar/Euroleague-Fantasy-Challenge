@@ -66,10 +66,12 @@ test("Round (personal): the report in text is the last card, folded, and opens t
   expect(await fold.locator(".msg br").count()).toBeGreaterThan(0);
 });
 
-test("Round (public): no report in text, although the public edition is served one", async ({ page }) => {
+test("Round (public): no report in text, and the public site isn't served one", async ({ page }) => {
+  const asked = [];
+  page.on("request", (r) => { if (/\/report\.json/.test(r.url())) asked.push(r.url()); });
   await open(page, "public");
-  const served = await page.evaluate(async () => (await (await fetch("data/report.json")).json()).messages?.length || 0);
-  expect(served).toBeGreaterThan(0);                                   // so the check below means something
+  expect(await page.evaluate(async () => (await fetch("data/report.json")).status)).toBe(404);
+  expect(asked.length).toBe(1);                                          // only the check above: the page never asks
   await expect(page.locator("#today")).not.toContainText("Report σε κείμενο");
   await expect(page.locator("#today")).not.toContainText("όπως στο Telegram");
 });

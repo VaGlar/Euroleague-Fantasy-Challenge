@@ -223,6 +223,32 @@ test.describe("public edition", () => {
     await app.close();
   });
 
+  test("the old address moves on to coachdime.com by itself, with the team and its backup code", async ({ page, browser }, testInfo) => {
+    await savedTeam(page);
+    const team = JSON.stringify(await stored(page));
+    // the old address served from the local build; the new one only records where the page went
+    const base = testInfo.project.use.baseURL;
+    const ctx = await browser.newContext(testInfo.project.use);
+    await ctx.route("https://hoopslab-beta.pages.dev/**", async (route) => {
+      const u = new URL(route.request().url());
+      await route.fulfill({ response: await route.fetch({ url: `${base}/public${u.pathname}${u.search}` }) });
+    });
+    let posted = null;
+    await ctx.route("https://hoopslab-beta.pages.dev/api/sync**", async (route) => {
+      posted = route.request().postDataJSON().data;
+      await route.fulfill({ status: 201, json: { code: "ABCDEFGHJKMN", rev: 1 } });
+    });
+    await ctx.route("https://coachdime.com/**", (route) => route.fulfill({ body: "moved" }));
+    const old = await ctx.newPage();
+    await old.addInitScript((t) => { if (!sessionStorage.getItem("seeded")) { sessionStorage.setItem("seeded", "1");
+      localStorage.setItem("myteam_v1", t); localStorage.setItem("a2hs", JSON.stringify({ at: Date.now(), never: true })); } }, team);
+    await old.goto("https://hoopslab-beta.pages.dev/index.html");
+    await expect.poll(() => old.url(), { timeout: 10000 }).toMatch(          // the page's URL keeps the #fragment
+      /^https:\/\/coachdime\.com\/#move=[A-Za-z0-9_-]+&sync=ABCDEFGHJKMN$/);
+    expect(posted.players).toEqual(JSON.parse(team).players);      // backed up before leaving
+    await ctx.close();
+  });
+
   test("the move keeps a different team already there unless the user says so", async ({ page }) => {
     await savedTeam(page);
     const mine = await stored(page);
