@@ -786,7 +786,7 @@ test("a change doesn't throw you back to the top of the page", async ({ page }, 
   const chip = page.locator("#team .tm-courtcard .court .chip:not(.cap)").last();   // mid-screen: at an edge Playwright scrolls by itself
   await chip.evaluate((el) => el.scrollIntoView({ block: "center" }));    // at an edge the click would scroll by itself
   const y = await page.evaluate(() => scrollY);
-  expect(y).toBeGreaterThan(100);
+  expect(y).toBeGreaterThan(40);                // scrolled down: a jump to the top would show (centred, the PC page scrolls ~100px)
   await chip.click();
   await page.locator("#aCap").click();
   await expect(page.locator("#modal")).not.toHaveClass(/\bon\b/);
