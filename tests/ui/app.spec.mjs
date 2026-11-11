@@ -2,7 +2,7 @@
 import { test, expect } from "@playwright/test";
 import { open, goTab, checkLayout, isPhone, isAndroid } from "./helpers.mjs";
 
-const TABS = ["today", "team", "players", "teams", "news", "compare", "model", "report"];
+const TABS = ["today", "team", "players", "teams", "compare", "model"];   // «Νέα» and «Report» are in «Round» (today)
 
 for (const edition of ["public", "personal"]) {
   test(`${edition}: every tab opens, has content, fits the screen, no JS errors`, async ({ page }, testInfo) => {
@@ -25,7 +25,7 @@ test("navigation bars: top tabs on PC, bottom bar on phones", async ({ page }, t
     await expect(page.locator("#bnav")).toBeVisible();
     await expect(page.locator("#tabs")).toBeHidden();
     await page.locator('#bnav button[data-t="more"]').click();
-    await expect(page.locator("#sheet [data-go]")).toHaveCount(5);          // news, compare, model, report, «Σχετικά»
+    await expect(page.locator("#sheet [data-go]")).toHaveCount(3);          // compare, model, «Σχετικά»
     await expect(page.locator('#sheet [data-go="about"]')).toHaveCount(1);
     await page.keyboard.press("Escape");
     await expect(page.locator("#modal")).not.toHaveClass(/\bon\b/);
@@ -133,22 +133,59 @@ test("Σήμερα: works on a browser without timeZoneName «shortOffset» (old
   expect(errors).toEqual([]);
 });
 
-test("Νέα: without an AI summary the page says so above the articles", async ({ page }) => {
+test("Round: without an AI summary the page says so where the summary goes", async ({ page }) => {
   await page.route(/\/news\.json(\?|$)/, async (route) => {     // fetched as data/news.json?t=…
     const r = await route.fetch(), j = await r.json();
     await route.fulfill({ response: r, json: { ...j, digest: null, digest_at: null } });
   });
-  await open(page, "public", { tab: "news" });
-  await expect(page.locator("#news")).toContainText("Η σύνοψη AI δεν βγήκε");
-  await expect(page.locator("#news")).not.toContainText("Σύνοψη (AI)");
+  await open(page, "public");
+  await expect(page.locator("#today .td-ai")).toContainText("Η σύνοψη AI δεν βγήκε");
+  await expect(page.locator("#today .td-ai .msg")).toHaveCount(0);
 });
 
-test("Σήμερα: countdown, captain picks and picks per price tier", async ({ page }) => {
+test("Round: one page for the round (the old «Σήμερα», «Νέα» and «Report»), in the order agreed", async ({ page }) => {
   await open(page, "public");
   const today = page.locator("section#today");
   await expect(today).toContainText(/Round \d+/);
-  await expect(today).toContainText("Για CAP");
   await expect(today.locator(".td-hero")).toBeVisible();
+  // the cards top to bottom: countdown, my team, AI summary, captain, injuries, price tiers, price changes, articles
+  const order = await today.evaluate((s) => [".td-hero", ".td-ai", ".td-col", ".td-avail", ".td-best"]
+    .map((q) => s.querySelector(q)?.getBoundingClientRect().top ?? -1));
+  expect(order.every((y) => y >= 0)).toBeTruthy();
+  expect(order).toEqual([...order].sort((a, b) => a - b));                  // on a PC captain and injuries share a row
+  // the AI summary is open; the round's games, the experts' picks and the articles are folded
+  await expect(today.locator(".td-ai .msg")).toBeVisible();
+  await expect(today.locator(".td-ai details")).not.toHaveAttribute("open", "");
+  await expect(today.locator("details.td-fold-x")).toHaveCount(2);           // experts, articles (public)
+  for (const d of await today.locator("details.td-fold-x").all()) await expect(d).not.toHaveAttribute("open", "");
+  await expect(today).not.toContainText("Report σε κείμενο");
+});
+
+test("Round: «Για Captain» shows 3, folds 2 more, each with his turn; the coach under them", async ({ page }) => {
+  await open(page, "public");
+  const cap = page.locator("#today .td-col .card").first();
+  await expect(cap.locator("h2")).toContainText("Για Captain");
+  await expect(cap.locator(":scope > ul.td-list > li")).toHaveCount(3);
+  await expect(cap.locator("details.td-more ul.td-list > li")).toHaveCount(2);
+  for (const li of await cap.locator(":scope > ul.td-list > li, details.td-more li").all()) await expect(li).toContainText(/Turn \d/);
+  await expect(cap.locator(".cap-turn h3")).toHaveText("Coach");
+  const xs = await cap.locator(":scope > ul.td-list > li .v b, details.td-more li .v b").allInnerTexts();
+  expect(xs.map(Number)).toEqual([...xs.map(Number)].sort((a, b) => b - a));  // the best first
+});
+
+for (const tab of ["news", "report"]) {
+  test(`Round: the last tab «${tab}» (gone) opens «Round»`, async ({ page }) => {
+    await open(page, "public", { tab });
+    await expect(page.locator("section#today")).toHaveClass(/\bon\b/);
+    await expect(page.locator('nav button[data-t="news"], nav button[data-t="report"]')).toHaveCount(0);
+  });
+}
+
+test("Round (personal edition): the report in text stays, folded at the end", async ({ page }) => {
+  await open(page, "personal");
+  const fold = page.locator("#today details.td-fold-x", { hasText: "Report σε κείμενο" });
+  await expect(fold).toHaveCount(1);
+  await expect(fold).not.toHaveAttribute("open", "");
 });
 
 test("install guide on a phone's first visit: Android (⋮ menu) or iPhone (Share) steps", async ({ page }, testInfo) => {
