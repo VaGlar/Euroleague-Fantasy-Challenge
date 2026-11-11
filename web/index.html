@@ -341,7 +341,7 @@ ul.news li { padding: 8px 0; border-bottom: 1px solid var(--border); }
 .td-grid { display: grid; gap: 12px; }
 @media (min-width: 760px) { .td-grid { grid-template-columns: 1fr 1fr; align-items: start; } .td-grid .wide { grid-column: 1 / -1; } }
 .td-grid .card { margin-bottom: 0; }
-@media (max-width: 759px) { .td-grid .td-avail { order: 1; } .td-grid .td-avail ~ .card { order: 2; } .td-grid .td-avail ~ .td-best { order: 0; } }
+
 .cmp-add { position: relative; margin: 0 0 10px; }
 .cmp-add input { width: 100%; box-sizing: border-box; }
 .cmp-res { list-style: none; margin: 0; padding: 0; position: absolute; z-index: 5; left: 0; right: 0; background: var(--surface-1);
@@ -479,6 +479,16 @@ html body .pill .ic { vertical-align: -0.12em; }
 .tag[data-info] { cursor: help; }
 .legend { display: grid; grid-template-columns: max-content 1fr; gap: 8px 12px; margin: 8px 0 0; align-items: baseline; }
 .legend dd { margin: 0; font-size: 14px; }
+.td-fold > summary { list-style: none; cursor: pointer; }
+.td-fold > summary::-webkit-details-marker { display: none; }
+.td-fold > summary h2 { margin: 0; display: flex; justify-content: space-between; align-items: center; }
+.td-fold > summary h2::after { content: "▾"; color: var(--text-muted); font-size: 14px; }
+.td-fold[open] > summary h2::after { content: "▴"; }
+.td-fold-x > summary.card { margin-bottom: 0; }
+.td-col { display: grid; gap: 12px; align-content: start; }
+.td-ai .msg { font-size: 15px; line-height: 1.55; }
+.cap-turn h3 { margin: 12px 0 2px; font-size: 14px; }
+
 .tag.t-pick { background: var(--good); } .tag.t-avoid { background: var(--critical); } .tag.t-cap { background: var(--accent); }
 html body h1 { font-family: var(--num-font); font-weight: 800; letter-spacing: .01em; text-transform: uppercase; }
 html body header { border-bottom: 3px solid var(--accent); }
@@ -631,14 +641,12 @@ html body #mCp .ic { width: 1.25em; height: 1.25em; }
   <button id="themeBtn" class="themebtn" type="button" aria-label="Θέμα" title="Θέμα"></button>
   <div class="sub" id="updated">Φόρτωση…</div>
   <nav id="tabs">
-    <button data-t="today" class="on">Σήμερα</button>
+    <button data-t="today" class="on">Round</button>
     <button data-t="team">Η ομάδα μου</button>
     <button data-t="players">Παίκτες</button>
     <button data-t="teams">Βαθμολογία</button>
-    <button data-t="news">Νέα</button>
     <button data-t="compare">Σύγκριση<span class="cnt" id="cmpcnt" hidden></span></button>
     <button data-t="model">Μοντέλο</button>
-    <button data-t="report">Report</button>
     <button data-t="about" class="pubonly">Σχετικά</button>
   </nav>
 </header>
@@ -646,7 +654,6 @@ html body #mCp .ic { width: 1.25em; height: 1.25em; }
   <div id="a2hsBar" class="a2hs" hidden><span><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg> <b>Βάλ' το στην οθόνη σου</b> — ανοίγει σαν εφαρμογή και κρατά την ομάδα σου.
     Κάν' το <b>πριν</b> στήσεις την ομάδα.</span><button type="button" id="a2hsGo">Πώς;</button></div>
   <section id="today" class="on"></section>
-  <section id="report"></section>
   <section id="players">
     <!-- players: search and sort on the page; every filter in one panel (as a shop's), what is on shows as chips -->
     <div class="fbar">
@@ -698,7 +705,6 @@ html body #mCp .ic { width: 1.25em; height: 1.25em; }
   </section>
   <section id="team"></section>
   <section id="teams"></section>
-  <section id="news"></section>
   <section id="compare"></section>
   <section id="model"></section>
   <section id="about">
@@ -729,7 +735,7 @@ html body #mCp .ic { width: 1.25em; height: 1.25em; }
   <a href="mailto:hello@coachdime.com?subject=Coach%20Dime%20beta" onclick="mailTap(this)">hello@coachdime.com</a>
   <button class="fbcopy" type="button" onclick="reportProblem()"><svg class="ic" aria-hidden="true"><use href="#i-bug"/></svg> Ανάφερε πρόβλημα</button></footer>
 <nav class="bnav" id="bnav" aria-label="Κύρια πλοήγηση">
-  <button data-t="today" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/></svg><span>Σήμερα</span></button>
+  <button data-t="today" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/></svg><span>Round</span></button>
   <button data-t="team"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 12h18"/><circle cx="12" cy="12" r="3"/></svg><span>Η ομάδα μου</span></button>
   <button data-t="players"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8"/><path d="M18 14.8c1.8.7 3 2.4 3.5 5.2"/></svg><span>Παίκτες</span></button>
   <button data-t="teams"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3"/><path d="M7 5H4v2a3 3 0 0 0 3 3"/></svg><span>Βαθμολογία</span></button>
@@ -867,8 +873,8 @@ document.getElementById("themeBtn").onclick = () => setTheme(document.documentEl
 setTheme(document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"));
 
 // tabs: the top bar (wide screens), the bottom bar (phones) and «Περισσότερα» all go through here
-const MORE_TABS = [["news", "Νέα", "Σύνοψη ειδικών, τραυματίες και άρθρα"], ["compare", "Σύγκριση", "Παίκτες δίπλα-δίπλα"],
-  ["model", "Μοντέλο", "Πόσο πέφτει έξω το μοντέλο, φέτος και πέρσι"], ["report", "Report", "Το report του Round σε κείμενο"],
+const MORE_TABS = [["compare", "Σύγκριση", "Παίκτες δίπλα-δίπλα"],
+  ["model", "Μοντέλο", "Πόσο πέφτει έξω το μοντέλο, φέτος και πέρσι"],
   ["about", "Σχετικά", "Τι είναι, απόρρητο, επικοινωνία", true]];
 function showTab(t) {
   if (t === "more") { moreSheet(); return; }
@@ -1125,7 +1131,7 @@ function courtView(list, ref) {
 // «Νέα»: the columns' picks grouped by column, the one whose picks did best (tab «Μοντέλο») first and open,
 // the others folded; per player PICK / CAP / AVOID, the note on a second line
 const STANCE_ICON = { pick: xtag("pick"), captain: xtag("cap"), avoid: xtag("avoid") };
-function expertsHtml(list, track) {
+function expertsHtml(list, track, bare = false) {
   const score = Object.fromEntries(track.map((e) => [e.source, e.diff]));
   const by = new Map();
   for (const e of list) { if (!by.has(e.source)) by.set(e.source, []); by.get(e.source).push(e); }
@@ -1140,7 +1146,9 @@ function expertsHtml(list, track) {
     return i === 0
       ? `<h3>${head}</h3>${ul(es.slice(0, 6))}${es.length > 6 ? `<details class="td-more"><summary>+${es.length - 6} ακόμα</summary>${ul(es.slice(6))}</details>` : ""}`
       : `<details class="xp-src"><summary>${head}</summary>${ul(es)}</details>`; };
-  return `<div class="card"><h2>Ειδικοί ${track.length ? `<small class="muted">πρώτη η στήλη με τις καλύτερες προτάσεις ως τώρα</small>` : ""}</h2>${srcs.map(block).join("")}</div>`;
+  const order = track.length ? `<small class="muted">πρώτη η στήλη με τις καλύτερες προτάσεις ως τώρα</small>` : "";
+  return bare ? `<div class="card">${order ? `<p style="margin:0 0 6px">${order}</p>` : ""}${srcs.map(block).join("")}</div>`
+    : `<div class="card"><h2>Ειδικοί ${order}</h2>${srcs.map(block).join("")}</div>`;
 }
 // the summary's players (Jean Montero, as the roster in Latin letters) and clubs open their card when tapped;
 // no quotation marks around them
@@ -1925,7 +1933,7 @@ function renderModel(mp, trk, ap) {
 
 
 // ---------------------------------------------------------------- «Σήμερα»
-let NW = null;
+let NW = null, REP = null, TRK = null;   // news.json, report.json
 const DAYS_GR = ["Κυριακή", "Δευτέρα", "Τρίτη", "Τετάρτη", "Πέμπτη", "Παρασκευή", "Σάββατο"];
 // Athens wall-clock time -> epoch ms (DST-proof, as the bot)
 // The offset is Athens' wall clock at that moment minus the moment, from formatToParts: no
@@ -2058,8 +2066,6 @@ function renderToday() {
       ? `<details class="td-more"><summary>+${avail.length - 3} ακόμα</summary><ul class="td-list">${avail.slice(3).map(availLi).join("")}</ul></details>` : ""}`
     : `<p class="muted" style="margin:0">Κανένας γνωστός τραυματίας ή αμφίβολος.</p>`;
 
-  // captain
-  const caps = court.filter(healthy).sort((a, b) => (b.x_now ?? 0) - (a.x_now ?? 0)).slice(0, 3);
   // best picks per price tier (the budget forces a mix of stars and cheap fillers)
   const tiers = [["Φτηνοί · έως 6 cr", (p) => p <= 6], ["Μεσαίοι · 6–10 cr", (p) => p > 6 && p <= 10], ["Ακριβοί · πάνω από 10 cr", (p) => p > 10]];
   const tierHtml = P.fantasy_ok ? tiers.map(([l, f]) => {
@@ -2071,15 +2077,34 @@ function renderToday() {
       <div class="td-games">${(t.games || []).slice().sort((a, b) => String(a).split(" ").pop().localeCompare(String(b).split(" ").pop()))
         .map((g) => `<span>${esc(String(g).replace(/^(\w+)-(\w+)/, (m, h, a) => `${tc(h)} – ${tc(a)}`))}</span>`).join("")}</div></div>`).join("");
 
+  // «Για Captain»: the 5 best for the armband (3 shown, 2 folded), each with the turn he plays; the coach under them
+  const byX = (a, b) => (b.x_now ?? 0) - (a.x_now ?? 0);
+  const coach = players.filter((r) => r.position === "Head Coach").sort(byX)[0];
+  const capRow = (r) => `<li data-pid="${esc(r.person_id)}"><span class="n">${esc(nm(r.name))}${inj(r)}${exb(r)}</span>
+      <span class="v"><b>${f1(r.x_now)}</b><small>xFPT</small></span><span class="m">${esc(tc(r.team))} · ${esc((r.position || "")[0] || "")} · ${gameOf(r)}${r.turn ? ` · <b>Turn ${r.turn}</b>` : ""}</span></li>`;
+  const top5 = court.filter(healthy).sort(byX).slice(0, 5);
+  const capList = (xs) => `<ul class="td-list">${xs.map(capRow).join("")}</ul>`;
+  const capTurns = capList(top5.slice(0, 3))
+    + (top5.length > 3 ? `<details class="td-more"><summary>+${top5.length - 3} ακόμα</summary>${capList(top5.slice(3))}</details>` : "")
+    + (coach ? `<div class="cap-turn"><h3>Coach</h3>${capList([coach])}</div>` : "");
+  // what the news page had: the AI summary, the columns' picks and the articles, folded
+  const d = NW?.digest;
+  const summaryHtml = `<div class="card wide td-ai"><h2>Σύνοψη (AI) <small class="muted">${NW?.digest_at ? ago(Date.now() - new Date(NW.digest_at).getTime()) : ""}</small></h2>${d ? `<div class="msg">${linkNames(esc(d.summary_el))}</div>` : `<p class="muted">Η σύνοψη AI δεν βγήκε σε αυτή την ενημέρωση· θα ξαναδοκιμάσει στην επόμενη.</p>`}
+    <details class="td-more"><summary>Αγώνες του Round</summary>${games}</details></div>`;
+  const expertsFold = d?.expert?.length ? `<details class="td-fold td-fold-x"><summary class="card"><h2>Προτάσεις ειδικών <small class="muted">${d.expert.length}</small></h2></summary>${expertsHtml(d.expert, TRK?.experts || [], true)}</details>` : "";
+  const reportFold = P.edition !== "public" && REP?.messages?.length ? `<details class="wide td-fold td-fold-x"><summary class="card"><h2>Report σε κείμενο <small class="muted">όπως στο Telegram</small></h2></summary>${
+      REP.messages.map((m) => `<div class="card"><div class="msg">${m.text.replace(/\n/g, "<br>")}</div></div>`).join("")}</details>` : "";
+  const articlesFold = `<details class="wide td-fold td-fold-x"><summary class="card"><h2>Άρθρα <small class="muted">${(NW?.articles || []).length}</small></h2></summary>${articlesHtml(NW?.articles || [])}</details>`;
   const health = (P.health || []).length ? `<div class="card warn wide"><h2>${ico("warn")} Κατάσταση</h2>${P.health.map(esc).join("<br>")}</div>` : "";
   $("#today").innerHTML = `<div class="td-grid">${health}
     <div class="card">${heroHtml()}</div>
     <div class="card"><h2>${P.edition === "public" ? "Η ομάδα μου" : esc(P.my_team?.name || "Η ομάδα μου")}</h2>${team}</div>${early}
-    <div class="card"><h2>Για CAP ${ii("xpts")}</h2><ul class="td-list">${caps.map((r) => li(r, [r.x_now, "xFPT"], where(r))).join("")}</ul></div>
+    ${summaryHtml}
+    <div class="td-col"><div class="card"><h2>Για Captain ${ii("xpts")}</h2>${capTurns}</div>${expertsFold}</div>
     <div class="card td-avail"><h2>Τραυματίες & αμφίβολοι ${ii("avail")}</h2>${availHtml}</div>
     <div class="card wide td-best"><h2>Καλύτερες επιλογές ανά price ${ii("xpts3")}</h2><div class="td-tiers">${tierHtml}</div></div>
-    <div class="card wide"><h2>Αγώνες του Round</h2>${games}</div>
-    ${movesHtml(court)}</div>`;
+    ${movesHtml(court)}
+    ${articlesFold}${reportFold}</div>`;
   const eo = $("#earlyOff");
   if (eo) eo.onclick = () => { try { localStorage.setItem("earlyOff", "1"); } catch (e) {} renderToday(); };
   $("#today").querySelectorAll("[data-tab]").forEach((b) => b.onclick = () => showTab(b.dataset.tab));
@@ -2165,9 +2190,7 @@ function moveBar() {
   $("#round").textContent = `Round ${p.round}`;
   freshness();
 
-  const health = (p.health || []).length ? `<div class="card warn"><h2>${ico("warn")} Κατάσταση</h2>${p.health.map(esc).join("<br>")}</div>` : "";
-  $("#report").innerHTML = health + (rep?.messages || []).map((m) =>
-    `<div class="card"><div class="msg">${m.text.replace(/\n/g, "<br>")}</div></div>`).join("");
+  REP = rep; TRK = trk;
 
   [...new Set(p.players.map((x) => x.team))].sort((a, b) => tc(a).localeCompare(tc(b)))
     .forEach((t) => $("#fteam").insertAdjacentHTML("beforeend", `<option value="${esc(t)}">${esc(tc(t))}</option>`));
@@ -2205,12 +2228,6 @@ function moveBar() {
 
   renderTeams();
 
-  const d = nw?.digest;
-  $("#news").innerHTML = (d ? `<div class="card"><h2>Σύνοψη (AI)</h2><div class="msg">${linkNames(esc(d.summary_el))}</div></div>`
-    + (d.expert?.length ? expertsHtml(d.expert, trk?.experts || []) : "")
-    : nw?.articles?.length ? `<p class="muted">Η σύνοψη AI δεν βγήκε σε αυτή την ενημέρωση· θα ξαναδοκιμάσει στην επόμενη.</p>` : "")
-    + articlesHtml(nw?.articles || []);
-  $("#news").querySelectorAll("[data-pid]").forEach((el) => el.onclick = () => openPlayer(el.dataset.pid));
 
   renderModel(mp, trk, ap);
   renderLegend();
