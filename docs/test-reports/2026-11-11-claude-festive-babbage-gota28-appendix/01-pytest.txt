@@ -1,0 +1,5 @@
+
+2 files skipped due to complete coverage.
+Required test coverage of 90.0% reached. Total coverage: 93.53%
+410 passed in 63.33s (0:01:03)
+node --check ok
