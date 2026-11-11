@@ -779,6 +779,7 @@ test("a change doesn't throw you back to the top of the page", async ({ page }, 
   await buildTeam(page);
   await page.locator("#tmFinish").click();
   await expect(page.locator("#tmtoast")).not.toHaveClass(/\bon\b/, { timeout: 8000 });   // it would cover the chip
+  await page.locator("#tmTodo details.tm-all summary").click();          // all the steps: a page long enough to scroll
   await page.locator("#team .tm-courtcard").scrollIntoViewIfNeeded();
   await page.mouse.wheel(0, 150);
   await page.waitForTimeout(300);
@@ -802,6 +803,7 @@ test("phones: a line above the court says how many steps are left and takes you 
   const [l, c] = [await line.boundingBox(), await page.locator(C).boundingBox()];
   expect(l.y).toBeLessThan(c.y);
   await line.click();
+  await expect(page.locator("#tmTodo details.tm-all")).toHaveAttribute("open", "");   // the folded steps open too
   await expect.poll(() => page.locator("#tmTodo").evaluate((el) => Math.round(el.getBoundingClientRect().top))).toBeLessThan(40);
   await checkLayout(page, "steps line");
 });

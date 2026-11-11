@@ -1227,7 +1227,9 @@
     const all = document.querySelector("#team .tm-all");
     if (all) all.ontoggle = () => { allSteps = all.open; };
     const b = document.getElementById("tmSteps"), to = document.getElementById("tmTodo");
-    if (b && to) b.onclick = () => window.scrollTo({ top: to.getBoundingClientRect().top + window.scrollY - 8, behavior: "smooth" });
+    // the line counts all the steps, so it opens the folded ones too (and the page is then long enough to get there)
+    if (b && to) b.onclick = () => { if (all) all.open = allSteps = true;
+      window.scrollTo({ top: to.getBoundingClientRect().top + window.scrollY - 8, behavior: "smooth" }); };
   }
   // «Δεν θέλω να διώξω αυτόν τον παίκτη αυτό το Round» and its undo: re-plan the trades
   function bindKeep(t, best) {
