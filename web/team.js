@@ -13,7 +13,7 @@
   const NEED = { Center: 2, Forward: 4, Guard: 4, "Head Coach": 1 };
   const LETTER = { Guard: "G", Forward: "F", Center: "C", "Head Coach": "HC" };
   const NAME = { Guard: "Guard", Forward: "Forward", Center: "Center", "Head Coach": "Coach" };
-  const DAYS = ["Κυριακή", "Δευτέρα", "Τρίτη", "Τετάρτη", "Πέμπτη", "Παρασκευή", "Σάββατο"];
+  const DAYS = L(["Κυριακή", "Δευτέρα", "Τρίτη", "Τετάρτη", "Πέμπτη", "Παρασκευή", "Σάββατο"], ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]);
   let mode = null;          // null | "setup"
   let setup = null;         // {players: [{id, price}]} while setting up
   // ✕ as in the game: players taken off before their replacements are picked. Only in memory, never saved:
@@ -120,7 +120,7 @@
     }
     const s = syncGet();
     if (s) syncSet({ code: s.code, rev: res.rev, dirty: false });
-    if (!quiet) toast("Η ομάδα ενημερώθηκε από την άλλη συσκευή");
+    if (!quiet) toast(L("Η ομάδα ενημερώθηκε από την άλλη συσκευή", "Team updated from your other device"));
     if (onRemote) onRemote();
   }
   const newer = (a, b) => String((a && a.updated) || "") > String((b && b.updated) || "");
@@ -142,7 +142,7 @@
     if (!s || GAME() || syncBusy) return;
     try {
       const res = await syncApi("GET", s.code);
-      if (res.status === 404) { syncSet(null); toast("Ο κωδικός συγχρονισμού δεν υπάρχει πια· η ομάδα μένει σε αυτή τη συσκευή"); return; }
+      if (res.status === 404) { syncSet(null); toast(L("Ο κωδικός συγχρονισμού δεν υπάρχει πια· η ομάδα μένει σε αυτή τη συσκευή", "The sync code no longer exists; the team stays on this device")); return; }
       if (res.status !== 200) return;
       const t = load();
       if (res.body.rev > s.rev && !(s.dirty && newer(t, res.body.data))) { takeRemote(res.body); return; }
@@ -189,7 +189,7 @@
     if (!code) { const m = document.cookie.match(/(?:^|;\s*)cd_sync=([A-Z0-9]{12})(?:;|$)/); code = m && m[1]; }
     if (!code || syncGet()) return;
     // a team made here before (not the one the move just brought) is replaced only if the user says so
-    if (load() && !justMoved && !confirm("Υπάρχει ήδη ομάδα εδώ. Να την αντικαταστήσω με αυτή από την παλιά διεύθυνση;")) {
+    if (load() && !justMoved && !confirm(L("Υπάρχει ήδη ομάδα εδώ. Να την αντικαταστήσω με αυτή από την παλιά διεύθυνση;", "There is already a team here. Replace it with the one from the old address?"))) {
       dropMoveCookie(); return; }
     let st = 0;
     try { st = await syncJoin(code); } catch (e) {}
@@ -198,42 +198,43 @@
     if (APP()) dropMoveCookie();
     setup = null; mode = null;
     const phone = /iPhone|iPad|Android/.test(navigator.userAgent);
-    toastSoon(!APP() && phone ? "Η ομάδα σου ήρθε. Πρόσθεσε το Coach Dime στην οθόνη Αφετηρίας· θα είναι κι εκεί."
-      : "Η ομάδα σου ήρθε από την παλιά διεύθυνση");
+    toastSoon(!APP() && phone ? L("Η ομάδα σου ήρθε. Πρόσθεσε το Coach Dime στην οθόνη Αφετηρίας· θα είναι κι εκεί.", "Your team is here. Add Coach Dime to your Home Screen; it will be there too.")
+      : L("Η ομάδα σου ήρθε από την παλιά διεύθυνση", "Your team came over from the old address"));
   }
-  const syncErr = (st) => st === 503 ? "Ο συγχρονισμός δεν είναι ακόμα διαθέσιμος" : st === 404 ? "Αυτός ο κωδικός δεν υπάρχει"
-    : st === 429 ? "Πολλές προσπάθειες από αυτή τη σύνδεση· δοκίμασε ξανά σε μία ώρα"
-    : st === 400 ? "Ο κωδικός έχει 12 γράμματα/αριθμούς, π.χ. ABCD-EFGH-JKMN" : "Δεν έγινε σύνδεση· δοκίμασε ξανά";
+  const syncErr = (st) => st === 503 ? L("Ο συγχρονισμός δεν είναι ακόμα διαθέσιμος", "Sync isn't available yet") : st === 404 ? L("Αυτός ο κωδικός δεν υπάρχει", "This code doesn't exist")
+    : st === 429 ? L("Πολλές προσπάθειες από αυτή τη σύνδεση· δοκίμασε ξανά σε μία ώρα", "Too many attempts from this connection; try again in an hour")
+    : st === 400 ? L("Ο κωδικός έχει 12 γράμματα/αριθμούς, π.χ. ABCD-EFGH-JKMN", "The code has 12 letters/digits, e.g. ABCD-EFGH-JKMN") : L("Δεν έγινε σύνδεση· δοκίμασε ξανά", "Couldn't connect; try again");
   function syncSheet(done) {
     const s = syncGet(), has = !!load();
-    const joinBox = `<label class="muted" for="tmSyncCode">Έχεις κωδικό από την άλλη συσκευή σου;</label>
+    const joinBox = `<label class="muted" for="tmSyncCode">${L("Έχεις κωδικό από την άλλη συσκευή σου;", "Have a code from your other device?")}</label>
       <input id="tmSyncCode" class="tm-input" placeholder="ABCD-EFGH-JKMN" autocomplete="off" autocapitalize="characters">
-      <button class="tm-primary" id="tmSyncJoin">Σύνδεση</button>
-      ${has ? '<p class="tm-hint">Η ομάδα αυτής της συσκευής θα αντικατασταθεί από την ομάδα του κωδικού.</p>' : ""}`;
-    sheet(`<div class="sh"><div><h2>Συγχρονισμός συσκευών</h2><div class="muted">Το PC και το κινητό σου με την ίδια ομάδα· κάθε αλλαγή περνά αυτόματα</div></div>
-        <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
-      ${s ? `<p>Ο κωδικός σου:</p><p class="tm-code" id="tmSyncShow">${esc(fmtCode(s.code))}</p>
-          <button class="tm-primary" id="tmSyncCopy">Αντιγραφή κωδικού</button>
-          <p class="tm-hint">Στην άλλη συσκευή: «Η ομάδα μου» → ⋯ Επιλογές → Συγχρονισμός συσκευών → γράψε τον κωδικό.
-            Κράτα τον όπως έναν κωδικό: όποιος τον έχει βλέπει και αλλάζει την ομάδα.</p>
-          <button class="linkbtn" id="tmSyncOff" style="display:block;margin:8px auto 0">Αποσύνδεση αυτής της συσκευής</button>
-          <button class="linkbtn tm-danger" id="tmSyncDel" style="display:block;margin:8px auto 0">Διαγραφή από τον server</button>`
-        : `${has ? '<button class="tm-primary" id="tmSyncNew">Νέος κωδικός για αυτή την ομάδα</button><hr class="tm-sep">' : ""}${joinBox}`}`);
+      <button class="tm-primary" id="tmSyncJoin">${L("Σύνδεση", "Connect")}</button>
+      ${has ? `<p class="tm-hint">${L("Η ομάδα αυτής της συσκευής θα αντικατασταθεί από την ομάδα του κωδικού.", "This device's team will be replaced by the code's team.")}</p>` : ""}`;
+    sheet(`<div class="sh"><div><h2>${L("Συγχρονισμός συσκευών", "Sync devices")}</h2><div class="muted">${L("Το PC και το κινητό σου με την ίδια ομάδα· κάθε αλλαγή περνά αυτόματα", "Your PC and phone with the same team; every change goes across automatically")}</div></div>
+        <button class="x" aria-label="${L("Κλείσιμο", "Close")}" onclick="closePlayer()">×</button></div>
+      ${s ? `<p>${L("Ο κωδικός σου:", "Your code:")}</p><p class="tm-code" id="tmSyncShow">${esc(fmtCode(s.code))}</p>
+          <button class="tm-primary" id="tmSyncCopy">${L("Αντιγραφή κωδικού", "Copy code")}</button>
+          <p class="tm-hint">${L(`Στην άλλη συσκευή: «Η ομάδα μου» → ⋯ Επιλογές → Συγχρονισμός συσκευών → γράψε τον κωδικό.
+            Κράτα τον όπως έναν κωδικό: όποιος τον έχει βλέπει και αλλάζει την ομάδα.`, `On the other device: “My team” → ⋯ Options → Sync devices → enter the code.
+            Keep it like a password: anyone who has it can see and change the team.`)}</p>
+          <button class="linkbtn" id="tmSyncOff" style="display:block;margin:8px auto 0">${L("Αποσύνδεση αυτής της συσκευής", "Disconnect this device")}</button>
+          <button class="linkbtn tm-danger" id="tmSyncDel" style="display:block;margin:8px auto 0">${L("Διαγραφή από τον server", "Delete from the server")}</button>`
+        : `${has ? `<button class="tm-primary" id="tmSyncNew">${L("Νέος κωδικός για αυτή την ομάδα", "New code for this team")}</button><hr class="tm-sep">` : ""}${joinBox}`}`);
     const on = (i, fn) => { const el = document.getElementById(i); if (el) el.onclick = fn; };
     on("tmSyncNew", async () => { const st = await syncNew(); if (st === 201) syncSheet(done); else toast(syncErr(st)); });
     on("tmSyncJoin", async () => {
       const st = await syncJoin($("#tmSyncCode").value);
-      if (st === 200) { closePlayer(); setup = null; mode = null; done(); toast("Συνδέθηκε· η ομάδα ήρθε από την άλλη συσκευή"); }
+      if (st === 200) { closePlayer(); setup = null; mode = null; done(); toast(L("Συνδέθηκε· η ομάδα ήρθε από την άλλη συσκευή", "Connected; the team came from your other device")); }
       else toast(syncErr(st));
     });
-    on("tmSyncCopy", async () => toast(await copyText(fmtCode(s.code)) ? "Ο κωδικός αντιγράφηκε" : fmtCode(s.code)));
-    on("tmSyncOff", () => { syncSet(null); closePlayer(); toast("Η συσκευή αποσυνδέθηκε· η ομάδα μένει εδώ"); });
+    on("tmSyncCopy", async () => toast(await copyText(fmtCode(s.code)) ? L("Ο κωδικός αντιγράφηκε", "Code copied") : fmtCode(s.code)));
+    on("tmSyncOff", () => { syncSet(null); closePlayer(); toast(L("Η συσκευή αποσυνδέθηκε· η ομάδα μένει εδώ", "Device disconnected; the team stays here")); });
     // the server's copy deleted (the team stays on this device); the other devices unlink at their next sync
     on("tmSyncDel", async () => {
-      if (!confirm("Να διαγραφεί η ομάδα από τον server; Σε αυτή τη συσκευή μένει.")) return;
+      if (!confirm(L("Να διαγραφεί η ομάδα από τον server; Σε αυτή τη συσκευή μένει.", "Delete the team from the server? It stays on this device."))) return;
       let st = 0;
       try { st = (await syncApi("DELETE", s.code)).status; } catch (e) {}
-      if (st === 204 || st === 404) { syncSet(null); closePlayer(); toast("Διαγράφηκε από τον server· η ομάδα μένει εδώ"); }
+      if (st === 204 || st === 404) { syncSet(null); closePlayer(); toast(L("Διαγράφηκε από τον server· η ομάδα μένει εδώ", "Deleted from the server; the team stays here")); }
       else toast(syncErr(st));
     });
   }
@@ -248,22 +249,22 @@
   }
   // paste a backup link (the app on the home screen keeps its own storage, apart from the browser)
   function restoreSheet(done) {
-    sheet(`<div class="sh"><div><h2>Επαναφορά ομάδας</h2><div class="muted">Επικόλλησε τον σύνδεσμο αντιγράφου (Επιλογές → Αντίγραφο ασφαλείας)</div></div>
-        <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
+    sheet(`<div class="sh"><div><h2>${L("Επαναφορά ομάδας", "Restore team")}</h2><div class="muted">${L("Επικόλλησε τον σύνδεσμο αντιγράφου (Επιλογές → Αντίγραφο ασφαλείας)", "Paste the backup link (Options → Backup)")}</div></div>
+        <button class="x" aria-label="${L("Κλείσιμο", "Close")}" onclick="closePlayer()">×</button></div>
       <textarea id="tmLink" class="tm-input" rows="3" placeholder="https://…#t=…" autocomplete="off"></textarea>
-      <button class="tm-primary" id="tmLinkOk">Επαναφορά</button>`);
+      <button class="tm-primary" id="tmLinkOk">${L("Επαναφορά", "Restore")}</button>`);
     $("#tmLinkOk").onclick = () => {
       const m = String($("#tmLink").value).match(/[#&]t=([A-Za-z0-9_-]+)/);
       try { if (!m) throw new Error(); const t = decode(m[1]); if (!t.players || t.players.length !== 11) throw new Error();
-        save(t); closePlayer(); setup = null; mode = null; done(); toast("Η ομάδα σου επανήλθε"); }
-      catch (e) { toast("Ο σύνδεσμος δεν είναι έγκυρος — αντίγραψέ τον ολόκληρο"); }
+        save(t); closePlayer(); setup = null; mode = null; done(); toast(L("Η ομάδα σου επανήλθε", "Your team is restored")); }
+      catch (e) { toast(L("Ο σύνδεσμος δεν είναι έγκυρος — αντίγραψέ τον ολόκληρο", "The link isn't valid — copy all of it")); }
     };
   }
   function importFromHash() {
     const m = location.hash.match(/[#&]t=([A-Za-z0-9_-]+)/);
     if (!m) return;
-    try { save(decode(m[1])); toastSoon("Η ομάδα σου επανήλθε από τον σύνδεσμο"); }
-    catch (e) { toastSoon("Ο σύνδεσμος ομάδας δεν είναι έγκυρος"); }
+    try { save(decode(m[1])); toastSoon(L("Η ομάδα σου επανήλθε από τον σύνδεσμο", "Your team is restored from the link")); }
+    catch (e) { toastSoon(L("Ο σύνδεσμος ομάδας δεν είναι έγκυρος", "The team link isn't valid")); }
     history.replaceState(null, "", location.pathname + location.search);
   }
 
@@ -438,7 +439,7 @@
     const n = Math.max(0, (ti.max_trades ?? 4) - left);
     t.used = { round: ti.round, n, before: roundStart(t, ti) };
   }
-  const leftPicker = (t, ti, id) => ti.max_trades > 4 ? "" : `<label class="tm-left">Trades που σου μένουν:
+  const leftPicker = (t, ti, id) => ti.max_trades > 4 ? "" : `<label class="tm-left">${L("Trades που σου μένουν", "Trades left")}:
       <select id="${id}">${Array.from({ length: ti.max_trades + 1 }, (_, i) => ti.max_trades - i)
         .map((v) => `<option value="${v}"${v === tradesLeft(t, ti) ? " selected" : ""}>${v}</option>`).join("")}</select></label>`;
   function countTrade(t) {
@@ -514,7 +515,7 @@
       const o = rows.find((r) => r.id === pr.out.id), n = row(pr.in.id);
       items.push({ kind: "🔁", html: `<b>${esc(sur(o.name))}</b> vs <b>${esc(sur(n.name))}</b>`, why: "",
         keep: o, avoid: n, cmp: [o.person_id, n.person_id], short: !affords(t, pr),
-        run: () => { applyTrade(t, pr.out.id, pr.in.id, pr.in.price); save(t); toast(`${sur(o.name)} ➜ ${sur(n.name)} · υπόλοιπο ${f1(t.bank)} cr`); } });
+        run: () => { applyTrade(t, pr.out.id, pr.in.id, pr.in.price); save(t); toast(`${sur(o.name)} ➜ ${sur(n.name)} · ${L("υπόλοιπο", "credits left")} ${f1(t.bank)} cr`); } });
     }
     const pendingTrades = items.length > 0;
     const steps = pendingTrades ? swapSteps(after.roles || {}, target, aRows, inRound) : swapSteps(t.roles || {}, target, rows, inRound);
@@ -556,7 +557,7 @@
   // the credits allow this trade now (sold at today's price): otherwise the others have to go first
   const affords = (t, pr) => (Number(t.bank) || 0) + (Number(row(pr.out.id)?.price ?? pr.out.price) || 0) - (Number(pr.in.price) || 0) >= -0.05;
   const doneBtn = (attr, i) => `<button class="tm-done" ${attr} ${i.short || i.wait ? "disabled" : ""}${
-    i.short ? ' title="Δεν φτάνουν τα credits: κάνε πρώτα τα άλλα Trades"' : ""}>✓ Το έκανα</button>`;
+    i.short ? ` title="${L("Δεν φτάνουν τα credits: κάνε πρώτα τα άλλα Trades", "Not enough credits: do the other Trades first")}"` : ""}>✓ ${L("Το έκανα", "Done")}</button>`;
   function applyTrade(t, outId, inId, price) {
     const i = t.players.findIndex((x) => x.id === outId);
     if (i < 0) return;
@@ -577,19 +578,19 @@
     if (started()) {
       for (const [p, from, to] of [[byId[a], ra, rb], [byId[b], rb, ra]]) {
         if (!played(p)) continue;
-        if (from === "πάγκος") { toast(`Ο ${sur(p.name)} έπαιξε από το Bench — μένει εκεί`); return false; }
-        if (to !== "πάγκος") { toast(`Ο ${sur(p.name)} έχει παίξει — μπορεί μόνο να βγει στο Bench`); return false; }
+        if (from === "πάγκος") { toast(L(`Ο ${sur(p.name)} έπαιξε από το Bench — μένει εκεί`, `${sur(p.name)} played from the Bench — he stays there`)); return false; }
+        if (to !== "πάγκος") { toast(L(`Ο ${sur(p.name)} έχει παίξει — μπορεί μόνο να βγει στο Bench`, `${sur(p.name)} has played — he can only go to the Bench`)); return false; }
       }
     }
     const next = { ...roles, [a]: rb, [b]: ra };
     if (!fiveOk(next, rows)) {
       const five = rows.filter((r) => next[r.id] === "5άδα");
       const miss = ["Guard", "Forward", "Center"].filter((pos) => !five.some((r) => r.position === pos));
-      toast(`Το Starting five χρειάζεται τουλάχιστον έναν ${miss.map((m) => NAME[m]).join(", ")}`);
+      toast(L(`Το Starting five χρειάζεται τουλάχιστον έναν ${miss.map((m) => NAME[m]).join(", ")}`, `The Starting five needs at least one ${miss.map((m) => NAME[m]).join(", ")}`));
       return false;
     }
     t.roles = next;
-    if (t.captain && next[t.captain] !== "5άδα") { t.captain = null; toast("Ο Captain βγήκε από το Starting five — διάλεξε νέο"); }
+    if (t.captain && next[t.captain] !== "5άδα") { t.captain = null; toast(L("Ο Captain βγήκε από το Starting five — διάλεξε νέο", "The Captain left the Starting five — pick a new one")); }
     else if (!quiet) toast(`${sur(byId[a].name)} ⇄ ${sur(byId[b].name)}`);
     save(t); render(); flash(a); flash(b);
     return true;
@@ -602,8 +603,8 @@
     const cap = t && t.captain === r.id;
     return `<div class="chip${cap ? " cap" : ""} ${extraCls}" data-fid="${r.id}" tabindex="0" role="button" aria-label="${esc(nm(r.name))}">
       <div class="ct"><span>${LETTER[r.position] || ""}</span>${r.turn ? `<span class="tb t${Math.min(r.turn, 3)}">T${r.turn}</span>` : ""}</div>
-      <div class="cn cnx"><span class="nm">${esc(sur(r.name))}</span>${r.unregistered ? `<span title="εκτός ρόστερ EuroLeague">${ico("roster")}</span>` : inj(r) ? `<span>${ico("medic")}</span>` : ""}${r.price_trend === "up" ? "<span>$</span>" : ""}${typeof fewGames === "function" && fewGames(r) ? '<span class="few" data-info="few" role="button" tabindex="0" aria-label="Τι σημαίνει νέος">NEW</span>'
-        : r.returning ? '<span class="few" data-info="back" role="button" tabindex="0" aria-label="Τι σημαίνει επιστρέφει">↩</span>' : ""}</div>
+      <div class="cn cnx"><span class="nm">${esc(sur(r.name))}</span>${r.unregistered ? `<span title="${L("εκτός ρόστερ EuroLeague", "not on the EuroLeague roster")}">${ico("roster")}</span>` : inj(r) ? `<span>${ico("medic")}</span>` : ""}${r.price_trend === "up" ? "<span>$</span>" : ""}${typeof fewGames === "function" && fewGames(r) ? `<span class="few" data-info="few" role="button" tabindex="0" aria-label="${L("Τι σημαίνει νέος", "What new means")}">NEW</span>`
+        : r.returning ? `<span class="few" data-info="back" role="button" tabindex="0" aria-label="${L("Τι σημαίνει επιστρέφει", "What returning means")}">↩</span>` : ""}</div>
       <div class="cp${isPlayed ? " done" : ""}">${f1(isPlayed ? pts(r) : r.x_now)}</div>
       <div class="cs">${gameOf(r)}${r.price != null ? ` · ${f1(r.price)}${arrow(dPrice(r))}` : ""}</div></div>`;
   }
@@ -624,8 +625,8 @@
     const pl = plan(t);
     const rows = pl.rows;
     if (rows.length !== 11) {
-      return `<div class="card warn"><h2>Κάποιοι παίκτες δεν βρέθηκαν (${rows.length}/11)</h2>
-        <p>Μπορεί να άλλαξαν ομάδα ή να έφυγαν από τη λίστα του παιχνιδιού.</p><button class="linkbtn" id="tmEdit">Διόρθωση ομάδας</button></div>`;
+      return `<div class="card warn"><h2>${L("Κάποιοι παίκτες δεν βρέθηκαν", "Some players weren't found")} (${rows.length}/11)</h2>
+        <p>${L("Μπορεί να άλλαξαν ομάδα ή να έφυγαν από τη λίστα του παιχνιδιού.", "They may have changed team or left the game's list.")}</p><button class="linkbtn" id="tmEdit">${L("Διόρθωση ομάδας", "Fix team")}</button></div>`;
     }
     const items = pl.items;
     const total = rows.reduce((a, r) => { const role = (t.roles || {})[r.id]; const v = scored(r) ? pts(r) : (r.x_now ?? 0);
@@ -634,61 +635,62 @@
     // as the game: (credits + today's value of the squad) − the 100 of the start (sold players' gains/losses included)
     const gain = t.game ? Math.round((Number(t.gain) || 0) * 10) / 10 : Math.round(((Number(t.bank) || 0) + value - 100) * 10) / 10;
     const head = pl.inRound
-      ? `${ico("clock")} Round ${P.round}${turnNow()} σε εξέλιξη`
-      : `${ico("clock")} Round ${P.round}${turnNow()} · κλείνει ${deadline()}`;
+      ? `${ico("clock")} Round ${P.round}${turnNow()} ${L("σε εξέλιξη", "in progress")}`
+      : `${ico("clock")} Round ${P.round}${turnNow()} · ${L("κλείνει", "locks")} ${deadline()}`;
     const confirm = !t.confirmed ? `<li class="tm-item"><span class="tm-kind">${ico("eye")}</span><span class="tm-what"><b>Your Starting five</b>
-        <span class="tm-why">Σύρε τους παίκτες όπως είναι στο παιχνίδι.</span>
+        <span class="tm-why">${L("Σύρε τους παίκτες όπως είναι στο παιχνίδι.", "Drag the players to match the game.")}</span>
         ${t.game ? "" : leftPicker(t, pl.ti, "tmLeft")}</span>
-        <button class="tm-done" id="tmConfirm">✓ Είναι ίδια</button></li>` : "";
-    const keepBtn = (o) => `<button class="tm-keep" data-keep="${o.id}" title="Κράτα τον ${esc(sur(o.name))} αυτό το Round">${ico("lock")} Keep</button>`;
-    const avoidBtn = (n) => n ? `<button class="tm-keep" data-avoid="${n.fantasy_id ?? n.id}" title="Όχι τον ${esc(sur(n.name))}, πρότεινε άλλον">${ico("sync")} Other</button>` : "";
+        <button class="tm-done" id="tmConfirm">✓ ${L("Είναι ίδια", "It matches")}</button></li>` : "";
+    const keepBtn = (o) => `<button class="tm-keep" data-keep="${o.id}" title="${L(`Κράτα τον ${esc(sur(o.name))} αυτό το Round`, `Keep ${esc(sur(o.name))} this Round`)}">${ico("lock")} Keep</button>`;
+    const avoidBtn = (n) => n ? `<button class="tm-keep" data-avoid="${n.fantasy_id ?? n.id}" title="${L(`Όχι τον ${esc(sur(n.name))}, πρότεινε άλλον`, `Not ${esc(sur(n.name))}, suggest another`)}">${ico("sync")} Other</button>` : "";
     const who = (id) => { const r = row(id); return esc(sur(r ? r.name : String(id))); };
-    const keptLine = (pl.keep.length ? `<p class="tm-kept">${ico("lock")} Κρατάς: ${pl.keep.map((id) =>
-        `<b>${who(id)}</b> <button class="linkbtn" data-unkeep="${id}">αναίρεση</button>`).join(" · ")}</p>` : "")
-      + (pl.avoid.length ? `<p class="tm-kept">${ico("ban")} Δεν θέλεις: ${pl.avoid.map((id) =>
-        `<b>${who(id)}</b> <button class="linkbtn" data-unavoid="${id}">αναίρεση</button>`).join(" · ")}</p>` : "");
+    const keptLine = (pl.keep.length ? `<p class="tm-kept">${ico("lock")} ${L("Κρατάς", "Keeping")}: ${pl.keep.map((id) =>
+        `<b>${who(id)}</b> <button class="linkbtn" data-unkeep="${id}">${L("αναίρεση", "undo")}</button>`).join(" · ")}</p>` : "")
+      + (pl.avoid.length ? `<p class="tm-kept">${ico("ban")} ${L("Δεν θέλεις", "Not wanted")}: ${pl.avoid.map((id) =>
+        `<b>${who(id)}</b> <button class="linkbtn" data-unavoid="${id}">${L("αναίρεση", "undo")}</button>`).join(" · ")}</p>` : "");
     const lis = items.map((i, n) => `<li class="tm-item${i.kind === "🔁" ? " tm-trade" : ""}"${i.cmp ? ` data-cmp="${esc(i.cmp.join(","))}"` : ""}><span class="tm-kind" aria-hidden="true">${KIND_ICON[i.kind] || i.kind}</span>
         <span class="tm-what">${i.html}${i.why ? `<span class="tm-why">${i.why}</span>` : ""}${i.keep || i.avoid ? `<span class="tm-kbtns">${i.keep ? keepBtn(i.keep) : ""}${i.avoid ? avoidBtn(i.avoid) : ""}</span>` : ""}</span>
         ${t.game && i.kind !== "🔁" ? "" : doneBtn(`data-i="${n}"`, i)}</li>`);
     const steps = [confirm, ...lis].filter(Boolean);
-    const todo = steps.length ? `<p class="tm-next-h">Επόμενο βήμα</p><ul class="tm-list tm-next">${steps[0]}</ul>${steps.length > 1
-      ? `<details class="tm-all"${allSteps ? " open" : ""}><summary>+${steps.length - 1} ${steps.length === 2 ? "βήμα" : "βήματα"} ακόμα</summary><ul class="tm-list">${steps.slice(1).join("")}</ul></details>` : ""}` : "";
+    const todo = steps.length ? `<p class="tm-next-h">${L("Επόμενο βήμα", "Next step")}</p><ul class="tm-list tm-next">${steps[0]}</ul>${steps.length > 1
+      ? `<details class="tm-all"${allSteps ? " open" : ""}><summary>+${steps.length - 1} ${L(`${steps.length === 2 ? "βήμα" : "βήματα"} ακόμα`, `more ${steps.length === 2 ? "step" : "steps"}`)}</summary><ul class="tm-list">${steps.slice(1).join("")}</ul></details>` : ""}` : "";
     const turnPlan = pl.turnPlan.map((x) => { const s = pl.aRows.find((r) => r.id === x.start.id), b = pl.aRows.find((r) => r.id === x.bench.id);
-      return `<li>${ico("clock")} <b>Πριν το T${x.bench.turn}</b>: αν ο ${esc(sur(s.name))} φέρει κάτω από ${Math.round(x.bench.x_now)}, βάλε τον ${esc(sur(b.name))}.</li>`; }).join("");
+      return `<li>${ico("clock")} <b>${L("Πριν το", "Before")} T${x.bench.turn}</b>: ${L(`αν ο ${esc(sur(s.name))} φέρει κάτω από ${Math.round(x.bench.x_now)}, βάλε τον ${esc(sur(b.name))}.`, `if ${esc(sur(s.name))} scores under ${Math.round(x.bench.x_now)}, bring in ${esc(sur(b.name))}.`)}</li>`; }).join("");
     // while the round is under way only swaps and the armband: next round's trades wait for it to end
-    const nextTrades = pl.inRound ? "" : !pl.tradesNow && pl.trs.pairs.length ? `<div class="card"><h2>Trades για το Round ${pl.ti.round}
-        <small class="muted">(${pl.ti.max_trades > 4 ? "απεριόριστα" : `Trades ${usedTrades(t, pl.ti)}/${pl.ti.max_trades}`} · μετά το τρέχον Round)</small></h2>
+    const nextTrades = pl.inRound ? "" : !pl.tradesNow && pl.trs.pairs.length ? `<div class="card"><h2>${L("Trades για το Round", "Trades for Round")} ${pl.ti.round}
+        <small class="muted">(${pl.ti.max_trades > 4 ? L("απεριόριστα", "unlimited") : `Trades ${usedTrades(t, pl.ti)}/${pl.ti.max_trades}`} · ${L("μετά το τρέχον Round", "after the current Round")})</small></h2>
         <ul class="tm-list">${pl.trs.pairs.map((pr, n) => { const o = rows.find((r) => r.id === pr.out.id), nn = row(pr.in.id);
           return `<li class="tm-item tm-trade" data-cmp="${esc([o.person_id, nn.person_id].join(","))}"><span class="tm-kind">${ico("trade")}</span><span class="tm-what"><b>${esc(sur(o.name))}</b> vs <b>${esc(sur(nn.name))}</b><span class="tm-kbtns">${keepBtn(o)}${avoidBtn(nn)}</span></span>
             ${doneBtn(`data-n="${n}"`, { short: !affords(t, pr) })}</li>`; }).join("")}</ul>${keptLine}</div>`
-      : !pl.tradesNow && (pl.keep.length || pl.avoid.length) ? `<div class="card"><h2>Trades για το Round ${pl.ti.round}</h2><p>Κανένα Trade δεν αξίζει με αυτές τις επιλογές σου.</p>${keptLine}</div>` : "";
+      : !pl.tradesNow && (pl.keep.length || pl.avoid.length) ? `<div class="card"><h2>${L("Trades για το Round", "Trades for Round")} ${pl.ti.round}</h2><p>${L("Κανένα Trade δεν αξίζει με αυτές τις επιλογές σου.", "No Trade is worth it with these choices of yours.")}</p>${keptLine}</div>` : "";
     const done = !items.length && t.confirmed;
     // the "→" number: the round's expected points when every step is done, the To do list now and the
     // 🕐 swaps before a later turn (their option value); with no steps left the lineup already is the plan
     const planned = (items.length ? pl.lineupPts : total) + pl.option;
-    const upd = P.generated ? new Date(P.generated).toLocaleString("el-GR", { weekday: "short", hour: "2-digit", minute: "2-digit" }) : "";
+    const upd = P.generated ? new Date(P.generated).toLocaleString(LOC, { weekday: "short", hour: "2-digit", minute: "2-digit" }) : "";
     const hint = t.game
-      ? `Starting five/Captain με <b>/lineup</b> · Trades στο παιχνίδι (εδώ ✓ και ✕ είναι πρόχειρο) · ενημ. ${esc(upd)}`
+      ? L(`Starting five/Captain με <b>/lineup</b> · Trades στο παιχνίδι (εδώ ✓ και ✕ είναι πρόχειρο) · ενημ. ${esc(upd)}`, `Starting five/Captain with <b>/lineup</b> · Trades in the game (here ✓ and ✕ are a draft) · upd. ${esc(upd)}`)
       : "";
-    return `<header class="tm-top"><div><h2 class="tm-h">${t.game ? esc(t.name || "Η ομάδα μου") : "Η ομάδα μου"}</h2>
-        <div class="muted"><button class="tm-trades" id="tmBankEdit" type="button" title="Διόρθωσε τα credits σου">Credits <b>${f1(t.bank)}/${f1(Number(t.bank) + value)}</b> ✎</button>${gain ? ` <span class="${gain > 0 ? "tm-up" : "tm-down"}">(${gain > 0 ? "+" : "−"}${f1(Math.abs(gain))} gain)</span>` : ""} · ${pl.ti.max_trades <= 4 && t.game ? `<button class="tm-trades" id="tmTrades" type="button" title="Άλλαξε πόσα Trades σου μένουν">Trades <b>${usedTrades(t, pl.ti)}/${pl.ti.max_trades}</b> ✎</button>`
+    return `<header class="tm-top"><div><h2 class="tm-h">${t.game ? esc(t.name || L("Η ομάδα μου", "My team")) : L("Η ομάδα μου", "My team")}</h2>
+        <div class="muted"><button class="tm-trades" id="tmBankEdit" type="button" title="${L("Διόρθωσε τα credits σου", "Correct your credits")}">Credits <b>${f1(t.bank)}/${f1(Number(t.bank) + value)}</b> ✎</button>${gain ? ` <span class="${gain > 0 ? "tm-up" : "tm-down"}">(${gain > 0 ? "+" : "−"}${f1(Math.abs(gain))} gain)</span>` : ""} · ${pl.ti.max_trades <= 4 && t.game ? `<button class="tm-trades" id="tmTrades" type="button" title="${L("Άλλαξε πόσα Trades σου μένουν", "Change how many Trades you have left")}">Trades <b>${usedTrades(t, pl.ti)}/${pl.ti.max_trades}</b> ✎</button>`
           : `<span class="tm-tcount">Trades <b>${usedTrades(t, pl.ti)}/${pl.ti.max_trades > 4 ? "∞" : pl.ti.max_trades}</b></span>`}</div>
         <div class="muted">xFPT <b>${f1(total)}</b>${Math.abs(planned - total) >= 0.05
-          ? ` → <b class="tm-planned" title="Οι πόντοι στο τέλος του Round αν κάνεις όλα τα βήματα${pl.turnPlan.length ? ", και τις αλλαγές πριν το επόμενο Turn" : ""}">${f1(planned)}</b>` : ""}${typeof earlyII === "function" ? earlyII() : ""}</div>
+          ? ` → <b class="tm-planned" title="${L("Οι πόντοι στο τέλος του Round αν κάνεις όλα τα βήματα", "Your points at the end of the Round if you do every step")}${pl.turnPlan.length ? L(", και τις αλλαγές πριν το επόμενο Turn", ", and the swaps before the next Turn") : ""}">${f1(planned)}</b>` : ""}${typeof earlyII === "function" ? earlyII() : ""}</div>
         <div class="tm-dead">${head}</div>${clubWarn(rows, pl.trs)}</div>
-        ${t.game ? (t.draft ? `<div class="tm-right"><div class="tm-toolbar" role="toolbar"><button id="tmDraftX" title="Η ομάδα όπως είναι στο παιχνίδι">↩ Ακύρωση Trades</button></div></div>` : "")
-          : `<div class="tm-right">${undoBar(t)}<div class="tm-morewrap"><button class="tm-more" id="tmMore" aria-haspopup="menu">⋯ Επιλογές</button><div id="tmMenu"></div></div></div>`}</header>
+        ${t.game ? (t.draft ? `<div class="tm-right"><div class="tm-toolbar" role="toolbar"><button id="tmDraftX" title="${L("Η ομάδα όπως είναι στο παιχνίδι", "The team as it is in the game")}">↩ ${L("Ακύρωση Trades", "Cancel Trades")}</button></div></div>` : "")
+          : `<div class="tm-right">${undoBar(t)}<div class="tm-morewrap"><button class="tm-more" id="tmMore" aria-haspopup="menu">⋯ ${L("Επιλογές", "Options")}</button><div id="tmMenu"></div></div></div>`}</header>
       <div class="tm-cols"><div class="tm-colL">
-      <div class="card" id="tmTodo"><h2>To do <small class="muted">${items.length ? `${items.length} ${items.length === 1 ? "βήμα" : "βήματα"}` : ""}</small></h2>
-        ${pl.inRound && !t.game ? `<p class="tm-live">${ico("clock")} Το Round ${P.round} τρέχει. Αν έκανες Trades στο παιχνίδι, έλεγξε ότι είναι και εδώ
-          (πάτα τον παίκτη → Trade ή ✕), ώστε το επόμενο Round να ξεκινήσει από τη σωστή ομάδα.</p>` : ""}
-        ${done ? `<div class="tm-ready">${ico("check")} Έτοιμος για το Round${pl.turnPlan.length
-          ? `<span class="tm-why">Μένει να αποφασίσεις ${pl.turnPlan.length === 1 ? "μία αλλαγή" : `${pl.turnPlan.length} αλλαγές`} πριν το επόμενο Turn (${ico("clock")} παρακάτω).</span>` : ""}</div>` : `${todo}`}
+      <div class="card" id="tmTodo"><h2>To do <small class="muted">${items.length ? `${items.length} ${items.length === 1 ? L("βήμα", "step") : L("βήματα", "steps")}` : ""}</small></h2>
+        ${pl.inRound && !t.game ? `<p class="tm-live">${ico("clock")} ${L(`Το Round ${P.round} τρέχει. Αν έκανες Trades στο παιχνίδι, έλεγξε ότι είναι και εδώ
+          (πάτα τον παίκτη → Trade ή ✕), ώστε το επόμενο Round να ξεκινήσει από τη σωστή ομάδα.`, `Round ${P.round} is under way. If you made Trades in the game, check they are here too
+          (tap the player → Trade or ✕), so the next Round starts from the right team.`)}</p>` : ""}
+        ${done ? `<div class="tm-ready">${ico("check")} ${L("Έτοιμος για το Round", "Ready for the Round")}${pl.turnPlan.length
+          ? `<span class="tm-why">${L(`Μένει να αποφασίσεις ${pl.turnPlan.length === 1 ? "μία αλλαγή" : `${pl.turnPlan.length} αλλαγές`} πριν το επόμενο Turn`, `${pl.turnPlan.length === 1 ? "One swap" : `${pl.turnPlan.length} swaps`} left to decide before the next Turn`)} (${ico("clock")} ${L("παρακάτω", "below")}).</span>` : ""}</div>` : `${todo}`}
         ${pl.tradesNow ? keptLine : ""}
         ${turnPlan ? `<ul class="plan">${turnPlan}</ul>` : ""}
         ${hint ? `<p class="tm-hint">${hint}</p>` : ""}</div>
       ${nextTrades}</div>
-      <div class="tm-colR">${items.length && !done ? `<button class="tm-steps" id="tmSteps" type="button">${ico("roster")} <b>${items.length} ${items.length === 1 ? "βήμα" : "βήματα"}</b> για το Round ${pl.ti.round} <span aria-hidden="true">↓</span></button>` : ""}<div class="card tm-courtcard"><h2>${t.game ? (t.draft ? "Πρόχειρο" : t.fromGame ? "Στο παιχνίδι τώρα" : "Η πρόταση") : "Your Starting five"}${t.game ? ` <small class="muted">${t.draft ? "με τα Trades σου · το παιχνίδι δεν αλλάζει" : t.fromGame ? "διακεκομμένο = αλλάζει" : "δεν διαβάστηκε το Starting five"}</small>` : ""}</h2>
+      <div class="tm-colR">${items.length && !done ? `<button class="tm-steps" id="tmSteps" type="button">${ico("roster")} <b>${items.length} ${items.length === 1 ? L("βήμα", "step") : L("βήματα", "steps")}</b> ${L("για το Round", "for Round")} ${pl.ti.round} <span aria-hidden="true">↓</span></button>` : ""}<div class="card tm-courtcard"><h2>${t.game ? (t.draft ? L("Πρόχειρο", "Draft") : t.fromGame ? L("Στο παιχνίδι τώρα", "In the game now") : L("Η πρόταση", "The proposal")) : "Your Starting five"}${t.game ? ` <small class="muted">${t.draft ? L("με τα Trades σου · το παιχνίδι δεν αλλάζει", "with your Trades · the game doesn't change") : t.fromGame ? L("διακεκομμένο = αλλάζει", "dashed = changes") : L("δεν διαβάστηκε το Starting five", "the Starting five wasn't read")}</small>` : ""}</h2>
         ${courtHtml(t, rows, t.game ? pl : null)}</div></div></div>
       ${bestCard(best)}`;
   }
@@ -700,9 +702,9 @@
     const count = (list) => list.reduce((a, p) => (p.team && p.position !== "Head Coach" ? (a[p.team] = (a[p.team] || 0) + 1, a) : a), {});
     const now = count(rows), next = trs && trs.pairs && trs.pairs.length ? count(trs.squad || []) : {};
     const out = [];
-    for (const [club, n] of Object.entries(now)) if (n >= CLUB_WARN) out.push(`${n} παίκτες ${esc(tc(club))}`);
-    for (const [club, n] of Object.entries(next)) if (n >= CLUB_WARN && n > (now[club] || 0)) out.push(`με τα Trades ${n} παίκτες ${esc(tc(club))}`);
-    return out.length ? `<div class="tm-warn" title="Μία κακή βραδιά της ομάδας τους χτυπάει όλους μαζί, και παίζουν στο ίδιο Turn">${ico("warn")} ${out.join(" · ")}</div>` : "";
+    for (const [club, n] of Object.entries(now)) if (n >= CLUB_WARN) out.push(L(`${n} παίκτες ${esc(tc(club))}`, `${n} ${esc(tc(club))} players`));
+    for (const [club, n] of Object.entries(next)) if (n >= CLUB_WARN && n > (now[club] || 0)) out.push(L(`με τα Trades ${n} παίκτες ${esc(tc(club))}`, `with the Trades ${n} ${esc(tc(club))} players`));
+    return out.length ? `<div class="tm-warn" title="${L("Μία κακή βραδιά της ομάδας τους χτυπάει όλους μαζί, και παίζουν στο ίδιο Turn", "One bad night for their team hits them all at once, and they play in the same Turn")}">${ico("warn")} ${out.join(" · ")}</div>` : "";
   }
 
   // ------------------------------------------------------------ player actions
@@ -713,9 +715,9 @@
     const role = r.position === "Head Coach" ? "coach" : (t.roles || {})[id];
     const canCap = role === "5άδα" && t.captain !== id && !(played(r) && t.captain !== id);
     sheet(`<div class="sh"><div><h2>${esc(nm(r.name))}</h2>
-        <div class="muted">${esc(tc(r.team))} · ${NAME[r.position]} · τώρα ${f1(r.price)} cr${r.buy != null ? ` · αγορά ${f1(r.buy)}${dPrice(r) ? ` (${dPrice(r) > 0 ? "+" : "−"}${f1(Math.abs(dPrice(r)))})` : ""}` : ""}${r.popularity != null ? ` · POP ${f1(r.popularity)} %` : ""}${r.turn ? ` · Turn ${r.turn}` : ""}${role && role !== "coach" ? ` · ${esc(ROLE_LABEL[role] || role)}` : ""}</div></div>
-        <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
-      <div class="kpis"><div class="kpi"><b>${f1(scored(r) ? pts(r) : r.x_now)}</b><span>${scored(r) ? (r.actual == null ? "δεν έπαιξε" : "points") : "xFPT"}</span></div>
+        <div class="muted">${esc(tc(r.team))} · ${NAME[r.position]} · ${L("τώρα", "now")} ${f1(r.price)} cr${r.buy != null ? ` · ${L("αγορά", "bought")} ${f1(r.buy)}${dPrice(r) ? ` (${dPrice(r) > 0 ? "+" : "−"}${f1(Math.abs(dPrice(r)))})` : ""}` : ""}${r.popularity != null ? ` · POP ${f1(r.popularity)} %` : ""}${r.turn ? ` · Turn ${r.turn}` : ""}${role && role !== "coach" ? ` · ${esc(ROLE_LABEL[role] || role)}` : ""}</div></div>
+        <button class="x" aria-label="${L("Κλείσιμο", "Close")}" onclick="closePlayer()">×</button></div>
+      <div class="kpis"><div class="kpi"><b>${f1(scored(r) ? pts(r) : r.x_now)}</b><span>${scored(r) ? (r.actual == null ? L("δεν έπαιξε", "didn't play") : "points") : "xFPT"}</span></div>
         <div class="kpi"><b>${f1(xf3(r))}</b><span>xFPT3</span></div><div class="kpi"><b>${r.value == null ? "–" : r.value.toFixed(2)}</b><span>xFPT3/cr</span></div></div>
       <div class="tm-acts">
         ${t.game ? "" : r.position !== "Head Coach" ? `<button class="tm-act" id="aCap" ${canCap ? "" : "disabled"}><span>★</span><div>Captain</div></button>
@@ -728,28 +730,28 @@
     on("aCap", () => { t.captain = id; save(t); closePlayer(); render(); flash(id); toast(`CAP: ${sur(r.name)}`); });
     on("aSwap", () => {
       const others = rows.filter((x) => x.id !== id && x.position !== "Head Coach" && (t.roles || {})[x.id] !== role);
-      sheet(`<div class="sh"><div><h2>${esc(sur(r.name))} ⇄ …</h2><div class="muted">Τώρα: ${esc(ROLE_LABEL[role] || role)}</div></div>
-          <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
+      sheet(`<div class="sh"><div><h2>${esc(sur(r.name))} ⇄ …</h2><div class="muted">${L("Τώρα", "Now")}: ${esc(ROLE_LABEL[role] || role)}</div></div>
+          <button class="x" aria-label="${L("Κλείσιμο", "Close")}" onclick="closePlayer()">×</button></div>
         <div class="tm-acts">${others.map((x) => `<button class="tm-act" data-q="${x.id}"><span>${LETTER[x.position]}</span><div>${esc(nm(x.name))}
-          <small>${(t.roles || {})[x.id]} · ${scored(x) ? `έφερε ${f1(pts(x))}` : `xFPT ${f1(x.x_now)}`}</small></div></button>`).join("")}</div>`);
+          <small>${esc(ROLE_LABEL[(t.roles || {})[x.id]] || (t.roles || {})[x.id] || "")} · ${scored(x) ? `${L("έφερε", "scored")} ${f1(pts(x))}` : `xFPT ${f1(x.x_now)}`}</small></div></button>`).join("")}</div>`);
       document.querySelectorAll("#sheet [data-q]").forEach((b) => b.onclick = () => { if (swap(t, id, Number(b.dataset.q))) closePlayer(); });
     });
     on("aRep", () => replaceSheet(t, r));
     on("aOut", () => { if (sellOut(t, id)) { closePlayer(); render(); } });
     on("aPrice", () => {
-      sheet(`<div class="sh"><div><h2>Price αγοράς: ${esc(sur(r.name))}</h2><div class="muted">Όσο τον πλήρωσες στο παιχνίδι · σημερινό price ${f1(r.price)} cr</div></div>
-          <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
+      sheet(`<div class="sh"><div><h2>${L("Price αγοράς", "Purchase price")}: ${esc(sur(r.name))}</h2><div class="muted">${L("Όσο τον πλήρωσες στο παιχνίδι · σημερινό price", "What you paid in the game · today's price")} ${f1(r.price)} cr</div></div>
+          <button class="x" aria-label="${L("Κλείσιμο", "Close")}" onclick="closePlayer()">×</button></div>
         <input id="tmPrice" class="tm-input" inputmode="decimal" value="${f1(r.buy ?? r.price)}" autocomplete="off">
-        <button class="tm-primary" id="tmPriceOk">Αποθήκευση</button>`);
+        <button class="tm-primary" id="tmPriceOk">${L("Αποθήκευση", "Save")}</button>`);
       $("#tmPriceOk").onclick = () => {
         const v = parseFloat(String($("#tmPrice").value).replace(",", "."));
-        if (isNaN(v) || v <= 0) { toast("Γράψε ένα price, π.χ. 7,5"); return; }
-        t.players.find((x) => x.id === id).price = v; save(t); closePlayer(); render(); toast(`${sur(r.name)}: αγορά ${f1(v)} cr`);
+        if (isNaN(v) || v <= 0) { toast(L("Γράψε ένα price, π.χ. 7,5", "Enter a price, e.g. 7.5")); return; }
+        t.players.find((x) => x.id === id).price = v; save(t); closePlayer(); render(); toast(`${sur(r.name)}: ${L("αγορά", "bought at")} ${f1(v)} cr`);
       };
     });
     // the player's analysis, stats, games and price under the actions (same as the players' popup)
     if (typeof playerBody === "function") {
-      $("#sheet").insertAdjacentHTML("beforeend", `<div id="tmDetails" data-pid="${esc(r.person_id)}"><p class="muted">Φόρτωση στατιστικών…</p></div>`);
+      $("#sheet").insertAdjacentHTML("beforeend", `<div id="tmDetails" data-pid="${esc(r.person_id)}"><p class="muted">${L("Φόρτωση στατιστικών…", "Loading stats…")}</p></div>`);
       playerBody(r.person_id).then((html) => {
         const box = document.getElementById("tmDetails");
         if (!box || box.dataset.pid !== String(r.person_id)) return;   // closed or another player meanwhile
@@ -772,17 +774,17 @@
       const k = key(q).trim();
       $("#tmList").innerHTML = list.filter((p) => !k || key(p.name).includes(k)).slice(0, 40).map((p) => `<button class="tm-pick" data-n="${p.fantasy_id}">
           <span>${watched(p) ? "★ " : ""}<b>${esc(nm(p.name))}</b>${typeof newb === "function" ? newb(p, false) : ""}</span><span class="tm-pv"><b class="${gain(p) > 0 ? "tm-up" : "tm-down"}">${gain(p) > 0 ? "+" : "−"}${f1(Math.abs(gain(p)))}</b><small>xFPT3</small></span>
-          <span class="muted tm-pm">${esc(tc(p.team))} · ${f1(p.price)} cr · xFPT3 ${f1(xf3(p))} · μένουν ${f1(max - p.price)} cr</span></button>`).join("")
-        || `<p class="muted">${k ? `Κανένας ${NAME[r.position]} με αυτό το όνομα μέσα στο υπόλοιπο.` : `Κανένας ${NAME[r.position]} δεν χωράει στο υπόλοιπο.`}</p>`;
+          <span class="muted tm-pm">${esc(tc(p.team))} · ${f1(p.price)} cr · xFPT3 ${f1(xf3(p))} · ${L("μένουν", "left")} ${f1(max - p.price)} cr</span></button>`).join("")
+        || `<p class="muted">${k ? L(`Κανένας ${NAME[r.position]} με αυτό το όνομα μέσα στο υπόλοιπο.`, `No ${NAME[r.position]} with that name within your credits.`) : L(`Κανένας ${NAME[r.position]} δεν χωράει στο υπόλοιπο.`, `No ${NAME[r.position]} fits in your credits.`)}</p>`;
       document.querySelectorAll("#tmList [data-n]").forEach((b) => b.onclick = () => {
         const n = row(Number(b.dataset.n));
         applyTrade(t, r.id, n.fantasy_id, n.price); save(t); closePlayer(); render(); flash(n.fantasy_id);
-        toast(`${sur(r.name)} ➜ ${sur(n.name)} · υπόλοιπο ${f1(t.bank)} cr`);
+        toast(`${sur(r.name)} ➜ ${sur(n.name)} · ${L("υπόλοιπο", "credits left")} ${f1(t.bank)} cr`);
       });
     };
-    sheet(`<div class="sh"><div><h2>Αντικατάσταση: ${esc(sur(r.name))}</h2><div class="muted">${NAME[r.position]} · ${list.length} χωράνε στα ${f1(max)} cr · ★ watchlist και το μεγαλύτερο κέρδος σε xFPT3 πρώτα</div></div>
-        <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
-      <input id="tmQ" class="tm-input" placeholder="Αναζήτηση ${NAME[r.position]}…" autocomplete="off"><div id="tmList"></div>`);
+    sheet(`<div class="sh"><div><h2>${L("Αντικατάσταση", "Replace")}: ${esc(sur(r.name))}</h2><div class="muted">${NAME[r.position]} · ${L(`${list.length} χωράνε στα ${f1(max)} cr · ★ watchlist και το μεγαλύτερο κέρδος σε xFPT3 πρώτα`, `${list.length} fit in ${f1(max)} cr · ★ watchlist and the biggest xFPT3 gain first`)}</div></div>
+        <button class="x" aria-label="${L("Κλείσιμο", "Close")}" onclick="closePlayer()">×</button></div>
+      <input id="tmQ" class="tm-input" placeholder="${L("Αναζήτηση", "Search")} ${NAME[r.position]}…" autocomplete="off"><div id="tmList"></div>`);
     draw(""); $("#tmQ").addEventListener("input", (e) => draw(e.target.value));
   }
 
@@ -791,7 +793,7 @@
   function sellOut(t, id) {
     const out = sell ? sell.out : [];
     if (out.includes(id)) return false;
-    if (out.length >= sellLeft(t)) { toast(sellLeft(t) ? `Σου μένουν ${sellLeft(t)} Trades` : "Δεν σου μένουν Trades"); return false; }
+    if (out.length >= sellLeft(t)) { toast(sellLeft(t) ? L(`Σου μένουν ${sellLeft(t)} Trades`, `You have ${sellLeft(t)} Trades left`) : L("Δεν σου μένουν Trades", "You have no Trades left")); return false; }
     sell = { out: [...out, id], picks: sell ? sell.picks : {} };
     return true;
   }
@@ -819,15 +821,15 @@
     const line = (pos) => by("5άδα").filter((r) => r.position === pos).map(place).join("");
     const ok = !empty && credits >= -0.05;
     return `<header class="tm-top"><div><h2 class="tm-h">Trades</h2>
-        <div class="muted">Πάτα ✕ σε όποιον φεύγει, μετά τις κενές θέσεις · ${sell.out.length} ${sell.out.length === 1 ? "Trade" : "Trades"}${sellLeft(t) < Infinity ? ` · μένουν ${sellLeft(t) - sell.out.length}` : ""}</div></div></header>
+        <div class="muted">${L("Πάτα ✕ σε όποιον φεύγει, μετά τις κενές θέσεις", "Tap ✕ on whoever goes, then the empty places")} · ${sell.out.length} ${sell.out.length === 1 ? "Trade" : "Trades"}${sellLeft(t) < Infinity ? ` · ${L("μένουν", "left")} ${sellLeft(t) - sell.out.length}` : ""}</div></div></header>
       <div class="card tm-courtcard"><div class="tm-floor"><div class="court tm-setcourt"><div class="crow">${line("Center")}</div><div class="crow">${line("Forward")}</div><div class="crow">${line("Guard")}</div></div>
         <div class="lanes"><div class="pair">
           <div class="lane six"><h3>Sixth man</h3><div class="crow">${by("6ος").map(place).join("")}</div></div>
           <div class="lane coach"><h3>Head Coach</h3><div class="crow">${by("coach").map(place).join("")}</div></div></div>
           <div class="lane bench"><h3>Bench (50% FPT)</h3><div class="crow">${by("πάγκος").map(place).join("")}</div></div></div></div>
-        <div class="tm-money"><span>Credits <b class="${credits < -0.05 ? "tm-down" : ""}">${f1(credits)}</b> cr</span><span>${empty ? `${empty} ${empty === 1 ? "κενή θέση" : "κενές θέσεις"}` : "πλήρης ομάδα"}</span></div>
-        <button class="tm-primary" id="tmSellOk" ${ok ? "" : "disabled"}>${empty ? `Λείπουν ${empty}` : credits < -0.05 ? `Λείπουν ${f1(-credits)} cr` : "Αποθήκευση ➜"}</button>
-        <button class="linkbtn" id="tmSellNo" style="display:block;margin:6px auto 0">Άκυρο</button></div>`;
+        <div class="tm-money"><span>Credits <b class="${credits < -0.05 ? "tm-down" : ""}">${f1(credits)}</b> cr</span><span>${empty ? `${empty} ${empty === 1 ? L("κενή θέση", "empty place") : L("κενές θέσεις", "empty places")}` : L("πλήρης ομάδα", "full team")}</span></div>
+        <button class="tm-primary" id="tmSellOk" ${ok ? "" : "disabled"}>${empty ? L(`Λείπουν ${empty}`, `${empty} missing`) : credits < -0.05 ? L(`Λείπουν ${f1(-credits)} cr`, `${f1(-credits)} cr short`) : L("Αποθήκευση ➜", "Save ➜")}</button>
+        <button class="linkbtn" id="tmSellNo" style="display:block;margin:6px auto 0">${L("Άκυρο", "Cancel")}</button></div>`;
   }
   function fillSheet(t, outId, best) {
     const r = rowsOf(t).find((x) => x.id === outId);
@@ -841,15 +843,15 @@
       const k = key(q).trim();
       $("#tmList").innerHTML = list.filter((p) => !k || key(p.name).includes(k)).slice(0, 40).map((p) => `<button class="tm-pick" data-n="${p.fantasy_id}">
           <span>${watched(p) ? "★ " : ""}<b>${esc(nm(p.name))}</b>${typeof newb === "function" ? newb(p, false) : ""}</span><span class="tm-pv"><b class="${gain(p) > 0 ? "tm-up" : "tm-down"}">${gain(p) > 0 ? "+" : "−"}${f1(Math.abs(gain(p)))}</b><small>xFPT3</small></span>
-          <span class="muted tm-pm">${esc(tc(p.team))} · ${f1(p.price)} cr · xFPT3 ${f1(xf3(p))} · μένουν ${f1(max - p.price)} cr</span></button>`).join("")
-        || `<p class="muted">${k ? `Κανένας ${NAME[r.position]} με αυτό το όνομα μέσα στα credits.` : `Κανένας ${NAME[r.position]} δεν χωράει στα credits: πάτα ✕ σε άλλον παίκτη.`}</p>`;
+          <span class="muted tm-pm">${esc(tc(p.team))} · ${f1(p.price)} cr · xFPT3 ${f1(xf3(p))} · ${L("μένουν", "left")} ${f1(max - p.price)} cr</span></button>`).join("")
+        || `<p class="muted">${k ? L(`Κανένας ${NAME[r.position]} με αυτό το όνομα μέσα στα credits.`, `No ${NAME[r.position]} with that name within the credits.`) : L(`Κανένας ${NAME[r.position]} δεν χωράει στα credits: πάτα ✕ σε άλλον παίκτη.`, `No ${NAME[r.position]} fits in the credits: tap ✕ on another player.`)}</p>`;
       document.querySelectorAll("#tmList [data-n]").forEach((b) => b.onclick = () => {
         sell.picks[outId] = Number(b.dataset.n); closePlayer(); render(best);
       });
     };
-    sheet(`<div class="sh"><div><h2>Στη θέση του ${esc(sur(r.name))}</h2><div class="muted">${NAME[r.position]} · ${list.length} χωράνε στα ${f1(max)} cr · ★ watchlist και το μεγαλύτερο κέρδος σε xFPT3 πρώτα</div></div>
-        <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
-      <input id="tmQ" class="tm-input" placeholder="Αναζήτηση ${NAME[r.position]}…" autocomplete="off"><div id="tmList"></div>`);
+    sheet(`<div class="sh"><div><h2>${L(`Στη θέση του ${esc(sur(r.name))}`, `In place of ${esc(sur(r.name))}`)}</h2><div class="muted">${NAME[r.position]} · ${L(`${list.length} χωράνε στα ${f1(max)} cr · ★ watchlist και το μεγαλύτερο κέρδος σε xFPT3 πρώτα`, `${list.length} fit in ${f1(max)} cr · ★ watchlist and the biggest xFPT3 gain first`)}</div></div>
+        <button class="x" aria-label="${L("Κλείσιμο", "Close")}" onclick="closePlayer()">×</button></div>
+      <input id="tmQ" class="tm-input" placeholder="${L("Αναζήτηση", "Search")} ${NAME[r.position]}…" autocomplete="off"><div id="tmList"></div>`);
     draw(""); $("#tmQ").addEventListener("input", (e) => draw(e.target.value));
   }
   function bindSell(t, best) {
@@ -863,7 +865,7 @@
       const n = sell.out.length;
       for (const id of sell.out) { const p = row(sell.picks[id]); applyTrade(t, id, p.fantasy_id, p.price); }
       sell = null; save(t); render(best); window.scrollTo({ top: 0 });
-      toast(`${n} ${n === 1 ? "Trade" : "Trades"} · υπόλοιπο ${f1(t.bank)} cr`);
+      toast(`${n} ${n === 1 ? "Trade" : "Trades"} · ${L("υπόλοιπο", "credits left")} ${f1(t.bank)} cr`);
     };
   }
 
@@ -918,13 +920,13 @@
   // «Trades που μένουν»: the game counts every change of the round, the app only what it saw
   function leftSheet(t, best) {
     const ti = tradeInfo(t);
-    sheet(`<div class="sh"><div><h2>Trades που μένουν</h2><div class="muted">Όσα δείχνει το παιχνίδι για το Round ${ti.round}</div></div>
+    sheet(`<div class="sh"><div><h2>${L("Trades που μένουν", "Trades left")}</h2><div class="muted">${L(`Όσα δείχνει το παιχνίδι για το Round ${ti.round}`, `As the game shows for Round ${ti.round}`)}</div></div>
         <button class="x" onclick="closePlayer()">×</button></div>
       <div class="tm-acts">${Array.from({ length: ti.max_trades + 1 }, (_, i) => ti.max_trades - i).map((v) =>
-        `<button class="tm-act" data-left="${v}"><span>${v}</span><div>${v === 1 ? "1 Trade" : `${v} Trades`}${v === tradesLeft(t, ti) ? " <small>τώρα</small>" : ""}</div></button>`).join("")}</div>`);
+        `<button class="tm-act" data-left="${v}"><span>${v}</span><div>${v === 1 ? "1 Trade" : `${v} Trades`}${v === tradesLeft(t, ti) ? ` <small>${L("τώρα", "now")}</small>` : ""}</div></button>`).join("")}</div>`);
     document.querySelectorAll("#sheet [data-left]").forEach((b) => b.onclick = () => {
       setTradesLeft(t, Number(b.dataset.left)); save(t); closePlayer(); render(best);
-      toast(`Μένουν ${b.dataset.left} Trades· οι προτάσεις προσαρμόστηκαν`); });
+      toast(L(`Μένουν ${b.dataset.left} Trades· οι προτάσεις προσαρμόστηκαν`, `${b.dataset.left} Trades left; the proposals adjusted`)); });
   }
 
   // ------------------------------------------------------------ menu
@@ -935,36 +937,37 @@
   }
   const canUndoAll = (t) => undoSteps(t) > 1 || canUndo(t, P.trade_info || {});
   function bindUndo(t, best) {
-    const last = () => { if (undoLast(t)) { render(best); toast(`Αναιρέθηκε η τελευταία κίνηση${undoSteps(t) ? ` · μένουν ${undoSteps(t)}` : ""}`); } };
+    const last = () => { if (undoLast(t)) { render(best); toast(`${L("Αναιρέθηκε η τελευταία κίνηση", "Last move undone")}${undoSteps(t) ? ` · ${L("μένουν", "left")} ${undoSteps(t)}` : ""}`); } };
     if ($("#mUndoLast")) $("#mUndoLast").onclick = last;
     if ($("#tmBankEdit")) $("#tmBankEdit").onclick = () => bankSheet(t, best);
   }
   function askUndoAll(t, best) {
       const n = usedTrades(t, P.trade_info || {}), snap = !!(t.used && t.used.before);
-      sheet(`<div class="sh"><h2>Αναίρεση ${n === 0 ? "των κινήσεων" : n === 1 ? "του Trade" : `των ${n} Trades`};</h2><button class="x" onclick="closePlayer()">×</button></div>
-        <p class="muted">${snap || undoSteps(t) ? "Η ομάδα, το υπόλοιπο, οι θέσεις και ο Captain γυρίζουν όπως ήταν στο τελευταίο κλείδωμα."
-          : "Δεν υπάρχει αποθηκευμένη η ομάδα της αρχής του Round, οπότε μηδενίζεται μόνο ο μετρητής· τους παίκτες τους αλλάζεις από την «Αλλαγή ομάδας»."}</p>
-        <button class="tm-primary" id="tmUndoOk">Αναίρεση</button>`);
+      sheet(`<div class="sh"><h2>${L(`Αναίρεση ${n === 0 ? "των κινήσεων" : n === 1 ? "του Trade" : `των ${n} Trades`};`, `Undo ${n === 0 ? "the moves" : n === 1 ? "the Trade" : `the ${n} Trades`}?`)}</h2><button class="x" onclick="closePlayer()">×</button></div>
+        <p class="muted">${snap || undoSteps(t) ? L("Η ομάδα, το υπόλοιπο, οι θέσεις και ο Captain γυρίζουν όπως ήταν στο τελευταίο κλείδωμα.", "The team, credits, positions and Captain go back to how they were at the last lock.")
+          : L("Δεν υπάρχει αποθηκευμένη η ομάδα της αρχής του Round, οπότε μηδενίζεται μόνο ο μετρητής· τους παίκτες τους αλλάζεις από την «Αλλαγή ομάδας».", "The team from the start of the Round isn't saved, so only the counter resets; change the players with “Edit team”.")}</p>
+        <button class="tm-primary" id="tmUndoOk">${L("Αναίρεση", "Undo")}</button>`);
       $("#tmUndoOk").onclick = () => { const ok = undoAll(t) || (undoTrades(t), save(t), !!snap); closePlayer(); render(best);
-        toast(ok ? "Η ομάδα γύρισε όπως ήταν" : "Ο μετρητής μηδενίστηκε"); };
+        toast(ok ? L("Η ομάδα γύρισε όπως ήταν", "The team is back as it was") : L("Ο μετρητής μηδενίστηκε", "The counter was reset")); };
   }
 
   // Credits ✎: the first number under CREDITS in the game
   function bankSheet(t, best) {
-    sheet(`<div class="sh"><div><h2>Credits</h2><div class="muted">Το πρώτο νούμερο στο CREDITS του παιχνιδιού</div></div>
+    sheet(`<div class="sh"><div><h2>Credits</h2><div class="muted">${L("Το πρώτο νούμερο στο CREDITS του παιχνιδιού", "The first number under CREDITS in the game")}</div></div>
         <button class="x" onclick="closePlayer()">×</button></div>
-      <input id="tmBank" class="tm-input" inputmode="decimal" value="${f1(t.bank)}" autocomplete="off"><button class="tm-primary" id="tmBankOk">Αποθήκευση</button>`);
+      <input id="tmBank" class="tm-input" inputmode="decimal" value="${f1(t.bank)}" autocomplete="off"><button class="tm-primary" id="tmBankOk">${L("Αποθήκευση", "Save")}</button>`);
     $("#tmBankOk").onclick = () => { const v = parseFloat(String($("#tmBank").value).replace(",", "."));
-      if (isNaN(v) || v < 0) { toast("Γράψε ένα ποσό, π.χ. 3,5"); return; }
+      if (isNaN(v) || v < 0) { toast(L("Γράψε ένα ποσό, π.χ. 3,5", "Enter an amount, e.g. 3.5")); return; }
       t.bank = v; save(t); closePlayer(); render(best); };
   }
   function cpSheet(t, best) {
-    sheet(`<div class="sh"><div><h2>Save</h2><div class="muted">Η ομάδα όπως είναι τώρα</div></div>
+    sheet(`<div class="sh"><div><h2>Save</h2><div class="muted">${L("Η ομάδα όπως είναι τώρα", "The team as it is now")}</div></div>
         <button class="x" onclick="closePlayer()">×</button></div>
-      <p class="muted">Το «Undo all» θα γυρίζει την ομάδα εδώ, όχι πιο πίσω: π.χ. αν πέρασες τώρα Trades του προηγούμενου Round,
-        δεν θα αναιρούνται μαζί με τα τωρινά. Ο μετρητής «Trades» μένει όπως είναι· αν χρειάζεται, διόρθωσέ τον με το ✎.</p>
+      <p class="muted">${L(`Το «Undo all» θα γυρίζει την ομάδα εδώ, όχι πιο πίσω: π.χ. αν πέρασες τώρα Trades του προηγούμενου Round,
+        δεν θα αναιρούνται μαζί με τα τωρινά. Ο μετρητής «Trades» μένει όπως είναι· αν χρειάζεται, διόρθωσέ τον με το ✎.`, `“Undo all” will bring the team back here, not further: e.g. if you just entered last Round's Trades,
+        they won't be undone with the current ones. The “Trades” counter stays as it is; if needed, correct it in the menu.`)}</p>
       <button class="tm-primary" id="tmCpOk">${ico("save")} Save</button>`);
-    $("#tmCpOk").onclick = () => { checkpoint(t); closePlayer(); render(best); toast("Saved · το «Undo all» γυρίζει πλέον εδώ"); };
+    $("#tmCpOk").onclick = () => { checkpoint(t); closePlayer(); render(best); toast(L("Saved · το «Undo all» γυρίζει πλέον εδώ", "Saved · “Undo all” now comes back here")); };
   }
 
   // the team's options: a dropdown behind «⋯ Επιλογές» (phones and wide screens alike)
@@ -974,15 +977,15 @@
     const close = () => { host.innerHTML = ""; };
     if (host.innerHTML) { close(); return; }
     host.innerHTML = `<div class="tm-menu" role="menu">
-      ${canUndoAll(t) ? `<button id="mUsed">↺ Undo all <small class="muted">ως την αρχή του Round ή το Save</small></button>` : ""}
-      <button id="mCp">${ico("save")} Save <small class="muted">εδώ θα γυρίζει το «Undo all»</small></button>
-      ${(P.trade_info || {}).max_trades <= 4 ? `<button id="mTrades">${ico("edit")} Διόρθωση Trades <small class="muted">πόσα σου μένουν</small></button>` : ""}
-      <button id="mSync">${ico("sync")} Συγχρονισμός συσκευών${syncGet() ? '<span class="tm-on" title="ενεργός">✓</span>' : ""}</button>
-      <button id="mBackup">${ico("link")} Αντίγραφο ασφαλείας</button>
-      <button id="mEdit">${ico("edit")} Αλλαγή ομάδας</button>
-      ${WIDE() ? "" : `<button id="mInstall">${ico("phone")} Βάλ' το στην οθόνη σου</button>`}
-      <button id="mMail">${ico("mail")} Επικοινωνία</button>
-      <button id="mDel" class="tm-danger">${ico("trash")} Διαγραφή ομάδας</button></div>`;
+      ${canUndoAll(t) ? `<button id="mUsed">↺ Undo all <small class="muted">${L("ως την αρχή του Round ή το Save", "back to the Round's start or the Save")}</small></button>` : ""}
+      <button id="mCp">${ico("save")} Save <small class="muted">${L("εδώ θα γυρίζει το «Undo all»", "“Undo all” will come back here")}</small></button>
+      ${(P.trade_info || {}).max_trades <= 4 ? `<button id="mTrades">${ico("edit")} ${L("Διόρθωση Trades", "Correct Trades")} <small class="muted">${L("πόσα σου μένουν", "how many you have left")}</small></button>` : ""}
+      <button id="mSync">${ico("sync")} ${L("Συγχρονισμός συσκευών", "Sync devices")}${syncGet() ? `<span class="tm-on" title="${L("ενεργός", "on")}">✓</span>` : ""}</button>
+      <button id="mBackup">${ico("link")} ${L("Αντίγραφο ασφαλείας", "Backup")}</button>
+      <button id="mEdit">${ico("edit")} ${L("Αλλαγή ομάδας", "Edit team")}</button>
+      ${WIDE() ? "" : `<button id="mInstall">${ico("phone")} ${L("Βάλ' το στην οθόνη σου", "Add to home screen")}</button>`}
+      <button id="mMail">${ico("mail")} ${L("Επικοινωνία", "Contact")}</button>
+      <button id="mDel" class="tm-danger">${ico("trash")} ${L("Διαγραφή ομάδας", "Delete team")}</button></div>`;
     $("#mSync").onclick = () => { close(); syncSheet(() => render(best)); };
     if ($("#mUsed")) $("#mUsed").onclick = () => { close(); askUndoAll(t, best); };
     $("#mCp").onclick = () => { close(); cpSheet(t, best); };
@@ -990,21 +993,21 @@
     $("#mBackup").onclick = async () => {
       close();
       const link = location.origin + location.pathname + "#t=" + encode(t);
-      try { await navigator.clipboard.writeText(link); toast("Ο σύνδεσμος αντιγράφηκε — κράτα τον π.χ. στις σημειώσεις"); }
-      catch (e) { sheet(`<div class="sh"><h2>Σύνδεσμος ομάδας</h2><button class="x" onclick="closePlayer()">×</button></div>
-        <p class="muted">Αντίγραψε και κράτα τον. Ανοίγοντάς τον σε άλλη συσκευή επανέρχεται η ομάδα σου.</p>
+      try { await navigator.clipboard.writeText(link); toast(L("Ο σύνδεσμος αντιγράφηκε — κράτα τον π.χ. στις σημειώσεις", "Link copied — keep it e.g. in your notes")); }
+      catch (e) { sheet(`<div class="sh"><h2>${L("Σύνδεσμος ομάδας", "Team link")}</h2><button class="x" onclick="closePlayer()">×</button></div>
+        <p class="muted">${L("Αντίγραψε και κράτα τον. Ανοίγοντάς τον σε άλλη συσκευή επανέρχεται η ομάδα σου.", "Copy and keep it. Opening it on another device restores your team.")}</p>
         <textarea class="tm-input" rows="4" readonly onclick="this.select()">${esc(link)}</textarea>`); }
     };
     $("#mEdit").onclick = () => { close(); setup = { players: t.players.map((x) => ({ ...x })) }; mode = "setup"; render(best); };
     $("#mMail").onclick = () => { close();             // copied (no mail app on the phone?) and the mail opens
-      copyText(FEEDBACK_MAIL).then((ok) => toast(ok ? `Αντιγράφηκε: ${FEEDBACK_MAIL}` : FEEDBACK_MAIL));
+      copyText(FEEDBACK_MAIL).then((ok) => toast(ok ? `${L("Αντιγράφηκε", "Copied")}: ${FEEDBACK_MAIL}` : FEEDBACK_MAIL));
       location.href = `mailto:${FEEDBACK_MAIL}?subject=${encodeURIComponent("Coach Dime beta")}`; };
     if ($("#mInstall")) $("#mInstall").onclick = () => { close(); installGuide(true); };
     $("#mDel").onclick = () => {
       close();
-      sheet(`<div class="sh"><h2>Διαγραφή της ομάδας από αυτή τη συσκευή;</h2><button class="x" onclick="closePlayer()">×</button></div>
-        <p class="muted">Αν έχεις κρατήσει σύνδεσμο αντιγράφου, μπορείς να την επαναφέρεις αργότερα.</p>
-        <button class="tm-primary tm-danger-bg" id="tmDelOk">Διαγραφή</button>`);
+      sheet(`<div class="sh"><h2>${L("Διαγραφή της ομάδας από αυτή τη συσκευή;", "Delete the team from this device?")}</h2><button class="x" onclick="closePlayer()">×</button></div>
+        <p class="muted">${L("Αν έχεις κρατήσει σύνδεσμο αντιγράφου, μπορείς να την επαναφέρεις αργότερα.", "If you kept a backup link, you can restore it later.")}</p>
+        <button class="tm-primary tm-danger-bg" id="tmDelOk">${L("Διαγραφή", "Delete")}</button>`);
       $("#tmDelOk").onclick = () => { try { localStorage.removeItem(KEY); } catch (e) {} syncSet(null); closePlayer(); setup = null; mode = null; render(best); };
     };
   }
@@ -1016,42 +1019,42 @@
     const have = (pos) => ps.filter((x) => x.r.position === pos);
     const spent = ps.reduce((a, x) => a + (Number(x.price) || 0), 0);
     const full = Object.entries(NEED).every(([pos, n]) => have(pos).length === n);
-    const slots = (pos) => have(pos).map((x) => `<div class="chip tm-setchip" data-set="${x.id}" role="button" tabindex="0" title="price ή αφαίρεση">
+    const slots = (pos) => have(pos).map((x) => `<div class="chip tm-setchip" data-set="${x.id}" role="button" tabindex="0" title="${L("price ή αφαίρεση", "price or remove")}">
         <div class="ct"><span>${LETTER[pos]}</span><span>${esc(tc(x.r.team))}</span></div><div class="cn">${esc(sur(x.r.name))}</div>
         <div class="cp">${f1(x.price)}<small> cr</small></div></div>`).join("")
       + Array.from({ length: NEED[pos] - have(pos).length }, () => `<button class="tm-slot" data-pos="${pos}"><b>+</b>${NAME[pos]}</button>`).join("");
     const had = !!load();
-    return `<header class="tm-top"><div><h2 class="tm-h">${had ? "Αλλαγή ομάδας" : "Φτιάξε την ομάδα σου"}</h2>
-        <div class="muted">Πάτα μια κενή θέση και διάλεξε παίκτη · πάτα έναν παίκτη για να γράψεις το price αγοράς του ή να τον αφαιρέσεις · ${ps.length}/11</div></div></header>
-      ${!had && !ps.length && best?.team?.length ? `<div class="tm-start"><button class="tm-primary" id="tmStartBest" type="button">Ξεκίνα από την προτεινόμενη ομάδα</button>
-          <p class="tm-hint">Μπαίνουν οι 11 της πρότασης με τα σημερινά prices. Μετά πάτα όσους δεν έχεις, «Αφαίρεση», και βάλε τους δικούς σου.</p>
-          <p class="muted tm-or">ή πάτα τις κενές θέσεις και διάλεξε έναν έναν</p></div>` : ""}
+    return `<header class="tm-top"><div><h2 class="tm-h">${had ? L("Αλλαγή ομάδας", "Edit team") : L("Φτιάξε την ομάδα σου", "Build your team")}</h2>
+        <div class="muted">${L("Πάτα μια κενή θέση και διάλεξε παίκτη · πάτα έναν παίκτη για να γράψεις το price αγοράς του ή να τον αφαιρέσεις", "Tap an empty place and pick a player · tap a player to enter his purchase price or remove him")} · ${ps.length}/11</div></div></header>
+      ${!had && !ps.length && best?.team?.length ? `<div class="tm-start"><button class="tm-primary" id="tmStartBest" type="button">${L("Ξεκίνα από την προτεινόμενη ομάδα", "Start from the proposed team")}</button>
+          <p class="tm-hint">${L("Μπαίνουν οι 11 της πρότασης με τα σημερινά prices. Μετά πάτα όσους δεν έχεις, «Αφαίρεση», και βάλε τους δικούς σου.", "The proposal's 11 go in at today's prices. Then tap the ones you don't have, “Remove”, and add your own.")}</p>
+          <p class="muted tm-or">${L("ή πάτα τις κενές θέσεις και διάλεξε έναν έναν", "or tap the empty places and pick one by one")}</p></div>` : ""}
       <div class="card tm-courtcard"><div class="tm-floor"><div class="court tm-setcourt">
           <div class="crow">${slots("Center")}</div><div class="crow">${slots("Forward")}</div><div class="crow">${slots("Guard")}</div></div>
         <div class="lanes">
           <div class="lane coach"><h3>Head Coach · ${have("Head Coach").length}/1</h3><div class="crow">${slots("Head Coach")}</div></div></div></div>
-        <div class="tm-money"><span>Κόστος ομάδας <b>${f1(spent)}</b> cr</span><span>Credits <b>${f1(Math.max(0, 100 - spent))}/100</b></span></div>
-        ${spent > 100.05 ? `<p class="tm-over">${ico("warn")} Πάνω από το budget κατά <b>${f1(spent - 100)}</b> cr — έλεγξε τα prices (πάτα τον παίκτη)· το παιχνίδι δεν επιτρέπει πάνω από 100.</p>` : ""}
-        <button class="tm-primary" id="tmFinish" ${full ? "" : "disabled"}${!had && !ps.length && best?.team?.length ? " hidden" : ""}>${full ? "Αποθήκευση ➜" : `Λείπουν ${11 - ps.length}`}</button>
-        ${had ? '<button class="linkbtn" id="tmCancel" style="display:block;margin:6px auto 0">Άκυρο</button>' : ""}
-        <p class="tm-hint">Γράψε τα prices <b>αγοράς</b> (όσο πλήρωσες τον καθένα)· συμπληρώνονται με τα σημερινά, αν διαφέρουν πάτα τον παίκτη. Έτσι βλέπεις πόσο ανέβηκαν ή έπεσαν· στα Trades μετράει το σημερινό price. Το υπόλοιπο το διορθώνεις από τις «Επιλογές».</p>
-        ${had ? "" : '<button class="linkbtn" id="tmRestore" style="display:block;margin:8px auto 0">Σύνδεσμος αντιγράφου</button>'
-          + '<button class="linkbtn" id="tmSyncSetup" style="display:block;margin:4px auto 0">Κωδικός συγχρονισμού</button>'}</div>`;
+        <div class="tm-money"><span>${L("Κόστος ομάδας", "Team cost")} <b>${f1(spent)}</b> cr</span><span>Credits <b>${f1(Math.max(0, 100 - spent))}/100</b></span></div>
+        ${spent > 100.05 ? `<p class="tm-over">${ico("warn")} ${L(`Πάνω από το budget κατά <b>${f1(spent - 100)}</b> cr — έλεγξε τα prices (πάτα τον παίκτη)· το παιχνίδι δεν επιτρέπει πάνω από 100.`, `Over budget by <b>${f1(spent - 100)}</b> cr — check the prices (tap the player); the game doesn't allow more than 100.`)}</p>` : ""}
+        <button class="tm-primary" id="tmFinish" ${full ? "" : "disabled"}${!had && !ps.length && best?.team?.length ? " hidden" : ""}>${full ? L("Αποθήκευση ➜", "Save ➜") : L(`Λείπουν ${11 - ps.length}`, `${11 - ps.length} missing`)}</button>
+        ${had ? `<button class="linkbtn" id="tmCancel" style="display:block;margin:6px auto 0">${L("Άκυρο", "Cancel")}</button>` : ""}
+        <p class="tm-hint">${L("Γράψε τα prices <b>αγοράς</b> (όσο πλήρωσες τον καθένα)· συμπληρώνονται με τα σημερινά, αν διαφέρουν πάτα τον παίκτη. Έτσι βλέπεις πόσο ανέβηκαν ή έπεσαν· στα Trades μετράει το σημερινό price. Το υπόλοιπο το διορθώνεις από τις «Επιλογές».", "Enter the <b>purchase</b> prices (what you paid for each); they are filled with today's, tap the player if they differ. That way you see how much they rose or fell; Trades use today's price. Correct your credits from the header.")}</p>
+        ${had ? "" : `<button class="linkbtn" id="tmRestore" style="display:block;margin:8px auto 0">${L("Σύνδεσμος αντιγράφου", "Backup link")}</button>`
+          + `<button class="linkbtn" id="tmSyncSetup" style="display:block;margin:4px auto 0">${L("Κωδικός συγχρονισμού", "Sync code")}</button>`}</div>`;
   }
   // setting up: a picked player's price (as in your game) or removing him
   function setupPlayerSheet(id, best) {
     const x = setup.players.find((q) => q.id === id), r = row(id);
     if (!x || !r) return;
-    sheet(`<div class="sh"><div><h2>${esc(nm(r.name))}</h2><div class="muted">${esc(tc(r.team))} · ${NAME[r.position]} · σημερινό price ${f1(r.price)} cr</div></div>
-        <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
-      <label class="muted" for="tmSetPrice">Price αγοράς: όσο τον πλήρωσες στο παιχνίδι</label>
+    sheet(`<div class="sh"><div><h2>${esc(nm(r.name))}</h2><div class="muted">${esc(tc(r.team))} · ${NAME[r.position]} · ${L("σημερινό price", "today's price")} ${f1(r.price)} cr</div></div>
+        <button class="x" aria-label="${L("Κλείσιμο", "Close")}" onclick="closePlayer()">×</button></div>
+      <label class="muted" for="tmSetPrice">${L("Price αγοράς: όσο τον πλήρωσες στο παιχνίδι", "Purchase price: what you paid in the game")}</label>
       <input id="tmSetPrice" class="tm-input" inputmode="decimal" value="${f1(x.price)}" autocomplete="off">
-      <button class="tm-primary" id="tmSetOk">Αποθήκευση price αγοράς</button>
-      <button class="tm-primary tm-danger-bg" id="tmSetRm" style="margin-top:8px">Αφαίρεση από την ομάδα</button>`);
+      <button class="tm-primary" id="tmSetOk">${L("Αποθήκευση price αγοράς", "Save purchase price")}</button>
+      <button class="tm-primary tm-danger-bg" id="tmSetRm" style="margin-top:8px">${L("Αφαίρεση από την ομάδα", "Remove from the team")}</button>`);
     setTimeout(() => $("#tmSetPrice")?.select(), 50);
     const ok = () => {
       const v = parseFloat(String($("#tmSetPrice").value).replace(",", "."));
-      if (isNaN(v) || v <= 0 || v > 40) { toast("Γράψε ένα price, π.χ. 7,5"); return; }
+      if (isNaN(v) || v <= 0 || v > 40) { toast(L("Γράψε ένα price, π.χ. 7,5", "Enter a price, e.g. 7.5")); return; }
       x.price = Math.round(v * 10) / 10; closePlayer(); render(best);
     };
     $("#tmSetOk").onclick = ok;
@@ -1066,14 +1069,14 @@
       const k = key(q).trim();
       $("#tmList").innerHTML = list.filter((p) => !k || key(p.name).includes(k)).slice(0, 60).map((p) => `<button class="tm-pick" data-p="${p.fantasy_id}">
           <span><b>${esc(nm(p.name))}</b></span><span class="tm-pv"><b>${f1(p.price)}</b><small>cr</small></span>
-          <span class="muted tm-pm">${esc(tc(p.team))} · xFPT ${f1(p.x_now)}</span></button>`).join("") || `<p class="muted">Κανένας ${NAME[pos]} με αυτό το όνομα.</p>`;
+          <span class="muted tm-pm">${esc(tc(p.team))} · xFPT ${f1(p.x_now)}</span></button>`).join("") || `<p class="muted">${L(`Κανένας ${NAME[pos]} με αυτό το όνομα.`, `No ${NAME[pos]} with that name.`)}</p>`;
       document.querySelectorAll("#tmList [data-p]").forEach((b) => b.onclick = () => {
         const r = row(Number(b.dataset.p)); setup.players.push({ id: r.fantasy_id, price: r.price }); closePlayer(); render(best);
       });
     };
-    sheet(`<div class="sh"><div><h2>Διάλεξε ${NAME[pos]}</h2><div class="muted">Γράψε μερικά γράμματα του ονόματος</div></div>
-        <button class="x" aria-label="Κλείσιμο" onclick="closePlayer()">×</button></div>
-      <input id="tmQ" class="tm-input" placeholder="Αναζήτηση ${NAME[pos]}…" autocomplete="off"><div id="tmList"></div>`);
+    sheet(`<div class="sh"><div><h2>${L("Διάλεξε", "Pick a")} ${NAME[pos]}</h2><div class="muted">${L("Γράψε μερικά γράμματα του ονόματος", "Type a few letters of the name")}</div></div>
+        <button class="x" aria-label="${L("Κλείσιμο", "Close")}" onclick="closePlayer()">×</button></div>
+      <input id="tmQ" class="tm-input" placeholder="${L("Αναζήτηση", "Search")} ${NAME[pos]}…" autocomplete="off"><div id="tmList"></div>`);
     draw(""); if (matchMedia("(hover: hover)").matches) setTimeout(() => $("#tmQ")?.focus(), 50);   // not on phones: the keyboard would jump up
     $("#tmQ").addEventListener("input", (e) => draw(e.target.value));
   }
@@ -1104,7 +1107,7 @@
   function bestCard(best) {
     if (!best) return "";
     // same sideline layout as «Your Starting five» on a PC (head coach and 6th left, bench right)
-    return `<details class="card"><summary><b>Καλύτερη ομάδα του Round (xFPT)</b> <span class="muted">· ${f1(best.cost)} cr</span></summary>
+    return `<details class="card"><summary><b>${L("Καλύτερη ομάδα του Round (xFPT)", "Best team of the Round (xFPT)")}</b> <span class="muted">· ${f1(best.cost)} cr</span></summary>
       <div class="tm-sideline">${courtView(best.team.map((p) => ({ ...p, actual: null })), null)}</div></details>`;
   }
   let pulled = false;
@@ -1115,8 +1118,8 @@
     if (!pulled && !GAME()) { pulled = true; syncPull(); }
     if (GAME()) {
       const g = myTeam();
-      if (!g) { $("#team").innerHTML = `<div class="card warn"><h2>Η ομάδα δεν είναι διαθέσιμη</h2>
-        <p>Χρειάζεται έγκυρο <code>FANTASY_TOKEN</code> στα GitHub Secrets.</p></div>${bestCard(best)}`; return; }
+      if (!g) { $("#team").innerHTML = `<div class="card warn"><h2>${L("Η ομάδα δεν είναι διαθέσιμη", "The team isn't available")}</h2>
+        <p>${L("Χρειάζεται έγκυρο <code>FANTASY_TOKEN</code> στα GitHub Secrets.", "Needs a valid <code>FANTASY_TOKEN</code> in the GitHub Secrets.")}</p></div>${bestCard(best)}`; return; }
       if (sell && sell.out.every((id) => g.players.some((x) => x.id === id))) {
         $("#team").innerHTML = sellView(g); sizeFloors(); bindSell(g, best); return;
       }
@@ -1126,7 +1129,7 @@
       if (Math.abs(window.scrollY - y) > 2) window.scrollTo({ top: y });
       bindTrades(g, best);
       const x = document.getElementById("tmDraftX");
-      if (x) x.onclick = () => { dropDraft(); render(best); toast("Η ομάδα γύρισε όπως είναι στο παιχνίδι"); };
+      if (x) x.onclick = () => { dropDraft(); render(best); toast(L("Η ομάδα γύρισε όπως είναι στο παιχνίδι", "The team is back as it is in the game")); };
       bindKeep(g, best);
       bindSteps();
       document.querySelectorAll("#team .chip[data-fid]").forEach((el) => el.onclick = (e) => {
@@ -1144,7 +1147,7 @@
       const sb = document.getElementById("tmStartBest");
       if (sb) sb.onclick = () => {
         setup.players = best.team.map((p) => ({ id: p.id, price: row(p.id)?.price ?? p.price })).filter((x) => row(x.id));
-        render(best); toast("Η προτεινόμενη ομάδα μπήκε· άλλαξε όσους δεν έχεις");
+        render(best); toast(L("Η προτεινόμενη ομάδα μπήκε· άλλαξε όσους δεν έχεις", "The proposed team is in; swap the ones you don't have"));
       };
       document.querySelectorAll("#team .tm-slot").forEach((b) => b.onclick = () => pickSheet(b.dataset.pos, best));
       document.querySelectorAll("#team [data-set]").forEach((c) => {
@@ -1153,7 +1156,7 @@
         c.onkeydown = (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); } };
       });
       const fin = document.getElementById("tmFinish");
-      if (fin) fin.onclick = () => { finishSetup(); render(best); window.scrollTo({ top: 0 }); toast("Η ομάδα αποθηκεύτηκε"); };
+      if (fin) fin.onclick = () => { finishSetup(); render(best); window.scrollTo({ top: 0 }); toast(L("Η ομάδα αποθηκεύτηκε", "Team saved")); };
       const ss = document.getElementById("tmSyncSetup");
       if (ss) ss.onclick = () => syncSheet(() => render(best));
       const rest = document.getElementById("tmRestore");
@@ -1192,11 +1195,11 @@
     });
     document.querySelectorAll("#team .tm-done[data-n]").forEach((b) => b.onclick = () => {
       const pr = p.trs.pairs[Number(b.dataset.n)];
-      applyTrade(t, pr.out.id, pr.in.id, pr.in.price); save(t); render(best); toast(`Έγινε · υπόλοιπο ${f1(t.bank)} cr`);
+      applyTrade(t, pr.out.id, pr.in.id, pr.in.price); save(t); render(best); toast(`${L("Έγινε", "Done")} · ${L("υπόλοιπο", "credits left")} ${f1(t.bank)} cr`);
     });
     const lp = document.getElementById("tmLeft");
     if (lp) lp.onchange = () => { setTradesLeft(t, Number(lp.value)); save(t); render(best);
-      toast(`Μένουν ${lp.value} Trades· οι προτάσεις προσαρμόστηκαν`); };
+      toast(L(`Μένουν ${lp.value} Trades· οι προτάσεις προσαρμόστηκαν`, `${lp.value} Trades left; the proposals adjusted`)); };
     const tr = document.getElementById("tmTrades");
     if (tr) tr.onclick = () => leftSheet(t, best);
   }
@@ -1237,7 +1240,7 @@
     document.querySelectorAll("#team [data-keep]").forEach((b) => b.onclick = () => {
       const id = Number(b.dataset.keep), r = row(id);
       setKept(ti, [...new Set([...kept(ti), id])]); render(best);
-      toast(`Κρατάς τον ${sur(r ? r.name : "")} — νέες προτάσεις`);
+      toast(L(`Κρατάς τον ${sur(r ? r.name : "")} — νέες προτάσεις`, `Keeping ${sur(r ? r.name : "")} — new proposals`));
     });
     document.querySelectorAll("#team [data-unkeep]").forEach((b) => b.onclick = () => {
       setKept(ti, kept(ti).filter((x) => x !== Number(b.dataset.unkeep))); render(best);
@@ -1245,7 +1248,7 @@
     document.querySelectorAll("#team [data-avoid]").forEach((b) => b.onclick = () => {
       const id = Number(b.dataset.avoid), r = row(id);
       setAvoided(ti, [...new Set([...avoided(ti), id])]); render(best);
-      toast(`Χωρίς τον ${sur(r ? r.name : "")} — νέες προτάσεις`);
+      toast(L(`Χωρίς τον ${sur(r ? r.name : "")} — νέες προτάσεις`, `Without ${sur(r ? r.name : "")} — new proposals`));
     });
     document.querySelectorAll("#team [data-unavoid]").forEach((b) => b.onclick = () => {
       setAvoided(ti, avoided(ti).filter((x) => x !== Number(b.dataset.unavoid))); render(best);
@@ -1460,7 +1463,7 @@
   if (typeof P === "undefined" || !GAME()) importFromHash();
   let justMoved = false;
   try { justMoved = !!sessionStorage.getItem("moved"); sessionStorage.removeItem("moved"); } catch (e) {}
-  if (justMoved) toastSoon("Η ομάδα και οι επιλογές σου ήρθαν στο coachdime.com");
+  if (justMoved) toastSoon(L("Η ομάδα και οι επιλογές σου ήρθαν στο coachdime.com", "Your team and settings came over to coachdime.com"));
   if (typeof P === "undefined" || !GAME()) adoptMove(justMoved);
   // the link pasted into a tab that already shows the app: only the #hash changes, no reload
   window.addEventListener("hashchange", () => {

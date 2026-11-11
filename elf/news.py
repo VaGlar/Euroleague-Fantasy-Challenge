@@ -246,15 +246,18 @@ team; never write a name in Greek, even when the article is Greek.
 Return ONLY JSON with this schema:
 {
  "availability": [{"player": "<exact roster name>", "status": "out|doubtful|questionable|available",
-                   "note": "<short, Greek>", "source": "<source name>"}],
+                   "note": "<short, Greek>", "note_en": "<the same note in English>", "source": "<source name>"}],
  "expert": [{"player": "<exact roster name>", "stance": "pick|avoid|captain",
-             "note": "<short, Greek>", "source": "<source name>"}],
+             "note": "<short, Greek>", "note_en": "<the same note in English>", "source": "<source name>"}],
  "round": <EuroLeague round the fantasy tips refer to, integer or null>,
- "summary_el": "<5-8 bullet points in Greek, formal-neutral, most fantasy-relevant first>"
+ "summary_el": "<5-8 bullet points in Greek, formal-neutral, most fantasy-relevant first>",
+ "summary_en": "<the same bullet points in English, same order, same facts>"
 }
 In summary_el the text is Greek, but every player is written in Latin letters as Name Surname from
 ROSTER (e.g. Jean Montero, not Γιαν Μοντέρο), and every club by its name in TEAMS (e.g. Crvena Zvezda);
 never translate or transliterate a name, and no quotation marks around names.
+summary_en and every note_en say exactly what the Greek says, in plain English, with the same
+player and club names.
 Only include players explicitly discussed. Do not guess injuries that are not stated.
 Items marked INJURY REPORT are a table: team | position | player | status | round(s) | comment.
 Map status: Out -> "out", Doubtful -> "doubtful", Questionable / Game-time / Uncertain -> "questionable",
@@ -368,6 +371,11 @@ def _normalize(d) -> dict:
     if isinstance(summ, list):
         summ = "\n".join(f"• {str(x).lstrip('•-* ').strip()}" for x in summ if str(x).strip())
     d["summary_el"] = str(summ or "")
+    if "summary_en" in d:              # the English edition of the page (same call, same facts)
+        en = d["summary_en"]
+        if isinstance(en, list):
+            en = "\n".join(f"• {str(x).lstrip('•-* ').strip()}" for x in en if str(x).strip())
+        d["summary_en"] = str(en or "")
     for key in ("availability", "expert"):
         items = d.get(key) if isinstance(d.get(key), list) else []
         d[key] = [{k: str(v) for k, v in it.items() if v is not None}
@@ -399,11 +407,14 @@ def repair(d: dict) -> dict:
     is dropped (the pick itself stays)."""
     fix = lambda s: _PCT_U.sub(lambda m: chr(int(m.group(1), 16)), s)
     d["summary_el"] = fix(d.get("summary_el", ""))
+    if "summary_en" in d:
+        d["summary_en"] = fix(d["summary_en"])
     for key in ("availability", "expert"):
         d[key] = [{k: fix(v) if isinstance(v, str) else v for k, v in it.items()} for it in d.get(key) or []]
         for it in d[key]:
-            if isinstance(it.get("note"), str) and any(_bad(w) for w in it["note"].split()):
-                del it["note"]
+            for k in ("note", "note_en"):
+                if isinstance(it.get(k), str) and any(_bad(w) for w in it[k].split()):
+                    del it[k]
     return d
 
 
@@ -567,6 +578,8 @@ def resolve_names(d: dict | None, roster: list[str], teams: dict | None = None) 
         return d
     find = _finder(roster)
     d["summary_el"] = latin_names(d.get("summary_el", ""), roster, teams)
+    if d.get("summary_en"):
+        d["summary_en"] = latin_names(d["summary_en"], roster, teams)
     for key in ("availability", "expert"):
         out = []
         for it in d.get(key) or []:
