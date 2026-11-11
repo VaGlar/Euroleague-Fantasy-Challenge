@@ -1503,7 +1503,7 @@
   {
    "round": 11,
    "trades": 2,
-   "bank": 0.0,
+   "bank": 0.3,
    "squad": [
     {
      "id": 3766,
@@ -1556,20 +1556,9 @@
      "person_id": "015164",
      "name": "BESSON, HUGO",
      "team": "ASV",
-     "role": "5άδα",
-     "captain": false,
-     "x_now": 13.4
-    },
-    {
-     "id": 11517,
-     "price": 9.6,
-     "position": "Guard",
-     "person_id": "015162",
-     "name": "WASHINGTON JR, TYTY",
-     "team": "ASV",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 13.1
+     "x_now": 13.4
     },
     {
      "id": 7424,
@@ -1581,6 +1570,17 @@
      "role": "πάγκος",
      "captain": false,
      "x_now": 13.0
+    },
+    {
+     "id": 3851,
+     "price": 9.3,
+     "position": "Guard",
+     "person_id": "011247",
+     "name": "FELIZ, ANDRES",
+     "team": "MAD",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 12.7
     },
     {
      "id": 3975,
@@ -1627,8 +1627,8 @@
      "x_now": 2.1
     }
    ],
-   "x_total": 121.1,
-   "decided_at": "2026-11-11T13:40+00:00"
+   "x_total": 120.6,
+   "decided_at": "2026-11-11T16:11+00:00"
   }
  ],
  "seed_id": "5a453a755a9b",
@@ -1639,5 +1639,5 @@
   "raw": 1105.4,
   "avg_raw": 946.6
  },
- "generated": "2026-11-11T13:40:29.644595+00:00"
+ "generated": "2026-11-11T16:11:46.214235+00:00"
 }
