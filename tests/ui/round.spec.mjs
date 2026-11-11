@@ -113,3 +113,22 @@ test("Round: «Για Captain» is the 5 best healthy court players by xFPT; the
   // each turn shown is the one he plays (fixtures: before the round, nobody has played yet)
   for (const r of five) await expect(cap.locator(`li[data-pid="${r.person_id}"]`)).toContainText(`Turn ${r.turn}`);
 });
+
+// Known bug (owner, 11/11): within a round the captain can move only to a player who hasn't played yet,
+// so «Για Captain» must leave out who has played. Today the list keeps him, with «Turn n».
+// Pinned with test.fail(): it turns red when the bug is fixed; then drop the test.fail line.
+test("Round: «Για Captain» leaves out a player who has already played this round", async ({ page }) => {
+  test.fail(true, "KNOWN BUG: «Για Captain» keeps players who already played (report 2026-11-11, §2.2)");
+  const healthy = (r) => r.avail_game == null || r.avail_game >= 1;
+  const best = PRED.players.filter((r) => r.x_now != null && r.position !== "Head Coach" && healthy(r))
+    .sort((a, b) => b.x_now - a.x_now)[0];
+  await page.route(/\/predictions\.json(\?|$)/, async (route) => {
+    const r = await route.fetch(), j = await r.json();
+    for (const p of j.players) if (p.person_id === best.person_id) p.actual = 30;      // his game is over
+    await route.fulfill({ response: r, json: j });
+  });
+  await open(page, "public");
+  const cap = page.locator("#today .td-col .card").first();
+  await expect(cap.locator("li[data-pid]").first()).toBeVisible();
+  await expect(cap.locator(`li[data-pid="${best.person_id}"]`)).toHaveCount(0);
+});
