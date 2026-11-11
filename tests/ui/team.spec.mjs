@@ -7,11 +7,14 @@ const court = (page) => page.locator(`${C} .chip[data-fid]`);
 const header = (page) => page.locator("#team .tm-top");
 const tradeRows = (page) => page.locator("#team li.tm-item.tm-trade");
 
-// «Undo all»: a button on wide screens; on phones in ▾ (a native select) next to ↶
-async function undoAll(page) {
-  if (await page.locator("#mUsed").isVisible()) await page.locator("#mUsed").click();
-  else await page.locator("#mUndoSel").selectOption("all");
+// «Undo all», «Save» and the trades left are in «⋯ Επιλογές»; only ↶ stays on the screen
+async function fromMenu(page, id) {
+  await page.locator("#tmMore").click();
+  await page.locator(`#tmMenu #${id}`).click();
 }
+const undoAll = (page) => fromMenu(page, "mUsed");
+// the steps' text, the folded ones included (innerText skips a closed <details>)
+const stepsText = async (page) => (await page.locator("#tmTodo li.tm-item").allTextContents()).join("\n");
 
 async function savedTeam(page) {
   await open(page, "public", { tab: "team" });
@@ -21,6 +24,29 @@ async function savedTeam(page) {
 }
 
 test.describe("public edition", () => {
+  test("set-up: a new user starts from the proposed team, swaps a player, saves", async ({ page }) => {
+    await open(page, "public", { tab: "team" });
+    await page.locator("#tmStartBest").click();
+    await expect(page.locator("#team .tm-setchip")).toHaveCount(11);
+    await expect(page.locator("#tmStartBest")).toHaveCount(0);
+    const best = await page.evaluate(() => P.best_team.team.map((p) => p.id).sort((a, b) => a - b));
+    const ids = await page.locator("#team .tm-setchip").evaluateAll((els) => els.map((e) => Number(e.dataset.set)).sort((a, b) => a - b));
+    expect(ids).toEqual(best);
+    // today's prices are the purchase prices until the user writes his own
+    const prices = await page.evaluate(() => P.best_team.team.map((p) => P.players.find((r) => r.fantasy_id === p.id)?.price));
+    expect(prices.every((x) => x != null)).toBeTruthy();
+    // a player he doesn't have: out, and the place is free again
+    await page.locator("#team .tm-setchip").first().click();
+    await page.locator("#tmSetRm").click();
+    await expect(page.locator("#team .tm-setchip")).toHaveCount(10);
+    await expect(page.locator("#tmFinish")).toBeDisabled();
+    await page.locator("#team .tm-slot").first().click();
+    await page.locator("#sheet [data-p]").first().click();
+    await expect(page.locator("#tmFinish")).toBeEnabled();
+    await page.locator("#tmFinish").click();
+    await expect(court(page)).toHaveCount(11);
+  });
+
   test("set-up: empty court, pick 11, purchase price, over-budget warning, remove, save", async ({ page }) => {
     const errors = await open(page, "public", { tab: "team" });
     await expect(page.locator("#team .tm-h")).toHaveText("Φτιάξε την ομάδα σου");
@@ -455,10 +481,14 @@ test.describe("public edition", () => {
     await page.locator("#tmConfirm").click();
     await tradeRows(page).first().locator(".tm-done").click();              // e.g. last round's trade, recorded late
     const mark = await stored(page);
-    await page.locator("#mCp").click();                                     // next to the undo buttons
+    await fromMenu(page, "mCp");
     await page.locator("#tmCpOk").click();
     await expect(header(page)).toContainText("Trades 1/4");
-    await expect(page.locator("#mUsed, #mUndoLast")).toHaveCount(0);        // nothing to undo at the mark
+    await expect(page.locator("#mUndoLast")).toHaveCount(0);                // nothing to undo at the mark
+    await page.locator("#tmMore").click();
+    await expect(page.locator("#tmMenu #mCp")).toBeVisible();
+    await expect(page.locator("#tmMenu #mUsed")).toHaveCount(0);
+    await header(page).locator("h2").click();                               // closes the menu
     await tradeRows(page).first().locator(".tm-done").click();
     await expect(header(page)).toContainText("Trades 2/4");
     await undoAll(page);
@@ -476,11 +506,12 @@ test.describe("public edition", () => {
     await page.locator("#tmConfirm").click();
     expect(await tradeRows(page).count()).toBeLessThanOrEqual(1);   // not 4 again
 
-    await page.locator("#tmTrades").click();                       // and later, from «Trades x/4» in the header
+    await expect(page.locator("#tmTrades")).toHaveCount(0);         // the header only shows the count
+    await fromMenu(page, "mTrades");                                // and later, from «⋯ Επιλογές»
     await page.locator('#sheet [data-left="0"]').click();
     await expect(header(page)).toContainText("Trades 4/4");
     await expect(tradeRows(page)).toHaveCount(0);
-    await page.locator("#tmTrades").click();
+    await fromMenu(page, "mTrades");
     await page.locator('#sheet [data-left="4"]').click();
     await expect(header(page)).toContainText("Trades 0/4");
     await expect(tradeRows(page).first()).toBeVisible();
@@ -692,17 +723,17 @@ test.describe("personal edition", () => {
     const name = (await btn.getAttribute("title")).match(/Όχι τον (.+), πρότεινε/)[1].trim();
     await btn.click();
     await expect(page.locator("#team .tm-kept")).toContainText(name);
-    expect((await page.locator("#team .tm-list").innerText()).includes(`vs ${name}`)).toBeFalsy();
+    expect((await stepsText(page)).includes(`vs ${name}`)).toBeFalsy();
   });
 
   test("«Κράτα τον» re-plans and the expected points with the plan follow", async ({ page }) => {
     await open(page, "personal", { tab: "team" });
     const planned = () => header(page).locator(".tm-planned").innerText();
     const before = await planned();
-    const trades = await page.locator("#team .tm-list").innerText();
+    const trades = await stepsText(page);
     await page.locator("#team [data-keep]").first().click();
     await expect(page.locator("#team .tm-kept")).toBeVisible();
-    expect(await page.locator("#team .tm-list").innerText()).not.toEqual(trades);
+    expect(await stepsText(page)).not.toEqual(trades);
     expect(await planned()).not.toEqual(before);
     await page.locator("#team [data-unkeep]").first().click();
     await expect(header(page).locator(".tm-planned")).toHaveText(before);
@@ -775,29 +806,44 @@ test("phones: a line above the court says how many steps are left and takes you 
   await checkLayout(page, "steps line");
 });
 
-test("Undo on phones: ↶ takes the last step, ▾ offers «Undo last» / «Undo all»; Save next to them; Credits ✎", async ({ page }, testInfo) => {
+test("the toolbar keeps only ↶ and Credits ✎; «Undo all», «Save» and the trades left are in «⋯ Επιλογές»", async ({ page }, testInfo) => {
   await savedTeam(page);
   await page.locator("#tmConfirm").click();
   await tradeRows(page).first().locator(".tm-done").click();
   await tradeRows(page).first().locator(".tm-done").click();
   await expect(header(page)).toContainText("Trades 2/4");
-  await expect(page.locator("#team .tm-toolbar #mCp")).toBeVisible();
+  await expect(page.locator("#team .tm-toolbar button")).toHaveCount(1);     // ↶ only
   await expect(page.locator("#tmBankEdit")).toContainText("✎");
-  await expect(page.locator("#mBank")).toHaveCount(0);                     // no longer in «⋯ Επιλογές»
+  await expect(page.locator("#mBank")).toHaveCount(0);
   if (isPhone(testInfo)) {
     await expect(page.locator("#mUndoLast .tm-ico")).toBeVisible();           // ↶, not the word
     await expect(page.locator("#mUndoLast .tm-lbl")).toBeHidden();
-    await expect(page.locator("#mUsed")).toBeHidden();
-    await page.locator("#mUndoLast").click();
-    await expect(header(page)).toContainText("Trades 1/4");
-    await expect(page.locator("#mUndoSel option")).toHaveText(["Αναίρεση", "Undo last", "Undo all"]);
-    await checkLayout(page, "undo bar");
-    await page.locator("#mUndoSel").selectOption("last");
-    await expect(header(page)).toContainText("Trades 0/4");
   } else {
     await expect(page.locator("#mUndoLast .tm-lbl")).toBeVisible();           // the word, not ↶
     await expect(page.locator("#mUndoLast .tm-ico")).toBeHidden();
-    await expect(page.locator("#mUndoSel")).toBeHidden();
-    await expect(page.locator("#mUsed")).toBeVisible();
   }
+  await page.locator("#mUndoLast").click();
+  await expect(header(page)).toContainText("Trades 1/4");
+  await page.locator("#tmMore").click();
+  for (const id of ["mUsed", "mCp", "mTrades"]) await expect(page.locator(`#tmMenu #${id}`)).toBeVisible();
+  await checkLayout(page, "options menu");
+  await page.locator("#tmMenu #mUsed").click();
+  await page.locator("#tmUndoOk").click();
+  await expect(header(page)).toContainText("Trades 0/4");
+});
+
+test("To do: the next step in front, the others folded under «+n βήματα ακόμα»; open stays open", async ({ page }) => {
+  await savedTeam(page);
+  await expect(page.locator("#tmTodo .tm-next-h")).toHaveText(/Επόμενο βήμα/i);
+  await expect(page.locator("#tmTodo .tm-next li")).toHaveCount(1);
+  await expect(page.locator("#tmTodo .tm-next #tmConfirm")).toBeVisible();   // first: «is it the same team?»
+  const all = page.locator("#tmTodo details.tm-all");
+  await expect(all).not.toHaveAttribute("open", "");
+  await expect(tradeRows(page).first()).toBeHidden();
+  await page.locator("#tmConfirm").click();
+  await expect(page.locator("#tmTodo .tm-next li.tm-trade")).toHaveCount(1);  // then the first trade
+  await all.locator("summary").click();
+  await expect(tradeRows(page).nth(1)).toBeVisible();
+  await tradeRows(page).first().locator(".tm-done").click();                  // a re-render keeps it open
+  await expect(page.locator("#tmTodo details.tm-all")).toHaveAttribute("open", "");
 });
