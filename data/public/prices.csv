@@ -3564,12 +3564,12 @@ fantasy_id,person_id,first_name,last_name,team,position,price,matchday,is_injure
 12470,013141,Georgios,Bourneles,OLY,Guard,4.0,10,False,1.0,,1.7
 12471,015159,Iason,Varvaritis,PAN,Guard,4.0,10,False,1.0,,1.4
 12517,012879,Abdu,Kone,BAR,Center,4.0,10,False,1.0,,3.7
-3766,003469,Sasha,Vezenkov,OLY,Forward,18.9,11,False,1.0,,45.9
+3766,003469,Sasha,Vezenkov,OLY,Forward,18.9,11,False,1.0,,46.0
 3903,009846,Elijah,Bryant,HTA,Guard,17.7,11,False,1.0,,16.1
 11549,000898,Jonas,Valanciunas,ZAL,Center,16.9,11,False,1.0,,16.3
 3795,012608,TJ,Shorts,PAM,Guard,16.8,11,False,1.0,,24.3
 3768,003842,Mathias,Lessort,PAN,Center,16.7,11,False,1.0,,14.9
-3834,012640,Nadir,Hifi,PRS,Guard,16.2,11,False,1.0,,9.3
+3834,012640,Nadir,Hifi,PRS,Guard,16.2,11,False,1.0,,9.2
 4233,012796,Mfiondu,Kabengele,DUB,Center,15.7,11,False,1.0,,6.4
 3769,005791,Walter,Tavares,MAD,Center,15.2,11,False,1.0,,3.5
 3765,005985,Mike,James,IST,Guard,15.0,11,True,0.0,,0.4
@@ -3667,7 +3667,7 @@ fantasy_id,person_id,first_name,last_name,team,position,price,matchday,is_injure
 11503,014732,Marjon,Beauchamp,MUN,Forward,9.2,11,False,1.0,,0.3
 3864,012080,Timothé,Luwawu-Cabarrot,MAD,Forward,9.1,11,False,1.0,,3.0
 3872,CWX,Pedro,Martinez,MAD,Head Coach,9.1,11,False,1.0,,2.2
-7209,014009,Lamar,Stevens,PAR,Forward,9.1,11,False,1.0,,5.8
+7209,014009,Lamar,Stevens,PAR,Forward,9.1,11,False,1.0,,5.7
 11532,014742,Ethan,Thompson,PAR,Guard,9.1,11,False,1.0,,2.4
 3934,006760,Isaac,Bonga,PAN,Forward,9.0,11,False,1.0,,2.2
 3946,004508,Andreas,Obst,MUN,Guard,9.0,11,False,1.0,,2.0
