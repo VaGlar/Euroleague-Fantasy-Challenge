@@ -1556,7 +1556,7 @@
      "person_id": "015164",
      "name": "BESSON, HUGO",
      "team": "ASV",
-     "role": "πάγκος",
+     "role": "6ος",
      "captain": false,
      "x_now": 13.4
     },
@@ -1611,7 +1611,7 @@
      "person_id": "001255",
      "name": "PAPANIKOLAOU, KOSTAS",
      "team": "OLY",
-     "role": "6ος",
+     "role": "πάγκος",
      "captain": false,
      "x_now": 3.6
     },
@@ -1639,6 +1639,16 @@
      ],
      "captain": null,
      "at": "2026-11-12T08:24+00:00"
+    },
+    "3": {
+     "in": [
+      11519
+     ],
+     "out": [
+      3867
+     ],
+     "captain": null,
+     "at": "2026-11-12T23:11+00:00"
     }
    }
   },
@@ -1656,7 +1666,7 @@
      "team": "OLY",
      "role": "5άδα",
      "captain": false,
-     "x_now": 23.4
+     "x_now": 24.6
     },
     {
      "id": 11549,
@@ -1667,29 +1677,40 @@
      "team": "ZAL",
      "role": "5άδα",
      "captain": false,
-     "x_now": 20.5
+     "x_now": 23.3
     },
     {
-     "id": 8567,
-     "price": 12.3,
-     "position": "Guard",
-     "person_id": "014124",
-     "name": "HORTON TUCKER, TALEN",
-     "team": "ULK",
+     "id": 7221,
+     "price": 12.6,
+     "position": "Forward",
+     "person_id": "008192",
+     "name": "TUBELIS, AZUOLAS",
+     "team": "ZAL",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 15.9
+    },
+    {
+     "id": 8846,
+     "price": 9.0,
+     "position": "Center",
+     "person_id": "009733",
+     "name": "JEKIRI, TONYE",
+     "team": "PAR",
      "role": "5άδα",
      "captain": true,
-     "x_now": 16.9
+     "x_now": 15.1
     },
     {
-     "id": 7424,
-     "price": 10.8,
-     "position": "Center",
-     "person_id": "014108",
-     "name": "DIARRA, ALIOU",
-     "team": "VIR",
+     "id": 8815,
+     "price": 10.2,
+     "position": "Guard",
+     "person_id": "014213",
+     "name": "PAYNE, CAMERON",
+     "team": "IST",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 13.0
+     "x_now": 13.7
     },
     {
      "id": 3851,
@@ -1698,20 +1719,20 @@
      "person_id": "011247",
      "name": "FELIZ, ANDRES",
      "team": "MAD",
-     "role": "πάγκος",
-     "captain": false,
-     "x_now": 12.1
-    },
-    {
-     "id": 13936,
-     "price": 7.9,
-     "position": "Forward",
-     "person_id": "015400",
-     "name": "FRANKS, ROBERT",
-     "team": "PAR",
      "role": "5άδα",
      "captain": false,
-     "x_now": 9.7
+     "x_now": 13.5
+    },
+    {
+     "id": 4006,
+     "price": 7.3,
+     "position": "Head Coach",
+     "person_id": "ACX",
+     "name": "MASIULIS, TOMAS",
+     "team": "ZAL",
+     "role": "coach",
+     "captain": false,
+     "x_now": 8.4
     },
     {
      "id": 3975,
@@ -1720,20 +1741,9 @@
      "person_id": "012611",
      "name": "HERRERA, SEBASTIAN",
      "team": "PRS",
-     "role": "5άδα",
+     "role": "6ος",
      "captain": false,
      "x_now": 7.4
-    },
-    {
-     "id": 3897,
-     "price": 8.6,
-     "position": "Head Coach",
-     "person_id": "ADG",
-     "name": "JASIKEVICIUS, SARAS",
-     "team": "ULK",
-     "role": "coach",
-     "captain": false,
-     "x_now": 6.2
     },
     {
      "id": 4005,
@@ -1747,30 +1757,30 @@
      "x_now": 5.4
     },
     {
-     "id": 3867,
-     "price": 4.2,
-     "position": "Forward",
-     "person_id": "001255",
-     "name": "PAPANIKOLAOU, KOSTAS",
-     "team": "OLY",
+     "id": 11541,
+     "price": 4.3,
+     "position": "Guard",
+     "person_id": "014741",
+     "name": "CARDENAS, ALVARO",
+     "team": "PAM",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 3.6
+     "x_now": 4.8
     },
     {
-     "id": 3971,
-     "price": 4.1,
-     "position": "Guard",
-     "person_id": "004761",
-     "name": "MARINKOVIC, VANJA",
-     "team": "PAR",
-     "role": "6ος",
+     "id": 4061,
+     "price": 4.5,
+     "position": "Forward",
+     "person_id": "008084",
+     "name": "MANTZOUKAS, ELEFTHERIOS",
+     "team": "PAN",
+     "role": "πάγκος",
      "captain": false,
-     "x_now": 3.5
+     "x_now": 2.1
     }
    ],
-   "x_total": 123.2,
-   "decided_at": "2026-11-12T16:10+00:00"
+   "x_total": 136.9,
+   "decided_at": "2026-11-12T23:11+00:00"
   }
  ],
  "seed_id": "5a453a755a9b",
@@ -1781,5 +1791,5 @@
   "raw": 1105.4,
   "avg_raw": 946.6
  },
- "generated": "2026-11-12T16:10:29.072287+00:00"
+ "generated": "2026-11-12T23:11:38.913923+00:00"
 }
