@@ -1,6 +1,15 @@
 {
  "articles": [
   {
+   "title": "EuroLeague Fantasy winners and losers, Round 11: Wednesday",
+   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/euroleague-fantasy-winners-and-losers-round-11-wednesday/",
+   "date": "2026-11-12T00:09:41.957000+00:00",
+   "source": "EuroLeague Fantasy Tips (official)",
+   "weight": 2,
+   "fantasy": true,
+   "report": false
+  },
+  {
    "title": "EuroLeague Fantasy Round 11 Tips: Best Player Picks & Head Coaches",
    "url": "https://basketballsphere.com/en/euroleague-fantasy-26-27-round-11-best-picks/",
    "date": "2026-11-10T08:57:12+00:00",
@@ -64,12 +73,21 @@
    "report": false
   },
   {
-   "title": "EuroLeague Fantasy winners and losers, Round 10: Wednesday",
-   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/euroleague-fantasy-winners-and-losers-round-10-wednesday/",
-   "date": "2026-11-04T23:56:39.185000+00:00",
-   "source": "EuroLeague Fantasy Tips (official)",
-   "weight": 2,
-   "fantasy": true,
+   "title": "Ολυμπιακός: Θα επανέλθει για Βάργκας σύμφωνα με τους Ισπανούς",
+   "url": "https://www.gazzetta.gr/football/superleague/2585755/olympiakos-tha-epanelthei-gia-bargkas-symfona-me-toys-ispanoys",
+   "date": "2026-11-12T01:12:49+02:00",
+   "source": "Gazzetta",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Game of the season? Hifi pushes Paris past Fener in OT thriller",
+   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/game-of-the-season-hifi-pushes-paris-past-fener-in-ot-thriller/",
+   "date": "2026-11-11T23:10:23.385000+00:00",
+   "source": "EuroLeague (official)",
+   "weight": 1,
+   "fantasy": false,
    "report": false
   },
   {
@@ -388,7 +406,7 @@
    "report": false
   },
   {
-   "title": "Injury report, Round 11: Nicolo Melli out for Fenerbahce; No Allman or Stevens for Partizan",
+   "title": "Injury report, Round 11: Justin Anderson ready for season debut; Johnathan Motley out for Zvezda",
    "url": "https://www.euroleaguebasketball.net/en/euroleague/news/euroleague-injury-report-round-11-fantasy/",
    "date": "2026-11-11T16:42:54.464000+00:00",
    "source": "EuroLeague (official)",
@@ -406,7 +424,7 @@
    "report": false
   },
   {
-   "title": "Game Center: Hifi wins it for Paris at the buzzer",
+   "title": "Game Center: Wednesday dramas sees Paris, Partizan win",
    "url": "https://www.euroleaguebasketball.net/en/euroleague/news/euroleague-game-center-round-11-el2627/",
    "date": "2026-11-11T16:17:03.532000+00:00",
    "source": "EuroLeague (official)",
@@ -415,7 +433,7 @@
    "report": false
   },
   {
-   "title": "Pregame quotes, Round 11: 'We need to be ready for everything'",
+   "title": "Pregame quotes, Round 11: 'It's a derby, so I'm taking us'",
    "url": "https://www.euroleaguebasketball.net/en/euroleague/news/pregame-quotes-round-11-el2627/",
    "date": "2026-11-11T16:02:44.130000+00:00",
    "source": "EuroLeague (official)",
@@ -670,303 +688,252 @@
  "digest": {
   "availability": [
    {
-    "player": "MELLI, NICOLO",
-    "status": "out",
-    "note": "Εκτός μάχης για τη Φενέρμπαχτσε.",
-    "note_en": "Out for Fenerbahce.",
+    "player": "ANDERSON, JUSTIN",
+    "status": "available",
+    "note": "Έτοιμος για το ντεμπούτο του στη σεζόν.",
+    "note_en": "Ready for his season debut.",
     "source": "EuroLeague (official)"
    },
    {
-    "player": "ALLMAN, KYLE",
+    "player": "MOTLEY, JOHNATHAN",
     "status": "out",
-    "note": "Εκτός για την Παρτιζάν.",
-    "note_en": "Out for Partizan.",
-    "source": "EuroLeague (official)"
-   },
-   {
-    "player": "STEVENS, LAMAR",
-    "status": "out",
-    "note": "Εκτός για την Παρτιζάν.",
-    "note_en": "Out for Partizan.",
+    "note": "Εκτός για τον Ερυθρό Αστέρα.",
+    "note_en": "Out for Zvezda.",
     "source": "EuroLeague (official)"
    },
    {
     "player": "KOLOKO, CHRISTIAN",
     "status": "out",
-    "note": "Εκτός αποστολής για τη Μαδρίτη λόγω προβλημάτων βίζας.",
-    "note_en": "Out of the trip to Madrid due to visa issues.",
+    "note": "Δεν ταξίδεψε στη Μαδρίτη λόγω προβλημάτων βίζας.",
+    "note_en": "Did not travel to Madrid due to visa issues.",
     "source": "Eurohoops"
-   },
-   {
-    "player": "MILJENOVIC, STEFAN",
-    "status": "out",
-    "note": "Εκτός δράσης μετά από εγχείρηση στον αστράγαλο.",
-    "note_en": "Out after ankle surgery.",
-    "source": "EuroLeague (official)"
    },
    {
     "player": "CAMPAZZO, FACUNDO",
     "status": "out",
-    "note": "Τραυματίας, εκτός για τη Ρεάλ Μαδρίτης.",
-    "note_en": "Injured, out for Real Madrid.",
+    "note": "Εκτός λόγω τραυματισμού.",
+    "note_en": "Out due to injury.",
     "source": "Eurohoops"
    },
    {
     "player": "DECK, GABRIEL",
     "status": "out",
-    "note": "Τραυματίας, εκτός για τη Ρεάλ Μαδρίτης.",
-    "note_en": "Injured, out for Real Madrid.",
+    "note": "Εκτός λόγω τραυματισμού.",
+    "note_en": "Out due to injury.",
     "source": "Eurohoops"
    },
    {
     "player": "GARUBA, USMAN",
     "status": "out",
-    "note": "Τραυματίας, εκτός για τη Ρεάλ Μαδρίτης.",
-    "note_en": "Injured, out for Real Madrid.",
+    "note": "Εκτός λόγω τραυματισμού.",
+    "note_en": "Out due to injury.",
     "source": "Eurohoops"
    },
    {
     "player": "JANTUNEN, MIKAEL",
     "status": "out",
-    "note": "Τραυματίας, εκτός για τη Ρεάλ Μαδρίτης.",
-    "note_en": "Injured, out for Real Madrid.",
+    "note": "Εκτός λόγω τραυματισμού.",
+    "note_en": "Out due to injury.",
     "source": "Eurohoops"
    },
    {
     "player": "MALEDON, THEO",
     "status": "out",
-    "note": "Τραυματίας, εκτός για τη Ρεάλ Μαδρίτης.",
-    "note_en": "Injured, out for Real Madrid.",
+    "note": "Εκτός λόγω τραυματισμού.",
+    "note_en": "Out due to injury.",
     "source": "Eurohoops"
-   },
-   {
-    "player": "DORSEY, TYLER",
-    "status": "out",
-    "note": "Εκτός ομάδας λόγω πειθαρχικής ποινής.",
-    "note_en": "Out of the team due to a disciplinary penalty.",
-    "source": "Novasports"
-   },
-   {
-    "player": "LUNDBERG, IFFE",
-    "status": "out",
-    "note": "Μη διαθέσιμος για τη Μακάμπι Τελ Αβίβ.",
-    "note_en": "Unavailable for Maccabi Tel Aviv.",
-    "source": "Basketball Sphere – Fantasy"
    }
   ],
   "expert": [
    {
     "player": "BRYANT, ELIJAH",
     "stance": "pick",
-    "note": "Εξαιρετική επιλογή για τη 11η αγωνιστική χάρη στο ευνοϊκό πρόγραμμα της Hapoel Tel Aviv.",
-    "note_en": "Great option for Round 11 thanks to Hapoel Tel Aviv's favorable schedule.",
+    "note": "Εξαιρετική εμφάνιση πρόσφατα και ευνοϊκό πρόγραμμα αγώνων.",
+    "note_en": "Superb recent performance and a very favourable schedule.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "JONES, CARLIK",
     "stance": "pick",
-    "note": "Προτείνεται παρά το ντεφορμέ, λόγω των συνεχόμενων εντός έδρας αγώνων της Partizan.",
-    "note_en": "Recommended despite poor form due to Partizan's consecutive home games.",
+    "note": "Ευκαιρία να βγει από το αρνητικό σερί με τρία συνεχόμενα εντός έδρας παιχνίδια.",
+    "note_en": "An opportunity to end his negative run with three consecutive home games.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "HORTON TUCKER, TALEN",
     "stance": "pick",
-    "note": "Ενδιαφέρουσα επιλογή και πιθανός αρχηγός για τη Fenerbahce.",
-    "note_en": "Interesting pick and potential captain option for Fenerbahce.",
+    "note": "ελκυστική επιλογή και πιθανή επιλογή αρχηγού την πρώτη ημέρα.",
+    "note_en": "An appealing pick and potentially a strong captaincy option on the first day.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "WATERS, TREMONT",
     "stance": "pick",
-    "note": "Οικονομική και ενδιαφέρουσα επιλογή για την ASVEL σε παιχνίδι με υψηλό σκορ.",
-    "note_en": "Affordable and interesting option for ASVEL in a high-scoring game.",
+    "note": "Ενδιαφέρουσα επιλογή σε αναμέτμηση που αναμένεται με υψηλό σκορ.",
+    "note_en": "An interesting option in a matchup expected to be high-scoring.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "CLARK III, JIMMY",
     "stance": "pick",
-    "note": "Αξιόλογη επιλογή λόγω αυξημένου ρόλου στη Maccabi Tel Aviv.",
-    "note_en": "Notable option due to an increased role at Maccabi Tel Aviv.",
+    "note": "Αυξημένος ρόλος λόγω της απουσίας του Iffe Lundberg στο ισραηλινό ντέρμπι.",
+    "note_en": "Increased role due to Iffe Lundberg's absence in the Israeli derby.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "SAINT-SUPERY, MARIO",
     "stance": "pick",
-    "note": "Εξαιρετική value for money επιλογή στη χαμηλότερη τιμή για τη Valencia Basket.",
-    "note_en": "Excellent budget value option at minimum price for Valencia Basket.",
+    "note": "Εξαιρετική επιλογή χαμηλού προϋπολογισμού με αυξημένο χρόνο συμμετοχής.",
+    "note_en": "An excellent budget option with increased playing time.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "VEZENKOV, SASHA",
     "stance": "pick",
-    "note": "Παραμένει σταθερή αξία και κορυφαία επιλογή για το ρόστερ.",
-    "note_en": "Remains a consistent asset and top pick for the roster.",
+    "note": "Εξαιρετικά σταθερός και με κίνητρο μετά την ήττα.",
+    "note_en": "Remarkably consistent and motivated following the defeat.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "TUBELIS, AZUOLAS",
     "stance": "pick",
-    "note": "Ανεβασμένος και αποδοτικός παίκτης για τη Zalgiris Kaunas.",
-    "note_en": "In-form and efficient player for Zalgiris Kaunas.",
+    "note": "Αξιόλογη επιλογή παρά τα σκαμπανεβάσματα στον χρόνο συμμετοχής.",
+    "note_en": "A very good option despite fluctuations in playing time.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "BRISSETT, O'SHAE J",
     "stance": "pick",
-    "note": "Σταθερός χρόνος συμμετοχής και προοπτική για τη Maccabi Tel Aviv.",
-    "note_en": "Stable playing time and upside for Maccabi Tel Aviv.",
+    "note": "Σταθερός ρόλος και συνεπής απόδοση στα φτερά.",
+    "note_en": "Stable role and consistent production on the wings.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "STEVENS, LAMAR",
     "stance": "pick",
-    "note": "Εξαιρετική προσθήκη για την Partizan με εξαιρετική πρόσφατη εμφάνιση.",
-    "note_en": "Excellent addition for Partizan following a great recent performance.",
+    "note": "Εξαιρετική προσθήκη με καλή παρουσία απέναντι στη Baskonia.",
+    "note_en": "An excellent addition with a favourable matchup against Baskonia.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "DIARRA, ALIOU",
-    "stance": "avoid",
-    "note": "Προτείνεται πώληση λόγω δύσκολου προγράμματος για τη Virtus Bologna.",
-    "note_en": "Recommended to sell due to a tough upcoming schedule for Virtus Bologna.",
-    "source": "Basketball Sphere – Fantasy"
-   },
-   {
-    "player": "HIFI, NADIR",
-    "stance": "avoid",
-    "note": "Προτείνεται πώληση παρά τη φόρμα του, λόγω δύσκολου προγράμματος της Paris Basketball.",
-    "note_en": "Recommended to sell despite his form due to Paris Basketball's tough schedule.",
-    "source": "Basketball Sphere – Fantasy"
-   },
-   {
-    "player": "FELIZ, ANDRES",
-    "stance": "avoid",
-    "note": "Προτείνεται πώληση από τους αναλυτές της Basketball Sphere.",
-    "note_en": "Recommended to sell by Basketball Sphere analysts.",
-    "source": "Basketball Sphere – Fantasy"
+    "stance": "pick",
+    "note": "Συνεχίζει να αποδίδει εξαιρετικά παρά τα προβλήματα με τα φάουλ.",
+    "note_en": "Continues to deliver night in and night out despite foul trouble.",
+    "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "DIOP, OUSMANE",
     "stance": "pick",
-    "note": "Εξαιρετικά φθηνή και χαμηλού ρίσκου επιλογή σέντερ για την Armani Olimpia Milan.",
-    "note_en": "Extremely cheap and low-risk center option for Armani Olimpia Milan.",
+    "note": "Πολύ φτηνή επιλογή σέντερ με υψηλό δυναμικό και χαμηλό ρίσκο.",
+    "note_en": "A really cheap center option with high potential and low risk.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "FARIED, KENNETH",
     "stance": "pick",
-    "note": "Αξιόπιστος παίκτης και X-factor για τη Kosner Baskonia Vitoria-Gasteiz.",
-    "note_en": "Reliable player and X-factor for Kosner Baskonia Vitoria-Gasteiz.",
+    "note": "Σταθερός και αξιόπιστος ως X-factor.",
+    "note_en": "Rock-solid and reliable as an X-factor.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "OTURU, DAN",
     "stance": "pick",
-    "note": "Σταθερά βελτιωμένος και συμπαγής σέντερ για την Hapoel Tel Aviv.",
-    "note_en": "Consistently improving and solid center for Hapoel Tel Aviv.",
+    "note": "Βελτιωμένος στα τελευταία παιχνίδια, ιδανικός για το ισραηλινό ντέρμπι.",
+    "note_en": "Doing better in recent games, solid for the derby.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "VALANCIUNAS, JONAS",
     "stance": "pick",
-    "note": "Απαραίτητος σέντερ για κάθε καλή ομάδα, με εξαιρετική φόρμα στη Zalgiris Kaunas.",
-    "note_en": "Essential center for any good team, in great form for Zalgiris Kaunas.",
+    "note": "Απαραίτητος παίκτης με εξαιρετική συνέπεια και ανοδική πορεία.",
+    "note_en": "An essential option with great consistency and growing role.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "ABALDE, ALBERTO",
     "stance": "pick",
-    "note": "Απαραίτητος value παίκτης για τη Real Madrid λόγω απουσιών.",
-    "note_en": "Essential value player for Real Madrid due to absences.",
+    "note": "Βασική επιλογή αξίας λόγω των απουσιών στην Real Madrid.",
+    "note_en": "An essential value player due to absences at Real Madrid.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "GACH, BOTH",
     "stance": "pick",
-    "note": "Επιλογή με χαμηλή ιδιοκτησία και αυξημένα κίνητρα για την LDLC ASVEL Villeurbanne.",
-    "note_en": "Low-ownership option with extra motivation for LDLC ASVEL Villeurbanne.",
+    "note": "Ανεβασμένος και με επιπλέον κίνητρο απέναντι στη Besiktas.",
+    "note_en": "Playing better and extra motivated against Besiktas.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "LUCIC, VLADIMIR",
     "stance": "pick",
-    "note": "Εξαιρετική φόρμα και χαμηλή ιδιοκτησία για τον παίκτη της FC Bayern Munich.",
-    "note_en": "Great form and low ownership for the FC Bayern Munich player.",
+    "note": "Εξαιρετική φόρμα και ιστορία με την αντίπαλο.",
+    "note_en": "Playing really well lately with history against the opponent.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "MALCOLM, COLLIN",
     "stance": "pick",
-    "note": "«Λαβράκι» σε τιμή ευκαιρίας για την Anadolu Efes Istanbul.",
-    "note_en": "Steal at a bargain price for Anadolu Efes Istanbul.",
+    "note": "Αυξημένος χρόνος συμμετοχής και εξαιρετική απόδοση.",
+    "note_en": "Different role with over 30 minutes and great scores.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "BRIZUELA, DARIO",
     "stance": "pick",
-    "note": "Εξαιρετική τιμή και δυνατές εμφανίσεις για την FC Barcelona.",
-    "note_en": "Great price and strong performances for FC Barcelona.",
+    "note": "Εξαιρετική ευκαιρία σε χαμηλή τιμή για την FC Barcelona.",
+    "note_en": "A real bargain for the price for FC Barcelona.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "FELIZ, ANDRES",
     "stance": "pick",
-    "note": "Ο πιο δημοφιλής γκαρντ με τεράστια προσφορά στη Real Madrid.",
-    "note_en": "The most popular guard with huge value for Real Madrid.",
+    "note": "Ο πιο δημοφιλής γκαρντ λόγω ηγετικού ρόλου και χαμηλού κόστους.",
+    "note_en": "The most popular guard due to his main ballhandler role and low cost.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "HIFI, NADIR",
     "stance": "pick",
-    "note": "Ασταμάτητος στα τελευταία παιχνίδια για την Paris Basketball.",
-    "note_en": "Unstoppable in recent games for Paris Basketball.",
+    "note": "Ασταμάτητος στα τελευταία παιχνίδια επιστρέφοντας από τραυματισμό.",
+    "note_en": "Unstoppable over the last few games returning from injury.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "NUNN, KENDRICK",
     "stance": "pick",
-    "note": "Κορυφαία επιλογή, ειδικά στα εντός έδρας παιχνίδια του Panathinaikos AKTOR Athens.",
-    "note_en": "Top choice, especially in home games for Panathinaikos AKTOR Athens.",
+    "note": "Κορυφαία επιλογή εντός έδρας για τον Panathinaikos.",
+    "note_en": "The best option when playing at home for Panathinaikos.",
     "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "JOKSIMOVIC, STEFAN",
+    "stance": "pick",
+    "note": "Πολύ ελκυστική επιλογή χαμηλού προϋπολογισμού με σταθερό χρόνο συμμετοχής.",
+    "note_en": "A very attractive budget option enjoying a stable role and minutes.",
+    "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "STRAZEL, MATTHEW",
     "stance": "pick",
-    "note": "Εξαιρετική επιλογή διαφοροποίησης (differential) για την Anadolu Efes Istanbul.",
-    "note_en": "Great differential option for Anadolu Efes Istanbul.",
+    "note": "Εξαιρετικός διαφοροποιητής με ευνοϊκό πρόγραμμα και χαμηλή δημοτικότητα.",
+    "note_en": "An excellent differential with a favourable schedule and low ownership.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "BALDWIN IV, WADE",
     "stance": "pick",
-    "note": "Ιδανικός παίκτης για γρήγορο ρυθμό με τη φανέλα της Fenerbahce.",
-    "note_en": "Ideal player for a fast pace with Fenerbahce.",
+    "note": "Ευνοείται από το γρήγορο ρυθμό και το καλό πρόγραμμα της Fenerbahce.",
+    "note_en": "Thrives against fast-paced teams with a favourable upcoming schedule.",
     "source": "Basketball Sphere – Fantasy"
-   },
-   {
-    "player": "JOKSIMOVIC, STEFAN",
-    "stance": "pick",
-    "note": "Εξαιρετικά φθηνή επιλογή λόγω των τραυματισμών στη Kosner Baskonia Vitoria-Gasteiz.",
-    "note_en": "Extremely cheap option due to injuries at Kosner Baskonia Vitoria-Gasteiz.",
-    "source": "Basketball Sphere – Fantasy"
-   },
-   {
-    "player": "TANASKOVIC, NIKOLA",
-    "stance": "pick",
-    "note": "Εξαιρετική απόδοση σε χαμηλή τιμή για την Partizan.",
-    "note_en": "Great performance at a low price for Partizan.",
-    "source": "EuroLeague Fantasy Challenge"
    }
   ],
   "round": 11,
-  "summary_el": "• Η 11η αγωνιστική της EuroLeague προσφέρει τρεις αγωνιστικές ημέρες και πολλές ευκαιρίες για αλλαγές στο EuroLeague Fantasy Challenge.\n• Η Hapoel Tel Aviv, η Partizan και η Fenerbahce διαθέτουν εξαιρετικά ευνοϊκό πρόγραμμα για τα επόμενα τρία παιχνίδια.\n• Αρκετές ομάδες, όπως η Real Madrid και η Kosner Baskonia Vitoria-Gasteiz, αντιμετωπίζουν σοβαρά προβλήματα τραυματισμών που επηρεάζουν τα πλάνα τους.\n• Οι Elijah Bryant, Carlik Jones και Jonas Valanciunas προτείνονται ως βασικοί πυλώνες για τις ομάδες Fantasy.\n• Παίκτες όπως ο Ousmane Diop, ο Mario Saint-Supery και ο Stefan Joksimovic αποτελούν ιδανικές επιλογές χαμηλού προϋπολογισμού (budget options).\n• Σημαντικές απουσίες περιλαμβάνουν τους Nicolo Melli, Facundo Campazzo, Theo Maledon και Tyler Dorsey λόγω τιμωριών ή τραυματισμών.\n• Οι μεταγραφικές εξελίξεις φέρνουν νέους παίκτες, όπως η άφιξη του Chris Silva στην Partizan και του Rolands Smits στη Kosner Baskonia Vitoria-Gasteiz.",
-  "summary_en": "• Round 11 of the EuroLeague features three game days and plenty of opportunities for roster changes in the EuroLeague Fantasy Challenge.\n• Hapoel Tel Aviv, Partizan, and Fenerbahce have an extremely favorable schedule for the next three games.\n• Several teams, such as Real Madrid and Kosner Baskonia Vitoria-Gasteiz, are dealing with severe injury problems affecting their rotations.\n• Elijah Bryant, Carlik Jones, and Jonas Valanciunas are recommended as core pillars for Fantasy teams.\n• Players like Ousmane Diop, Mario Saint-Supery, and Stefan Joksimovic represent ideal low-budget options.\n• Important absences include Nicolo Melli, Facundo Campazzo, Theo Maledon, and Tyler Dorsey due to suspensions or injuries.\n• Transfer updates bring new players, such as Chris Silva arriving at Partizan and Rolands Smits joining Kosner Baskonia Vitoria-Gasteiz.",
+  "summary_el": "• Η 11η αγωνιστική της EuroLeague ξεκίνησε με δραματικά αποτελέσματα, συμπεριλαμβανομένης της εντυπωσιακής νίκης της Paris Basketball επί της Fenerbahce Istanbul στην παράταση με 111-109 χάρη σε buzzer-beater του Nadir Hifi.\n• Η Partizan Mozzart Bet επικράτησε της Kosner Baskonia Vitoria-Gasteiz με 80-66, με πρωταγωνιστή τον Tonye Jekiri στην επιστροφή του από τραυματισμό με 17 πόντους και 6 ριμπάουντ.\n• Στα μεταγραφικά νέα, ο Chris Silva έφτασε στο Βελιγράδι για να ολοκληρώσει τη μεταγραφή του στην Partizan Mozzart Bet από τη Fenerbahce Istanbul.\n• Η Kosner Baskonia Vitoria-Gasteiz ενίσχυσε τη γραμμή ψηλών της με την απόκτηση του Rolands Smits και του Kenan Kamenjas.\n• Ο Marcelinho Huertas αποχαιρέτησε τη La Laguna Tenerife μετά από οκτώ χρόνια και ετοιμάζεται να συνεχίσει την καριέρα του στην Dubai Basketball.\n• Ο Tyler Dorsey παραμένει εκτός αγωνιστικής δράσης λόγω μοinιαναίας πειθαρχικής ποινής από τον Olympiacos Piraeus, ενώ ο Nikola Milutinov προσπαθεί να ανακτήσει την πλήρη του φόρμα μετά από μικροτραυματισμούς.\n• Ο Christian Koloko δεν μπόρεσε να ταξιδέψει στη Μαδρίτη με τον Crvena Zvezda Meridianbet Belgrade λόγω διοικητικών προβλημάτων με τη βίζα του.",
+  "summary_en": "• Round 11 of the EuroLeague opened with dramatic results, including Paris Basketball's thrilling 111-109 overtime win over Fenerbahce Istanbul powered by Nadir Hifi's buzzer-beater.\n• Partizan Mozzart Bet defeated Kosner Baskonia Vitoria-Gasteiz 80-66, led by Tonye Jekiri in his injury return with 17 points and 6 rebounds.\n• In transfer news, Chris Silva arrived in Belgrade to finalize his move to Partizan Mozzart Bet from Fenerbahce Istanbul.\n• Kosner Baskonia Vitoria-Gasteiz boosted their frontcourt by signing Rolands Smits and Kenan Kamenjas.\n• Marcelinho Huertas parted ways with La Laguna Tenerife after eight years and is set to continue his career with Dubai Basketball.\n• Tyler Dorsey remains sidelined due to a one-month disciplinary suspension by Olympiacos Piraeus, while Nikola Milutinov is working to regain full form after minor injuries.\n• Christian Koloko could not travel to Madrid with Crvena Zvezda Meridianbet Belgrade due to administrative visa issues.",
   "_model": "gemini-3.5-flash-lite",
-  "_seconds": 18.1
+  "_seconds": 9.1
  },
- "digest_at": "2026-11-11T23:10:09.883647+00:00",
- "failed": [
-  "EuroBallin (Substack): HTTPError direct 403, proxy 429; api 403 Client Error: Forbidden for url: https://euroball"
- ]
+ "digest_at": "2026-11-12T05:08:26.160286+00:00",
+ "failed": []
 }

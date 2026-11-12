@@ -367,10 +367,8 @@ round,source,stance,person_id,name,team,model_xpts
 11,Basketball Sphere – Fantasy,pick,003469,"VEZENKOV, SASHA",OLY,22.26
 11,Basketball Sphere – Fantasy,pick,008192,"TUBELIS, AZUOLAS",ZAL,15.19
 11,Basketball Sphere – Fantasy,pick,014127,"BRISSETT, O'SHAE J",TEL,10.93
-11,Basketball Sphere – Fantasy,pick,014009,"STEVENS, LAMAR",PAR,0.0
-11,Basketball Sphere – Fantasy,avoid,014108,"DIARRA, ALIOU",VIR,14.11
-11,Basketball Sphere – Fantasy,avoid,012640,"HIFI, NADIR",PRS,18.44
-11,Basketball Sphere – Fantasy,avoid,011247,"FELIZ, ANDRES",MAD,12.08
+11,Basketball Sphere – Fantasy,pick,014009,"STEVENS, LAMAR",PAR,9.61
+11,EuroLeague Fantasy Tips (official),pick,014108,"DIARRA, ALIOU",VIR,14.11
 11,EuroLeague Fantasy Tips (official),pick,013385,"DIOP, OUSMANE",MIL,3.37
 11,EuroLeague Fantasy Tips (official),pick,011284,"FARIED, KENNETH",BAS,11.99
 11,EuroLeague Fantasy Tips (official),pick,012788,"OTURU, DAN",HTA,15.45
@@ -383,7 +381,6 @@ round,source,stance,person_id,name,team,model_xpts
 11,EuroLeague Fantasy Tips (official),pick,011247,"FELIZ, ANDRES",MAD,12.08
 11,EuroLeague Fantasy Tips (official),pick,012640,"HIFI, NADIR",PRS,18.44
 11,EuroLeague Fantasy Tips (official),pick,012774,"NUNN, KENDRICK",PAN,19.08
+11,Basketball Sphere – Fantasy,pick,014107,"JOKSIMOVIC, STEFAN",BAS,1.67
 11,Basketball Sphere – Fantasy,pick,008099,"STRAZEL, MATTHEW",IST,11.6
 11,Basketball Sphere – Fantasy,pick,009863,"BALDWIN IV, WADE",ULK,14.87
-11,Basketball Sphere – Fantasy,pick,014107,"JOKSIMOVIC, STEFAN",BAS,1.67
-11,EuroLeague Fantasy Challenge,pick,005637,"TANASKOVIC, NIKOLA",PAR,12.96
