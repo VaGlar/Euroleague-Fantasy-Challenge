@@ -1650,13 +1650,27 @@
      "captain": null,
      "at": "2026-11-12T23:11+00:00"
     }
-   }
+   },
+   "pts": 175.6,
+   "raw": 152.5,
+   "avg_raw": 118.8
   },
   {
    "round": 12,
-   "trades": 3,
-   "bank": 0.0,
+   "trades": 4,
+   "bank": 0.2,
    "squad": [
+    {
+     "id": 11549,
+     "price": 16.9,
+     "position": "Center",
+     "person_id": "000898",
+     "name": "VALANCIUNAS, JONAS",
+     "team": "ZAL",
+     "role": "5άδα",
+     "captain": true,
+     "x_now": 26.7
+    },
     {
      "id": 3766,
      "price": 18.9,
@@ -1666,51 +1680,40 @@
      "team": "OLY",
      "role": "5άδα",
      "captain": false,
-     "x_now": 24.6
+     "x_now": 24.0
     },
     {
-     "id": 11549,
-     "price": 16.9,
-     "position": "Center",
-     "person_id": "000898",
-     "name": "VALANCIUNAS, JONAS",
-     "team": "ZAL",
+     "id": 8567,
+     "price": 12.3,
+     "position": "Guard",
+     "person_id": "014124",
+     "name": "HORTON TUCKER, TALEN",
+     "team": "ULK",
      "role": "5άδα",
      "captain": false,
-     "x_now": 23.2
+     "x_now": 17.0
     },
     {
-     "id": 3838,
-     "price": 9.8,
-     "position": "Forward",
-     "person_id": "012609",
-     "name": "MALCOLM, COLLIN",
-     "team": "IST",
-     "role": "πάγκος",
+     "id": 8846,
+     "price": 9.0,
+     "position": "Center",
+     "person_id": "009733",
+     "name": "JEKIRI, TONYE",
+     "team": "PAR",
+     "role": "5άδα",
      "captain": false,
-     "x_now": 14.3
+     "x_now": 14.2
     },
     {
-     "id": 8815,
-     "price": 10.2,
-     "position": "Guard",
-     "person_id": "014213",
-     "name": "PAYNE, CAMERON",
-     "team": "IST",
-     "role": "πάγκος",
+     "id": 4006,
+     "price": 7.3,
+     "position": "Head Coach",
+     "person_id": "ACX",
+     "name": "MASIULIS, TOMAS",
+     "team": "ZAL",
+     "role": "coach",
      "captain": false,
      "x_now": 13.7
-    },
-    {
-     "id": 7424,
-     "price": 10.8,
-     "position": "Center",
-     "person_id": "014108",
-     "name": "DIARRA, ALIOU",
-     "team": "VIR",
-     "role": "πάγκος",
-     "captain": false,
-     "x_now": 12.9
     },
     {
      "id": 3851,
@@ -1719,9 +1722,20 @@
      "person_id": "011247",
      "name": "FELIZ, ANDRES",
      "team": "MAD",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 13.0
+    },
+    {
+     "id": 8815,
+     "price": 10.2,
+     "position": "Guard",
+     "person_id": "014213",
+     "name": "PAYNE, CAMERON",
+     "team": "IST",
      "role": "5άδα",
      "captain": false,
-     "x_now": 12.8
+     "x_now": 11.9
     },
     {
      "id": 3975,
@@ -1730,20 +1744,20 @@
      "person_id": "012611",
      "name": "HERRERA, SEBASTIAN",
      "team": "PRS",
-     "role": "5άδα",
-     "captain": true,
-     "x_now": 7.8
+     "role": "6ος",
+     "captain": false,
+     "x_now": 7.6
     },
     {
-     "id": 3897,
-     "price": 8.6,
-     "position": "Head Coach",
-     "person_id": "ADG",
-     "name": "JASIKEVICIUS, SARAS",
-     "team": "ULK",
-     "role": "coach",
+     "id": 3983,
+     "price": 4.7,
+     "position": "Forward",
+     "person_id": "007960",
+     "name": "DAVIDOVAC, DEJAN",
+     "team": "RED",
+     "role": "πάγκος",
      "captain": false,
-     "x_now": 6.2
+     "x_now": 5.4
     },
     {
      "id": 4005,
@@ -1754,18 +1768,7 @@
      "team": "ASV",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 5.4
-    },
-    {
-     "id": 11541,
-     "price": 4.3,
-     "position": "Guard",
-     "person_id": "014741",
-     "name": "CARDENAS, ALVARO",
-     "team": "PAM",
-     "role": "5άδα",
-     "captain": false,
-     "x_now": 4.8
+     "x_now": 3.7
     },
     {
      "id": 3867,
@@ -1774,22 +1777,22 @@
      "person_id": "001255",
      "name": "PAPANIKOLAOU, KOSTAS",
      "team": "OLY",
-     "role": "6ος",
+     "role": "πάγκος",
      "captain": false,
      "x_now": 0.0
     }
    ],
-   "x_total": 112.6,
-   "decided_at": "2026-11-13T14:09+00:00"
+   "x_total": 153.3,
+   "decided_at": "2026-11-13T22:08+00:00"
   }
  ],
  "seed_id": "5a453a755a9b",
  "start_round": 1,
  "total": {
-  "rounds": 10,
-  "pts": 1275.4,
-  "raw": 1105.4,
-  "avg_raw": 946.6
+  "rounds": 11,
+  "pts": 1451.0,
+  "raw": 1257.9,
+  "avg_raw": 1065.4
  },
- "generated": "2026-11-13T14:09:57.474104+00:00"
+ "generated": "2026-11-13T22:08:46.526006+00:00"
 }
