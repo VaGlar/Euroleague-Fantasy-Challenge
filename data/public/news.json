@@ -1,6 +1,15 @@
 {
  "articles": [
   {
+   "title": "EuroLeague Fantasy winners and losers, Round 11: Thursday",
+   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/euroleague-fantasy-winners-and-losers-round-11-thursday/",
+   "date": "2026-11-13T00:30:34.293000+00:00",
+   "source": "EuroLeague Fantasy Tips (official)",
+   "weight": 2,
+   "fantasy": true,
+   "report": false
+  },
+  {
    "title": "EuroLeague Fantasy winners and losers, Round 11: Wednesday",
    "url": "https://www.euroleaguebasketball.net/en/euroleague/news/euroleague-fantasy-winners-and-losers-round-11-wednesday/",
    "date": "2026-11-12T00:09:41.957000+00:00",
@@ -64,12 +73,57 @@
    "report": false
   },
   {
-   "title": "EuroLeague Fantasy winners and losers, Round 10: Thursday",
-   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/euroleague-fantasy-winners-and-losers-round-10-thursday/",
-   "date": "2026-11-06T00:51:02.386000+00:00",
-   "source": "EuroLeague Fantasy Tips (official)",
-   "weight": 2,
-   "fantasy": true,
+   "title": "NBA Roundup: Alex Sarr hits 30, Zaccharie Risacher reaches 22",
+   "url": "https://www.eurohoops.net/en/nba-news/2034345/alex-sarr-zaccharie-risacher-nba-european-recap/",
+   "date": "2026-11-13T04:59:00+00:00",
+   "source": "Eurohoops",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Backdoor cuts: Beyond the box score in Thursday's games",
+   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/backdoor-cuts-beyond-the-box-score-in-thursdays-games/",
+   "date": "2026-11-13T00:15:00+00:00",
+   "source": "EuroLeague (official)",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Γιαννακόπουλος: «Ξεκινήσατε τη λάσπη; Ούτε ομπρέλα δεν θα κρατήσω!» (video)",
+   "url": "https://www.novasports.gr/sport/mpasket/event/basket-league/article/15228254/giannakopoulos-ksekinisate-ti-laspi-oute-omprela-den-tha-kratiso-video/",
+   "date": "2026-11-13T00:04:48+00:00",
+   "source": "Novasports",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Maccabi masters Hapoel to snap skid in bruising derby",
+   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/maccabi-masters-hapoel-to-snap-skid-in-bruising-derby/",
+   "date": "2026-11-13T00:03:34.334000+00:00",
+   "source": "EuroLeague (official)",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Real routs Zvezda after red-hot first quarter",
+   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/real-routs-zvezda-after-red-hot-first-quarter/",
+   "date": "2026-11-12T23:42:51.009000+00:00",
+   "source": "EuroLeague (official)",
+   "weight": 1,
+   "fantasy": false,
+   "report": false
+  },
+  {
+   "title": "Valanciunas makes history as Zalgiris survives Milan comeback",
+   "url": "https://www.euroleaguebasketball.net/en/euroleague/news/valanciunas-makes-history-as-zalgiris-survives-milan-comeback/",
+   "date": "2026-11-12T23:20:52.559000+00:00",
+   "source": "EuroLeague (official)",
+   "weight": 1,
+   "fantasy": false,
    "report": false
   },
   {
@@ -190,7 +244,7 @@
    "report": false
   },
   {
-   "title": "Ο καλύτερος φετινός Τζόσεφ με season high, στο Eurohoops: “Θέλαμε να κάνουμε μια δήλωση απόψε”",
+   "title": "Τζόσεφ στα season high γιατί “Θέλαμε να κάνουμε μια δήλωση απόψε” κι η αποθέωση σε Βεζένκοφ",
    "url": "https://www.eurohoops.net/el/euroleague-el-2/2034271/o-kaliteros-fetinos-tzosef-me-season-high-sto-eurohoops-thelame-na-kanoume-mia-dilosi-apopse/",
    "date": "2026-11-12T22:09:22+00:00",
    "source": "Eurohoops (GR)",
@@ -199,7 +253,7 @@
    "report": false
   },
   {
-   "title": "Ρεάλ – Ερυθρός Αστέρας 105-84: Άστραψαν και βρόντηξαν οι Μαδριλένοι",
+   "title": "Ρεάλ – Ερυθρός Αστέρας 105-84: Άστραψαν και βρόντηξαν για την επιστροφή στις νίκες",
    "url": "https://www.eurohoops.net/el/euroleague-el-2/2034153/real-erithros-asteras-105-84-astrapsan-ke-vrontixan-i-madrileni/",
    "date": "2026-11-12T22:07:53+00:00",
    "source": "Eurohoops (GR)",
@@ -235,7 +289,7 @@
    "report": false
   },
   {
-   "title": "Βεζένκοφ: “Μη φωνάζει ο κόουτς και δώσει content…”",
+   "title": "Βεζένκοφ για τη “no look” πάσα του: “Μη φωνάζει ο κόουτς και δώσει content…”",
    "url": "https://www.eurohoops.net/el/euroleague-el-2/2034245/vezenkof-mi-fonazi-o-koouts-ke-dosi-content/",
    "date": "2026-11-12T21:59:41+00:00",
    "source": "Eurohoops (GR)",
@@ -271,7 +325,7 @@
    "report": false
   },
   {
-   "title": "ΤΡΟΜΑΚΤΙΚΟΣ Βαλαντσιούνας και Ζαλγκίρις χάλασε την επιστροφή Μπάνκι στην Αρμάνι",
+   "title": "ΤΡΟΜΑΚΤΙΚΟΣ Βαλαντσιούνας και η Ζαλγκίρις χάλασε την επιστροφή Μπάνκι στην Αρμάνι",
    "url": "https://www.eurohoops.net/el/euroleague-el-2/2034136/tromaktikos-valantsiounas-ke-i-zalgkiris-chalase-tin-epistrofi-banki-sto-milano/",
    "date": "2026-11-12T21:53:20+00:00",
    "source": "Eurohoops (GR)",
@@ -496,7 +550,7 @@
    "report": false
   },
   {
-   "title": "ΚΥΡΙΑΡΧΟΣ Ολυμπιακός εξαφάνισε την Ντουμπάι με σκορ και θέαμα",
+   "title": "ΚΥΡΙΑΡΧΟΣ Ολυμπιακός “εξαφάνισε” την Ντουμπάι με σκορ και θέαμα",
    "url": "https://www.eurohoops.net/el/euroleague-el-2/2034120/kiriarchos-olimpiakos-exafanise-tin-ntoumpai-me-skor-ke-theama/",
    "date": "2026-11-12T20:57:08+00:00",
    "source": "Eurohoops (GR)",
@@ -694,15 +748,6 @@
    "report": false
   },
   {
-   "title": "Ολυμπιακός: Η δωδεκάδα με Ντουμπάι BC – Εκτός Παπανικολάου, Ντάνστον",
-   "url": "https://www.novasports.gr/sport/mpasket/event/euroleague/article/15227116/olympiakos-i-dodekada-me-ntoumpai-bc-ektos-papanikolaou-ntanston/",
-   "date": "2026-11-12T17:00:13+00:00",
-   "source": "Novasports",
-   "weight": 1,
-   "fantasy": false,
-   "report": false
-  },
-  {
    "title": "Ολυμπιακός: Η 12άδα με Ντουμπάι",
    "url": "https://www.eurohoops.net/el/euroleague-el-2/2034081/olimpiakos-i-12ada-me-ntoumpai/",
    "date": "2026-11-12T16:49:57+00:00",
@@ -740,7 +785,7 @@
   },
   {
    "title": "Κάνααν: Τέλος από την Τραμπζονσπόρ λόγω “παραβίασης κανόνων”",
-   "url": "https://www.eurohoops.net/el/tbl-el/2034072/kanaan-telos-apo-tin-trampzonspor-logo-paraviasis-kanonon/",
+   "url": "https://www.eurohoops.net/el/fiba-champions-league-el/2034072/kanaan-telos-apo-tin-trampzonspor-logo-paraviasis-kanonon/",
    "date": "2026-11-12T16:38:59+00:00",
    "source": "Eurohoops (GR)",
    "weight": 1,
@@ -951,193 +996,257 @@
    {
     "player": "DORSEY, TYLER",
     "status": "available",
-    "note": "Η τιμωρία του ολοκληρώθηκε και επιστρέφει στις προπονήσεις.",
-    "note_en": "His suspension has ended and he is returning to practice.",
+    "note": "Ο Τάιλερ Ντόρσεϊ τελείωσε την τιμωρία του και επιστρέφει κανονικά στις προπονήσεις του Ολυμπιακού.",
+    "note_en": "Tyler Dorsey finished his suspension and is returning normally to Olympiacos practices.",
     "source": "Eurohoops"
-   },
-   {
-    "player": "NUNN, KENDRICK",
-    "status": "available",
-    "note": "Αναμένεται να αγωνιστεί κανονικά κόντρα στην Μπαρτσελόνα.",
-    "note_en": "He is expected to play normally against Barcelona.",
-    "source": "EuroLeague Fantasy Tips (official)"
    }
   ],
   "expert": [
    {
-    "player": "BRYANT, ELIJAH",
+    "player": "PROCIDA, GABRIELE",
     "stance": "pick",
-    "note": "Εξαιρετική εμφάνιση και πολύ ευνοϊκό πρόγραμμα για την Hapoel Tel Aviv.",
-    "note_en": "Superb performance and a very favorable schedule for Hapoel Tel Aviv.",
-    "source": "Basketball Sphere – Fantasy"
+    "note": "Ο Γαβριήλ Προτσίδα ξεχώρισε στη νίκη της Real Madrid με 24.2 βαθμούς fantasy.",
+    "note_en": "Gabriele Procida stood out in Real Madrid's win with 24.2 fantasy points.",
+    "source": "EuroLeague Fantasy Tips (official)"
    },
    {
-    "player": "JONES, CARLIK",
+    "player": "FOURNIER, EVAN",
     "stance": "pick",
-    "note_en": "Despite the dip in form, Partizan plays three consecutive home games.",
-    "source": "Basketball Sphere – Fantasy"
+    "note": "Ο Εβάν Φουρνιέ ήταν εξαιρετικός με 28 πόντους και 30.8 βαθμούς fantasy κόντρα στην Dubai.",
+    "note_en": "Evan Fournier was brilliant with 28 points and 30.8 fantasy points against Dubai.",
+    "source": "EuroLeague Fantasy Tips (official)"
    },
    {
-    "player": "HORTON TUCKER, TALEN",
+    "player": "RIVERO, JASIEL",
     "stance": "pick",
-    "note": "Ιδανικός αντίπαλος ο ρυθμός της Paris, πιθανή επιλογή για αρχηγός.",
-    "note_en": "Paris's pace is an ideal matchup, a potential captaincy choice.",
-    "source": "Basketball Sphere – Fantasy"
+    "note": "Ο Χασιέλ Ριβέρο προτάθηκε από τον Sasha Vezenkov και δικαίωσε με 22.0 βαθμούς fantasy.",
+    "note_en": "Jasiel Rivero was recommended by Sasha Vezenkov and justified it with 22.0 fantasy points.",
+    "source": "EuroLeague Fantasy Tips (official)"
    },
    {
-    "player": "WATERS, TREMONT",
-    "stance": "pick",
-    "note": "Ενδιαφέρουσα επιλογή χαμηλού κόστους κόντρα στη Besiktas.",
-    "note_en": "Interesting low-cost option against Besiktas.",
-    "source": "Basketball Sphere – Fantasy"
-   },
-   {
-    "player": "CLARK III, JIMMY",
-    "stance": "pick",
-    "note": "Περισσότερος χρόνος και ρόλος λόγω της απουσίας του Iffe Lundberg.",
-    "note_en": "More time and role due to Iffe Lundberg's absence.",
-    "source": "Basketball Sphere – Fantasy"
-   },
-   {
-    "player": "SAINT-SUPERY, MARIO",
-    "stance": "pick",
-    "note": "Εξαιρερετική επιλογή χαμηλού προϋπολογισμού στα 4.0 credits.",
-    "note_en": "Great low-budget option at 4.0 credits.",
-    "source": "Basketball Sphere – Fantasy"
-   },
-   {
-    "player": "VEZENKOV, SASHA",
-    "stance": "pick",
-    "note": "Εξαιρετικά σταθερός και ηγέτης για τον Olympiacos απέναντι στην Dubai.",
-    "note_en": "Extremely consistent and a leader for Olympiacos against Dubai.",
-    "source": "Basketball Sphere – Fantasy"
-   },
-   {
-    "player": "TUBELIS, AZUOLAS",
-    "stance": "pick",
-    "note": "Σε εξαιρετική φόρμα, αποτελεί σταθερή επιλογή για τη Zalgiris.",
-    "note_en": "In great form, he is a solid option for Zalgiris.",
-    "source": "Basketball Sphere – Fantasy"
-   },
-   {
-    "player": "BRISSETT, O'SHAE J",
-    "stance": "pick",
-    "note": "Σταθερός χρόνος συμμετοχής και συνέπεια στα 10.6 credits.",
-    "note_en": "Consistent playing time and consistency at 10.6 credits.",
-    "source": "Basketball Sphere – Fantasy"
-   },
-   {
-    "player": "STEVENS, LAMAR",
-    "stance": "pick",
-    "note": "Εξαιρετική προσθήκη για την Partizan με καλή τιμή.",
-    "note_en": "Great addition for Partizan at a good price.",
-    "source": "Basketball Sphere – Fantasy"
-   },
-   {
-    "player": "DIARRA, ALIOU",
+    "player": "MUSA, DZANAN",
     "stance": "avoid",
-    "note": "Ώρα για πώληση λόγω δύσκολου προγράμματος και υψηλής τιμής.",
-    "note_en": "Time to sell due to a tough schedule and high price.",
-    "source": "Basketball Sphere – Fantasy"
-   },
-   {
-    "player": "DIOP, OUSMANE",
-    "stance": "pick",
-    "note": "Εξαιρετική φθηνή λύση στους σέντερ μετά τον τραυματισμό του Devin Booker.",
-    "note_en": "Great cheap center option following Devin Booker's injury.",
+    "note": "Ο Τζάναν Μούσα δυσκολεύεται να βρει ρυθμό στην επίθεση και προτείνεται η αποφυγή του.",
+    "note_en": "Dzanan Musa is struggling to find his scoring rhythm and is recommended to avoid.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
-    "player": "FARIED, KENNETH",
-    "stance": "pick",
-    "note": "Σταθερότατος και αποτελεσματικός ως X-factor για τη Baskonia.",
-    "note_en": "Very solid and effective as an X-factor for Baskonia.",
+    "player": "WRIGHT, MOSES",
+    "stance": "avoid",
+    "note": "Ο Μόουζες Ράιτ είχε αρνητική εμφάνιση και συνιστάται η πώλησή του.",
+    "note_en": "Moses Wright had a negative performance and it is recommended to sell him.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
-    "player": "OTURU, DAN",
-    "stance": "pick",
-    "note": "Ανεβασμένος στα τελευταία παιχνίδια, βασικός πυλώνας για την Hapoel Tel Aviv.",
-    "note_en": "Rising in recent games, a key pillar for Hapoel Tel Aviv.",
+    "player": "BUTLER, JARED",
+    "stance": "avoid",
+    "note": "Ο Τζάρεντ Μπάτλερ δεν απέδωσε τα αναμενόμενα κόντρα στη Real Madrid και είναι προτιμότερο να αποφεύγεται.",
+    "note_en": "Jared Butler did not perform as expected against Real Madrid and is better to avoid.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
-    "player": "VALANCIUNAS, JONAS",
+    "player": "JEKIRI, TONYE",
     "stance": "pick",
-    "note": "Κυριαρχικός κάτω από τα καλάθια, απαραίτητος σε κάθε ομάδα fantasy.",
-    "note_en": "Dominant under the boards, essential for every fantasy team.",
+    "note": "Ο Τόνιε Τζεκίρι επέστρεψε από τον τραυματισμό του με εξαιρετική εμφάνιση και 27.5 βαθμούς fantasy.",
+    "note_en": "Tonye Jekiri returned from injury with an excellent performance and 27.5 fantasy points.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
-    "player": "ABALDE, ALBERTO",
+    "player": "NTILIKINA, FRANK",
     "stance": "pick",
-    "note": "Εξαιρετική αξία στα 6.1 credits λόγω των απουσιών σε Real Madrid.",
-    "note_en": "Great value at 6.1 credits due to Real Madrid's absences.",
+    "note": "Ο Φρανκ Ντιλικινά πραγματοποίησε την καλύτερη εμφάνισή του με τη φανέλα της Paris.",
+    "note_en": "Frank Ntilikina had the best performance of his career with Paris.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
-    "player": "GACH, BOTH",
+    "player": "HERRERA, SEBASTIAN",
     "stance": "pick",
-    "note": "Ανεβασμένος και με επιπλέον κίνητρο κόντρα στη Besiktas.",
-    "note_en": "Rising and with extra motivation against Besiktas.",
-    "source": "EuroLeague Fantasy Tips (official)"
-   },
-   {
-    "player": "LUCIC, VLADIMIR",
-    "stance": "pick",
-    "note": "Εξαιρετική φόρμα και ιστορικό αντίπαλο την Valencia.",
-    "note_en": "Great form and a former team opponent in Valencia.",
-    "source": "EuroLeague Fantasy Tips (official)"
-   },
-   {
-    "player": "MALCOLM, COLLIN",
-    "stance": "pick",
-    "note": "Αυξημένος χρόνος συμμετοχής και εξαιρετική απόδοση στην Anadolu Efes.",
-    "note_en": "Increased playing time and great performance for Anadolu Efes.",
-    "source": "EuroLeague Fantasy Tips (official)"
-   },
-   {
-    "player": "BRIZUELA, DARIO",
-    "stance": "pick",
-    "note": "Εξαιρετικό value for money στα 6.3 credits για την FC Barcelona.",
-    "note_en": "Great value for money at 6.3 credits for FC Barcelona.",
-    "source": "EuroLeague Fantasy Tips (official)"
-   },
-   {
-    "player": "FELIZ, ANDRES",
-    "stance": "pick",
-    "note": "Ο πιο δημοφιλής γκαρντ λόγω ηγετικού ρόλου και χαμηλής τιμής.",
-    "note_en": "The most popular guard due to a leading role and low price.",
+    "note": "Ο Σεμπάστιαν Ερέρα βρίσκεται σε εξαιρετική φόρμα με σταθερή παρουσία πάνω από 10 βαθμούς fantasy.",
+    "note_en": "Sebastian Herrera is on a heater with consistent presence above 10 fantasy points.",
     "source": "EuroLeague Fantasy Tips (official)"
    },
    {
     "player": "HIFI, NADIR",
     "stance": "avoid",
-    "note": "Εξαιρετική φόρμα, αλλά προτείνεται πώληση λόγω δύσκολου προγράμματος της Paris.",
-    "note_en": "Great form, but recommended to sell due to Paris's tough schedule.",
+    "note": "Ο Ναντίρ Χιφί είχε χαμηλή απόδοση και ακολουθεί δύσκολο πρόγραμμα για την Paris.",
+    "note_en": "Nadir Hifi had a low performance and Paris faces a difficult upcoming schedule.",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "KEY, BRAXTON",
+    "stance": "avoid",
+    "note": "Ο Μπράξτον Κέι έχει χάσει τη φόρμα του και περιορίζεται σε χαμηλή παραγωγικότητα.",
+    "note_en": "Braxton Key has lost his form and is limited to low productivity.",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "LAWSON, A.J.",
+    "stance": "avoid",
+    "note": "Ο Άι Τζέι Λόουσον βρίσκεται σε πτωτική πορεία στα τελευταία παιχνίδια.",
+    "note_en": "AJ Lawson is trending downwards in his recent games.",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "BRYANT, ELIJAH",
+    "stance": "pick",
+    "note": "Ο Ηλίας Μπράιαντ ανέβασε την απόδοσή του και έχει ευνοϊκό πρόγραμμα με την Hapoel Tel Aviv.",
+    "note_en": "Elijah Bryant bounced back and has a favorable schedule with Hapoel Tel Aviv.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "JONES, CARLIK",
+    "stance": "pick",
+    "note": "Ο Κάρλικ Τζόυνς διατηρείται στις επιλογές λόγω των εντός έδρας αγώνων της Partizan.",
+    "note_en": "Carlik Jones is kept as a pick due to Partizan's upcoming home games.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "HORTON TUCKER, TALEN",
+    "stance": "captain",
+    "note": "Ο Τλέν Χόρτον-Τάκερ ταιριάζει στον γρήγορο ρυθμό της Paris και αποτελεί επιλογή για αρχηγός.",
+    "note_en": "Talen Horton-Tucker suits Paris's fast pace and is a strong captaincy option.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "WATERS, TREMONT",
+    "stance": "pick",
+    "note": "Ο Τρέμοντ Ουότερς αναμένεται να βρει χώρους και να προσφέρει λύσεις απέναντι στην Besiktas.",
+    "note_en": "Tremont Waters is expected to find opportunities and contribute against Besiktas.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "CLARK III, JIMMY",
+    "stance": "pick",
+    "note": "Ο Τζίμι Κλαρκ παίρνει περισσότερες πρωτοβουλίες στην επίθεση λόγω απουσιών στη Maccabi Tel Aviv.",
+    "note_en": "Jimmy Clark is taking more offensive responsibilities due to absences at Maccabi Tel Aviv.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "SAINT-SUPERY, MARIO",
+    "stance": "pick",
+    "note": "Ο Μάριο Σαιν-Συπερύ προσφέρει εξαιρετική value for money επιλογή σε τιμή βάσης.",
+    "note_en": "Mario Saint-Supery offers an excellent value-for-money option at his base price.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "VEZENKOV, SASHA",
+    "stance": "pick",
+    "note": "Ο Σάσα Βεζένκοφ συνεχίζει τις σταθερές εμφανίσεις και αποτελεί κορυφαία επιλογή για το fantasy.",
+    "note_en": "Sasha Vezenkov continues his consistent performances and remains a top fantasy option.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "TUBELIS, AZUOLAS",
+    "stance": "pick",
+    "note": "Ο Αζούολας Τουμπέλης διατηρεί εξαιρετική φόρμα και αποτελεί σταθερό πυλώνα για τη Zalgiris.",
+    "note_en": "Azuolas Tubelis maintains great form and is a solid pillar for Zalgiris.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "BRISSETT, O'SHAE J",
+    "stance": "pick",
+    "note": "Ο Οσέι Μπρισέτ προσφέρει σταθερότητα και ασφάλεια στα φανταστικά σκορ.",
+    "note_en": "Oshae Brissett offers stability and reliability in fantasy scores.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "STEVENS, LAMAR",
+    "stance": "pick",
+    "note": "Ο Λαμάρ Στίβενς έδειξε εξαιρετικά στοιχεία απέναντι στη Maccabi και ταιριάζει στο παιχνίδι κόντρα στη Baskonia.",
+    "note_en": "Lamar Stevens showed great qualities against Maccabi and fits well against Baskonia.",
+    "source": "Basketball Sphere – Fantasy"
+   },
+   {
+    "player": "DIARRA, ALIOU",
+    "stance": "avoid",
+    "note": "Ο Αλιού Ντιαρά προτείνεται για πώληση λόγω δύσκολου προγράμματος και αυξημένης τιμής.",
+    "note_en": "Aliou Diarra is recommended for sale due to a tough schedule and increased price.",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "DIOP, OUSMANE",
+    "stance": "pick",
+    "note": "Ο Ουσμάν Ντιόπ αποτελεί εξαιρετική και φθηνή λύση για τη θέση των σέντερ.",
+    "note_en": "Ousmane Diop is an excellent and cheap solution for the center position.",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "FARIED, KENNETH",
+    "stance": "pick",
+    "note": "Ο Κένεθ Φαρίντ είναι σταθερότατος στα τελευταία παιχνίδια για τη Baskonia.",
+    "note_en": "Kenneth Faried has been rock-solid in recent games for Baskonia.",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "OTURU, DAN",
+    "stance": "pick",
+    "note": "Ο Νταν Οτουρού βρίσκεται σε εξαιρετική αγωνιστική κατάσταση με την Hapoel Tel Aviv.",
+    "note_en": "Dan Oturu is in great form with Hapoel Tel Aviv.",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "VALANCIUNAS, JONAS",
+    "stance": "pick",
+    "note": "Ο Γιόνας Βαλαντσιούνας κυριαρχεί στα ριμπάουντ και αποτελεί απαραίτητη προσθήκη.",
+    "note_en": "Jonas Valanciunas dominates the rebounds and is an essential addition.",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "ABALDE, ALBERTO",
+    "stance": "pick",
+    "note": "Ο Αλβέρτο Αμπάλντε προσφέρει εξαιρετική αξία σε χαμηλή τιμή λόγω των απουσιών της Real Madrid.",
+    "note_en": "Alberto Abalde offers great value at a low price due to Real Madrid's absences.",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "GACH, BOTH",
+    "stance": "pick",
+    "note": "Ο Μποθ Γκατς δείχνει βελτίωση και έχει επιπλέον κίνητρο απέναντι στην Besiktas.",
+    "note_en": "Both Gach is showing improvement and has extra motivation against Besiktas.",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "LUCIC, VLADIMIR",
+    "stance": "pick",
+    "note": "Ο Βλάντιμιρ Λούτσιτς πραγματοποιεί εξαιρετικές εμφανίσεις με τη φανέλα της Bayern.",
+    "note_en": "Vladimir Lucic is performing exceptionally well with Bayern.",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "MALCOLM, COLLIN",
+    "stance": "pick",
+    "note": "Ο Κόλιν Μάλκολμ παίζει μεγάλο χρόνο συμμετοχής και αποτελεί ευκαιρία στη τιμή του.",
+    "note_en": "Collin Malcolm plays heavy minutes and represents a steal at his price.",
+    "source": "EuroLeague Fantasy Tips (official)"
+   },
+   {
+    "player": "JOKSIMOVIC, STEFAN",
+    "stance": "pick",
+    "note": "Ο Στέφαν Γιοκσίμοβιτς παίρνει χρόνο συμμετοχής λόγω τραυματισμών και κοστίζει ελάχιστα.",
+    "note_en": "Stefan Joksimovic gets playing time due to injuries and costs very little.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "STRAZEL, MATTHEW",
     "stance": "pick",
-    "note": "Καλή επιλογή διαφοροποίησης με ευνοϊκό πρόγραμμα για την Anadolu Efes.",
-    "note_en": "Good differential choice with a favorable schedule for Anadolu Efes.",
+    "note": "Ο Ματ Στραζέλ έχει ευνοϊκό πρόγραμμα και μπορεί να δώσει διαφοροποίηση στο παιχνίδι.",
+    "note_en": "Matthew Strazel has a favorable schedule and can provide differential value.",
     "source": "Basketball Sphere – Fantasy"
    },
    {
     "player": "BALDWIN IV, WADE",
     "stance": "pick",
-    "note": "Ευνοϊκό πρόγραμμα για τη Fenerbahce Tarfin Istanbul και ταιριαστό γρήγορο τέμπο.",
-    "note_en": "Favorable schedule for Fenerbahce Tarfin Istanbul and suitable fast pace.",
+    "note": "Ο Ουέιν Μπάλντγουιν αποδίδει καλά απέναντι σε ομάδες με γρήγορο ρυθμό.",
+    "note_en": "Wade Baldwin performs well against fast-paced teams.",
     "source": "Basketball Sphere – Fantasy"
    }
   ],
   "round": 11,
-  "summary_el": "• Ο Olympiacos διέλυσε την Dubai Basketball με 101-72, με τον Evan Fournier να σημειώνει 28 πόντους.\n• Ο Sasha Vezenkov ξεπέρασε τον Vassilis Spanoulis και έγινε ο πρώτος σκόρερ στην ιστορία του Olympiacos στη EuroLeague.\n• Ο Tyler Dorsey ολοκληρώνει την τιμωρία του και επιστρέφει στις προπονήσεις του Olympiacos.\n• Η Real Madrid συνέτριψε την Crvena Zvezda με 105-84, πετυχαίνοντας 17 τρίποντα.\n• Η Zalgiris Kaunas επικράτησε της Armani Olimpia Milan με 86-83 εκτός έδρας, με τον Jonas Valanciunas να κατεβάζει 20 ριμπάουντ.\n• Η Maccabi Tel Aviv νίκησε ξανά τη Hapoel Tel Aviv με 80-73 στο ισραηλινό ντέρμπι.\n• Η Valencia Basket επιβλήθηκε της FC Bayern Munich με 102-87 με ηγέτη τον TJ Shorts.",
-  "summary_en": "• Olympiacos routed Dubai Basketball 101-72, with Evan Fournier scoring 28 points.\n• Sasha Vezenkov surpassed Vassilis Spanoulis to become Olympiacos's all-time leading scorer in the EuroLeague.\n• Tyler Dorsey's suspension is over and he is returning to Olympiacos practices.\n• Real Madrid crushed Crvena Zvezda 105-84, making 17 three-pointers.\n• Zalgiris Kaunas defeated Armani Olimpia Milan 86-83 on the road, with Jonas Valanciunas grabbing 20 rebounds.\n• Maccabi Tel Aviv defeated Hapoel Tel Aviv again 80-73 in the Israeli derby.\n• Valencia Basket beat FC Bayern Munich 102-87 led by TJ Shorts.",
+  "summary_el": "• O Olympiacos συνέτριψε την Dubai Basketball με 101-72 στη Sunel Arena, επιστρέφοντας εμφατικά στις νίκες.\n• Ο Evan Fournier πραγματοποίησε εξαιρετική εμφάνιση με 28 πόντους, ενώ ο Sasha Vezenkov έγραψε ιστορία ξεπερνώντας τον Vassilis Spanoulis ως πρώτος σκόρερ στην ιστορία του συλλόγου στην Ευρωλίγκα.\n• Η Zalgiris Kaunas πέρασε νικηφόρα από το Milan επικρατώντας της Armani Olimpia Milan με 86-83, χάρη σε μια ιστορική εμφάνιση του Jonas Valanciunas με 17 πόντους και 20 ριμπάουντ.\n• Η Real Madrid επικράτησε εύκολα της Crvena Zvezda με 105-84, έχοντας εξαιρετικό πρώτο δεκάλεπτο και πρωταγωνιστές τους Timothe Luwawu-Cabarrot και Gabriele Procida.\n• Η Maccabi Tel Aviv επικράτησε της Hapoel Tel Aviv με 80-73 στην Κύπρο, πετυχαίνοντας τη δεύτερη νίκη επί της συμπολίτισσάς της μέσα σε λίγες ημέρες.\n• Η Valencia Basket επικράτησε της FC Bayern Munich με 102-87 με ηγέτη τον TJ Shorts, φτάνοντας στο καλύτερο ξεκίνημα της ιστορίας της στην Ευρωλίγκα με 8-3.\n• Ο Tyler Dorsey ολοκλήρωσε την τιμωρία του και επιστρέφει κανονικά στις προπονήσεις του Olympiacos.",
+  "summary_en": "• Olympiacos crushed Dubai Basketball 101-72 at the Sunel Arena, making an emphatic return to winning ways.\n• Evan Fournier put on an exceptional performance with 28 points, while Sasha Vezenkov made history by surpassing Vassilis Spanoulis as the club's all-time leading scorer in the EuroLeague.\n• Zalgiris Kaunas secured an away victory against Armani Olimpia Milan 86-83, thanks to a historic performance by Jonas Valanciunas with 17 points and 20 rebounds.\n• Real Madrid easily defeated Crvena Zvezda 105-84, featuring a stellar first quarter and led by Timothe Luwawu-Cabarrot and Gabriele Procida.\n• Maccabi Tel Aviv defeated Hapoel Tel Aviv 80-73 in Cyprus, claiming their second win against their local rivals in a few days.\n• Valencia Basket defeated FC Bayern Munich 102-87 led by TJ Shorts, achieving the best start in their EuroLeague history at 8-3.\n• Tyler Dorsey has finished his suspension and is returning normally to Olympiacos practices.",
   "_model": "gemini-3.5-flash-lite",
-  "_seconds": 7.4
+  "_seconds": 10.5
  },
- "digest_at": "2026-11-12T23:11:37.306940+00:00",
+ "digest_at": "2026-11-13T05:08:03.721069+00:00",
  "failed": []
 }
