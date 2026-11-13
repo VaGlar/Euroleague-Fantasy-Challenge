@@ -1654,7 +1654,7 @@
   },
   {
    "round": 12,
-   "trades": 4,
+   "trades": 3,
    "bank": 0.0,
    "squad": [
     {
@@ -1677,29 +1677,18 @@
      "team": "ZAL",
      "role": "5άδα",
      "captain": false,
-     "x_now": 23.3
+     "x_now": 23.2
     },
     {
-     "id": 7221,
-     "price": 12.6,
+     "id": 3838,
+     "price": 9.8,
      "position": "Forward",
-     "person_id": "008192",
-     "name": "TUBELIS, AZUOLAS",
-     "team": "ZAL",
-     "role": "5άδα",
+     "person_id": "012609",
+     "name": "MALCOLM, COLLIN",
+     "team": "IST",
+     "role": "πάγκος",
      "captain": false,
-     "x_now": 15.9
-    },
-    {
-     "id": 8846,
-     "price": 9.0,
-     "position": "Center",
-     "person_id": "009733",
-     "name": "JEKIRI, TONYE",
-     "team": "PAR",
-     "role": "5άδα",
-     "captain": true,
-     "x_now": 15.8
+     "x_now": 14.3
     },
     {
      "id": 8815,
@@ -1713,6 +1702,17 @@
      "x_now": 13.7
     },
     {
+     "id": 7424,
+     "price": 10.8,
+     "position": "Center",
+     "person_id": "014108",
+     "name": "DIARRA, ALIOU",
+     "team": "VIR",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 12.9
+    },
+    {
      "id": 3851,
      "price": 9.3,
      "position": "Guard",
@@ -1724,26 +1724,26 @@
      "x_now": 12.8
     },
     {
-     "id": 4006,
-     "price": 7.3,
-     "position": "Head Coach",
-     "person_id": "ACX",
-     "name": "MASIULIS, TOMAS",
-     "team": "ZAL",
-     "role": "coach",
-     "captain": false,
-     "x_now": 8.4
-    },
-    {
      "id": 3975,
      "price": 5.9,
      "position": "Guard",
      "person_id": "012611",
      "name": "HERRERA, SEBASTIAN",
      "team": "PRS",
-     "role": "6ος",
-     "captain": false,
+     "role": "5άδα",
+     "captain": true,
      "x_now": 7.8
+    },
+    {
+     "id": 3897,
+     "price": 8.6,
+     "position": "Head Coach",
+     "person_id": "ADG",
+     "name": "JASIKEVICIUS, SARAS",
+     "team": "ULK",
+     "role": "coach",
+     "captain": false,
+     "x_now": 6.2
     },
     {
      "id": 4005,
@@ -1763,24 +1763,24 @@
      "person_id": "014741",
      "name": "CARDENAS, ALVARO",
      "team": "PAM",
-     "role": "πάγκος",
+     "role": "5άδα",
      "captain": false,
      "x_now": 4.8
     },
     {
-     "id": 4061,
-     "price": 4.5,
+     "id": 3867,
+     "price": 4.2,
      "position": "Forward",
-     "person_id": "008084",
-     "name": "MANTZOUKAS, ELEFTHERIOS",
-     "team": "PAN",
-     "role": "πάγκος",
+     "person_id": "001255",
+     "name": "PAPANIKOLAOU, KOSTAS",
+     "team": "OLY",
+     "role": "6ος",
      "captain": false,
-     "x_now": 2.1
+     "x_now": 0.0
     }
    ],
-   "x_total": 138.1,
-   "decided_at": "2026-11-13T05:08+00:00"
+   "x_total": 112.6,
+   "decided_at": "2026-11-13T14:09+00:00"
   }
  ],
  "seed_id": "5a453a755a9b",
@@ -1791,5 +1791,5 @@
   "raw": 1105.4,
   "avg_raw": 946.6
  },
- "generated": "2026-11-13T05:08:05.171257+00:00"
+ "generated": "2026-11-13T14:09:57.474104+00:00"
 }
