@@ -392,21 +392,18 @@ round,source,stance,person_id,name,team,model_xpts
 11,Basketball Sphere – Fantasy,pick,014107,"JOKSIMOVIC, STEFAN",BAS,1.67
 11,Basketball Sphere – Fantasy,pick,008099,"STRAZEL, MATTHEW",IST,11.61
 11,Basketball Sphere – Fantasy,pick,009863,"BALDWIN IV, WADE",ULK,14.89
-12,EuroLeague Fantasy Tips (official),pick,008384,"PROCIDA, GABRIELE",MAD,4.98
-12,EuroLeague Fantasy Tips (official),pick,013380,"FOURNIER, EVAN",OLY,9.03
-12,EuroLeague Fantasy Tips (official),pick,011214,"RIVERO, JASIEL",PAM,7.91
+12,EuroLeague Fantasy Tips (official),pick,014108,"DIARRA, ALIOU",VIR,14.57
+12,EuroLeague Fantasy Tips (official),pick,013385,"DIOP, OUSMANE",MIL,4.13
+12,EuroLeague Fantasy Tips (official),pick,011284,"FARIED, KENNETH",BAS,14.15
+12,EuroLeague Fantasy Tips (official),pick,012788,"OTURU, DAN",HTA,16.87
+12,EuroLeague Fantasy Tips (official),pick,000898,"VALANCIUNAS, JONAS",ZAL,25.42
 12,EuroLeague Fantasy Tips (official),avoid,006540,"MUSA, DZANAN",DUB,11.73
 12,EuroLeague Fantasy Tips (official),avoid,012878,"WRIGHT, MOSES",MIL,12.39
 12,EuroLeague Fantasy Tips (official),avoid,014163,"BUTLER, JARED",RED,6.12
-12,EuroLeague Fantasy Tips (official),pick,009733,"JEKIRI, TONYE",PAR,13.51
-12,EuroLeague Fantasy Tips (official),pick,006591,"NTILIKINA, FRANK",PRS,3.52
-12,EuroLeague Fantasy Tips (official),pick,012611,"HERRERA, SEBASTIAN",PRS,7.2
-12,EuroLeague Fantasy Tips (official),avoid,012640,"HIFI, NADIR",PRS,17.99
-12,EuroLeague Fantasy Tips (official),avoid,014168,"KEY, BRAXTON",ULK,8.1
-12,EuroLeague Fantasy Tips (official),avoid,014734,"LAWSON, A.J.",BAS,8.29
+12,EuroLeague Fantasy Tips (official),avoid,004554,"ZIZIC, ANTE",BES,7.28
 12,Basketball Sphere – Fantasy,pick,009846,"BRYANT, ELIJAH",HTA,20.21
 12,Basketball Sphere – Fantasy,pick,013369,"JONES, CARLIK",PAR,15.31
-12,Basketball Sphere – Fantasy,pick,014124,"HORTON TUCKER, TALEN",ULK,16.18
+12,Basketball Sphere – Fantasy,captain,014124,"HORTON TUCKER, TALEN",ULK,16.18
 12,Basketball Sphere – Fantasy,pick,015165,"WATERS, TREMONT",ASV,9.18
 12,Basketball Sphere – Fantasy,pick,013699,"CLARK III, JIMMY",TEL,8.19
 12,Basketball Sphere – Fantasy,pick,011706,"SAINT-SUPERY, MARIO",PAM,2.56
@@ -414,15 +411,9 @@ round,source,stance,person_id,name,team,model_xpts
 12,Basketball Sphere – Fantasy,pick,008192,"TUBELIS, AZUOLAS",ZAL,16.2
 12,Basketball Sphere – Fantasy,pick,014127,"BRISSETT, O'SHAE J",TEL,9.96
 12,Basketball Sphere – Fantasy,pick,014009,"STEVENS, LAMAR",PAR,9.69
-12,EuroLeague Fantasy Tips (official),avoid,014108,"DIARRA, ALIOU",VIR,14.57
-12,EuroLeague Fantasy Tips (official),pick,013385,"DIOP, OUSMANE",MIL,4.13
-12,EuroLeague Fantasy Tips (official),pick,011284,"FARIED, KENNETH",BAS,0.0
-12,EuroLeague Fantasy Tips (official),pick,012788,"OTURU, DAN",HTA,16.87
-12,EuroLeague Fantasy Tips (official),pick,000898,"VALANCIUNAS, JONAS",ZAL,25.42
-12,EuroLeague Fantasy Tips (official),pick,003733,"ABALDE, ALBERTO",MAD,7.82
-12,EuroLeague Fantasy Tips (official),pick,013900,"GACH, BOTH",ASV,8.19
-12,EuroLeague Fantasy Tips (official),pick,001288,"LUCIC, VLADIMIR",MUN,10.0
-12,EuroLeague Fantasy Tips (official),pick,012609,"MALCOLM, COLLIN",IST,12.28
 12,Basketball Sphere – Fantasy,pick,014107,"JOKSIMOVIC, STEFAN",BAS,1.82
 12,Basketball Sphere – Fantasy,pick,008099,"STRAZEL, MATTHEW",IST,10.77
 12,Basketball Sphere – Fantasy,pick,009863,"BALDWIN IV, WADE",ULK,14.91
+12,Basketball Sphere – Fantasy,avoid,014108,"DIARRA, ALIOU",VIR,14.57
+12,Basketball Sphere – Fantasy,avoid,012640,"HIFI, NADIR",PRS,17.99
+12,Basketball Sphere – Fantasy,avoid,011247,"FELIZ, ANDRES",MAD,13.02

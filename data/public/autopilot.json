@@ -1691,18 +1691,7 @@
      "team": "ULK",
      "role": "5άδα",
      "captain": false,
-     "x_now": 17.0
-    },
-    {
-     "id": 8846,
-     "price": 9.0,
-     "position": "Center",
-     "person_id": "009733",
-     "name": "JEKIRI, TONYE",
-     "team": "PAR",
-     "role": "5άδα",
-     "captain": false,
-     "x_now": 14.2
+     "x_now": 17.5
     },
     {
      "id": 4006,
@@ -1716,6 +1705,17 @@
      "x_now": 13.7
     },
     {
+     "id": 8846,
+     "price": 9.0,
+     "position": "Center",
+     "person_id": "009733",
+     "name": "JEKIRI, TONYE",
+     "team": "PAR",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 13.5
+    },
+    {
      "id": 3851,
      "price": 9.3,
      "position": "Guard",
@@ -1724,7 +1724,7 @@
      "team": "MAD",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 13.0
+     "x_now": 12.0
     },
     {
      "id": 8815,
@@ -1746,7 +1746,7 @@
      "team": "PRS",
      "role": "6ος",
      "captain": false,
-     "x_now": 7.6
+     "x_now": 7.2
     },
     {
      "id": 3983,
@@ -1782,8 +1782,8 @@
      "x_now": 0.0
     }
    ],
-   "x_total": 153.3,
-   "decided_at": "2026-11-13T22:08+00:00"
+   "x_total": 152.1,
+   "decided_at": "2026-11-14T05:07+00:00"
   }
  ],
  "seed_id": "5a453a755a9b",
@@ -1794,5 +1794,5 @@
   "raw": 1257.9,
   "avg_raw": 1065.4
  },
- "generated": "2026-11-13T22:08:46.526006+00:00"
+ "generated": "2026-11-14T05:07:19.396422+00:00"
 }
