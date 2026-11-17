@@ -35,11 +35,17 @@ export const cleanCode = (s) => String(s || "").normalize("NFD").replace(/[\u030
 // a team as the page keeps it: an object with up to 15 players (11 + room for the game's rules); roles only
 // the page's own (they are shown on the page)
 export const ROLES = ["5άδα", "6ος", "πάγκος", "coach"];
+export const MAX_HIST = 60;   // the page keeps the last 60 steps (web/team.js save)
+const okPlayers = (ps) => Array.isArray(ps) && ps.length <= 15 && ps.every((p) => p && Number.isFinite(Number(p.id)));
+const okRoles = (roles) => roles == null
+  || (typeof roles === "object" && !Array.isArray(roles) && Object.values(roles).every((r) => ROLES.includes(r)));
+// one Undo step: {round, at, snap}; the snap is the team as it was (null where a key was missing), checked as one
+const okStep = (h) => !!h && typeof h === "object" && !Array.isArray(h) && !!h.snap && typeof h.snap === "object"
+  && !Array.isArray(h.snap) && (h.snap.players == null || okPlayers(h.snap.players)) && okRoles(h.snap.roles);
 export function validTeam(d) {
-  const roles = d && d.roles;
-  return !!d && typeof d === "object" && !Array.isArray(d) && Array.isArray(d.players) && d.players.length <= 15
-    && d.players.every((p) => p && Number.isFinite(Number(p.id)))
-    && (roles == null || (typeof roles === "object" && !Array.isArray(roles) && Object.values(roles).every((r) => ROLES.includes(r))));
+  return !!d && typeof d === "object" && !Array.isArray(d) && okPlayers(d.players) && okRoles(d.roles)
+    // the Undo steps restore their snap as the team: the same rules (an Undo brought back unchecked roles)
+    && (d.hist == null || (Array.isArray(d.hist) && d.hist.length <= MAX_HIST && d.hist.every(okStep)));
 }
 
 let ready = false;
