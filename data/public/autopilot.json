@@ -1660,7 +1660,7 @@
   {
    "round": 12,
    "trades": 4,
-   "bank": 0.0,
+   "bank": 0.1,
    "squad": [
     {
      "id": 11549,
@@ -1685,15 +1685,15 @@
      "x_now": 24.0
     },
     {
-     "id": 7424,
-     "price": 10.8,
-     "position": "Center",
-     "person_id": "014108",
-     "name": "DIARRA, ALIOU",
-     "team": "VIR",
+     "id": 7202,
+     "price": 13.1,
+     "position": "Guard",
+     "person_id": "014008",
+     "name": "ROBINSON, JUSTIN",
+     "team": "BAR",
      "role": "5άδα",
      "captain": false,
-     "x_now": 14.6
+     "x_now": 18.3
     },
     {
      "id": 3897,
@@ -1707,6 +1707,17 @@
      "x_now": 14.3
     },
     {
+     "id": 8846,
+     "price": 9.7,
+     "position": "Center",
+     "person_id": "009733",
+     "name": "JEKIRI, TONYE",
+     "team": "PAR",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 14.2
+    },
+    {
      "id": 3851,
      "price": 9.7,
      "position": "Guard",
@@ -1715,18 +1726,7 @@
      "team": "MAD",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 13.7
-    },
-    {
-     "id": 3838,
-     "price": 10.3,
-     "position": "Forward",
-     "person_id": "012609",
-     "name": "MALCOLM, COLLIN",
-     "team": "IST",
-     "role": "5άδα",
-     "captain": false,
-     "x_now": 12.9
+     "x_now": 13.0
     },
     {
      "id": 8815,
@@ -1740,26 +1740,15 @@
      "x_now": 11.9
     },
     {
-     "id": 3975,
-     "price": 6.3,
-     "position": "Guard",
-     "person_id": "012611",
-     "name": "HERRERA, SEBASTIAN",
-     "team": "PRS",
-     "role": "6ος",
-     "captain": false,
-     "x_now": 7.2
-    },
-    {
      "id": 4005,
      "price": 4.0,
      "position": "Forward",
      "person_id": "000229",
      "name": "JACKSON, EDWIN",
      "team": "ASV",
-     "role": "πάγκος",
+     "role": "6ος",
      "captain": false,
-     "x_now": 3.7
+     "x_now": 3.6
     },
     {
      "id": 3971,
@@ -1773,19 +1762,30 @@
      "x_now": 3.6
     },
     {
-     "id": 3933,
-     "price": 4.0,
+     "id": 3867,
+     "price": 4.1,
      "position": "Forward",
-     "person_id": "013373",
-     "name": "CAVALIERE, LEOPOLD",
-     "team": "PRS",
+     "person_id": "001255",
+     "name": "PAPANIKOLAOU, KOSTAS",
+     "team": "OLY",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 3.0
+     "x_now": 3.4
+    },
+    {
+     "id": 4061,
+     "price": 4.4,
+     "position": "Forward",
+     "person_id": "008084",
+     "name": "MANTZOUKAS, ELEFTHERIOS",
+     "team": "PAN",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 2.0
     }
    ],
-   "x_total": 151.0,
-   "decided_at": "2026-11-16T05:09+00:00"
+   "x_total": 151.3,
+   "decided_at": "2026-11-17T05:09+00:00"
   }
  ],
  "seed_id": "5a453a755a9b",
@@ -1796,5 +1796,5 @@
   "raw": 1257.9,
   "avg_raw": 1065.4
  },
- "generated": "2026-11-16T05:09:08.079494+00:00"
+ "generated": "2026-11-17T05:09:37.788795+00:00"
 }
