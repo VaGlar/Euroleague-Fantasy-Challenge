@@ -22,6 +22,22 @@ from .config import PUBLIC, ROOT
 
 PRODUCT = "Coach Dime"
 HOME = "https://coachdime.com/"                 # the public site's address (Cloudflare custom domain)
+# what a shared link shows (Viber, WhatsApp, Facebook, X) and the search engines' snippet: public edition only
+DESCRIPTION = ("Free, unofficial assistant for the EuroLeague Fantasy Challenge: expected points (xFPT) for every "
+               "player, trades and Captain for your team, injuries and expert picks, every Round.")
+SHARE_TAGS = "\n".join([
+    f'<meta name="description" content="{DESCRIPTION}">',
+    '<meta property="og:type" content="website">',
+    f'<meta property="og:site_name" content="{PRODUCT}">',
+    f'<meta property="og:title" content="{PRODUCT} · EuroLeague Fantasy assistant">',
+    f'<meta property="og:description" content="{DESCRIPTION}">',
+    f'<meta property="og:url" content="{HOME}">',
+    f'<meta property="og:image" content="{HOME}og.png">',
+    '<meta property="og:image:width" content="1200">',
+    '<meta property="og:image:height" content="630">',
+    f'<meta property="og:image:alt" content="{PRODUCT}: expected points, trades and Captain for the EuroLeague Fantasy Challenge">',
+    '<meta name="twitter:card" content="summary_large_image">',
+])
 
 # file -> function returning the sanitized content (None = copy unchanged)
 PUBLIC_FILES = {
@@ -93,7 +109,7 @@ def site(out: Path, src: Path | None = None) -> list[str]:
     html = index.read_text()
     for old, new in (('<meta name="apple-mobile-web-app-title" content="ELF">',
                       f'<meta name="apple-mobile-web-app-title" content="{PRODUCT}">'),
-                     ("<title>ELF Dashboard</title>", f'<title>{PRODUCT}</title>\n<link rel="canonical" href="{HOME}">'),
+                     ("<title>ELF Dashboard</title>", f'<title>{PRODUCT}</title>\n<link rel="canonical" href="{HOME}">\n{SHARE_TAGS}'),
                      ('<h1><svg class="logo" aria-hidden="true"><use href="#i-court"/></svg> EuroLeague Fantasy — ',
                       f'<h1><svg class="logo" aria-hidden="true"><use href="#i-court"/></svg> {PRODUCT} <small class="muted">beta</small> — ')):
         if old not in html:

@@ -79,6 +79,9 @@ text in `web/` is written as `L("ελληνικά", "English")`; the fixed marku
 (`summary_el` / `summary_en`, `note` / `note_en`); a digest from before English shows the Greek summary
 and no notes. The report, Telegram and the bot stay in Greek.
 
+**Link previews:** the public build adds a description and a preview picture (`web/og.png`, 1200×630) for
+shared links and search engines (`SHARE_TAGS` in `elf/publish.py`); the personal edition has none.
+
 **Club codes:** the data keep the EuroLeague API's codes (IST, MUN, MAD, PAM…); whatever a user reads (site, report, Telegram) shows the game's codes (EFS, BAY, RMB, VBC…), i.e. the «TV codes» of `clubs.json` (`tc()` in `web/`, `tv()` in `elf/run.py`).
 
 ## Model
