@@ -131,7 +131,38 @@
   // Squad value used for trades (same objective as the ILP in optimize._model):
   // coach full; court: 0.5*v for all + 0.5*v for the six starters + captain's x_now,
   // the five covering G/F/C, captain in the five, sixth man outside it.
+  // The squad's value: coach + bench 50% for all + the other 50% for the five and the sixth man + the
+  // captain's x_now. For each captain the best six around him are found directly: the best at each
+  // position he doesn't cover (the five needs a G, an F and a C), then the best of the rest; the sixth
+  // man is any of them but the captain (6 players on 3 positions: one position has two). Same result as
+  // trying the 252 fives (squadValueAll, kept for the tests), ~20× faster: transfers() calls it for every
+  // candidate squad.
   function squadValue(squad, value = "x_h", now = "x_now") {
+    const court = squad.filter((p) => p.position !== "Head Coach");
+    if (court.length !== 10) return -Infinity;
+    let tot = squad.filter((p) => p.position === "Head Coach").reduce((a, p) => a + num(p[value]), 0);
+    const v = court.map((p) => num(p[value])), x = court.map((p) => num(p[now]));
+    tot += 0.5 * v.reduce((a, b) => a + b, 0);
+    const order = v.map((_, i) => i).sort((a, b) => v[b] - v[a]);
+    let best = -Infinity;
+    for (let c = 0; c < 10; c++) {
+      const pick = new Set([c]);
+      for (const pos of COURT) {
+        if (court[c].position === pos) continue;
+        const i = order.find((k) => court[k].position === pos);
+        if (i === undefined) { pick.clear(); break; }
+        pick.add(i);
+      }
+      if (!pick.size) continue;
+      for (const i of order) { if (pick.size >= 6) break; pick.add(i); }
+      let sv = 0;
+      for (const i of pick) sv += v[i];
+      const val = 0.5 * sv + x[c];
+      if (val > best) best = val;
+    }
+    return tot + best;
+  }
+  function squadValueAll(squad, value = "x_h", now = "x_now") {
     const court = squad.filter((p) => p.position !== "Head Coach");
     let tot = squad.filter((p) => p.position === "Head Coach").reduce((a, p) => a + num(p[value]), 0);
     if (court.length !== 10) return -Infinity;
@@ -159,7 +190,11 @@
   // A set of k trades is kept only if it adds >= minGain per trade over the current
   // squad, and each extra trade adds >= minGain (as optimize.transfers).
   // keep: ids never sold; avoid: ids never bought.
-  function transfers(squad, pool, bank, { maxTrades = 4, minGain = 2.0, beam = 48, perPos = 16,
+  // The money: a step may go over the budget by as much as the trades still to come can free (selling
+  // a player for a cheaper one). 17/11: «Center 9.0 -> 17.7, paid for by Center 11.4 -> 4.8» was never
+  // found: the cheap swap alone makes the team worse, so it fell out of the beam, and the dear one alone
+  // didn't fit. Only a set within the budget is proposed.
+  function transfers(squad, pool, bank, { maxTrades = 4, minGain = 2.0, beam = 96, perPos = 16,
     value = "x_h", now = "x_now", keep = [], avoid = [] } = {}) {
     const kept = new Set(keep), avoided = new Set(avoid);
     const budget = squad.reduce((a, p) => a + num(p.price), 0) + bank;
@@ -170,13 +205,22 @@
     const clubOk = (sq, team) => !team || sq.filter((p) => p.team === team).length <= Math.max(MAX_PER_CLUB, ownedClub[team] || 0);
     const cand = {};
     for (const pos of Object.keys(SQUAD)) {
-      // the best by xFPT and the best per credit: the top ones alone can all be too dear to replace a
-      // cheap player (Dessert 5.3: the 16 best Centers all cost 8.5+, so he was never sold)
+      // the best by xFPT, the best per credit and the best at each price: the top ones alone can all be too
+      // dear to replace a cheap player (Dessert 5.3: the 16 best Centers all cost 8.5+, so he was never sold),
+      // and a cheap one is what pays for a dear one elsewhere
       const all = pool.filter((p) => p.position === pos && !owned.has(p.id) && !avoided.has(p.id) && p.price != null);
       const top = all.slice().sort((a, b) => num(b[value]) - num(a[value])).slice(0, perPos);
       const per = all.filter((p) => num(p.price) > 0).sort((a, b) => num(b[value]) / num(b.price) - num(a[value]) / num(a.price)).slice(0, perPos);
-      cand[pos] = [...new Map([...top, ...per].map((p) => [p.id, p])).values()];
+      // the price/xFPT frontier: everyone with no one cheaper (or as cheap) and better at his position
+      const front = [];
+      for (const p of all.slice().sort((a, b) => num(a.price) - num(b.price) || num(b[value]) - num(a[value])))
+        if (!front.length || num(p[value]) > num(front[front.length - 1][value])) front.push(p);
+      cand[pos] = [...new Map([...top, ...per, ...front].map((p) => [p.id, p])).values()];
     }
+    // the most each owned player can free: his price minus the cheapest candidate at his position
+    const frees = squad.filter((p) => !kept.has(p.id)).map((p) => Math.max(0, num(p.price)
+      - Math.min(...cand[p.position].map((c) => num(c.price)), Infinity))).sort((a, b) => b - a);
+    const slack = (k) => frees.slice(0, Math.max(0, maxTrades - k)).reduce((a, b) => a + b, 0);
     const baseVal = squadValue(squad, value, now);
     let frontier = [{ squad, cost: budget - bank, val: baseVal, key: "" }];
     const bestAt = [{ squad, val: baseVal, cost: budget - bank }];
@@ -189,7 +233,7 @@
           for (const inn of cand[out.position]) {
             if (ids.has(inn.id)) continue;
             const cost = st.cost - num(out.price) + num(inn.price);
-            if (cost > budget + 1e-6) continue;
+            if (cost > budget + slack(k) + 1e-6) continue;          // the trades still to come can't pay for it
             const sq = st.squad.slice(); sq[oi] = inn;
             if (!clubOk(sq, inn.team)) continue;
             const key = sq.map((p) => p.id).sort((a, b) => a - b).join(",");
@@ -199,12 +243,16 @@
         });
       }
       if (!next.size) break;
-      frontier = [...next.values()].sort((a, b) => b.val - a.val).slice(0, beam);
-      bestAt.push(frontier[0]);
+      const all = [...next.values()].sort((a, b) => b.val - a.val);
+      const fits = all.filter((x) => x.cost <= budget + 1e-6);
+      // the beam: the best within the budget, and the best that still need a cheaper swap to fit
+      frontier = [...new Map([...fits.slice(0, beam), ...all.slice(0, beam)].map((x) => [x.key, x])).values()];
+      bestAt.push(fits[0] || null);
     }
     let best = bestAt[0], bestK = 0;
     for (let k = 1; k < bestAt.length; k++) {
       const r = bestAt[k];
+      if (!r) continue;
       if (r.val - baseVal >= minGain * k - 1e-9 && r.val - best.val >= minGain * (k - bestK) - 1e-9) {
         best = r; bestK = k;
       }
@@ -237,7 +285,7 @@
     const pdf = Math.exp(-d * d / 2) / Math.sqrt(2 * Math.PI), cdf = 0.5 * (1 + erf(d / Math.SQRT2));
     return sd * (pdf + d * cdf);
   }
-  const api = { lineup, deferLaterTurns, transfers, squadValue, laterTurnIds, laterTurnSteps, expectedShortfall, BENCH, SQUAD, COURT, MAX_PER_CLUB };
+  const api = { lineup, deferLaterTurns, transfers, squadValue, squadValueAll, laterTurnIds, laterTurnSteps, expectedShortfall, BENCH, SQUAD, COURT, MAX_PER_CLUB };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else root.ELFOPT = api;
 })(typeof window !== "undefined" ? window : globalThis);
