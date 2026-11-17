@@ -1,0 +1,14 @@
+Do the new tests fail when they should? (product file swapped by hand, then restored)
+
+1) web/opt.js of main before PR 70 (e3bf7dc), tests/test_js_optimizer_rules.py:
+E       assert {100, 101} <= {256, 257, 258, 259}
+1 failed, 1 passed
+   (the old beam never buys the 17.7 Center paid for by the 4.8 one; the exact optimizer does)
+   The rules test passes on both versions: the old code kept the rules too.
+
+2) web/opt.js of PR 70: 2 passed.
+
+3) tests/test_news_en_garbled.py: the same broken words count as broken in summary_el (passes);
+   in summary_en they don't (strict xfail, the gap in §2.1).
+
+UI specs (tests/ui/i18n_news.spec.mjs, round.spec.mjs): not run here (UI tests in CI only); node --check ok.
