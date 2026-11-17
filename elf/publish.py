@@ -27,7 +27,6 @@ HOME = "https://coachdime.com/"                 # the public site's address (Clo
 PUBLIC_FILES = {
     "predictions.json": lambda d: {**d, "my_team": None, "health": [], "price_model": None,
                                    "edition": "public"},
-    "report_public.json": None,     # published as report.json
     "players.json": None,
     # titles, sources and links only: the articles' text belongs to their publishers (it is
     # read for the summary during the run and kept in the private archive, never published)
@@ -40,7 +39,8 @@ PUBLIC_FILES = {
     "autopilot.json": lambda d: {**d, "rounds": [{k: v for k, v in r.items() if k not in ("my_pts", "my_rank")}
                                                  for r in d.get("rounds", [])]},
 }
-RENAME = {"report_public.json": "report.json"}
+# the report in text is shown only in the personal edition («Round», PR 65): the public site gets none
+RENAME: dict[str, str] = {}
 
 # In the public repo these exist only in the private data repo: the owner's report and lineups,
 # debugging shapes and alert state. Files kept but sanitized are the PUBLIC_FILES above; the

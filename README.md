@@ -10,7 +10,7 @@ and a Telegram report at 10:05 on every game day. Running cost: €0.
 > bar whose «Μεταφορά» button carries the device's data over in a `#move=` fragment (`moveBar` / `MOVE_KEYS` in
 > `web/index.html`). The bar also backs the team up on the server (a sync code, `TEAM.backup`) and sends the code as
 > `&sync=`: the new address links to it by itself, and keeps it in a `cd_sync` cookie, because on iPhone the Home
-> Screen app has its own storage and gets only the browser's cookies when it is added (`adoptMove` in `web/team.js`). Once its visits are near zero, the bar becomes a redirect. The product plan (two editions from one engine, subscriptions, security) is in [`docs/PRODUCT.md`](docs/PRODUCT.md).
+> Screen app has its own storage and gets only the browser's cookies when it is added (`adoptMove` in `web/team.js`). Since 11/11 the old address moves on by itself: it backs the team up (at most 4 s), then opens the new one with the data; the bar and its button stay for a browser that blocks the redirect. The public site has no report in text (only the personal edition shows one, in «Round»). The product plan (two editions from one engine, subscriptions, security) is in [`docs/PRODUCT.md`](docs/PRODUCT.md).
 >
 > **R&D:** experiments to improve the model, including the ones that failed, and the ideas on hold are in [`research/`](research/README.md).
 >
@@ -71,6 +71,13 @@ flowchart LR
 | `functions/` | Cloudflare Pages Functions | `/feed` (news proxy), `/api/sync` (Coach Dime devices in step, D1) |
 | `worker/` | Cloudflare Workers | hourly cron (update 07:05, report 10:05, update 3 hours and check 2 hours before the first game, update after the games) + bot commands; deploys itself on every change to `worker/` on `main` |
 | `sources.yaml` | — | news sources: RSS feeds, the EuroLeague CMS and pages updated in place (e.g. BasketNews' injury report) |
+
+**Languages (ΕΛ / EN):** the site is in Greek or English; the button next to the theme switches and
+remembers it (`localStorage.lang`), and a first visit follows the browser (Greek browser → Greek). Every
+text in `web/` is written as `L("ελληνικά", "English")`; the fixed markup of `index.html` is translated by
+`STATIC_EN`. The Gemini summary and the columns' notes come in both languages from the same call
+(`summary_el` / `summary_en`, `note` / `note_en`); a digest from before English shows the Greek summary
+and no notes. The report, Telegram and the bot stay in Greek.
 
 **Club codes:** the data keep the EuroLeague API's codes (IST, MUN, MAD, PAM…); whatever a user reads (site, report, Telegram) shows the game's codes (EFS, BAY, RMB, VBC…), i.e. the «TV codes» of `clubs.json` (`tc()` in `web/`, `tv()` in `elf/run.py`).
 
