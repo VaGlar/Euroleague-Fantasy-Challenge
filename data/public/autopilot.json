@@ -1726,7 +1726,7 @@
      "team": "MAD",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 13.0
+     "x_now": 13.7
     },
     {
      "id": 8815,
@@ -1740,23 +1740,23 @@
      "x_now": 11.9
     },
     {
-     "id": 4005,
-     "price": 4.0,
-     "position": "Forward",
-     "person_id": "000229",
-     "name": "JACKSON, EDWIN",
-     "team": "ASV",
-     "role": "6ος",
-     "captain": false,
-     "x_now": 3.6
-    },
-    {
      "id": 3971,
      "price": 4.2,
      "position": "Guard",
      "person_id": "004761",
      "name": "MARINKOVIC, VANJA",
      "team": "PAR",
+     "role": "6ος",
+     "captain": false,
+     "x_now": 3.6
+    },
+    {
+     "id": 4005,
+     "price": 4.0,
+     "position": "Forward",
+     "person_id": "000229",
+     "name": "JACKSON, EDWIN",
+     "team": "ASV",
      "role": "πάγκος",
      "captain": false,
      "x_now": 3.6
@@ -1784,8 +1784,8 @@
      "x_now": 2.0
     }
    ],
-   "x_total": 151.3,
-   "decided_at": "2026-11-17T05:09+00:00"
+   "x_total": 151.7,
+   "decided_at": "2026-11-17T13:10+00:00"
   }
  ],
  "seed_id": "5a453a755a9b",
@@ -1796,5 +1796,5 @@
   "raw": 1257.9,
   "avg_raw": 1065.4
  },
- "generated": "2026-11-17T05:09:37.788795+00:00"
+ "generated": "2026-11-17T13:10:20.263239+00:00"
 }
