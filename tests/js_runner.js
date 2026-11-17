@@ -18,6 +18,7 @@ process.stdin.on("data", (d) => (buf += d)).on("end", () => {
         squad: r.squad.map((p) => ({ id: p.id, position: p.position, price: p.price, team: p.team })) };
     }
     if (c.kind === "shortfall") return opt.expectedShortfall(c.bench, c.starter);
+    if (c.kind === "squadValue") return [opt.squadValue(c.squad), opt.squadValueAll(c.squad)];
     return null;
   });
   process.stdout.write(JSON.stringify(out));
