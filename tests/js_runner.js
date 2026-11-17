@@ -13,7 +13,7 @@ process.stdin.on("data", (d) => (buf += d)).on("end", () => {
       return r.plan.map((x) => [x.bench.id, x.start.id]);
     }
     if (c.kind === "transfers") {
-      const r = opt.transfers(c.squad, c.pool, c.bank, { maxTrades: c.maxTrades, minGain: c.minGain, keep: c.keep || [] });
+      const r = opt.transfers(c.squad, c.pool, c.bank, { maxTrades: c.maxTrades, minGain: c.minGain, keep: c.keep || [], avoid: c.avoid || [] });
       return { gain: r.gain, bankAfter: r.bankAfter, n: r.pairs.length,
         squad: r.squad.map((p) => ({ id: p.id, position: p.position, price: p.price, team: p.team })) };
     }

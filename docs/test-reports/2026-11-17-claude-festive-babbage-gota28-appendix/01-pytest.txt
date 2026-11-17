@@ -1,0 +1,6 @@
+2 files skipped due to complete coverage.
+Required test coverage of 90.0% reached. Total coverage: 93.55%
+422 passed, 1 xfailed in 93.34s (0:01:33)
+node --check tests/ui/i18n_news.spec.mjs ok
+node --check tests/ui/round.spec.mjs ok
+node --check tests/js_runner.js ok
