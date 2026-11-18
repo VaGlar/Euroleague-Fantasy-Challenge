@@ -1797,12 +1797,15 @@
      "captain": null,
      "at": "2026-11-17T23:08+00:00"
     }
-   }
+   },
+   "pts": 172.4,
+   "raw": 162.4,
+   "avg_raw": 116.4
   },
   {
    "round": 13,
    "trades": 4,
-   "bank": 0.1,
+   "bank": 0.2,
    "squad": [
     {
      "id": 3766,
@@ -1812,41 +1815,41 @@
      "name": "VEZENKOV, SASHA",
      "team": "OLY",
      "role": "5άδα",
+     "captain": false,
+     "x_now": 27.5
+    },
+    {
+     "id": 3903,
+     "price": 17.6,
+     "position": "Guard",
+     "person_id": "009846",
+     "name": "BRYANT, ELIJAH",
+     "team": "HTA",
+     "role": "5άδα",
      "captain": true,
-     "x_now": 26.6
+     "x_now": 23.0
     },
     {
-     "id": 11549,
-     "price": 17.7,
+     "id": 11504,
+     "price": 10.6,
      "position": "Center",
-     "person_id": "000898",
-     "name": "VALANCIUNAS, JONAS",
-     "team": "ZAL",
+     "person_id": "003958",
+     "name": "THIEMANN, JOHANNES",
+     "team": "MUN",
      "role": "5άδα",
      "captain": false,
-     "x_now": 25.7
+     "x_now": 17.8
     },
     {
-     "id": 3834,
-     "price": 15.7,
+     "id": 7202,
+     "price": 13.1,
      "position": "Guard",
-     "person_id": "012640",
-     "name": "HIFI, NADIR",
-     "team": "PRS",
+     "person_id": "014008",
+     "name": "ROBINSON, JUSTIN",
+     "team": "BAR",
      "role": "5άδα",
      "captain": false,
-     "x_now": 18.7
-    },
-    {
-     "id": 3851,
-     "price": 9.7,
-     "position": "Guard",
-     "person_id": "011247",
-     "name": "FELIZ, ANDRES",
-     "team": "MAD",
-     "role": "πάγκος",
-     "captain": false,
-     "x_now": 13.7
+     "x_now": 15.8
     },
     {
      "id": 8846,
@@ -1857,18 +1860,7 @@
      "team": "PAR",
      "role": "5άδα",
      "captain": false,
-     "x_now": 13.5
-    },
-    {
-     "id": 13936,
-     "price": 7.7,
-     "position": "Forward",
-     "person_id": "015400",
-     "name": "FRANKS, ROBERT",
-     "team": "PAR",
-     "role": "5άδα",
-     "captain": false,
-     "x_now": 11.5
+     "x_now": 14.9
     },
     {
      "id": 4255,
@@ -1879,7 +1871,18 @@
      "team": "PAM",
      "role": "coach",
      "captain": false,
-     "x_now": 6.9
+     "x_now": 14.1
+    },
+    {
+     "id": 3851,
+     "price": 9.7,
+     "position": "Guard",
+     "person_id": "011247",
+     "name": "FELIZ, ANDRES",
+     "team": "MAD",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 12.6
     },
     {
      "id": 4005,
@@ -1888,9 +1891,9 @@
      "person_id": "000229",
      "name": "JACKSON, EDWIN",
      "team": "ASV",
-     "role": "6ος",
+     "role": "πάγκος",
      "captain": false,
-     "x_now": 5.7
+     "x_now": 6.1
     },
     {
      "id": 3971,
@@ -1901,18 +1904,18 @@
      "team": "PAR",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 4.5
+     "x_now": 4.7
     },
     {
-     "id": 11521,
-     "price": 4.3,
-     "position": "Guard",
-     "person_id": "015161",
-     "name": "FODZO DADA, MARC-OWEN",
-     "team": "ASV",
-     "role": "πάγκος",
+     "id": 3933,
+     "price": 4.0,
+     "position": "Forward",
+     "person_id": "013373",
+     "name": "CAVALIERE, LEOPOLD",
+     "team": "PRS",
+     "role": "6ος",
      "captain": false,
-     "x_now": 3.5
+     "x_now": 3.2
     },
     {
      "id": 3867,
@@ -1923,20 +1926,20 @@
      "team": "OLY",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 2.4
+     "x_now": 2.7
     }
    ],
-   "x_total": 147.9,
-   "decided_at": "2026-11-18T14:12+00:00"
+   "x_total": 152.8,
+   "decided_at": "2026-11-18T20:08+00:00"
   }
  ],
  "seed_id": "5a453a755a9b",
  "start_round": 1,
  "total": {
-  "rounds": 11,
-  "pts": 1451.0,
-  "raw": 1257.9,
-  "avg_raw": 1065.4
+  "rounds": 12,
+  "pts": 1623.4,
+  "raw": 1420.3,
+  "avg_raw": 1181.8
  },
- "generated": "2026-11-18T14:12:45.379792+00:00"
+ "generated": "2026-11-18T20:08:17.825663+00:00"
 }
