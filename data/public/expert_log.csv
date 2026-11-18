@@ -392,6 +392,12 @@ round,source,stance,person_id,name,team,model_xpts
 11,Basketball Sphere – Fantasy,pick,014107,"JOKSIMOVIC, STEFAN",BAS,1.67
 11,Basketball Sphere – Fantasy,pick,008099,"STRAZEL, MATTHEW",IST,11.61
 11,Basketball Sphere – Fantasy,pick,009863,"BALDWIN IV, WADE",ULK,14.89
+12,EuroLeague Fantasy Tips (official),pick,003469,"VEZENKOV, SASHA",OLY,25.35
+12,EuroLeague Fantasy Tips (official),pick,006540,"MUSA, DZANAN",DUB,14.77
+12,EuroLeague Fantasy Tips (official),pick,003958,"THIEMANN, JOHANNES",MUN,12.31
+12,EuroLeague Fantasy Tips (official),avoid,011212,"OKOBO, ELIE",DUB,11.42
+12,EuroLeague Fantasy Tips (official),avoid,015165,"WATERS, TREMONT",ASV,7.66
+12,EuroLeague Fantasy Tips (official),avoid,001255,"PAPANIKOLAOU, KOSTAS",OLY,2.63
 12,EuroLeague Fantasy Tips (official),pick,011305,"CARTER, TYSON",RED,7.61
 12,EuroLeague Fantasy Tips (official),pick,007519,"JOKUBAITIS, ROKAS",MUN,8.09
 12,EuroLeague Fantasy Tips (official),captain,007027,"MALEDON, THEO",MAD,15.17
@@ -401,24 +407,19 @@ round,source,stance,person_id,name,team,model_xpts
 12,EuroLeague Fantasy Tips (official),pick,015138,"MARTIN, TYRESE",BAR,8.67
 12,EuroLeague Fantasy Tips (official),pick,013363,"NWORA, JORDAN",RED,15.35
 12,EuroLeague Fantasy Tips (official),pick,014207,"OMORUYI, EUGENE",BES,10.88
-12,EuroLeague Fantasy Tips (official),pick,003469,"VEZENKOV, SASHA",OLY,25.35
 12,EuroLeague Fantasy Tips (official),pick,013385,"DIOP, OUSMANE",MIL,4.43
 12,EuroLeague Fantasy Tips (official),pick,008325,"KAMENJAS, KENAN",BAS,12.52
 12,EuroLeague Fantasy Tips (official),pick,005844,"PAPAGIANNIS, GEORGIOS",IST,2.44
 12,EuroLeague Fantasy Tips (official),pick,005791,"TAVARES, WALTER",MAD,14.61
 12,EuroLeague Fantasy Tips (official),pick,000898,"VALANCIUNAS, JONAS",ZAL,24.52
-12,EuroBallin (Substack),pick,014124,"HORTON TUCKER, TALEN",ULK,16.4
-12,EuroBallin (Substack),pick,006661,"WILBEKIN, SCOTTIE",BES,9.16
-12,EuroBallin (Substack),pick,004004,"GUDURIC, MARKO",MIL,7.1
-12,EuroBallin (Substack),pick,008192,"TUBELIS, AZUOLAS",ZAL,16.87
-12,EuroBallin (Substack),pick,012609,"MALCOLM, COLLIN",IST,11.17
-12,EuroBallin (Substack),pick,014009,"STEVENS, LAMAR",PAR,8.99
-12,EuroBallin (Substack),pick,005713,"KURUCS, RODIONS",BAS,6.88
-12,EuroBallin (Substack),pick,012788,"OTURU, DAN",HTA,16.98
-12,EuroBallin (Substack),pick,009733,"JEKIRI, TONYE",PAR,13.55
 12,Basketball Sphere – Fantasy,pick,009846,"BRYANT, ELIJAH",HTA,21.26
+12,Basketball Sphere – Fantasy,pick,014124,"HORTON TUCKER, TALEN",ULK,16.4
 12,Basketball Sphere – Fantasy,pick,011247,"FELIZ, ANDRES",MAD,13.01
+12,Basketball Sphere – Fantasy,pick,TGB,"LLULL, SERGIO",MAD,3.24
+12,Basketball Sphere – Fantasy,pick,008192,"TUBELIS, AZUOLAS",ZAL,16.87
+12,Basketball Sphere – Fantasy,pick,012609,"MALCOLM, COLLIN",IST,11.17
 12,Basketball Sphere – Fantasy,pick,012080,"LUWAWU-CABARROT, TIMOTHE",MAD,8.27
 12,Basketball Sphere – Fantasy,pick,007464,"PARRA, JOEL",BAR,6.82
 12,Basketball Sphere – Fantasy,pick,014107,"JOKSIMOVIC, STEFAN",BAS,1.68
+12,Basketball Sphere – Fantasy,pick,012788,"OTURU, DAN",HTA,16.98
 12,Basketball Sphere – Fantasy,pick,011199,"NEBO, JOSH",BAR,14.27

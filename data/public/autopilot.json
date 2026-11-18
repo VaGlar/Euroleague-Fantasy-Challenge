@@ -1838,17 +1838,6 @@
      "x_now": 18.7
     },
     {
-     "id": 8846,
-     "price": 9.7,
-     "position": "Center",
-     "person_id": "009733",
-     "name": "JEKIRI, TONYE",
-     "team": "PAR",
-     "role": "5άδα",
-     "captain": false,
-     "x_now": 14.2
-    },
-    {
      "id": 3851,
      "price": 9.7,
      "position": "Guard",
@@ -1858,6 +1847,17 @@
      "role": "πάγκος",
      "captain": false,
      "x_now": 13.7
+    },
+    {
+     "id": 8846,
+     "price": 9.7,
+     "position": "Center",
+     "person_id": "009733",
+     "name": "JEKIRI, TONYE",
+     "team": "PAR",
+     "role": "5άδα",
+     "captain": false,
+     "x_now": 13.5
     },
     {
      "id": 13936,
@@ -1923,11 +1923,11 @@
      "team": "OLY",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 2.6
+     "x_now": 2.4
     }
    ],
-   "x_total": 148.6,
-   "decided_at": "2026-11-17T23:08+00:00"
+   "x_total": 147.9,
+   "decided_at": "2026-11-18T05:08+00:00"
   }
  ],
  "seed_id": "5a453a755a9b",
@@ -1938,5 +1938,5 @@
   "raw": 1257.9,
   "avg_raw": 1065.4
  },
- "generated": "2026-11-17T23:08:14.901273+00:00"
+ "generated": "2026-11-18T05:08:42.515673+00:00"
 }
