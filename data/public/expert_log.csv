@@ -426,6 +426,9 @@ round,source,stance,person_id,name,team,model_xpts
 13,EuroLeague Fantasy Tips (official),pick,003469,"VEZENKOV, SASHA",OLY,26.23
 13,EuroLeague Fantasy Tips (official),pick,006540,"MUSA, DZANAN",DUB,13.31
 13,EuroLeague Fantasy Tips (official),pick,003958,"THIEMANN, JOHANNES",MUN,16.96
+13,EuroLeague Fantasy Tips (official),avoid,011212,"OKOBO, ELIE",DUB,10.29
+13,EuroLeague Fantasy Tips (official),avoid,015165,"WATERS, TREMONT",ASV,9.32
+13,EuroLeague Fantasy Tips (official),avoid,001255,"PAPANIKOLAOU, KOSTAS",OLY,2.72
 13,EuroLeague Fantasy Tips (official),pick,011305,"CARTER, TYSON",RED,7.6
 13,EuroLeague Fantasy Tips (official),pick,007519,"JOKUBAITIS, ROKAS",MUN,10.06
 13,EuroLeague Fantasy Tips (official),captain,007027,"MALEDON, THEO",MAD,15.47
@@ -440,6 +443,9 @@ round,source,stance,person_id,name,team,model_xpts
 13,EuroLeague Fantasy Tips (official),pick,005844,"PAPAGIANNIS, GEORGIOS",IST,3.07
 13,EuroLeague Fantasy Tips (official),pick,005791,"TAVARES, WALTER",MAD,12.13
 13,EuroLeague Fantasy Tips (official),pick,000898,"VALANCIUNAS, JONAS",ZAL,22.77
+13,EuroBallin (Substack),pick,014124,"HORTON TUCKER, TALEN",ULK,15.01
+13,EuroBallin (Substack),pick,006661,"WILBEKIN, SCOTTIE",BES,8.05
+13,EuroBallin (Substack),pick,004004,"GUDURIC, MARKO",MIL,6.86
 13,EuroBallin (Substack),pick,008192,"TUBELIS, AZUOLAS",ZAL,16.11
 13,EuroBallin (Substack),pick,012609,"MALCOLM, COLLIN",IST,13.87
 13,EuroBallin (Substack),pick,014009,"STEVENS, LAMAR",PAR,9.47
@@ -447,8 +453,9 @@ round,source,stance,person_id,name,team,model_xpts
 13,EuroBallin (Substack),pick,012788,"OTURU, DAN",HTA,16.77
 13,EuroBallin (Substack),pick,009733,"JEKIRI, TONYE",PAR,14.24
 13,Basketball Sphere – Fantasy,pick,009846,"BRYANT, ELIJAH",HTA,21.86
-13,Basketball Sphere – Fantasy,pick,014124,"HORTON TUCKER, TALEN",ULK,15.01
+13,Basketball Sphere – Fantasy,pick,011247,"FELIZ, ANDRES",MAD,12.61
+13,Basketball Sphere – Fantasy,pick,TGB,"LLULL, SERGIO",MAD,2.69
 13,Basketball Sphere – Fantasy,pick,012080,"LUWAWU-CABARROT, TIMOTHE",MAD,6.86
 13,Basketball Sphere – Fantasy,pick,007464,"PARRA, JOEL",BAR,6.65
+13,Basketball Sphere – Fantasy,pick,014107,"JOKSIMOVIC, STEFAN",BAS,1.6
 13,Basketball Sphere – Fantasy,pick,011199,"NEBO, JOSH",BAR,12.62
-13,Basketball Sphere – Fantasy,pick,TGB,"LLULL, SERGIO",MAD,2.69
