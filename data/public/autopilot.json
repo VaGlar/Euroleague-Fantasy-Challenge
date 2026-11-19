@@ -1800,7 +1800,9 @@
    },
    "pts": 172.4,
    "raw": 162.4,
-   "avg_raw": 116.4
+   "avg_raw": 116.4,
+   "rank": 37839,
+   "teams": 462104
   },
   {
    "round": 13,
@@ -1809,14 +1811,25 @@
    "squad": [
     {
      "id": 3766,
-     "price": 19.2,
+     "price": 20.2,
      "position": "Forward",
      "person_id": "003469",
      "name": "VEZENKOV, SASHA",
      "team": "OLY",
      "role": "5άδα",
      "captain": false,
-     "x_now": 27.5
+     "x_now": 28.3
+    },
+    {
+     "id": 11549,
+     "price": 17.7,
+     "position": "Center",
+     "person_id": "000898",
+     "name": "VALANCIUNAS, JONAS",
+     "team": "ZAL",
+     "role": "5άδα",
+     "captain": true,
+     "x_now": 23.9
     },
     {
      "id": 3903,
@@ -1826,34 +1839,12 @@
      "name": "BRYANT, ELIJAH",
      "team": "HTA",
      "role": "5άδα",
-     "captain": true,
+     "captain": false,
      "x_now": 23.0
     },
     {
-     "id": 11504,
-     "price": 10.6,
-     "position": "Center",
-     "person_id": "003958",
-     "name": "THIEMANN, JOHANNES",
-     "team": "MUN",
-     "role": "5άδα",
-     "captain": false,
-     "x_now": 17.8
-    },
-    {
-     "id": 7202,
-     "price": 13.1,
-     "position": "Guard",
-     "person_id": "014008",
-     "name": "ROBINSON, JUSTIN",
-     "team": "BAR",
-     "role": "5άδα",
-     "captain": false,
-     "x_now": 15.8
-    },
-    {
      "id": 8846,
-     "price": 9.7,
+     "price": 9.9,
      "position": "Center",
      "person_id": "009733",
      "name": "JEKIRI, TONYE",
@@ -1863,41 +1854,52 @@
      "x_now": 14.9
     },
     {
-     "id": 4255,
-     "price": 8.3,
-     "position": "Head Coach",
-     "person_id": "009154",
-     "name": "ALBERT, XAVIER",
-     "team": "PAM",
-     "role": "coach",
+     "id": 3838,
+     "price": 10.1,
+     "position": "Forward",
+     "person_id": "012609",
+     "name": "MALCOLM, COLLIN",
+     "team": "IST",
+     "role": "5άδα",
      "captain": false,
-     "x_now": 14.1
+     "x_now": 14.6
     },
     {
-     "id": 3851,
-     "price": 9.7,
+     "id": 8815,
+     "price": 10.0,
      "position": "Guard",
-     "person_id": "011247",
-     "name": "FELIZ, ANDRES",
-     "team": "MAD",
+     "person_id": "014213",
+     "name": "PAYNE, CAMERON",
+     "team": "IST",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 13.2
+     "x_now": 13.0
+    },
+    {
+     "id": 3974,
+     "price": 4.0,
+     "position": "Head Coach",
+     "person_id": "001252",
+     "name": "GAVEL, ANTON",
+     "team": "MUN",
+     "role": "coach",
+     "captain": false,
+     "x_now": 9.2
     },
     {
      "id": 4005,
-     "price": 4.0,
+     "price": 4.6,
      "position": "Forward",
      "person_id": "000229",
      "name": "JACKSON, EDWIN",
      "team": "ASV",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 6.1
+     "x_now": 6.2
     },
     {
      "id": 3971,
-     "price": 4.2,
+     "price": 4.3,
      "position": "Guard",
      "person_id": "004761",
      "name": "MARINKOVIC, VANJA",
@@ -1907,19 +1909,19 @@
      "x_now": 4.7
     },
     {
-     "id": 3933,
-     "price": 4.0,
-     "position": "Forward",
-     "person_id": "013373",
-     "name": "CAVALIERE, LEOPOLD",
-     "team": "PRS",
+     "id": 11541,
+     "price": 4.3,
+     "position": "Guard",
+     "person_id": "014741",
+     "name": "CARDENAS, ALVARO",
+     "team": "PAM",
      "role": "6ος",
      "captain": false,
-     "x_now": 3.2
+     "x_now": 4.2
     },
     {
      "id": 3867,
-     "price": 4.1,
+     "price": 4.0,
      "position": "Forward",
      "person_id": "001255",
      "name": "PAPANIKOLAOU, KOSTAS",
@@ -1929,8 +1931,8 @@
      "x_now": 2.5
     }
    ],
-   "x_total": 153.1,
-   "decided_at": "2026-11-19T05:08+00:00"
+   "x_total": 155.5,
+   "decided_at": "2026-11-19T08:52+00:00"
   }
  ],
  "seed_id": "5a453a755a9b",
@@ -1941,5 +1943,5 @@
   "raw": 1420.3,
   "avg_raw": 1181.8
  },
- "generated": "2026-11-19T05:08:29.309319+00:00"
+ "generated": "2026-11-19T08:53:01.798628+00:00"
 }
