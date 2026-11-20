@@ -442,7 +442,7 @@ round,source,stance,person_id,name,team,model_xpts
 13,EuroLeague Fantasy Tips (official),pick,012640,"HIFI, NADIR",PRS,19.53
 13,EuroLeague Fantasy Tips (official),pick,006540,"MUSA, DZANAN",DUB,11.61
 13,EuroLeague Fantasy Tips (official),pick,014124,"HORTON TUCKER, TALEN",ULK,14.79
-13,Basketball Sphere – Fantasy,captain,009846,"BRYANT, ELIJAH",HTA,20.46
+13,Basketball Sphere – Fantasy,pick,009846,"BRYANT, ELIJAH",HTA,20.46
 13,Basketball Sphere – Fantasy,pick,012608,"SHORTS, TJ",PAM,18.0
 13,Basketball Sphere – Fantasy,pick,013369,"JONES, CARLIK",PAR,17.59
 13,Basketball Sphere – Fantasy,pick,004508,"OBST, ANDREAS",MUN,10.67
@@ -462,7 +462,7 @@ round,source,stance,person_id,name,team,model_xpts
 13,EuroBallin (Substack),pick,014009,"STEVENS, LAMAR",PAR,9.48
 13,EuroBallin (Substack),pick,005713,"KURUCS, RODIONS",BAS,7.12
 13,EuroBallin (Substack),pick,000898,"VALANCIUNAS, JONAS",ZAL,20.56
-13,Basketball Sphere – Fantasy,pick,011247,"FELIZ, ANDRES",MAD,12.6
+13,EuroBallin (Substack),pick,011247,"FELIZ, ANDRES",MAD,12.6
 13,Basketball Sphere – Fantasy,pick,TGB,"LLULL, SERGIO",MAD,2.69
 13,Basketball Sphere – Fantasy,pick,012080,"LUWAWU-CABARROT, TIMOTHE",MAD,6.87
 13,Basketball Sphere – Fantasy,pick,014107,"JOKSIMOVIC, STEFAN",BAS,1.3
