@@ -1817,7 +1817,7 @@
      "name": "VEZENKOV, SASHA",
      "team": "OLY",
      "role": "5άδα",
-     "captain": false,
+     "captain": true,
      "x_now": 28.4
     },
     {
@@ -1828,7 +1828,7 @@
      "name": "VALANCIUNAS, JONAS",
      "team": "ZAL",
      "role": "5άδα",
-     "captain": true,
+     "captain": false,
      "x_now": 23.9
     },
     {
@@ -1871,7 +1871,7 @@
      "person_id": "014213",
      "name": "PAYNE, CAMERON",
      "team": "IST",
-     "role": "πάγκος",
+     "role": "6ος",
      "captain": false,
      "x_now": 13.0
     },
@@ -1915,7 +1915,7 @@
      "person_id": "014741",
      "name": "CARDENAS, ALVARO",
      "team": "PAM",
-     "role": "6ος",
+     "role": "πάγκος",
      "captain": false,
      "x_now": 4.2
     },
@@ -1932,7 +1932,19 @@
     }
    ],
    "x_total": 156.3,
-   "decided_at": "2026-11-19T14:08+00:00"
+   "decided_at": "2026-11-19T14:08+00:00",
+   "moves": {
+    "2": {
+     "in": [
+      8815
+     ],
+     "out": [
+      11541
+     ],
+     "captain": 3766,
+     "at": "2026-11-20T05:07+00:00"
+    }
+   }
   },
   {
    "round": 14,
@@ -2003,7 +2015,7 @@
      "team": "MAD",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 12.6
+     "x_now": 13.2
     },
     {
      "id": 4094,
@@ -2061,8 +2073,8 @@
      "x_now": -1.0
     }
    ],
-   "x_total": 133.7,
-   "decided_at": "2026-11-19T23:08+00:00"
+   "x_total": 134.0,
+   "decided_at": "2026-11-20T05:07+00:00"
   }
  ],
  "seed_id": "5a453a755a9b",
@@ -2073,5 +2085,5 @@
   "raw": 1420.3,
   "avg_raw": 1181.8
  },
- "generated": "2026-11-19T23:08:20.215646+00:00"
+ "generated": "2026-11-20T05:07:51.252039+00:00"
 }
