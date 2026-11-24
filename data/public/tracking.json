@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-24T14:19:46.976560+00:00",
+ "generated": "2026-11-24T23:07:58.254722+00:00",
  "rounds": [
   {
    "round": 1,
@@ -104,14 +104,22 @@
    "mae_naive": 7.24,
    "spearman": 0.32,
    "top20": 0.25
+  },
+  {
+   "round": 14,
+   "n": 111,
+   "mae_model": 6.65,
+   "mae_naive": 6.75,
+   "spearman": 0.237,
+   "top20": 0.35
   }
  ],
  "total": {
-  "n": 2163,
-  "mae_model": 6.76,
-  "mae_naive": 7.17,
-  "spearman": 0.308,
-  "top20": 0.331
+  "n": 2274,
+  "mae_model": 6.75,
+  "mae_naive": 7.15,
+  "spearman": 0.306,
+  "top20": 0.332
  },
  "experts": [
   {
