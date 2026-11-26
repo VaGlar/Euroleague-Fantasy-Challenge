@@ -179,16 +179,19 @@ def average_manager(rnd: int, fp: pd.Series, margin: dict) -> float | None:
 def _rank(done: list[dict], overall: dict) -> None:
     """The position the autopilot's season total would have in the game's general classification after
     the round just finished (overall: {id, teams, matchday_id, round, my_total} of that round), and the
-    owner's for comparison (my_rank: personal edition only). Once per round; the game's standings of a
-    past matchday are fixed, so an earlier round is never ranked again."""
+    owner's for comparison (my_rank: personal edition only). Once per round from the final standings;
+    the game's standings of a past matchday are fixed, so an earlier round is never ranked again."""
     total = 0.0
     for e in done:
         total += e["pts"]
-        if e["round"] != overall.get("round") or e.get("rank") is not None:
+        # ranked once from the game's previous matchday (final); from its current one (the round's games
+        # over, the game not moved on yet) again on every run until that final one comes
+        if e["round"] != overall.get("round") or (e.get("rank") is not None and e.get("rank_final", True)):
             continue
         try:
             e["rank"] = fantasy.rank_of(total, overall["id"], overall["matchday_id"], overall["teams"])
             e["teams"] = overall["teams"]
+            e["rank_final"] = bool(overall.get("final", True))
             if overall.get("my_total") is not None:
                 e["my_rank"] = fantasy.rank_of(overall["my_total"], overall["id"], overall["matchday_id"],
                                                overall["teams"])

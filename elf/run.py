@@ -283,6 +283,7 @@ def fantasy_state(clubs: pd.DataFrame, roster: pd.DataFrame, season: int) -> dic
             # the owner's points of the finished matchday (for the autopilot comparison; the game
             # gives no managers' average, checked: only this team's own numbers)
             prev = cfg.get("previous_matchday") or {}
+            ov = None
             if prev.get("id") and len(out["my_teams"]) == 1:
                 try:
                     p_info = fantasy.team_matchday(t["id"], prev["id"])
@@ -293,7 +294,21 @@ def fantasy_state(clubs: pd.DataFrame, roster: pd.DataFrame, season: int) -> dic
                     if ov:
                         out["overall"] = {"id": ov["id"], "teams": int(ov["num_fantasy_teams"]),
                                           "matchday_id": prev["id"], "round": int(prev["number"]),
-                                          "my_total": _num(p_info.get("total_pts"))}
+                                          "my_total": _num(p_info.get("total_pts")), "final": True}
+                except Exception:  # noqa: BLE001 - an extra, never breaks the run
+                    pass
+            # the game keeps a finished round as «current» until hours before the next deadline
+            # (19/11: round 12 still current a day after its games): its points and standings too, used
+            # by build() once our own results say that round is over; not final until the game moves on
+            if len(out["my_teams"]) == 1:
+                try:
+                    ov = ov or fantasy.overall_tournament(t["id"])
+                    if _num(info.get("pts")) is not None:
+                        out["my_points_cur"] = {str(md["number"]): _num(info["pts"])}
+                    if ov:
+                        out["overall_cur"] = {"id": ov["id"], "teams": int(ov["num_fantasy_teams"]),
+                                              "matchday_id": md["id"], "round": int(md["number"]),
+                                              "my_total": _num(info.get("total_pts")), "final": False}
                 except Exception:  # noqa: BLE001 - an extra, never breaks the run
                     pass
     except fantasy.TokenError as e:
@@ -301,6 +316,35 @@ def fantasy_state(clubs: pd.DataFrame, roster: pd.DataFrame, season: int) -> dic
     except Exception as e:  # noqa: BLE001
         out["team_error"] = f"ομάδα: {type(e).__name__}: {e}"
     return out
+
+
+def round_over(fixtures: pd.DataFrame, rnd) -> bool:
+    """Every game of round `rnd` played (our EuroLeague results, not the game's calendar)."""
+    g = fixtures[fixtures["round"] == rnd] if rnd is not None and len(fixtures) else fixtures.iloc[0:0]
+    return len(g) > 0 and bool(g["played"].all())
+
+
+def fantasy_results(fs: dict, fixtures: pd.DataFrame) -> tuple[dict | None, dict | None]:
+    """The owner's points per round and the standings to rank the autopilot in: the game's previous
+    matchday (final), or its current one when that round's games are all played (the game hasn't
+    moved on yet: re-ranked on every run until it does)."""
+    pts = dict(fs.get("my_points") or {})
+    overall, cur = fs.get("overall"), fs.get("overall_cur")
+    if cur and round_over(fixtures, cur["round"]) and (not overall or cur["round"] > overall.get("round", 0)):
+        overall = cur
+        pts.update(fs.get("my_points_cur") or {})
+    return pts or None, overall
+
+
+def roster_value(raw) -> float | None:
+    """The team's value at the game's own prices (the roster's quotations): the same snapshot as its
+    «credits», so the credits left come out as the app shows them even when our price table is a round
+    behind (19/11: 3.2 here, 0.3 in the app)."""
+    ps = (raw or {}).get("players") if isinstance(raw, dict) else None
+    if not isinstance(ps, list) or len(ps) != 11:
+        return None
+    q = [_num(p.get("quotation")) for p in ps if isinstance(p, dict)]
+    return round(sum(q), 1) if len(q) == 11 and all(x is not None for x in q) else None
 
 
 def _num(v, default=None):
@@ -816,6 +860,8 @@ def build(offline: bool = False) -> dict:
     fxr = pr["fixtures"]
     started = bool(fxr.loc[fxr["round"] == rnd, "played"].any())
     trade_rnd = rnd + 1 if started else rnd
+    prices_round = (((fs.get("config") or {}).get("current_matchday") or {}).get("number")
+                    if fs.get("ok") else None)
     hw = horizon_weights(trade_rnd)
     ctx["xpir_w"] = ctx["xpir"] * (ctx["round"] - trade_rnd).map(
         lambda k: hw[k] if 0 <= k < len(hw) else 0.0)
@@ -949,12 +995,17 @@ def build(offline: bool = False) -> dict:
             info = t.get("info") or {}
             # the app's CREDITS 0/100.2: "credits" is the whole budget (100 + gain); left = budget - team value
             budget = _num(info.get("credits"))
-            bank = (round(max(0.0, budget - float(mine["price"].sum())), 1) if budget is not None
+            ours, theirs = float(mine["price"].sum()), roster_value(t["raw"])
+            bank = (round(max(0.0, budget - (theirs if theirs is not None else ours)), 1) if budget is not None
                     else meta.get("bank", max(0.0, BUDGET - mine["price"].sum())))
+            if theirs is not None and abs(theirs - ours) >= 0.05:
+                health.append(f"τιμές: η ομάδα αξίζει {theirs:.1f} στο παιχνίδι, {ours:.1f} στα δεδομένα μας "
+                              "— οι τιμές μας είναι παλιές· τα credits βγήκαν από του παιχνιδιού")
             my = {"name": t["name"], "players": mine.sort_values("x_now", ascending=False)
                   .to_dict("records"), "bank": bank, "captain_id": meta.get("captain"),
                   "gain": _num(info.get("total_plus")),   # team value gained since purchase, as the app shows it
                   "parsed_players": len(ids), "max_trades": max_trades, "trade_round": trade_rnd,
+                  "prices_round": prices_round,
                   "actual_lineup": actual_lineup(t["raw"]),
                   # preferences.yaml, so the dashboard's own re-plan (a player kept for a round) honours them
                   "prefs": {"keep": sorted(int(i) for i in keep_ids), "avoid": sorted(int(i) for i in avoid_ids)}}
@@ -1031,7 +1082,7 @@ def build(offline: bool = False) -> dict:
             autopilot.update(CURRENT_SEASON, rnd, trade_rnd, _opt_rows(ap_pool), ap_pool,
                              max_trades=11 if trade_rnd == 1 or (trade_rnd - 1) in UNLIMITED_AFTER else 4,
                              min_gain=MIN_GAIN_PER_TRADE * sum(horizon_weights(trade_rnd)) / sum(HORIZON_WEIGHTS),
-                             my_points=fs.get("my_points"), overall=fs.get("overall"))
+                             **dict(zip(("my_points", "overall"), fantasy_results(fs, pr["fixtures"]))))
         except Exception as e:  # noqa: BLE001 - never breaks the update
             health.append(f"autopilot: {type(e).__name__}: {e}")
     try:
@@ -1064,6 +1115,8 @@ def build(offline: bool = False) -> dict:
         "standings": standings(CURRENT_SEASON, list(pr["ratings"].index)),
         "clubs": dict(zip(clubs["code"], clubs["name"])),
         "my_team": my, "best_team": best, "health": health, "fantasy_ok": fs.get("ok", False),
+        # the round the prices are from: the game opens the next one only hours before its deadline
+        "prices_round": prices_round,
         # trade rules for this moment (the public edition optimizes in the browser)
         "trade_info": {"round": trade_rnd,
                        "max_trades": 11 if trade_rnd == 1 or (trade_rnd - 1) in UNLIMITED_AFTER else 4,
@@ -1201,6 +1254,9 @@ def messages(rnd, trn, table, my, dig, health, dash: str | None = None) -> list[
                           f"σταθμισμένα xFPT R{tr_r}–R{tr_r + sum(w > 0 for w in horizon_weights(tr_r)) - 1})"]
                 for m in my["transfers"]:
                     lines.append(f"• {m['out']} ➜ {m['in']}  ({m['price_out']}→{m['price_in']}cr)")
+                if my.get("prices_round") and my["prices_round"] < tr_r:
+                    lines.append(f"⚠️ Τιμές του R{my['prices_round']}: το παιχνίδι δεν έχει ανοίξει ακόμα το R{tr_r}· "
+                                 "μόλις το ανοίξει γίνεται update με τις νέες τιμές.")
                 lines.append("")
             elif my:
                 lines += ["🔁 Κανένα Trade δεν αξίζει αυτό το Round.", ""]
