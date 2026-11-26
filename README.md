@@ -169,6 +169,11 @@ GitHub delays its own scheduled runs by hours, so the whole schedule lives in th
 - **2 hours before the day's first game**: a check of the team in the game; a message **only** if the five
   differs from the proposal (with ✅ Apply) or if suggested trades are still pending (Turn 1).
 - **~2.5 hours after the day's last game**: an update with the results.
+- **When the game opens a new round** (new prices; it does so only hours before that round's deadline): an
+  update, so the prices, the team's credits and the trades follow. The bot checks the game's public config
+  every hour against `prices_round` in `predictions.json`. Until then the page and Telegram say the prices
+  are still the last round's. A finished round's rank comes from the game's current matchday as soon as its
+  games are over, and is redone until the game moves on (final standings).
 - **Problems** (Gemini, a news source, the token, a failed update) reach Telegram only when they change;
   the public edition never shows them.
 - An update you start yourself (`/update`) ends with «✅ Το update ολοκληρώθηκε»; the scheduled ones

@@ -7,6 +7,7 @@
 // out:  { status, body, calls: [{ kind: "tg", method, body } | { kind: "dispatch", workflow,
 //         inputs } | { kind: "data", name, access, redirect }] }
 // c.access: behind Cloudflare Access, only this service token id gets the data (else a 302)
+// c.game: the game's public config ({current_matchday: {number}}); missing = the game answers 503
 const REAL_DATE = Date;
 let NOW = 0;
 globalThis.Date = class extends REAL_DATE {
@@ -36,6 +37,11 @@ for (const c of JSON.parse(buf)) {
         auth: opts.headers.authorization });
       return new Response(c.dispatchStatus === 204 || c.dispatchStatus == null ? null : "denied",
         { status: c.dispatchStatus ?? 204 });
+    }
+    // the game's public config: c.game ({current_matchday: {number}}), else the game is down (503)
+    if (url.startsWith("https://fantaking-api.dunkest.com/")) {
+      calls.push({ kind: "game", url });
+      return c.game ? json({ data: c.game }) : new Response("down", { status: 503 });
     }
     if (c.env?.DATA_URL && url.startsWith(c.env.DATA_URL)) {
       const name = url.slice(c.env.DATA_URL.length + 1).split("?")[0];

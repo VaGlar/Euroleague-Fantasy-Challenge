@@ -38,6 +38,23 @@ function athensClock(date, hm) {
   return Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour % 24, +p.minute);
 }
 const RESULTS_DELAY_MIN = 150;   // last tip-off + 2h30 ≈ games over and box scores in
+// The game's public config: its current round. It opens the next one (new prices) only hours before the
+// deadline; an update then brings the new prices and credits (19/11: proposals at the old ones all day).
+const GAME_CONFIG = "https://fantaking-api.dunkest.com/api/v1/leagues/10/config";
+const NEW_ROUND_MIN_AGE_MIN = 50;  // not again if an update has just run (one that failed waits an hour)
+
+// the game's current round, or null (an extra: never stops the hour's other work)
+async function gameRound() {
+  try {
+    const r = await fetch(GAME_CONFIG, { cf: { cacheTtl: 0 } });
+    if (!r.ok) return null;
+    const b = await r.json();
+    const n = Number((b.data || b).current_matchday?.number);
+    return Number.isFinite(n) ? n : null;
+  } catch (e) {
+    return null;
+  }
+}
 
 // Text inside an HTML-mode message: a stray "<" or "&" makes Telegram reject the whole message.
 const esc = (s) => String(s ?? "").replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
@@ -166,8 +183,10 @@ async function startLineupPreview(env, chat) {
 async function hourly(env) {
   const now = athensNow();
   const canDispatch = Boolean(env.GH_DISPATCH_TOKEN);
+  let updated = false;          // one update an hour, whatever asked for it
   const update = async (why) => {
-    if (!canDispatch) return;
+    if (!canDispatch || updated) return;
+    updated = true;
     const r = await dispatch(env, "update.yml", {});
     if (r.status !== 204) {
       await send(env, env.TELEGRAM_CHAT_ID, `⚠️ Το update (${why}) δεν ξεκίνησε: GitHub ${r.status} — έλεγξε το GH_DISPATCH_TOKEN.`);
@@ -200,6 +219,12 @@ async function hourly(env) {
     const last = Math.max(...tips.map((hm) => athensClock(t.date, hm)));
     const since = (nowC - last) / 60000 - RESULTS_DELAY_MIN;
     if (since >= 0 && since < 60) { await update("μετά τους αγώνες"); break; }
+  }
+  // the game opened a new round: its prices and the team's credits changed, so update now
+  if (canDispatch && !updated && pred.prices_round != null
+      && Date.now() - Date.parse(pred.generated) > NEW_ROUND_MIN_AGE_MIN * 60000) {
+    const n = await gameRound();
+    if (n != null && n > Number(pred.prices_round)) await update("νέο Round στο παιχνίδι");
   }
 }
 

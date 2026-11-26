@@ -684,6 +684,7 @@
         ${pl.inRound && !t.game ? `<p class="tm-live">${ico("clock")} ${L(`Το Round ${P.round} τρέχει. Αν έκανες Trades στο παιχνίδι, έλεγξε ότι είναι και εδώ
           (πάτα τον παίκτη → Trade ή ✕), ώστε το επόμενο Round να ξεκινήσει από τη σωστή ομάδα.`, `Round ${P.round} is under way. If you made Trades in the game, check they are here too
           (tap the player → Trade or ✕), so the next Round starts from the right team.`)}</p>` : ""}
+        ${staleNote(pl.ti)}
         ${done ? `<div class="tm-ready">${ico("check")} ${L("Έτοιμος για το Round", "Ready for the Round")}${pl.turnPlan.length
           ? `<span class="tm-why">${L(`Μένει να αποφασίσεις ${pl.turnPlan.length === 1 ? "μία αλλαγή" : `${pl.turnPlan.length} αλλαγές`} πριν το επόμενο Turn`, `${pl.turnPlan.length === 1 ? "One swap" : `${pl.turnPlan.length} swaps`} left to decide before the next Turn`)} (${ico("clock")} ${L("παρακάτω", "below")}).</span>` : ""}</div>` : `${todo}`}
         ${pl.tradesNow ? keptLine : ""}
@@ -917,6 +918,16 @@
     });
   }
 
+  // the prices are still the last round's: the game opens the next one only hours before its deadline
+  // (then the bot runs an update); until then prices, credits and trades are the old round's
+  function staleNote(ti) {
+    const pr = P.prices_round;
+    if (!pr || !ti || pr >= ti.round) return "";
+    return `<p class="tm-live tm-stale">${ico("warn")} ${L(`Οι τιμές είναι ακόμα του Round ${pr}: το παιχνίδι ανοίγει το Round ${ti.round}
+      λίγες ώρες πριν τη λήξη, και τότε έρχονται αυτόματα οι νέες. Μέχρι τότε τα trades υπολογίζονται με τις παλιές τιμές.`,
+      `Prices are still Round ${pr}'s: the game opens Round ${ti.round} a few hours before the deadline, and the new
+      ones come in automatically then. Until then trades are worked out at the old prices.`)}</p>`;
+  }
   // «Trades που μένουν»: the game counts every change of the round, the app only what it saw
   function leftSheet(t, best) {
     const ti = tradeInfo(t);
