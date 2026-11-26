@@ -492,9 +492,6 @@ round,source,stance,person_id,name,team,model_xpts
 14,Basketball Sphere – Fantasy,pick,006835,"HOARD, JAYLEN",TEL,11.57
 14,Basketball Sphere – Fantasy,pick,012710,"OSMANI, ERCAN",IST,4.83
 14,Basketball Sphere – Fantasy,pick,012618,"MASSA, BODIAN",ASV,5.43
-15,EuroLeague Fantasy Tips (official),pick,015160,"JOHNSON, ALIZE",PRS,8.69
-15,EuroLeague Fantasy Tips (official),pick,012878,"WRIGHT, MOSES",MIL,18.08
-15,EuroLeague Fantasy Tips (official),pick,015142,"MINAYA, JUSTIN",BAR,5.83
 15,EuroBallin (Substack),pick,007027,"MALEDON, THEO",MAD,17.98
 15,EuroBallin (Substack),pick,008099,"STRAZEL, MATTHEW",IST,14.4
 15,EuroBallin (Substack),pick,013370,"WASHINGTON, DUANE",MUN,14.6
@@ -511,18 +508,17 @@ round,source,stance,person_id,name,team,model_xpts
 15,EuroBallin (Substack),pick,008325,"KAMENJAS, KENAN",BAS,12.1
 15,EuroLeague Fantasy Tips (official),pick,011924,"ALLMAN, KYLE",PAR,5.67
 15,EuroLeague Fantasy Tips (official),pick,011305,"CARTER, TYSON",RED,7.76
-15,EuroLeague Fantasy Tips (official),pick,008099,"STRAZEL, MATTHEW",IST,14.4
 15,EuroLeague Fantasy Tips (official),pick,012796,"KABENGELE, MFIONDU",DUB,15.51
 15,EuroLeague Fantasy Tips (official),pick,015396,"KOLOKO, CHRISTIAN",RED,11.61
-15,EuroLeague Fantasy Tips (official),pick,011244,"DA SILVA, OSCAR",MUN,9.82
-15,EuroLeague Fantasy Tips (official),pick,014733,"JUZANG, JOHNNY",ULK,7.65
-15,EuroLeague Fantasy Tips (official),pick,005713,"KURUCS, RODIONS",BAS,7.28
-15,EuroLeague Fantasy Tips (official),pick,008192,"TUBELIS, AZUOLAS",ZAL,16.22
 15,Basketball Sphere – Fantasy,pick,012640,"HIFI, NADIR",PRS,20.19
+15,Basketball Sphere – Fantasy,pick,011706,"SAINT-SUPERY, MARIO",PAM,1.57
 15,Basketball Sphere – Fantasy,pick,006835,"HOARD, JAYLEN",TEL,11.43
+15,Basketball Sphere – Fantasy,pick,011244,"DA SILVA, OSCAR",MUN,9.82
 15,Basketball Sphere – Fantasy,pick,012710,"OSMANI, ERCAN",IST,5.31
 15,Basketball Sphere – Fantasy,pick,012618,"MASSA, BODIAN",ASV,4.09
+15,Basketball Sphere – Fantasy,pick,012878,"WRIGHT, MOSES",MIL,18.08
 15,Basketball Sphere – Fantasy,pick,009846,"BRYANT, ELIJAH",HTA,19.66
+15,Basketball Sphere – Fantasy,pick,012608,"SHORTS, TJ",PAM,16.7
 15,Basketball Sphere – Fantasy,pick,013369,"JONES, CARLIK",PAR,17.83
 15,Basketball Sphere – Fantasy,pick,004508,"OBST, ANDREAS",MUN,10.2
 15,Basketball Sphere – Fantasy,pick,007831,"SHIELDS, SHAVON",ULK,14.07
