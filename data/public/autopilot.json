@@ -2098,49 +2098,52 @@
    },
    "pts": 142.2,
    "raw": 121.0,
-   "avg_raw": 101.3
+   "avg_raw": 101.3,
+   "rank": 93134,
+   "teams": 480504,
+   "rank_final": true
   },
   {
    "round": 15,
-   "trades": 2,
-   "bank": 0.3,
+   "trades": 3,
+   "bank": 0.1,
    "squad": [
     {
      "id": 3766,
-     "price": 20.0,
+     "price": 20.1,
      "position": "Forward",
      "person_id": "003469",
      "name": "VEZENKOV, SASHA",
      "team": "OLY",
      "role": "πάγκος",
      "captain": false,
-     "x_now": 27.9
+     "x_now": 27.1
+    },
+    {
+     "id": 3834,
+     "price": 16.6,
+     "position": "Guard",
+     "person_id": "012640",
+     "name": "HIFI, NADIR",
+     "team": "PRS",
+     "role": "5άδα",
+     "captain": true,
+     "x_now": 21.2
     },
     {
      "id": 3850,
-     "price": 13.8,
+     "price": 13.9,
      "position": "Guard",
      "person_id": "007027",
      "name": "MALEDON, THEO",
      "team": "MAD",
      "role": "5άδα",
-     "captain": true,
-     "x_now": 18.9
-    },
-    {
-     "id": 3791,
-     "price": 14.8,
-     "position": "Guard",
-     "person_id": "013369",
-     "name": "JONES, CARLIK",
-     "team": "PAR",
-     "role": "5άδα",
      "captain": false,
-     "x_now": 18.7
+     "x_now": 19.8
     },
     {
      "id": 7424,
-     "price": 11.4,
+     "price": 12.1,
      "position": "Center",
      "person_id": "014108",
      "name": "DIARRA, ALIOU",
@@ -2150,19 +2153,19 @@
      "x_now": 17.5
     },
     {
-     "id": 7221,
-     "price": 13.4,
-     "position": "Forward",
-     "person_id": "008192",
-     "name": "TUBELIS, AZUOLAS",
-     "team": "ZAL",
-     "role": "πάγκος",
+     "id": 3806,
+     "price": 10.8,
+     "position": "Guard",
+     "person_id": "013370",
+     "name": "WASHINGTON, DUANE",
+     "team": "MUN",
+     "role": "5άδα",
      "captain": false,
-     "x_now": 16.2
+     "x_now": 16.1
     },
     {
      "id": 3872,
-     "price": 8.6,
+     "price": 8.9,
      "position": "Head Coach",
      "person_id": "CWX",
      "name": "MARTINEZ, PEDRO",
@@ -2178,13 +2181,24 @@
      "person_id": "008325",
      "name": "KAMENJAS, KENAN",
      "team": "BAS",
-     "role": "5άδα",
+     "role": "6ος",
      "captain": false,
-     "x_now": 11.5
+     "x_now": 12.0
+    },
+    {
+     "id": 3936,
+     "price": 4.7,
+     "position": "Forward",
+     "person_id": "011085",
+     "name": "ROGKAVOPOULOS, NIKOLAOS",
+     "team": "PAN",
+     "role": "πάγκος",
+     "captain": false,
+     "x_now": 5.0
     },
     {
      "id": 3983,
-     "price": 5.1,
+     "price": 5.0,
      "position": "Forward",
      "person_id": "007960",
      "name": "DAVIDOVAC, DEJAN",
@@ -2195,29 +2209,18 @@
     },
     {
      "id": 3971,
-     "price": 4.4,
+     "price": 4.3,
      "position": "Guard",
      "person_id": "004761",
      "name": "MARINKOVIC, VANJA",
      "team": "PAR",
-     "role": "6ος",
+     "role": "πάγκος",
      "captain": false,
      "x_now": 4.3
     },
     {
-     "id": 11541,
-     "price": 4.4,
-     "position": "Guard",
-     "person_id": "014741",
-     "name": "CARDENAS, ALVARO",
-     "team": "PAM",
-     "role": "πάγκος",
-     "captain": false,
-     "x_now": 4.0
-    },
-    {
      "id": 4005,
-     "price": 4.2,
+     "price": 4.1,
      "position": "Forward",
      "person_id": "000229",
      "name": "JACKSON, EDWIN",
@@ -2227,8 +2230,8 @@
      "x_now": 3.9
     }
    ],
-   "x_total": 138.4,
-   "decided_at": "2026-11-26T05:08+00:00"
+   "x_total": 149.2,
+   "decided_at": "2026-11-27T05:06+00:00"
   }
  ],
  "seed_id": "5a453a755a9b",
@@ -2239,5 +2242,5 @@
   "raw": 1654.2,
   "avg_raw": 1393.5
  },
- "generated": "2026-11-26T05:08:34.751228+00:00"
+ "generated": "2026-11-27T05:07:06.168150+00:00"
 }
